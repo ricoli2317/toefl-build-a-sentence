@@ -203,10 +203,13 @@ function TeacherReadingCatalogContent({
 
 export function TeacherReadingQuestionBankItemViewer({
   itemId,
+  preview = false,
   returnModule,
   returnPage
 }: {
   itemId: string;
+  /** Standalone preview mode for 查看题目 opened in a new tab. */
+  preview?: boolean;
   returnModule: ReadingModule;
   returnPage: number;
 }) {
@@ -226,8 +229,8 @@ export function TeacherReadingQuestionBankItemViewer({
     return (
       <ReadingPracticeMessage
         description={toQuestionBankErrorMessage(error || "无法加载题目内容。")}
-        leaveLabel="返回教师题库"
-        onLeave={() => router.push(bankHref)}
+        leaveLabel={preview ? undefined : "返回教师题库"}
+        onLeave={preview ? undefined : () => router.push(bankHref)}
         title="无法打开题目"
       />
     );
@@ -239,10 +242,11 @@ export function TeacherReadingQuestionBankItemViewer({
       answerKeyOnly
       answers={answerKeyView.answers}
       lookupEnabled={false}
-      onBack={() => router.push(bankHref)}
+      onBack={preview ? undefined : () => router.push(bankHref)}
       practice={data.practice}
       reviewDisclosures={answerKeyView.disclosures}
       reviewItems={answerKeyView.reviewItems}
+      standalone={preview}
       title={data.practice.item.title}
     />
   );

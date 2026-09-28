@@ -152,6 +152,10 @@ export function createMockSupabase(tables, options = {}) {
           );
           return builder;
         },
+        neq(column, value) {
+          filters.push((row) => row[column] !== value);
+          return builder;
+        },
         order(column, { ascending = true, nullsFirst = false } = {}) {
           transforms.push((rows) =>
             rows.slice().sort((left, right) => {

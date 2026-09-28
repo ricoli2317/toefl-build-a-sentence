@@ -306,13 +306,51 @@ export function formatAssignmentCatalogMonth(monthKey: string) {
 /**
  * 查看题目: every item type except Full Set reuses the existing teacher read-only
  * question page. The stable item id is the route identity; the visible row
- * number is never part of it.
+ * number is never part of it. `preview=1` selects the standalone preview mode,
+ * which only renders the current question and keeps the 布置作业 wizard on the
+ * current page untouched.
  */
 export function assignmentItemViewerHref(
   entry: Pick<AssignmentCatalogEntry, "item_id" | "item_type">
 ) {
   if (!assignmentItemHasQuestionView(entry.item_type)) return null;
-  return `/teacher/question-bank/${encodeURIComponent(entry.item_id)}?taskType=${entry.item_type}`;
+  return `/teacher/question-bank/${encodeURIComponent(entry.item_id)}?taskType=${entry.item_type}&preview=1`;
+}
+
+/**
+ * The Assignment picker paginates its filtered rows entirely on the client:
+ * ten rows per page, never a new catalog request. The filter / selection model
+ * is unchanged, only the visible slice moves.
+ */
+export const ASSIGNMENT_CATALOG_PAGE_SIZE = 10;
+
+export type AssignmentCatalogPage<T> = {
+  /** 1-based page actually rendered (clamped to the available page count). */
+  page: number;
+  pageCount: number;
+  total: number;
+  /** 0-based offset of the first rendered row inside the filtered result. */
+  from: number;
+  items: T[];
+};
+
+export function paginateAssignmentCatalogEntries<T>(
+  entries: ReadonlyArray<T>,
+  page: number,
+  pageSize = ASSIGNMENT_CATALOG_PAGE_SIZE
+): AssignmentCatalogPage<T> {
+  const total = entries.length;
+  const pageCount = Math.max(1, Math.ceil(total / pageSize));
+  const requested = Number.isFinite(page) ? Math.trunc(page) : 1;
+  const visiblePage = Math.min(Math.max(requested || 1, 1), pageCount);
+  const from = (visiblePage - 1) * pageSize;
+  return {
+    from,
+    items: entries.slice(from, from + pageSize),
+    page: visiblePage,
+    pageCount,
+    total
+  };
 }
 
 /**
@@ -380,6 +418,59 @@ export function assignmentSnapshotSourceSetId(snapshot: unknown) {
     return snapshot.source_set_id.trim();
   }
   return null;
+}
+
+/**
+ * The persisted Assignment row shape needed to rebuild one picker selection
+ * row. It deliberately avoids importing the Assignment domain module so the
+ * mapping stays available to both ends.
+ */
+export type AssignmentCatalogSourceRow = {
+  assignment_id?: string;
+  catalog_item_id?: string | null;
+  display_name?: string | null;
+  question_id: string | null;
+  question_source: "question_bank" | "custom";
+  question_snapshot: unknown;
+  task_type: AssignmentItemType;
+};
+
+/**
+ * Rebuilds the exact lightweight picker row of a persisted Assignment item.
+ *
+ * A seeded row must carry the same stable `item_id` the catalog exposes
+ * (`catalog_item_id` for WE / AD, the stored id for BAS / Reading), so a
+ * withdrawn edit re-checks the original question from the list instead of
+ * duplicating it. Only catalog metadata is read — never question content.
+ */
+export function assignmentCatalogEntryFromAssignment(
+  assignment: AssignmentCatalogSourceRow
+): AssignmentCatalogEntry {
+  const snapshot = isRecord(assignment.question_snapshot) ? assignment.question_snapshot : {};
+  const yearMonth = typeof snapshot.year_month === "string" ? snapshot.year_month.trim() : "";
+  const readingLength = snapshot.reading_length === "short" || snapshot.reading_length === "long"
+    ? snapshot.reading_length
+    : null;
+  const snapshotTitle = typeof snapshot.set_title === "string" ? snapshot.set_title.trim() : "";
+  return {
+    catalog_category: typeof snapshot.catalog_category === "string" && snapshot.catalog_category.trim()
+      ? snapshot.catalog_category.trim()
+      : null,
+    item_id: assignment.catalog_item_id?.trim()
+      || assignment.question_id
+      || assignment.assignment_id
+      || "",
+    item_type: assignment.task_type,
+    months: /^\d{4}-\d{2}$/.test(yearMonth) ? [yearMonth] : [],
+    reading_length: readingLength,
+    source_set_id: typeof snapshot.source_set_id === "string" && snapshot.source_set_id.trim()
+      ? snapshot.source_set_id.trim()
+      : null,
+    title: assignment.display_name?.trim()
+      || snapshotTitle
+      || assignmentItemTypeLabel(assignment.task_type),
+    year_month: yearMonth
+  };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -123,7 +123,7 @@ test("logical assignment search uses stable date and suffix ordering", () => {
 });
 
 test("new bank assignments snapshot the canonical raw question and list with logical naming", () => {
-  const mutation = read("lib/writingAssignmentsServer.ts");
+  const mutation = read("lib/writingAssignmentMutation.server.ts");
   const route = read("app/api/teacher/writing/assignments/route.ts");
   const list = read("components/teacher/TeacherWritingAssignmentList.tsx");
   assert.match(route, /canonicalizeQuestionBank: true/);

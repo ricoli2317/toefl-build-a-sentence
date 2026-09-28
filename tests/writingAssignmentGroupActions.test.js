@@ -92,11 +92,19 @@ test("group edit API loads every item and saves the group in one RPC", () => {
   assert.match(route, /prepareWritingAssignmentGroupEditMutation/);
   assert.match(route, /update_withdrawn_writing_assignment_group/);
   assert.match(route, /p_items:/);
-  assert.match(route, /p_student_ids: prepared\.studentIds/);
+  assert.match(route, /p_student_ids: classId \? \[\] : prepared\.studentIds/);
   assert.match(route, /p_due_at: prepared\.dueAt/);
   assert.match(route, /p_reactivate: body\.reactivate === true/);
-  assert.match(route, /assertLockedWritingAssignmentQuestionInput/);
+  assert.match(route, /p_class_id: classId \|\| null/);
+  assert.match(route, /p_title: title/);
+  assert.match(route, /p_legacy_assignment_id: null/);
   assert.match(route, /currentItems\.some\(\(item\) => item\.status !== "withdrawn"\)/);
+  // The withdrawn edit can add / remove / re-type items: existing ids are
+  // matched against the group, new items carry no id and are inserted by the
+  // RPC, and the frozen-question rule still guards submitted items.
+  assert.match(route, /if \(!preparedItem\.assignmentId\) return preparedItem/);
+  assert.match(route, /INVALID_GROUP_ITEMS/);
+  assert.match(route, /QUESTION_LOCKED_AFTER_SUBMISSION/);
   // Recipients keep the persisted selection order for the edit form.
   assert.match(route, /\.order\("sort_order", \{ ascending: true, nullsFirst: false \}\)/);
 });
@@ -116,29 +124,53 @@ test("group edit RPC writes items, recipients and status in one transaction", ()
   assert.doesNotMatch(sql, /drop function/i);
 });
 
-test("group edit form loads all items and restores recipients for mixed groups", () => {
+test("the withdrawn group RPC supports add / remove / class / title with unchanged safety", () => {
+  const sql = source("supabase/writing_assignment_group_edit_items_20260928.sql");
+  // The old 6-argument overload is replaced, not shadowed.
+  assert.match(sql, /drop function if exists public\.update_withdrawn_writing_assignment_group\(/);
+  assert.match(sql, /p_legacy_assignment_id uuid/);
+  assert.match(sql, /p_class_id uuid default null/);
+  assert.match(sql, /grant execute on function public\.update_withdrawn_writing_assignment_group\(\s*\n\s*uuid, uuid, uuid, text, jsonb, uuid\[\], timestamptz, boolean, uuid\s*\n\) to service_role/);
+  // Safety rules stay in place.
+  assert.match(sql, /ASSIGNMENT_GROUP_NOT_WITHDRAWN/);
+  assert.match(sql, /QUESTION_LOCKED_AFTER_SUBMISSION/);
+  assert.match(sql, /STUDENT_HAS_ATTEMPT/);
+  assert.match(sql, /ITEM_HAS_ATTEMPT/);
+  assert.match(sql, /MIXED_ASSIGNMENT_SUBJECT/);
+  assert.match(sql, /INVALID_GROUP_ITEMS/);
+  assert.match(sql, /binding\.domain = derived_subject/);
+  assert.match(sql, /CLASS_NOT_READING_CLASS/);
+  assert.match(sql, /CLASS_HAS_NO_MEMBERS/);
+  // Add / remove / re-title.
+  assert.match(sql, /insert into public\.writing_assignments \(/);
+  assert.match(sql, /set deleted_at = now\(\)/);
+  assert.match(sql, /set title = btrim\(p_title\)/);
+  assert.match(sql, /set class_id = p_class_id/);
+  assert.doesNotMatch(sql, /owner_id/);
+});
+
+test("group edit form loads the whole group and reuses the one shared wizard", () => {
   const form = source(GROUP_EDIT_FORM);
   // Whole group is loaded, not just the first assignment.
-  assert.match(form, /state\.data\?\.collection\.assignments/);
-  assert.match(form, /setItems\(orderedAssignments\.map\(\(assignment\) => itemStateFromAssignment\(assignment\)\)\)/);
-  assert.match(form, /setSelectedStudents\(first\.students\.map/);
-  assert.match(form, /setLockedStudentIds\(locked\)/);
-  // Every item is submitted together with its assignmentId.
-  // Catalog items (BAS / 阅读) keep their stable identity; Writing items submit
-  // their edited question or custom fields.
-  assert.match(form, /items: items\.map\(\(item\) => !isWritingReviewItemType\(item\.taskType\)/);
-  assert.match(form, /assignmentId: item\.assignmentId/);
-  assert.match(form, /questionSource: "question_bank"/);
-  assert.match(form, /questionSource: "custom"/);
-  assert.match(form, /questionId: item\.catalogItemId/);
-  // Reuses the existing editing pieces instead of a second implementation.
-  assert.match(form, /QuestionResults/);
-  assert.match(form, /CustomQuestionFields/);
-  assert.match(form, /WritingAssignmentQuestionPreview/);
-  assert.match(form, /buildCustomWritingQuestionSnapshot/);
+  assert.match(form, /state\.data\?\.collection\?\.assignments/);
+  // There is no second edit UI: the persisted group seeds the shared wizard.
+  assert.match(form, /TeacherWritingAssignmentForm/);
+  assert.match(form, /initialCollection=\{state\.data\.collection\}/);
+  assert.match(form, /returnTo=\{returnTo\}/);
+  // The wizard seeds every item, keeps custom drafts editable, submits one
+  // group payload and invalidates the list cache.
+  const wizard = source("components/teacher/TeacherWritingAssignmentForm.tsx");
+  assert.match(wizard, /buildWizardSeed/);
+  assert.match(wizard, /assignmentCatalogEntryFromAssignment/);
+  assert.match(wizard, /customQuestionDraftFromAssignment/);
+  assert.match(wizard, /questionSource: "question_bank"/);
+  assert.match(wizard, /questionSource: "custom" as const/);
+  assert.match(wizard, /CustomQuestionFields/);
+  assert.match(wizard, /WritingAssignmentQuestionPreview/);
+  assert.match(wizard, /buildCustomWritingQuestionSnapshot/);
   // Save goes through the batch edit API and invalidates the list cache.
-  assert.match(form, /\/api\/teacher\/writing\/assignments\/batches\//);
-  assert.match(form, /cache\.invalidate\(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX\)/);
+  assert.match(wizard, /\/api\/teacher\/writing\/assignments\/batches\//);
+  assert.match(wizard, /cache\.invalidate\(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX\)/);
   // The page and the group card link exist.
   const page = source("app/teacher/writing/assignments/batches/[batchId]/edit/page.tsx");
   assert.match(page, /TeacherWritingAssignmentGroupEditForm/);
@@ -150,8 +182,16 @@ test("group edit form loads all items and restores recipients for mixed groups",
 
 test("legacy single withdrawn edit and reassign keep their original APIs", () => {
   const route = source(ROUTE);
-  assert.match(route, /update_withdrawn_writing_assignment/);
-  assert.match(route, /if \(submittedAttempt\) assertLockedWritingAssignmentQuestionInput\(body, assignment\)/);
+  // A group-less legacy row is adopted into the same group edit RPC instead of
+  // a separate single-item editing implementation.
+  assert.match(route, /prepareWritingAssignmentGroupEditMutation/);
+  assert.match(route, /p_legacy_assignment_id: params\.assignmentId/);
+  assert.match(route, /p_group_id: null/);
+  assert.match(route, /QUESTION_LOCKED_AFTER_SUBMISSION/);
+  assert.match(route, /\.eq\("status", "submitted"\)/);
+  assert.match(route, /action === "withdraw"/);
+  assert.match(route, /action === "reactivate"/);
+  assert.match(route, /action === "soft_delete"/);
   // The single edit form and page are untouched entry points.
   const page = source("app/teacher/writing/assignments/[assignmentId]/edit/page.tsx");
   assert.match(page, /TeacherWritingAssignmentEditForm/);

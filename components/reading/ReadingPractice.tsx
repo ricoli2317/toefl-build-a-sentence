@@ -845,7 +845,7 @@ export function ReadingPracticeHeader({
   title
 }: {
   elapsedSeconds: number;
-  onBack: () => void;
+  onBack?: () => void;
   onReview?: () => void;
   productName?: string;
   progressLabel?: string;
@@ -860,10 +860,12 @@ export function ReadingPracticeHeader({
 }) {
   return (
     <header className="grid h-[var(--reading-header-height)] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 border-b border-student-border bg-white px-4 sm:px-7 lg:px-10">
-      <button className="writing-header-back justify-self-start" onClick={onBack} type="button">
-        <ArrowLeft aria-hidden="true" size={20} strokeWidth={2.2} />
-        <span className="hidden sm:inline">Back</span>
-      </button>
+      {onBack ? (
+        <button className="writing-header-back justify-self-start" onClick={onBack} type="button">
+          <ArrowLeft aria-hidden="true" size={20} strokeWidth={2.2} />
+          <span className="hidden sm:inline">Back</span>
+        </button>
+      ) : <span aria-hidden="true" />}
       <div className="min-w-0 justify-self-center text-center">
         {productName ? <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-student-muted">{productName}</p> : null}
         <p className={`${onReview ? "max-w-[42vw] sm:max-w-[58vw]" : "max-w-[58vw]"} truncate text-sm font-bold text-student-text sm:text-base`}>
@@ -2652,16 +2654,22 @@ export function ReadingReadonlyReviewShell({
   practice,
   reviewDisclosures = {},
   reviewItems,
+  standalone = false,
   title
 }: {
   answerKeyOnly?: boolean;
   answers?: ReadingAnswerState;
   initialReviewIndex?: number;
   lookupEnabled: boolean;
-  onBack: () => void;
+  onBack?: () => void;
   practice: StudentReadingPracticePayload;
   reviewDisclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
   reviewItems: SubmittedReadingReviewItem[];
+  /**
+   * Standalone preview (查看题目 in a new tab): only this item is rendered and
+   * every navigation control (back / previous / next) is hidden.
+   */
+  standalone?: boolean;
   title?: string;
 }) {
   const router = useRouter();
@@ -2700,7 +2708,7 @@ export function ReadingReadonlyReviewShell({
     <div className="reading-theme min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
-        onBack={onBack}
+        onBack={standalone ? undefined : onBack}
         progressLabel={progressLabel}
         showElapsed={false}
         title={title ?? practice.item.title}
@@ -2717,8 +2725,8 @@ export function ReadingReadonlyReviewShell({
           />
         ) : null}
         <ReadingQuestionViewport
-          canGoNext={reviewNavigationTargets.nextIndex !== null}
-          canGoPrevious={reviewNavigationTargets.previousIndex !== null}
+          canGoNext={!standalone && reviewNavigationTargets.nextIndex !== null}
+          canGoPrevious={!standalone && reviewNavigationTargets.previousIndex !== null}
           module={practice.item.module}
           onNext={() => move(1)}
           onPrevious={() => move(-1)}

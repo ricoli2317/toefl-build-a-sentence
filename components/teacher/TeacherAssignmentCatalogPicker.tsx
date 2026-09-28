@@ -2,21 +2,27 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef } from "react";
-import { Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import {
   TEACHER_ASSIGNMENT_CATALOG_CACHE_PREFIX,
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
 import { TeacherDataError, TeacherSkeleton } from "@/components/teacher/TeacherUI";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
-import type { AssignmentPickerFilters } from "@/lib/assignmentPickerState";
 import {
+  assignmentPickerFiltersFor,
+  selectAssignmentPickerItemType,
+  setAssignmentPickerPage,
+  updateAssignmentPickerFilters,
+  type AssignmentPickerState
+} from "@/lib/assignmentPickerState";
+import {
+  ASSIGNMENT_CATALOG_PAGE_SIZE,
   allAssignmentCatalogEntriesSelected,
   assignmentCatalogEntryKey,
   assignmentCatalogMonths,
   assignmentCatalogTopics,
   assignmentItemHasLength,
-  assignmentItemHasQuestionView,
   assignmentItemHasTopic,
   assignmentItemTypeTabLabel,
   assignmentItemTypesForSubject,
@@ -25,6 +31,7 @@ import {
   filterAssignmentCatalogEntries,
   formatAssignmentCatalogMonth,
   isAssignmentCatalogEntrySelected,
+  paginateAssignmentCatalogEntries,
   selectAllAssignmentCatalogEntries,
   someAssignmentCatalogEntriesSelected,
   toggleAssignmentCatalogSelection,
@@ -44,21 +51,25 @@ const ALL_OPTION_LABEL = "全部";
  *
  * The catalog loads once per subject and month / topic / length / title
  * filtering happens entirely on the client, so switching a filter never asks
- * the server for anything. Switching tabs or filters never clears the
- * cross-type selection, and every row keeps its stable item id — the natural
- * row number is display-only and never enters an Assignment or a route.
+ * the server for anything. Every item type keeps its own filter set (month /
+ * topic / length / search / page): switching tabs neither inherits nor resets
+ * another tab. Paging is pure client-side over the already filtered rows and
+ * keeps the list area at a stable height. Switching tabs or filters never
+ * clears the cross-type selection, and every row keeps its stable item id —
+ * the natural row number is display-only and never enters an Assignment or a
+ * route.
  */
 export function TeacherAssignmentCatalogPicker({
-  filters,
-  onFiltersChange,
   onSelectionChange,
+  onStateChange,
   selection,
+  state,
   subject
 }: {
-  filters: AssignmentPickerFilters;
-  onFiltersChange: (filters: AssignmentPickerFilters) => void;
   onSelectionChange: (selection: AssignmentCatalogSelection) => void;
+  onStateChange: (state: AssignmentPickerState) => void;
   selection: AssignmentCatalogSelection;
+  state: AssignmentPickerState;
   subject: AssignmentSubject;
 }) {
   const catalogKey = `${TEACHER_ASSIGNMENT_CATALOG_CACHE_PREFIX}:${subject}`;
@@ -67,10 +78,13 @@ export function TeacherAssignmentCatalogPicker({
     () => teacherApiFetch(`/api/teacher/writing/assignments/catalog?subject=${subject}`)
   );
   const itemTypes = useMemo(() => assignmentItemTypesForSubject(subject), [subject]);
-  const entries = useMemo(() => data?.items ?? [], [data]);
-  const activeItemType = itemTypes.includes(filters.itemType)
-    ? filters.itemType
+  const activeItemType = itemTypes.includes(state.activeItemType)
+    ? state.activeItemType
     : itemTypes[0];
+  // One view model per tab: the visible filter controls read exactly the same
+  // values that filter the rows, so UI and actual filter can never drift.
+  const filters = assignmentPickerFiltersFor(state, activeItemType);
+  const entries = useMemo(() => data?.items ?? [], [data]);
   const filteredEntries = useMemo(
     () => filterAssignmentCatalogEntries(entries, {
       length: assignmentItemHasLength(activeItemType) ? filters.length : "all",
@@ -80,6 +94,10 @@ export function TeacherAssignmentCatalogPicker({
       topic: assignmentItemHasTopic(activeItemType) ? filters.topic : ""
     }),
     [activeItemType, entries, filters.length, filters.month, filters.query, filters.topic]
+  );
+  const pageData = useMemo(
+    () => paginateAssignmentCatalogEntries(filteredEntries, filters.page, ASSIGNMENT_CATALOG_PAGE_SIZE),
+    [filteredEntries, filters.page]
   );
   const months = useMemo(() => assignmentCatalogMonths(entries), [entries]);
   const topics = useMemo(
@@ -104,9 +122,15 @@ export function TeacherAssignmentCatalogPicker({
     }
   }, [allFilteredSelected, someFilteredSelected]);
 
-  function updateFilters(patch: Partial<AssignmentPickerFilters>) {
-    onFiltersChange({ ...filters, ...patch });
-  }
+  // A short last page (or an empty result) still renders a full page of row
+  // slots, so the list block keeps a stable height and nothing below it jumps.
+  const emptySlots = pageData.total === 0
+    ? ASSIGNMENT_CATALOG_PAGE_SIZE - 1
+    : ASSIGNMENT_CATALOG_PAGE_SIZE - pageData.items.length;
+  const pageSlots = Array.from(
+    { length: Math.max(0, emptySlots) },
+    (_, index) => index
+  );
 
   return (
     <div className="grid gap-4">
@@ -120,7 +144,7 @@ export function TeacherAssignmentCatalogPicker({
               aria-pressed={active}
               className={`min-h-10 rounded-xl border px-4 text-sm font-semibold transition ${active ? "border-student-primary bg-student-primary-soft text-student-primary" : "border-student-border bg-white text-student-text hover:border-student-primary-border"}`}
               key={itemType}
-              onClick={() => updateFilters({ itemType })}
+              onClick={() => onStateChange(selectAssignmentPickerItemType(state, itemType))}
               type="button"
             >
               {assignmentItemTypeTabLabel(itemType)}
@@ -135,7 +159,7 @@ export function TeacherAssignmentCatalogPicker({
           月份
           <select
             className="teacher-input min-w-36"
-            onChange={(event) => updateFilters({ month: event.target.value })}
+            onChange={(event) => onStateChange(updateAssignmentPickerFilters(state, activeItemType, { month: event.target.value }))}
             value={filters.month}
           >
             <option value="">{ALL_OPTION_LABEL}</option>
@@ -149,7 +173,7 @@ export function TeacherAssignmentCatalogPicker({
             主题
             <select
               className="teacher-input min-w-36"
-              onChange={(event) => updateFilters({ topic: event.target.value })}
+              onChange={(event) => onStateChange(updateAssignmentPickerFilters(state, activeItemType, { topic: event.target.value }))}
               value={filters.topic}
             >
               <option value="">{ALL_OPTION_LABEL}</option>
@@ -164,7 +188,7 @@ export function TeacherAssignmentCatalogPicker({
             篇幅
             <select
               className="teacher-input min-w-28"
-              onChange={(event) => updateFilters({ length: event.target.value as ReadingLength | "all" })}
+              onChange={(event) => onStateChange(updateAssignmentPickerFilters(state, activeItemType, { length: event.target.value as ReadingLength | "all" }))}
               value={filters.length}
             >
               <option value="all">{ALL_OPTION_LABEL}</option>
@@ -179,7 +203,7 @@ export function TeacherAssignmentCatalogPicker({
             <Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} />
             <input
               className="teacher-input w-full pl-9"
-              onChange={(event) => updateFilters({ query: event.target.value })}
+              onChange={(event) => onStateChange(updateAssignmentPickerFilters(state, activeItemType, { query: event.target.value }))}
               placeholder="搜索题目……"
               type="search"
               value={filters.query}
@@ -234,21 +258,52 @@ export function TeacherAssignmentCatalogPicker({
             </div>
           ) : null}
 
-          <ul className="grid gap-px overflow-hidden rounded-xl border border-student-border bg-student-border">
-            {filteredEntries.map((entry, index) => (
-              <li className="flex items-center gap-3 bg-white px-4 py-3" key={assignmentCatalogEntryKey(entry)}>
-                {renderSelectableRow({ entry, index, selection, onSelectionChange })}
-              </li>
-            ))}
-            {filteredEntries.length === 0 ? (
-              <li className="bg-white px-4 py-8 text-center text-sm text-student-muted">
+          {/* Every page renders ten row slots, so the last (short) page keeps
+              the exact height of a full page and nothing below it moves. */}
+          <ul className="grid gap-px overflow-hidden rounded-xl border border-student-border bg-student-border" data-assignment-catalog-list>
+            {pageData.total === 0 ? (
+              <li className="min-h-10 bg-white px-4 py-2 text-center text-sm text-student-muted">
                 没有符合条件的题目。
               </li>
             ) : null}
+            {pageData.items.map((entry, index) => (
+              <li className="flex min-h-10 items-center gap-3 bg-white px-4 py-2" key={assignmentCatalogEntryKey(entry)}>
+                {renderSelectableRow({
+                  entry,
+                  index: pageData.from + index,
+                  onSelectionChange,
+                  selection
+                })}
+              </li>
+            ))}
+            {pageSlots.map((slot) => (
+              <li aria-hidden="true" className="invisible min-h-10 bg-white px-4 py-2" key={`empty-slot-${slot}`} />
+            ))}
           </ul>
-          <p className="text-xs text-student-muted">
-            当前结果 {filteredEntries.length} 道 · 序号按当前筛选结果从 1 开始，仅用于显示。
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs text-student-muted">
+              当前结果 {filteredEntries.length} 道 · 序号按当前筛选结果从 1 开始，仅用于显示。
+            </p>
+            <nav aria-label="题目分页" className="flex items-center gap-2 text-sm text-student-muted">
+              <span>第 {pageData.page}/{pageData.pageCount} 页</span>
+              <button
+                className="teacher-button-secondary h-9 px-3 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={pageData.page <= 1}
+                onClick={() => onStateChange(setAssignmentPickerPage(state, activeItemType, pageData.page - 1))}
+                type="button"
+              >
+                <ChevronLeft aria-hidden="true" size={15} />上一页
+              </button>
+              <button
+                className="teacher-button-secondary h-9 px-3 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={pageData.page >= pageData.pageCount}
+                onClick={() => onStateChange(setAssignmentPickerPage(state, activeItemType, pageData.page + 1))}
+                type="button"
+              >
+                下一页<ChevronRight aria-hidden="true" size={15} />
+              </button>
+            </nav>
+          </div>
         </div>
       )}
     </div>
@@ -272,18 +327,21 @@ export function TeacherAssignmentCatalogPicker({
             onChange={() => input.onSelectionChange(toggleAssignmentCatalogSelection(input.selection, entry))}
             type="checkbox"
           />
-          <span className="min-w-0 truncate font-semibold text-student-text">
+          <span className="min-w-0 truncate text-sm font-normal text-student-text">
             {index + 1}. {entry.title}
           </span>
         </label>
         {viewerHref ? (
           <Link
-            className="shrink-0 text-sm font-semibold text-student-primary underline-offset-4 hover:text-student-primary-hover hover:underline"
+            className="shrink-0 text-sm font-normal text-student-primary underline-offset-4 hover:text-student-primary-hover hover:underline"
             href={viewerHref}
             onClick={(event) => {
-              // 查看题目 only navigates: it never toggles the row's selection.
+              // 查看题目 only opens the standalone preview: it never toggles the
+              // row's selection and never navigates the 布置作业 page away.
               event.stopPropagation();
             }}
+            rel="noopener noreferrer"
+            target="_blank"
           >
             查看题目
           </Link>

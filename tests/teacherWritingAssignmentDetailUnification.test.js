@@ -259,9 +259,10 @@ test("question preview and question progress are gone from Assignment Detail onl
   assert.doesNotMatch(detail, /WritingAssignmentQuestionPreview|题目预览/);
   assert.doesNotMatch(collectionDetail, /题目进度/);
   assert.doesNotMatch(body, /题目进度|题目预览|WritingAssignmentQuestionPreview/);
-  // The题库/编辑入口 keep their full question preview (out of scope).
+  // The题库编辑入口 keep their full question preview (out of scope): the one
+  // shared wizard owns it, and the withdrawn editors only seed that wizard.
   assert.match(source(CREATE_FORM), /WritingAssignmentQuestionPreview/);
-  assert.match(source(GROUP_EDIT_FORM), /WritingAssignmentQuestionPreview/);
+  assert.match(source(GROUP_EDIT_FORM), /TeacherWritingAssignmentForm/);
 });
 
 test("question source badges are no longer rendered on teacher assignment cards or detail", () => {
@@ -272,7 +273,7 @@ test("question source badges are no longer rendered on teacher assignment cards 
   }
   // The creation and edit flows keep recognizing bank vs custom questions.
   assert.match(source(CREATE_FORM), /question_source/);
-  assert.match(source(GROUP_EDIT_FORM), /question_source/);
+  assert.match(source(GROUP_EDIT_FORM), /TeacherWritingAssignmentForm/);
   // Task type badges and counts stay exactly as before.
   assert.deepEqual(
     writingAssignmentTaskTypeBadges(["email", "academic_discussion", "academic_discussion"]),

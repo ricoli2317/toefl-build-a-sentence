@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,10 +21,11 @@ import {
 } from "@/components/teacher/TeacherUI";
 import { TeacherAssignmentCatalogPicker } from "@/components/teacher/TeacherAssignmentCatalogPicker";
 import {
-  defaultAssignmentPickerFilters,
+  defaultAssignmentPickerState,
   readAssignmentDraft,
+  selectAssignmentPickerItemType,
   writeAssignmentDraft,
-  type AssignmentPickerFilters
+  type AssignmentPickerState
 } from "@/lib/assignmentPickerState";
 import { TeacherAssignmentSelectionPreview } from "@/components/teacher/TeacherAssignmentSelectionPreview";
 import { WritingAssignmentQuestionPreview } from "@/components/teacher/WritingAssignmentQuestionPreview";
@@ -35,6 +36,7 @@ import {
 } from "@/lib/studentSearch";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
+  teacherAssignmentBatchDetailHref,
   teacherAssignmentDetailHref,
   teacherReturnToHref
 } from "@/lib/teacherNavigation";
@@ -43,9 +45,10 @@ import { WRITING_TASK_CONFIG, type WritingQuestion, type WritingTaskType } from 
 import {
   ASSIGNMENT_SUBJECTS,
   ASSIGNMENT_SUBJECT_LABELS,
+  assignmentCatalogEntryFromAssignment,
   assignmentCatalogEntryKey,
+  assignmentItemSubject,
   assignmentItemTypeLabel,
-  assignmentItemViewerHref,
   type AssignmentCatalogEntry,
   type AssignmentCatalogSelection,
   type AssignmentItemType,
@@ -66,8 +69,8 @@ import {
   parseCustomEmailPrompt,
   parseEmailRequirements,
   suggestAcademicDiscussionAvatarType,
-  toggleWritingAssignmentQuestionSelection,
   writingAssignmentTitle,
+  type WritingAssignmentCollectionDetail,
   type WritingAssignmentDetail,
   type WritingAssignmentQuestionSource,
   type WritingAssignmentSummary
@@ -85,6 +88,8 @@ import {
 type StudentOption = { id: string; displayName: string; email: string };
 export type QuestionSearchPayload = { questions: LogicalWritingQuestionSearchResult[]; page: number; pageSize: number; total: number };
 type CustomQuestionDraft = {
+  /** Existing withdrawn custom item identity; absent for a new draft. */
+  assignmentId?: string;
   clientId: string;
   expanded: boolean;
   fields: Record<string, string | boolean>;
@@ -121,71 +126,220 @@ export const AVATAR_FIELD_BY_NAME = {
   student_2_name: "student_2_avatar_type"
 } as const;
 
+/**
+ * One shared Assignment wizard for 写作 and 阅读.
+ *
+ * 布置作业 -> 选择科目 -> (写作: 题库 / 自定义题目 | 阅读: 直接进入题库) -> 选题
+ * -> 学生 / 班级 -> 标题 -> 截止时间 -> 预览 -> 布置.
+ *
+ * A withdrawn Assignment re-enters this exact wizard seeded with the original
+ * data (items, recipients, title, deadline): 撤回 already guarantees there is
+ * no attempt on the whole group, so every placement element stays editable and
+ * the same create/validation rules still apply.
+ *
+ * The catalog picker loads one lightweight catalog per subject and filters on
+ * the client; the picker state (subject, active tab, one filter set per item
+ * type and the cross-type selection) is kept in sessionStorage so 查看题目 and
+ * back navigation never restarts the filtering. Only the picker draft is
+ * stored — students, titles and deadlines stay plain component state.
+ */
 export function TeacherWritingAssignmentForm({
   initialAssignment,
   initialClassId,
+  initialCollection,
   initialStudentId,
   returnTo
 }: {
   initialAssignment?: WritingAssignmentDetail;
   initialClassId?: string;
+  initialCollection?: WritingAssignmentCollectionDetail;
   initialStudentId?: string;
   returnTo?: string;
 }) {
-  return initialAssignment
-    ? (
-      <TeacherWritingAssignmentEditForm
-        initialAssignment={initialAssignment}
-        returnTo={returnTo}
-      />
-    )
-    : (
-      <TeacherWritingAssignmentCreateForm
-        initialClassId={initialClassId}
-        initialStudentId={initialStudentId}
-      />
-    );
+  const initialAssignments = initialCollection?.assignments
+    ?? (initialAssignment ? [initialAssignment] : []);
+  return (
+    <TeacherAssignmentWizard
+      initialAssignments={initialAssignments}
+      initialClassId={
+        initialClassId
+        ?? initialCollection?.assignments[0]?.class_id
+        ?? initialAssignment?.class_id
+        ?? undefined
+      }
+      initialGroupId={
+        initialCollection?.collection_id
+        ?? initialAssignment?.group_id
+        ?? null
+      }
+      initialGroupTitle={
+        initialCollection?.title
+        ?? initialAssignment?.group_title
+        ?? null
+      }
+      initialStudentId={initialStudentId}
+      returnTo={returnTo}
+    />
+  );
 }
 
-/**
- * One shared Assignment creation wizard for 写作 and 阅读.
- *
- * 布置作业 -> 选择科目 -> (写作: 题库 / 自定义题目 | 阅读: 直接进入题库) -> 选题
- * -> 学生 / 班级 -> 标题 -> 截止时间 -> 预览 -> 布置.
- *
- * The catalog picker loads one lightweight catalog per subject and filters on
- * the client; the picker state (subject, tab, filters, title search and the
- * cross-type selection) is kept in sessionStorage so 查看题目 and back
- * navigation never restarts the filtering. Only the picker draft is stored —
- * students, titles and deadlines stay plain component state.
- */
-function TeacherWritingAssignmentCreateForm({
+type WizardSeed = {
+  assignmentIdsByKey: Map<string, string>;
+  customQuestions: CustomQuestionDraft[];
+  dueAt: string;
+  pickerState: AssignmentPickerState;
+  selection: AssignmentCatalogSelection;
+  source: WritingAssignmentQuestionSource | null;
+  students: string[];
+  subject: AssignmentSubject | null;
+  title: string;
+};
+
+function buildWizardSeed(
+  assignments: WritingAssignmentDetail[],
+  groupTitle: string | null
+): WizardSeed {
+  const selection = new Map<string, AssignmentCatalogEntry>();
+  const assignmentIdsByKey = new Map<string, string>();
+  const customQuestions: CustomQuestionDraft[] = [];
+  const subject = assignments.length > 0
+    ? assignmentItemSubject(assignments[0].task_type)
+    : null;
+  for (const assignment of assignments) {
+    if (assignment.question_source === "question_bank" && assignment.question_id) {
+      const entry = assignmentCatalogEntryFromAssignment(assignment);
+      const key = assignmentCatalogEntryKey(entry);
+      selection.set(key, entry);
+      assignmentIdsByKey.set(key, assignment.assignment_id);
+      continue;
+    }
+    if (assignment.question_source === "custom") {
+      customQuestions.push(customQuestionDraftFromAssignment(assignment));
+    }
+  }
+  const anyBank = assignments.some((assignment) => assignment.question_source === "question_bank");
+  const anyCustom = assignments.some((assignment) => assignment.question_source === "custom");
+  const firstBankItemType = assignments.find(
+    (assignment) => assignment.question_source === "question_bank"
+  )?.task_type;
+  const defaultPickerState = defaultAssignmentPickerState(subject ?? "writing");
+  return {
+    assignmentIdsByKey,
+    customQuestions,
+    dueAt: assignments.flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
+      .sort((left, right) => Date.parse(left) - Date.parse(right))
+      .map((value) => formatLocalDateTime(value))[0] ?? "",
+    pickerState: firstBankItemType
+      && assignmentItemSubject(firstBankItemType) === (subject ?? "writing")
+      ? selectAssignmentPickerItemType(defaultPickerState, firstBankItemType)
+      : defaultPickerState,
+    selection,
+    source: assignments.length > 0
+      ? anyBank || !anyCustom ? "question_bank" : "custom"
+      : null,
+    students: assignments[0]?.students.map((student) => student.student_id) ?? [],
+    subject,
+    title: groupTitle?.trim()
+      || assignments[0]?.display_name?.trim()
+      || (assignments[0] ? writingAssignmentTitle(assignments[0].question_snapshot) : "")
+  };
+}
+
+function customQuestionDraftFromAssignment(
+  assignment: WritingAssignmentDetail
+): CustomQuestionDraft {
+  const taskType = isWritingReviewItemType(assignment.task_type)
+    ? assignment.task_type
+    : "email";
+  if (taskType === "email") {
+    const snapshot = assignment.question_snapshot;
+    const email = "scenario" in snapshot ? snapshot : null;
+    return {
+      assignmentId: assignment.assignment_id,
+      clientId: crypto.randomUUID(),
+      expanded: false,
+      fields: email
+        ? {
+            parsed_email: true,
+            recipient: email.recipient,
+            requirement_1: email.requirement_1,
+            requirement_2: email.requirement_2,
+            requirement_3: email.requirement_3,
+            scenario: email.scenario,
+            subject: email.subject,
+            task_instruction: email.task_instruction,
+            title: email.set_title
+          }
+        : {},
+      manuallySelectedAvatars: [],
+      parsedRequirementCount: 3,
+      rawPrompt: "",
+      requirementsManuallyEdited: true,
+      taskType,
+      titleManuallyEdited: true,
+      toManuallyEdited: true
+    };
+  }
+  return {
+    assignmentId: assignment.assignment_id,
+    clientId: crypto.randomUUID(),
+    expanded: false,
+    fields: customFieldsFromSnapshot(assignment.question_snapshot),
+    manuallySelectedAvatars: Object.values(AVATAR_FIELD_BY_NAME),
+    parsedRequirementCount: 3,
+    rawPrompt: "",
+    requirementsManuallyEdited: true,
+    taskType,
+    titleManuallyEdited: true,
+    toManuallyEdited: true
+  };
+}
+
+function TeacherAssignmentWizard({
+  initialAssignments,
   initialClassId,
-  initialStudentId
+  initialGroupId,
+  initialGroupTitle,
+  initialStudentId,
+  returnTo
 }: {
+  initialAssignments: WritingAssignmentDetail[];
   initialClassId?: string;
+  initialGroupId: string | null;
+  initialGroupTitle: string | null;
   initialStudentId?: string;
+  returnTo?: string;
 }) {
   const router = useRouter();
   const cache = useTeacherDataCache();
-  const [subject, setSubject] = useState<AssignmentSubject | null>(null);
-  const [source, setSource] = useState<WritingAssignmentQuestionSource | null>(null);
-  const [selection, setSelection] = useState<AssignmentCatalogSelection>(() => new Map());
-  const [pickerFilters, setPickerFilters] = useState<AssignmentPickerFilters>(
-    () => defaultAssignmentPickerFilters("writing")
+  const editing = initialAssignments.length > 0;
+  const seed = useMemo(
+    () => buildWizardSeed(initialAssignments, initialGroupTitle),
+    [initialAssignments, initialGroupTitle]
   );
-  const [customQuestions, setCustomQuestions] = useState<CustomQuestionDraft[]>([]);
+  const [subject, setSubject] = useState<AssignmentSubject | null>(seed.subject);
+  const [source, setSource] = useState<WritingAssignmentQuestionSource | null>(seed.source);
+  const [selection, setSelection] = useState<AssignmentCatalogSelection>(() => seed.selection);
+  const [seededAssignmentIds] = useState<Map<string, string>>(() => seed.assignmentIdsByKey);
+  const [pickerState, setPickerState] = useState<AssignmentPickerState>(() => seed.pickerState);
+  const [customQuestions, setCustomQuestions] = useState<CustomQuestionDraft[]>(
+    () => seed.customQuestions
+  );
   // Custom Writing questions keep the historical WE / AD choice; the drafts of
   // the other type stay in memory and are submitted together.
-  const [customTaskType, setCustomTaskType] = useState<WritingTaskType>("email");
-  const [assignmentTitle, setAssignmentTitle] = useState("");
-  const [assignmentTitleManuallyEdited, setAssignmentTitleManuallyEdited] = useState(false);
+  const [customTaskType, setCustomTaskType] = useState<WritingTaskType>(() =>
+    seed.customQuestions[0]?.taskType ?? "email"
+  );
+  const [assignmentTitle, setAssignmentTitle] = useState(seed.title);
+  const [assignmentTitleManuallyEdited, setAssignmentTitleManuallyEdited] = useState(
+    () => editing || Boolean(seed.title)
+  );
   const [studentQuery, setStudentQuery] = useState("");
   const [selectedStudents, setSelectedStudents] = useState<string[]>(
-    initialStudentId ? [initialStudentId] : []
+    () => seed.students.length > 0 ? seed.students : initialStudentId ? [initialStudentId] : []
   );
   const [deadlineMode, setDeadlineMode] = useState<"uniform" | "individual">("uniform");
-  const [uniformDueAt, setUniformDueAt] = useState("");
+  const [uniformDueAt, setUniformDueAt] = useState(seed.dueAt);
   const [individualDueAt, setIndividualDueAt] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -198,7 +352,7 @@ function TeacherWritingAssignmentCreateForm({
   );
   // Step 4 works in one of two mutually exclusive modes; the 班级 tab only
   // appears when the teacher actually has at least one eligible class for the
-  // chosen subject.
+  // chosen subject. Legacy group-less edits stay on the student list.
   const [selectionMode, setSelectionMode] = useState<"students" | "class">(
     initialClassId ? "class" : "students"
   );
@@ -209,25 +363,27 @@ function TeacherWritingAssignmentCreateForm({
     () => teacherApiFetch("/api/teacher/classes")
   );
   // The picker draft survives 查看题目 round trips; it is restored after mount
-  // so server and client first render identically.
+  // so server and client first render identically. A withdrawn edit never
+  // touches the draft: it is seeded from the persisted Assignment instead.
   useEffect(() => {
+    if (editing) return;
     const draft = readAssignmentDraft();
     if (!draft) return;
     setSubject(draft.subject);
     setSource(draft.source);
     setSelection(new Map(draft.selection.map((entry) => [assignmentCatalogEntryKey(entry), entry])));
-    setPickerFilters(draft.filters);
-  }, []);
+    setPickerState(draft.picker);
+  }, [editing]);
   useEffect(() => {
-    if (!subject) return;
+    if (editing || !subject) return;
     writeAssignmentDraft({
-      filters: pickerFilters,
+      picker: pickerState,
       selection: Array.from(selection.values()),
       source,
       subject,
-      version: 1
+      version: 2
     });
-  }, [pickerFilters, selection, source, subject]);
+  }, [editing, pickerState, selection, source, subject]);
   const subjectClasses = useMemo(
     () => classesForAssignmentSubject(classesState.data?.classes ?? [], assignmentSubject),
     [assignmentSubject, classesState.data]
@@ -315,24 +471,35 @@ function TeacherWritingAssignmentCreateForm({
   const candidateAssignmentTitle = assignmentTitleManuallyEdited
     ? assignmentTitle
     : nextWritingAssignmentAutoTitle(generatedAssignmentTitle, existingGroupTitles);
-  // The bank branch is active for every Reading Assignment and for a Writing
-  // Assignment whose source is 题库; a Writing 自定义题目 Assignment never
-  // submits the retained bank selection.
-  const usesBank = subject === "reading" || source === "question_bank";
   const selectedBankEntries = useMemo(
-    () => usesBank ? Array.from(selection.values()) : [],
-    [selection, usesBank]
+    () => Array.from(selection.values()),
+    [selection]
+  );
+  // Create mode keeps the historical single-source rule (a 写作 Assignment is
+  // either 题库 or 自定义). A withdrawn edit must never silently drop persisted
+  // items, so everything still held in the wizard is submitted together.
+  const submitBankEntries = useMemo(
+    () => (editing || assignmentSubject === "reading" || source === "question_bank")
+      ? selectedBankEntries
+      : [],
+    [assignmentSubject, editing, selectedBankEntries, source]
+  );
+  const submitCustomQuestions = useMemo(
+    () => (editing || (assignmentSubject === "writing" && source === "custom"))
+      ? customQuestions
+      : [],
+    [assignmentSubject, customQuestions, editing, source]
   );
   const activeCustomQuestions = useMemo(
-    () => subject === "writing" && source === "custom" ? customQuestions : [],
-    [customQuestions, source, subject]
+    () => assignmentSubject === "writing" && source === "custom" ? customQuestions : [],
+    [customQuestions, source, assignmentSubject]
   );
   const previewItems = useMemo(() => {
-    const bankItems = selectedBankEntries.map((entry) => ({
+    const bankItems = submitBankEntries.map((entry) => ({
       key: assignmentCatalogEntryKey(entry),
       label: entry.title
     }));
-    const customItems = activeCustomQuestions.flatMap((draft) => {
+    const customItems = submitCustomQuestions.flatMap((draft) => {
       try {
         return [{
           key: draft.clientId,
@@ -348,12 +515,12 @@ function TeacherWritingAssignmentCreateForm({
       }
     });
     return [...bankItems, ...customItems];
-  }, [activeCustomQuestions, selectedBankEntries]);
+  }, [submitBankEntries, submitCustomQuestions]);
   const customPreviewCards = useMemo(
-    () => activeCustomQuestions.flatMap((draft, index) => {
+    () => submitCustomQuestions.flatMap((draft, index) => {
       try {
         return [{
-          index: selectedBankEntries.length + index + 1,
+          index: submitBankEntries.length + index + 1,
           key: draft.clientId,
           question: buildCustomWritingQuestionSnapshot({
             taskType: draft.taskType,
@@ -366,7 +533,7 @@ function TeacherWritingAssignmentCreateForm({
         return [];
       }
     }),
-    [activeCustomQuestions, selectedBankEntries.length]
+    [submitBankEntries.length, submitCustomQuestions]
   );
   const assignmentCount = previewItems.length;
   const stepNumbers = useMemo(() => {
@@ -390,7 +557,7 @@ function TeacherWritingAssignmentCreateForm({
     setSubject(next);
     setSource(next === "reading" ? "question_bank" : null);
     setSelection(new Map());
-    setPickerFilters(defaultAssignmentPickerFilters(next));
+    setPickerState(defaultAssignmentPickerState(next));
     setSubmitError("");
   }
 
@@ -502,7 +669,26 @@ function TeacherWritingAssignmentCreateForm({
     return date.toISOString();
   }
 
-  async function submit() {
+  function buildCustomDraftPatch(draft: CustomQuestionDraft) {
+    if (draft.taskType === "email" && customEmailRequirementCount(draft) !== 3) {
+      throw new Error("每篇 Email 必须准确识别或补充 3 条要求。");
+    }
+    buildCustomWritingQuestionSnapshot({
+      taskType: draft.taskType,
+      fields: draft.fields,
+      id: "validation"
+    });
+    return {
+      ...(draft.assignmentId ? { assignmentId: draft.assignmentId } : {}),
+      customQuestion: draft.fields,
+      dueAt: dueAtFor(draft.clientId),
+      itemType: draft.taskType,
+      questionId: null,
+      questionSource: "custom" as const
+    };
+  }
+
+  async function submit(reactivate = false) {
     setSubmitError("");
     if (!subject) return setSubmitError("请先选择科目。");
     if (subject === "writing" && !source) return setSubmitError("请选择题目来源。");
@@ -513,32 +699,19 @@ function TeacherWritingAssignmentCreateForm({
       return setSubmitError("请至少选择一名学生。");
     }
 
-    let assignments: Array<Record<string, unknown>>;
+    let items: Array<Record<string, unknown>>;
     try {
-      assignments = [
-        ...selectedBankEntries.map((entry) => ({
+      items = [
+        ...submitBankEntries.map((entry) => ({
+          ...(seededAssignmentIds.get(assignmentCatalogEntryKey(entry))
+            ? { assignmentId: seededAssignmentIds.get(assignmentCatalogEntryKey(entry)) }
+            : {}),
           dueAt: dueAtFor(assignmentCatalogEntryKey(entry)),
           itemType: entry.item_type,
           questionId: entry.item_id,
           questionSource: "question_bank" as const
         })),
-        ...activeCustomQuestions.map((draft) => {
-          if (draft.taskType === "email" && customEmailRequirementCount(draft) !== 3) {
-            throw new Error("每篇 Email 必须准确识别或补充 3 条要求。");
-          }
-          buildCustomWritingQuestionSnapshot({
-            taskType: draft.taskType,
-            fields: draft.fields,
-            id: "validation"
-          });
-          return {
-            customQuestion: draft.fields,
-            dueAt: dueAtFor(draft.clientId),
-            itemType: draft.taskType,
-            questionId: null,
-            questionSource: "custom" as const
-          };
-        })
+        ...submitCustomQuestions.map((draft) => buildCustomDraftPatch(draft))
       ];
     } catch (error) {
       return setSubmitError(error instanceof Error ? error.message : "请完整填写每道题目。");
@@ -551,6 +724,41 @@ function TeacherWritingAssignmentCreateForm({
 
     setSubmitting(true);
     try {
+      if (editing) {
+        const first = initialAssignments[0];
+        const payload = await teacherApiFetch<{ assignmentId?: string; assignmentIds?: string[] }>(
+          initialGroupId
+            ? `/api/teacher/writing/assignments/batches/${encodeURIComponent(initialGroupId)}`
+            : `/api/teacher/writing/assignments/${encodeURIComponent(first.assignment_id)}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              action: "edit",
+              ...(selectionMode === "class"
+                ? { classId: selectedClassId }
+                : { studentIds: selectedStudents }),
+              dueAt: uniformDueAt ? new Date(uniformDueAt).toISOString() : null,
+              items,
+              reactivate,
+              title
+            })
+          }
+        );
+        cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
+        publishCacheInvalidation({
+          type: "ASSIGNMENT_UPDATED",
+          assignmentId: payload.assignmentId ?? first.assignment_id,
+          assignmentQuestionSource: source ?? "question_bank"
+        });
+        router.push(teacherReturnToHref(
+          initialGroupId
+            ? teacherAssignmentBatchDetailHref(initialGroupId)
+            : teacherAssignmentDetailHref(first.assignment_id),
+          returnTo
+        ));
+        router.refresh();
+        return;
+      }
       const payload = await teacherApiFetch<{ assignmentId: string; assignmentIds: string[]; title?: string }>(
         "/api/teacher/writing/assignments",
         {
@@ -558,14 +766,14 @@ function TeacherWritingAssignmentCreateForm({
           body: JSON.stringify(
             selectionMode === "class"
               ? {
-                  assignments,
+                  assignments: items,
                   classId: selectedClassId,
                   subject,
                   title,
                   titleIsAutomatic: !assignmentTitleManuallyEdited
                 }
               : {
-                  assignments,
+                  assignments: items,
                   studentIds: selectedStudents,
                   subject,
                   title,
@@ -596,11 +804,11 @@ function TeacherWritingAssignmentCreateForm({
   }
 
   const assignmentKeys = [
-    ...selectedBankEntries.map((entry) => ({
+    ...submitBankEntries.map((entry) => ({
       key: assignmentCatalogEntryKey(entry),
       label: entry.title
     })),
-    ...activeCustomQuestions.map((draft, index) => ({
+    ...submitCustomQuestions.map((draft, index) => ({
       key: draft.clientId,
       label: String(draft.fields.title ?? "").trim() || `第 ${index + 1} 篇`
     }))
@@ -627,7 +835,9 @@ function TeacherWritingAssignmentCreateForm({
             <ChoiceButton active={source === "question_bank"} label="从题库选择" onClick={() => chooseSource("question_bank")} />
             <ChoiceButton active={source === "custom"} label="自定义题目" onClick={() => chooseSource("custom")} />
           </div>
-          <p className="text-xs text-student-muted">同一份写作作业可以同时包含 WE、AD、BAS，切换题型或筛选不会清空已选题目。</p>
+          <p className="text-xs text-student-muted">同一份写作作业可以同时包含 WE、AD、BAS，切换题型或筛选不会清空已选题目。{editing ? "编辑已撤回作业时，切换到另一种来源也不会丢弃另一边的题目。" : ""}</p>
+          {editing && source === "question_bank" && customQuestions.length > 0 ? <p className="text-xs text-student-muted">本组还有 {customQuestions.length} 篇自定义题，切换到「自定义题目」可继续编辑；保存时会一起保留。</p> : null}
+          {editing && source === "custom" && selection.size > 0 ? <p className="text-xs text-student-muted">本组还有 {selection.size} 篇题库题目，切换到「从题库选择」可继续调整；保存时会一起保留。</p> : null}
         </StepCard>
       ) : null}
 
@@ -641,10 +851,10 @@ function TeacherWritingAssignmentCreateForm({
             <div className="grid gap-3 sm:grid-cols-2">{(["email", "academic_discussion"] as const).map((type) => <ChoiceButton active={customTaskType === type} key={type} label={WRITING_TASK_CONFIG[type].label} onClick={() => setCustomTaskType(type)} />)}</div>{visibleCustomQuestions.map((draft, index) => <CustomQuestionDraftCard disabled={false} draft={draft} index={index} key={draft.clientId} onAvatarChange={(field, value) => chooseDraftAvatar(draft.clientId, field, value)} onChange={(field, value) => updateDraftField(draft.clientId, field, value)} onPromptChange={(value) => updateEmailPrompt(draft.clientId, value)} onRemove={() => setCustomQuestions((current) => current.filter((item) => item.clientId !== draft.clientId))} onToggle={() => updateCustomQuestion(draft.clientId, (current) => ({ ...current, expanded: !current.expanded }))} taskType={draft.taskType} />)}<button className="teacher-button-secondary justify-self-start" onClick={() => setCustomQuestions((current) => [...current, createCustomQuestionDraft(customTaskType, generatedAssignmentTitle)])} type="button"><Plus aria-hidden="true" size={16} />添加一篇</button></div>
         ) : (
           <TeacherAssignmentCatalogPicker
-            filters={pickerFilters}
-            onFiltersChange={setPickerFilters}
             onSelectionChange={setSelection}
+            onStateChange={setPickerState}
             selection={selection}
+            state={pickerState}
             subject={subject}
           />
         )}
@@ -676,7 +886,7 @@ function TeacherWritingAssignmentCreateForm({
               <span className="text-sm font-bold text-student-primary">一次只能选择一个班级</span>
             </div>
             {classesState.loading ? <TeacherSkeleton className="h-40 w-full rounded-xl" /> : classesState.error ? <TeacherDataError text={classesState.error} /> : <div className="max-h-72 overflow-y-auto rounded-xl border border-student-border"><div className="grid gap-px bg-student-border">{filteredClasses.map((entry) => { const active = selectedClassId === entry.class_id; return <button className={`flex items-center gap-3 bg-white px-4 py-3 text-left transition hover:bg-student-bg ${active ? "!bg-student-primary-soft" : ""}`} key={entry.class_id} onClick={() => toggleClass(entry.class_id)} type="button"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-student-primary"><TeacherClassIcon aria-hidden="true" size={18} strokeWidth={1.9} /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-student-text">{entry.name}</span><span className="block truncate text-xs text-student-muted">{classSubjectsLabel(entry.subjects)} · {entry.member_count} 名学生</span></span>{active ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</button>; })}{!filteredClasses.length ? <p className="bg-white px-4 py-8 text-center text-sm text-student-muted">没有匹配的班级。</p> : null}</div></div>}
-            <p className="text-xs text-student-muted">班级作业按布置时的班级成员生成，之后加入的学生不会补收这次作业。</p>
+            <p className="text-xs text-student-muted">班级作业按保存时的班级成员生成，之后加入的学生不会补收这次作业。</p>
           </div>
         ) : (
         <div className="grid gap-3"><div className="flex flex-wrap items-center justify-between gap-3"><div className="relative min-w-[240px] flex-1"><Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} /><input className="teacher-input w-full pl-9" onChange={(event) => setStudentQuery(event.target.value)} placeholder="搜索中文姓名、拼音或账号" value={studentQuery} /></div><span className="text-sm font-bold text-student-primary">已选择 {selectedStudents.length} 人</span></div>
@@ -692,7 +902,14 @@ function TeacherWritingAssignmentCreateForm({
       </StepCard>
 
       <StepCard number={stepNumbers.get("due")!} title="截止时间">
+        {editing ? (
+          <div className="grid gap-3">
+            <label className="grid max-w-sm gap-2 text-sm font-semibold text-student-text">截止时间（整组统一，可不填）<input className="teacher-input" onChange={(event) => setUniformDueAt(event.target.value)} type="datetime-local" value={uniformDueAt} /></label>
+            <p className="text-xs text-student-muted">留空表示不设置截止时间；修改后会应用到整组题目。</p>
+          </div>
+        ) : (
         <div className="grid gap-3"><div className="flex flex-wrap gap-5"><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={deadlineMode === "uniform"} name="deadline-mode" onChange={() => setDeadlineMode("uniform")} type="radio" />统一截止时间</label><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={deadlineMode === "individual"} name="deadline-mode" onChange={() => setDeadlineMode("individual")} type="radio" />分别设置</label></div>{deadlineMode === "uniform" ? <label className="grid max-w-sm gap-2 text-sm font-semibold text-student-text">截止时间（可不填）<input className="teacher-input" onChange={(event) => setUniformDueAt(event.target.value)} type="datetime-local" value={uniformDueAt} /></label> : <div className="grid gap-3">{assignmentKeys.map((item) => <label className="grid gap-2 text-sm font-semibold text-student-text sm:grid-cols-[minmax(0,1fr)_minmax(220px,320px)] sm:items-center" key={item.key}><span className="truncate">{item.label}</span><input className="teacher-input" onChange={(event) => setIndividualDueAt((current) => ({ ...current, [item.key]: event.target.value }))} type="datetime-local" value={individualDueAt[item.key] ?? ""} /></label>)}</div>}<p className="text-xs text-student-muted">留空表示不设置截止时间；截止时间不会禁止提交。</p></div>
+        )}
       </StepCard>
 
       <StepCard number={stepNumbers.get("preview")!} title="题目预览">
@@ -709,344 +926,7 @@ function TeacherWritingAssignmentCreateForm({
         ) : <p className="text-sm text-student-muted">完成题目选择或填写后，这里会显示题目列表。</p>}
       </StepCard>
 
-      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">确认布置</p><p className="mt-1 text-sm text-student-muted">{selectionMode === "class" && selectedClass ? `将 ${assignmentCount} 篇题目布置给「${selectedClass.name}」的 ${selectedClass.member_count} 名学生，并保存同一个作业组。` : `将 ${assignmentCount} 篇题目布置给已选择的 ${selectedStudents.length} 名学生，并保存同一个作业组。`}</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit()} type="button">{submitting ? "正在布置…" : "布置"}</button></div></TeacherCard>
-    </div>
-  );
-}
-
-
-function TeacherWritingAssignmentEditForm({
-  initialAssignment,
-  returnTo
-}: {
-  initialAssignment: WritingAssignmentDetail;
-  returnTo?: string;
-}) {
-  const router = useRouter();
-  const cache = useTeacherDataCache();
-  const editing = Boolean(initialAssignment);
-  const questionLocked = Boolean(initialAssignment?.has_submitted_attempts);
-  const lockedStudentIds = useMemo(
-    () => new Set(initialAssignment?.students.filter((student) => student.has_attempt).map((student) => student.student_id) ?? []),
-    [initialAssignment]
-  );
-  const catalogItem = Boolean(
-    initialAssignment && !isWritingReviewItemType(initialAssignment.task_type)
-  );
-  const catalogItemTitle = initialAssignment
-    ? writingAssignmentTitle(initialAssignment.question_snapshot)
-    : "";
-  const catalogItemViewerHref = initialAssignment && !catalogItem
-    ? null
-    : initialAssignment
-      ? assignmentItemViewerHref({
-          item_id: initialAssignment.question_id ?? "",
-          item_type: initialAssignment.task_type
-        })
-      : null;
-  const [taskType, setTaskType] = useState<AssignmentItemType | null>(initialAssignment?.task_type ?? null);
-  const [source, setSource] = useState<WritingAssignmentQuestionSource | null>(initialAssignment?.question_source ?? null);
-  const [query, setQuery] = useState("");
-  const [questionResult, setQuestionResult] = useState<QuestionSearchPayload | null>(null);
-  const [selectedQuestion, setSelectedQuestion] = useState<WritingQuestion | null>(
-    initialAssignment?.question_source === "question_bank" && !catalogItem
-      ? initialAssignment.question_snapshot
-      : null
-  );
-  const [searching, setSearching] = useState(false);
-  const [searchError, setSearchError] = useState("");
-  const [customFields, setCustomFields] = useState<Record<string, string>>(
-    initialAssignment?.question_source === "custom"
-      ? customFieldsFromSnapshot(initialAssignment.question_snapshot)
-      : {}
-  );
-  const [customFieldError, setCustomFieldError] = useState("");
-  const [manuallySelectedAvatars, setManuallySelectedAvatars] = useState<Set<string>>(
-    () => new Set(initialAssignment?.question_source === "custom" && initialAssignment.task_type === "academic_discussion"
-      ? Object.values(AVATAR_FIELD_BY_NAME)
-      : [])
-  );
-  const [studentQuery, setStudentQuery] = useState("");
-  const [selectedStudents, setSelectedStudents] = useState<string[]>(
-    initialAssignment?.students.map((student) => student.student_id) ?? []
-  );
-  const [hasDueAt, setHasDueAt] = useState(Boolean(initialAssignment?.due_at));
-  const [dueAt, setDueAt] = useState(
-    initialAssignment?.due_at ? formatLocalDateTime(initialAssignment.due_at) : ""
-  );
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
-  const studentsState = useTeacherCachedData<{ students: StudentOption[] }>(
-    teacherAssignmentStudentsCacheKey(
-      initialAssignment && !isWritingReviewItemType(initialAssignment.task_type)
-        ? "reading"
-        : "writing"
-    ),
-    () => teacherApiFetch(
-      `/api/teacher/writing/assignments/students?subject=${
-        initialAssignment && !isWritingReviewItemType(initialAssignment.task_type)
-          ? "reading"
-          : "writing"
-      }`
-    )
-  );
-
-  const previewQuestion = useMemo(() => {
-    if (catalogItem) return null;
-    if (!taskType || !source || !isWritingReviewItemType(taskType)) return null;
-    if (source === "question_bank") return selectedQuestion;
-    try {
-      return buildCustomWritingQuestionSnapshot({
-        taskType,
-        fields: customFields,
-        id: "preview",
-        now: new Date()
-      });
-    } catch {
-      return null;
-    }
-  }, [catalogItem, customFields, selectedQuestion, source, taskType]);
-
-  const studentEntries = useMemo(() => (studentsState.data?.students ?? []).map((student) => ({
-    ...createStudentSearchMetadata(student.displayName),
-    displayName: student.displayName,
-    id: student.id,
-    student
-  })), [studentsState.data]);
-  const filteredStudents = useMemo(() => studentEntries
-    .map((entry) => {
-      const nameRank = studentSearchRank(entry, entry.displayName, studentQuery);
-      const emailRank = studentQuery.trim() && entry.student.email.toLocaleLowerCase().includes(studentQuery.trim().toLocaleLowerCase()) ? 6 : Number.POSITIVE_INFINITY;
-      return { entry, rank: Math.min(nameRank, emailRank) };
-    })
-    .filter(({ rank }) => Number.isFinite(rank))
-    .sort((left, right) => left.rank - right.rank || compareStudentSearchMetadata(left.entry, right.entry))
-    .map(({ entry }) => entry.student), [studentEntries, studentQuery]);
-
-  function chooseTaskType(next: WritingTaskType) {
-    if (questionLocked) return;
-    if (taskType === next) return;
-    setTaskType(next);
-    setSelectedQuestion(null);
-    setQuestionResult(null);
-    setQuery("");
-    setCustomFields({});
-    setManuallySelectedAvatars(new Set());
-    setCustomFieldError("");
-    setSearchError("");
-  }
-
-  function chooseSource(next: WritingAssignmentQuestionSource) {
-    if (questionLocked) return;
-    if (source === next) return;
-    setSource(next);
-    setSelectedQuestion(null);
-    setQuestionResult(null);
-    setCustomFields(next === "custom" && taskType === "academic_discussion"
-      ? defaultAcademicDiscussionAvatarFields()
-      : {});
-    setManuallySelectedAvatars(new Set());
-    setCustomFieldError("");
-    setSearchError("");
-  }
-
-  async function searchQuestions(page = 1) {
-    if (!taskType) return;
-    setSearching(true);
-    setSearchError("");
-    try {
-      const params = new URLSearchParams({ taskType, query, page: String(page), pageSize: "10" });
-      setQuestionResult(await teacherApiFetch(`/api/teacher/writing/assignments/questions?${params}`));
-    } catch (error) {
-      setSearchError(error instanceof Error ? error.message : "题库搜索失败。");
-    } finally {
-      setSearching(false);
-    }
-  }
-
-  function toggleStudent(studentId: string) {
-    if (selectedStudents.includes(studentId) && lockedStudentIds.has(studentId)) return;
-    setSelectedStudents((current) => current.includes(studentId)
-      ? current.filter((id) => id !== studentId)
-      : [...current, studentId]);
-  }
-
-  function updateCustomField(field: string, value: string) {
-    setCustomFields((current) => {
-      const next = { ...current, [field]: value };
-      const avatarField = AVATAR_FIELD_BY_NAME[field as keyof typeof AVATAR_FIELD_BY_NAME];
-      if (avatarField && !manuallySelectedAvatars.has(avatarField)) {
-        if (avatarField === "professor_avatar_type") {
-          next[avatarField] = suggestAcademicDiscussionAvatarType(value, "professor", "male_professor");
-        } else {
-          const fallback = avatarField === "student_2_avatar_type" ? "female_student" : "male_student";
-          next[avatarField] = suggestAcademicDiscussionAvatarType(value, "student", fallback);
-        }
-      }
-      return next;
-    });
-    if (field === "requirements") setCustomFieldError("");
-  }
-
-  function chooseCustomAvatar(field: string, value: string) {
-    setCustomFields((current) => ({ ...current, [field]: value }));
-    setManuallySelectedAvatars((current) => new Set(current).add(field));
-  }
-
-  function normalizeCustomField(field: string) {
-    const currentValue = customFields[field] ?? "";
-    const normalized = field === "requirements"
-      ? normalizeEmailRequirementsInput(currentValue)
-      : normalizeAssignmentText(currentValue);
-    setCustomFields((current) => ({ ...current, [field]: normalized }));
-    if (field === "requirements") {
-      try {
-        parseEmailRequirements(currentValue);
-        setCustomFieldError("");
-      } catch (error) {
-        setCustomFieldError(error instanceof Error ? error.message : "请输入 3 个邮件要点");
-      }
-    }
-  }
-
-  async function submit(reactivate = false) {
-    setSubmitError("");
-    if (!taskType) return setSubmitError("请先选择题型。");
-    if (!source) return setSubmitError("请选择题目来源。");
-    if (!catalogItem) {
-      if (source === "custom") {
-        try {
-          buildCustomWritingQuestionSnapshot({
-            taskType: taskType as WritingTaskType,
-            fields: customFields,
-            id: "validation"
-          });
-        } catch (error) {
-          return setSubmitError(error instanceof Error ? error.message : "请完整填写自定义题目。");
-        }
-      }
-      if (!previewQuestion) return setSubmitError(source === "question_bank" ? "请选择一道题库题目。" : "请完整填写自定义题目。");
-    }
-    if (!selectedStudents.length) return setSubmitError("请至少选择一名学生。");
-    if (hasDueAt && (!dueAt || Number.isNaN(new Date(dueAt).getTime()))) return setSubmitError("请选择有效的截止时间。");
-    setSubmitting(true);
-    try {
-      const payload = await teacherApiFetch<{ assignmentId: string }>(editing
-        ? `/api/teacher/writing/assignments/${encodeURIComponent(initialAssignment!.assignment_id)}`
-        : "/api/teacher/writing/assignments", {
-        method: editing ? "PATCH" : "POST",
-        body: JSON.stringify(catalogItem
-          ? {
-              // A catalog item keeps its stable identity: only recipients and the
-              // deadline can change, never the question content.
-              action: "edit",
-              dueAt: hasDueAt ? new Date(dueAt).toISOString() : null,
-              itemType: initialAssignment!.task_type,
-              questionId: initialAssignment!.question_id,
-              questionSource: "question_bank",
-              reactivate,
-              studentIds: selectedStudents
-            }
-          : {
-              action: editing ? "edit" : undefined,
-              reactivate,
-              itemType: taskType,
-              questionSource: source,
-              questionId: source === "question_bank" ? selectedQuestion?.question_id : null,
-              customQuestion: source === "custom" ? customFields : null,
-              studentIds: selectedStudents,
-              dueAt: hasDueAt ? new Date(dueAt).toISOString() : null
-            })
-      });
-      cache.invalidate(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX);
-      publishCacheInvalidation({
-        type: "ASSIGNMENT_UPDATED",
-        assignmentId: payload.assignmentId,
-        assignmentQuestionSource: source
-      });
-      // The saved detail page keeps the exact 作业管理 context the editor was
-      // opened from (班级作业 tab + class filter, or a student filter), so its
-      // 作业管理 breadcrumb returns there after a refresh as well. A direct
-      // visit without a returnTo keeps the canonical detail URL.
-      router.push(
-        teacherReturnToHref(
-          teacherAssignmentDetailHref(payload.assignmentId),
-          returnTo
-        )
-      );
-      router.refresh();
-    } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "作业创建失败。");
-      setSubmitting(false);
-    }
-  }
-
-  return (
-    <div className="grid gap-5">
-      {catalogItem ? (
-        <StepCard number="1" title="题目（不可修改）">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="text-xs font-bold text-student-primary">
-                {assignmentItemTypeLabel(initialAssignment!.task_type)}
-              </p>
-              <p className="mt-1 font-semibold text-student-text">{catalogItemTitle}</p>
-            </div>
-            {catalogItemViewerHref ? (
-              <Link className="text-sm font-semibold text-student-primary underline-offset-4 hover:underline" href={catalogItemViewerHref}>
-                查看题目
-              </Link>
-            ) : null}
-          </div>
-          <p className="text-xs text-student-muted">题库题目保持原样；保存后可继续保持撤回，或立即重新布置。</p>
-        </StepCard>
-      ) : (
-        <>
-          <StepCard number="1" title="选择题型">
-            <div className="grid gap-3 sm:grid-cols-2">{(["email", "academic_discussion"] as const).map((type) => <ChoiceButton active={taskType === type} disabled={questionLocked} key={type} label={WRITING_TASK_CONFIG[type].label} onClick={() => chooseTaskType(type)} />)}</div>
-            {questionLocked ? <p className="text-xs text-student-muted">已有学生提交，题型和题目内容已锁定。</p> : null}
-          </StepCard>
-
-          <StepCard number="2" title="选择题目来源">
-            <div className="grid gap-3 sm:grid-cols-2"><ChoiceButton active={source === "question_bank"} disabled={!taskType || questionLocked} label="从题库选择" onClick={() => chooseSource("question_bank")} /><ChoiceButton active={source === "custom"} disabled={!taskType || questionLocked} label="自定义题目" onClick={() => chooseSource("custom")} /></div>
-          </StepCard>
-
-          <StepCard number="3" title={source === "custom" ? "填写自定义题" : "选择题目"}>
-            {!taskType || !source ? <p className="text-sm text-student-muted">请先选择题型和题目来源。</p> : source === "question_bank" ? questionLocked ? (
-              selectedQuestion ? <WritingAssignmentQuestionPreview question={selectedQuestion} questionSource={source} taskType={taskType as WritingTaskType} /> : null
-            ) : (
-              <div className="grid gap-4">
-                <form className="flex gap-2" onSubmit={(event) => { event.preventDefault(); void searchQuestions(1); }}><input className="teacher-input min-w-0 flex-1" onChange={(event) => setQuery(event.target.value)} placeholder="搜索套题名称或题目关键词" value={query} /><button className="teacher-button-primary" disabled={searching} type="submit"><Search aria-hidden="true" size={16} />{searching ? "搜索中" : "搜索题目"}</button></form>
-                {searchError ? <TeacherDataError text={searchError} /> : null}
-                {questionResult ? <QuestionResults payload={questionResult} selectedId={selectedQuestion?.question_id ?? null} taskType={taskType as WritingTaskType} onPage={(page) => void searchQuestions(page)} onSelect={setSelectedQuestion} /> : <p className="text-sm text-student-muted">输入关键词后搜索；留空可分页浏览当前题型题库。</p>}
-              </div>
-            ) : <div className="grid gap-3"><CustomQuestionFields disabled={questionLocked} fields={taskType === "email" ? EMAIL_CUSTOM_FIELDS : DISCUSSION_CUSTOM_FIELDS} values={customFields} onAvatarChange={chooseCustomAvatar} onBlur={normalizeCustomField} onChange={updateCustomField} />{customFieldError ? <p className="text-sm font-semibold text-student-error">{customFieldError}</p> : null}</div>}
-          </StepCard>
-        </>
-      )}
-
-
-      <StepCard number={catalogItem ? "2" : "4"} title="选择学生">
-        <div className="grid gap-3"><div className="flex flex-wrap items-center justify-between gap-3"><div className="relative min-w-[240px] flex-1"><Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} /><input className="teacher-input w-full pl-9" onChange={(event) => setStudentQuery(event.target.value)} placeholder="搜索中文姓名、拼音或账号" value={studentQuery} /></div><span className="text-sm font-bold text-student-primary">已选择 {selectedStudents.length} 人</span></div>
-          {studentsState.loading ? <TeacherSkeleton className="h-40 w-full rounded-xl" /> : studentsState.error ? <TeacherDataError text={studentsState.error} /> : <div className="max-h-72 overflow-y-auto rounded-xl border border-student-border"><div className="grid gap-px bg-student-border">{filteredStudents.map((student) => { const active = selectedStudents.includes(student.id); const removalLocked = active && lockedStudentIds.has(student.id); return <button aria-disabled={removalLocked} className={`flex items-center gap-3 bg-white px-4 py-3 text-left transition hover:bg-student-bg ${active ? "!bg-student-primary-soft" : ""} ${removalLocked ? "cursor-not-allowed" : ""}`} key={student.id} onClick={() => toggleStudent(student.id)} title={removalLocked ? "该学生已有草稿或提交记录，不能移除" : undefined} type="button"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-student-primary"><UserRound aria-hidden="true" size={18} /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-student-text">{formatManagedAccountName(student.displayName, student.email)}</span><span className="block truncate text-xs text-student-muted">账号：{formatAccountForDisplay(student.email)}</span></span>{removalLocked ? <span className="text-xs font-semibold text-student-muted">已有作答</span> : null}{active ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</button>; })}{!filteredStudents.length ? <p className="bg-white px-4 py-8 text-center text-sm text-student-muted">没有匹配的学生。</p> : null}</div></div>}
-        </div>
-      </StepCard>
-
-      <StepCard number={catalogItem ? "3" : "5"} title="截止时间">
-        <div className="grid gap-3"><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={!hasDueAt} name="due-mode" onChange={() => setHasDueAt(false)} type="radio" />不设置截止时间</label><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={hasDueAt} name="due-mode" onChange={() => setHasDueAt(true)} type="radio" />设置截止时间</label>{hasDueAt ? <input className="teacher-input max-w-sm" onChange={(event) => setDueAt(event.target.value)} type="datetime-local" value={dueAt} /> : null}<p className="text-xs text-student-muted">截止时间仅用于完成状态判断，不会禁止提交。</p></div>
-      </StepCard>
-
-      <StepCard number={catalogItem ? "4" : "6"} title="题目预览">
-        {catalogItem ? (
-          <TeacherAssignmentSelectionPreview
-            items={[{ key: initialAssignment!.assignment_id, label: catalogItemTitle }]}
-          />
-        ) : previewQuestion && taskType && source ? (
-          <WritingAssignmentQuestionPreview question={previewQuestion} questionSource={source} taskType={taskType as WritingTaskType} />
-        ) : <p className="text-sm text-student-muted">完成题目选择或填写后，这里会显示完整预览。</p>}
-      </StepCard>
-
-      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">{editing ? "保存作业修改" : "确认布置"}</p><p className="mt-1 text-sm text-student-muted">{editing ? "保存后可继续保持撤回，或立即重新布置。" : `将作业布置给已选择的 ${selectedStudents.length} 名学生。`}</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<div className="flex flex-wrap justify-end gap-2">{editing ? <button className="teacher-button-secondary" disabled={submitting} onClick={() => void submit(false)} type="button">{submitting ? "正在保存…" : "保存修改"}</button> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit(editing)} type="button">{submitting ? (editing ? "正在保存…" : "正在布置…") : (editing ? "保存并重新布置" : "布置")}</button></div></div></TeacherCard>
+      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">{editing ? "保存作业修改" : "确认布置"}</p><p className="mt-1 text-sm text-student-muted">{editing ? `${selectionMode === "class" && selectedClass ? `将整组 ${assignmentCount} 篇题目重新布置给「${selectedClass.name}」的 ${selectedClass.member_count} 名学生。` : `将整组 ${assignmentCount} 篇题目重新布置给已选择的 ${selectedStudents.length} 名学生。`}` : selectionMode === "class" && selectedClass ? `将 ${assignmentCount} 篇题目布置给「${selectedClass.name}」的 ${selectedClass.member_count} 名学生，并保存同一个作业组。` : `将 ${assignmentCount} 篇题目布置给已选择的 ${selectedStudents.length} 名学生，并保存同一个作业组。`}</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<div className="flex flex-wrap justify-end gap-2">{editing ? <button className="teacher-button-secondary" disabled={submitting} onClick={() => void submit(false)} type="button">{submitting ? "正在保存…" : "保存修改"}</button> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit(editing)} type="button">{submitting ? (editing ? "正在保存…" : "正在布置…") : (editing ? "保存并重新布置" : "布置")}</button></div></div></TeacherCard>
     </div>
   );
 }

@@ -450,8 +450,13 @@ test("teacher assignment lifecycle API soft deletes and enforces withdrawn editi
   assert.match(route, /action === "soft_delete"/);
   assert.match(route, /deleted_at: new Date\(\)\.toISOString\(\)/);
   assert.match(route, /assignment\.status !== "withdrawn"/);
-  assert.match(route, /prepareWritingAssignmentMembership/);
-  assert.match(route, /assertLockedWritingAssignmentQuestionInput/);
+  // A withdrawn edit re-enters the full wizard: the legacy group-less row is
+  // prepared exactly like a group and adopted by the shared RPC, while the
+  // frozen-question / attempt protections stay in place.
+  assert.match(route, /prepareWritingAssignmentGroupEditMutation/);
+  assert.match(route, /update_withdrawn_writing_assignment_group/);
+  assert.match(route, /p_legacy_assignment_id: params\.assignmentId/);
+  assert.match(route, /QUESTION_LOCKED_AFTER_SUBMISSION/);
   assert.match(route, /\.eq\("status", "submitted"\)/);
   assert.doesNotMatch(route, /\.from\("writing_assignments"\)\s*\.delete\(/);
 
@@ -598,9 +603,12 @@ test("withdrawn assignment UI reuses the form and exposes lifecycle actions", ()
     "utf8"
   );
   assert.match(form, /initialAssignment\?: WritingAssignmentDetail/);
-  assert.match(form, /questionLocked/);
-  assert.match(form, /lockedStudentIds/);
+  assert.match(form, /initialCollection\?: WritingAssignmentCollectionDetail/);
+  assert.match(form, /initialAssignments: WritingAssignmentDetail\[\]/);
+  // 撤回 already guarantees no attempt, so the seeded wizard keeps the full
+  // placement power instead of freezing the questions.
   assert.match(form, /保存并重新布置/);
+  assert.match(form, /buildWizardSeed/);
   assert.match(editWrapper, /TeacherWritingAssignmentForm initialAssignment=/);
   for (const source of [list, detail]) {
     assert.match(source, /getTeacherAssignmentProgress/);

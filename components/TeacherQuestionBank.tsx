@@ -270,10 +270,13 @@ function TeacherLogicalCatalogContent({
 
 export function TeacherQuestionBankItemViewer({
   itemId,
+  preview = false,
   returnPage,
   returnTaskType
 }: {
   itemId: string;
+  /** Standalone preview mode for 查看题目 opened in a new tab. */
+  preview?: boolean;
   returnPage: number;
   returnTaskType: PracticeTaskType;
 }) {
@@ -294,16 +297,20 @@ export function TeacherQuestionBankItemViewer({
 
   return (
     <div className="grid gap-5">
-      <TeacherBreadcrumbs
-        crumbs={[
-          { label: "首页", href: "/teacher/dashboard" },
-          { label: "教师题库", href: rootHref },
-          { label: title }
-        ]}
-      />
-      <Link className="student-button-secondary w-fit min-h-10 px-4" href={rootHref}>
-        <ChevronLeft aria-hidden="true" size={17} />返回教师题库
-      </Link>
+      {preview ? null : (
+        <>
+          <TeacherBreadcrumbs
+            crumbs={[
+              { label: "首页", href: "/teacher/dashboard" },
+              { label: "教师题库", href: rootHref },
+              { label: title }
+            ]}
+          />
+          <Link className="student-button-secondary w-fit min-h-10 px-4" href={rootHref}>
+            <ChevronLeft aria-hidden="true" size={17} />返回教师题库
+          </Link>
+        </>
+      )}
       {loading ? <TeacherLoadingRegion label="正在加载题目详情" /> : null}
       {loading ? (
         <QuestionViewerSkeleton />
@@ -313,6 +320,7 @@ export function TeacherQuestionBankItemViewer({
         <BasLogicalItemViewer
           currentIndex={currentIndex}
           onChange={setCurrentIndex}
+          preview={preview}
           questions={data.questions ?? []}
         />
       ) : data.question ? (
@@ -336,10 +344,12 @@ export function TeacherQuestionBankItemViewer({
 function BasLogicalItemViewer({
   currentIndex,
   onChange,
+  preview = false,
   questions
 }: {
   currentIndex: number;
   onChange: (index: number) => void;
+  preview?: boolean;
   questions: Question[];
 }) {
   const currentQuestion = questions[currentIndex];
@@ -368,11 +378,13 @@ function BasLogicalItemViewer({
             splitTextItems(currentQuestion.correct_order_text).join(" ")}
         </p>
       </TeacherCard>
-      <QuestionViewerNav
-        currentIndex={currentIndex}
-        onChange={onChange}
-        questionCount={questions.length}
-      />
+      {preview ? null : (
+        <QuestionViewerNav
+          currentIndex={currentIndex}
+          onChange={onChange}
+          questionCount={questions.length}
+        />
+      )}
     </div>
   );
 }

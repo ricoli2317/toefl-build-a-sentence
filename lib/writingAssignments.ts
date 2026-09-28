@@ -461,6 +461,12 @@ export type WritingAssignmentDetail = Omit<
   has_submitted_attempts: boolean;
   updated_at: string;
   students: WritingAssignmentStudentDetail[];
+  /**
+   * Stable catalog identity for 题库 items (the practice item id for WE / AD;
+   * the same stable id the Assignment picker selects). The stored
+   * `question_id` keeps its historical per-item-type contract.
+   */
+  catalog_item_id?: string;
 };
 
 export type WritingAssignmentProgress =

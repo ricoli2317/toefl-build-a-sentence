@@ -305,22 +305,20 @@ test("assignment drill-downs return to the exact list state", () => {
 test("assignment editors keep the list context after a successful save", () => {
   const form = read("components/teacher/TeacherWritingAssignmentForm.tsx");
   // Single assignment edit / 保存并重新布置: the saved detail URL carries the
-  // same returnTo the editor was opened with.
-  assert.match(
-    form,
-    /teacherReturnToHref\(\s*teacherAssignmentDetailHref\(payload\.assignmentId\),\s*returnTo\s*\)/
-  );
+  // same returnTo the editor was opened with. A group edit returns to the
+  // group detail instead.
+  assert.match(form, /teacherReturnToHref\(/);
+  assert.match(form, /initialGroupId[\s\S]{0,120}teacherAssignmentBatchDetailHref\(initialGroupId\)/);
+  assert.match(form, /teacherAssignmentDetailHref\(first\.assignment_id\)/);
   assert.match(form, /returnTo\?: string/);
-  assert.match(form, /<TeacherWritingAssignmentEditForm[\s\S]*returnTo=\{returnTo\}/);
+  assert.match(form, /<TeacherAssignmentWizard/);
 
   const editWrapper = read("components/teacher/TeacherWritingAssignmentEditForm.tsx");
   assert.match(editWrapper, /TeacherWritingAssignmentForm initialAssignment=\{data\.assignment\} returnTo=\{returnTo\}/);
 
   const groupForm = read("components/teacher/TeacherWritingAssignmentGroupEditForm.tsx");
-  assert.match(
-    groupForm,
-    /teacherReturnToHref\(teacherAssignmentBatchDetailHref\(batchId\), returnTo\)/
-  );
+  assert.match(groupForm, /initialCollection=\{state\.data\.collection\}/);
+  assert.match(groupForm, /returnTo=\{returnTo\}/);
 
   // The edit pages hand the raw returnTo to the form and keep the validated
   // value for the breadcrumb; a direct visit without returnTo stays canonical.

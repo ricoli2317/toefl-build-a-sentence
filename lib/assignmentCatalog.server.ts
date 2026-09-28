@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   ASSIGNMENT_ITEM_TYPES,
+  assignmentCatalogEntryKey,
   assignmentItemSubject,
   buildAssignmentItemSnapshot,
   isAssignmentItemType,
@@ -136,6 +137,63 @@ export function assignmentItemTypesFromValues(values: unknown[]): AssignmentItem
 }
 
 export const ASSIGNMENT_CATALOG_ITEM_TYPE_ORDER = ASSIGNMENT_ITEM_TYPES;
+
+/**
+ * The teacher Assignment detail keeps the historical stored identity
+ * (`question_id`) for WE / AD (the canonical raw question id) but the picker
+ * and 查看题目 address the same item by its stable catalog id. This resolves
+ * the stored WE / AD raw ids back to the catalog item ids so a withdrawn edit
+ * can seed the exact picker selection it originally came from. BAS / Reading
+ * rows already store the catalog id and are returned unchanged.
+ */
+export async function resolveAssignmentCatalogItemIds(
+  db: SupabaseClient,
+  items: ReadonlyArray<{
+    itemType: AssignmentItemType;
+    questionId: string | null;
+    questionSource: "question_bank" | "custom";
+  }>
+) {
+  const map = new Map<string, string>();
+  const rawQuestionIds = Array.from(new Set(items.flatMap((item) =>
+    item.questionSource === "question_bank"
+      && item.questionId
+      && isWritingTaskType(item.itemType)
+      ? [item.questionId]
+      : []
+  )));
+  for (const item of items) {
+    if (item.questionSource !== "question_bank" || !item.questionId) continue;
+    if (isWritingTaskType(item.itemType)) continue;
+    map.set(assignmentCatalogEntryKey({ item_id: item.questionId, item_type: item.itemType }), item.questionId);
+  }
+  if (rawQuestionIds.length > 0) {
+    const result = await db
+      .from("practice_item_sources")
+      .select("task_type,source_question_id,item_id")
+      .in("source_question_id", rawQuestionIds);
+    if (result.error) throw result.error;
+    for (const row of (result.data ?? []) as Array<{
+      task_type: string;
+      source_question_id: string | null;
+      item_id: string;
+    }>) {
+      if (!isWritingTaskType(row.task_type) || !row.source_question_id) continue;
+      map.set(
+        assignmentCatalogEntryKey({
+          item_id: String(row.source_question_id),
+          item_type: row.task_type
+        }),
+        String(row.item_id)
+      );
+    }
+  }
+  return map;
+}
+
+function isWritingTaskType(value: unknown): value is "email" | "academic_discussion" {
+  return value === "email" || value === "academic_discussion";
+}
 
 async function loadWritingCatalogEntries(
   db: SupabaseClient,

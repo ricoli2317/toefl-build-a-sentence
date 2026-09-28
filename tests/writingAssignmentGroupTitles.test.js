@@ -202,7 +202,7 @@ test("teacher list API returns recipients and group titles and never filters by 
 test("creation form keeps per-task-type selections and sends one titled group payload", () => {
   const form = source("components/teacher/TeacherWritingAssignmentForm.tsx");
   const createForm = form.match(
-    /function TeacherWritingAssignmentCreateForm[\s\S]*?(?=function TeacherWritingAssignmentEditForm)/
+    /function TeacherAssignmentWizard[\s\S]*?(?=function CustomQuestionDraftCard)/
   )?.[0] ?? "";
   // The unified catalog picker keeps one cross-type selection Map; switching
   // the tab, the filters or the source never clears it.
@@ -485,7 +485,7 @@ test("a mixed Email + AD group occupies exactly one auto sequence", () => {
 test("manual titles bypass automatic numbering entirely", () => {
   const form = source("components/teacher/TeacherWritingAssignmentForm.tsx");
   const createForm = form.match(
-    /function TeacherWritingAssignmentCreateForm[\s\S]*?(?=function TeacherWritingAssignmentEditForm)/
+    /function TeacherAssignmentWizard[\s\S]*?(?=function CustomQuestionDraftCard)/
   )?.[0] ?? "";
   assert.match(
     createForm,
@@ -499,7 +499,7 @@ test("manual titles bypass automatic numbering entirely", () => {
 test("the form previews the numbered candidate but submits the base title", () => {
   const form = source("components/teacher/TeacherWritingAssignmentForm.tsx");
   const createForm = form.match(
-    /function TeacherWritingAssignmentCreateForm[\s\S]*?(?=function TeacherWritingAssignmentEditForm)/
+    /function TeacherAssignmentWizard[\s\S]*?(?=function CustomQuestionDraftCard)/
   )?.[0] ?? "";
   assert.match(createForm, /nextWritingAssignmentAutoTitle/);
   assert.match(createForm, /TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY/);

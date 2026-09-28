@@ -5,6 +5,7 @@ const test = require("node:test");
 
 const {
   ASSIGNMENT_ITEM_CONFIG,
+  ASSIGNMENT_CATALOG_PAGE_SIZE,
   assignmentCatalogEntryKey,
   assignmentCatalogMonths,
   assignmentCatalogTopics,
@@ -15,6 +16,7 @@ const {
   clearAssignmentCatalogEntries,
   filterAssignmentCatalogEntries,
   isAssignmentCatalogEntrySelected,
+  paginateAssignmentCatalogEntries,
   selectAllAssignmentCatalogEntries,
   someAssignmentCatalogEntriesSelected,
   toggleAssignmentCatalogSelection,
@@ -39,7 +41,12 @@ const {
 const {
   ASSIGNMENT_DRAFT_STORAGE_KEY,
   defaultAssignmentPickerFilters,
+  defaultAssignmentPickerState,
+  assignmentPickerFiltersFor,
   readAssignmentDraft,
+  selectAssignmentPickerItemType,
+  setAssignmentPickerPage,
+  updateAssignmentPickerFilters,
   writeAssignmentDraft
 } = require("../lib/assignmentPickerState.ts");
 
@@ -253,7 +260,8 @@ test("switching the tab or the filters never clears the cross-type selection", (
   );
   assert.equal(selection.size, 2);
   const picker = source(PICKER);
-  assert.match(picker, /onFiltersChange\(\{ \.\.\.filters, \.\.\.patch \}\)/);
+  assert.match(picker, /onStateChange\(updateAssignmentPickerFilters\(state, activeItemType/);
+  assert.match(picker, /onStateChange\(selectAssignmentPickerItemType\(state, itemType\)\)/);
   assert.doesNotMatch(picker, /setSelection|onSelectionChange\(new Map/);
 });
 
@@ -533,12 +541,12 @@ test("WE / AD are the only Writing Review item types", () => {
 
 test("查看题目 maps every item type to the existing teacher question-bank route", () => {
   const cases = [
-    ["email", "/teacher/question-bank/EMAIL-1?taskType=email"],
-    ["academic_discussion", "/teacher/question-bank/AD-1?taskType=academic_discussion"],
-    ["build_sentence", "/teacher/question-bank/item-bas-1?taskType=build_sentence"],
-    ["ctw", "/teacher/question-bank/reading-ctw-abc?taskType=ctw"],
-    ["rdl", "/teacher/question-bank/reading-rdl-abc?taskType=rdl"],
-    ["rap", "/teacher/question-bank/reading-rap-abc?taskType=rap"]
+    ["email", "/teacher/question-bank/EMAIL-1?taskType=email&preview=1"],
+    ["academic_discussion", "/teacher/question-bank/AD-1?taskType=academic_discussion&preview=1"],
+    ["build_sentence", "/teacher/question-bank/item-bas-1?taskType=build_sentence&preview=1"],
+    ["ctw", "/teacher/question-bank/reading-ctw-abc?taskType=ctw&preview=1"],
+    ["rdl", "/teacher/question-bank/reading-rdl-abc?taskType=rdl&preview=1"],
+    ["rap", "/teacher/question-bank/reading-rap-abc?taskType=rap&preview=1"]
   ];
   for (const [itemType, expected] of cases) {
     const itemId = expected.split("?")[0].split("/").pop();
@@ -548,7 +556,12 @@ test("查看题目 maps every item type to the existing teacher question-bank ro
       itemType
     );
   }
-  // Full Set deliberately has no 查看题目 link.
+  // Every 查看题目 entry point opens the standalone preview in a new tab.
+  assert.match(
+    source(PICKER),
+    /<Link[\s\S]*?href=\{viewerHref\}[\s\S]*?rel="noopener noreferrer"[\s\S]*?target="_blank"[\s\S]*?>/
+  );
+  // Full Set deliberately has no 查看题目 link, and no alternative entry.
   assert.equal(
     assignmentItemViewerHref({ item_id: "20260902A", item_type: "full_set" }),
     null
@@ -573,7 +586,7 @@ test("查看题目 is a link, not a button, and never toggles the row", () => {
   assert.ok(labelEnd > 0 && linkStart > labelEnd, "查看题目 must live outside the row label");
   assert.match(row, /<label[\s\S]*?type="checkbox"[\s\S]*?<\/label>/);
   assert.match(row, /onClick=\{\(event\) => \{[\s\S]*?event\.stopPropagation\(\);/);
-  assert.match(row, /className="shrink-0 text-sm font-semibold text-student-primary underline-offset-4/);
+  assert.match(row, /className="shrink-0 text-sm font-normal text-student-primary underline-offset-4/);
   assert.doesNotMatch(row, /teacher-button/);
   // Full Set rows still render the checkbox and title, just without the link.
   assert.match(row, /\{viewerHref \? \(/);
@@ -598,7 +611,7 @@ test("查看题目 keeps the stable item id after month / topic / length / searc
   assert.equal(filtered.length, 1);
   assert.equal(
     assignmentItemViewerHref(filtered[0]),
-    "/teacher/question-bank/reading-rdl-222?taskType=rdl"
+    "/teacher/question-bank/reading-rdl-222?taskType=rdl&preview=1"
   );
   assert.notEqual(
     assignmentItemViewerHref(filtered[0]),
@@ -645,7 +658,7 @@ test("the item result locator batches its queries instead of one per row", () =>
 test("the picker draft survives 查看题目 and clears after 布置", () => {
   const form = source(CREATE_FORM);
   const pickerState = source("lib/assignmentPickerState.ts");
-  assert.match(pickerState, /ASSIGNMENT_DRAFT_STORAGE_KEY = "tps:teacher:assignment-draft:v1"/);
+  assert.match(pickerState, /ASSIGNMENT_DRAFT_STORAGE_KEY = "tps:teacher:assignment-draft:v2"/);
   assert.match(form, /readAssignmentDraft/);
   assert.match(form, /writeAssignmentDraft/);
   assert.match(pickerState, /window\.sessionStorage\.setItem\(ASSIGNMENT_DRAFT_STORAGE_KEY/);
@@ -653,7 +666,7 @@ test("the picker draft survives 查看题目 and clears after 布置", () => {
   assert.match(form, /writeAssignmentDraft\(null\)/);
   assert.match(form, /readAssignmentDraft\(\)/);
   assert.match(form, /setSelection\(new Map\(draft\.selection\.map/);
-  assert.match(form, /setPickerFilters\(draft\.filters\)/);
+  assert.match(form, /setPickerState\(draft\.picker\)/);
 
   // Round trip with a stubbed sessionStorage.
   const store = new Map();
@@ -669,20 +682,24 @@ test("the picker draft survives 查看题目 and clears after 布置", () => {
     const key = ASSIGNMENT_DRAFT_STORAGE_KEY;
     assert.equal(readAssignmentDraft(), null);
     writeAssignmentDraft({
-      filters: defaultAssignmentPickerFilters("reading"),
+      picker: defaultAssignmentPickerState("reading"),
       selection: [entry({ item_id: "ctw-1", item_type: "ctw" })],
       source: "question_bank",
       subject: "reading",
-      version: 1
+      version: 2
     });
     const draft = readAssignmentDraft();
     assert.equal(draft.subject, "reading");
+    assert.equal(draft.picker.activeItemType, "ctw");
     assert.equal(draft.selection[0].item_id, "ctw-1");
     writeAssignmentDraft(null);
     assert.equal(readAssignmentDraft(), null);
     assert.equal(store.has(key), false);
     // Invalid drafts are ignored instead of crashing the wizard.
-    store.set(key, JSON.stringify({ version: 1, subject: "nope" }));
+    store.set(key, JSON.stringify({ version: 2, subject: "nope" }));
+    assert.equal(readAssignmentDraft(), null);
+    // A previous-version draft is ignored as well.
+    store.set(key, JSON.stringify({ version: 1, subject: "reading" }));
     assert.equal(readAssignmentDraft(), null);
     store.set(key, "{not json");
     assert.equal(readAssignmentDraft(), null);
@@ -690,6 +707,243 @@ test("the picker draft survives 查看题目 and clears after 布置", () => {
     if (previousWindow === undefined) delete globalThis.window;
     else globalThis.window = previousWindow;
   }
+});
+
+// ---------------------------------------------------------------------------
+// 10b. Pure front-end pagination + per-tab filter isolation
+// ---------------------------------------------------------------------------
+
+test("pagination keeps ten rows per page and clamps the last page", () => {
+  assert.equal(ASSIGNMENT_CATALOG_PAGE_SIZE, 10);
+  const pageIds = (count, page) => paginateAssignmentCatalogEntries(
+    Array.from({ length: count }, (_, index) => `item-${index + 1}`),
+    page
+  );
+  assert.deepEqual(pageIds(0, 1), {
+    from: 0,
+    items: [],
+    page: 1,
+    pageCount: 1,
+    total: 0
+  });
+  assert.equal(pageIds(1, 1).items.length, 1);
+  assert.equal(pageIds(1, 1).pageCount, 1);
+  assert.equal(pageIds(10, 1).items.length, 10);
+  assert.equal(pageIds(10, 1).pageCount, 1);
+  assert.equal(pageIds(11, 1).items.length, 10);
+  assert.equal(pageIds(11, 1).pageCount, 2);
+  assert.deepEqual(pageIds(11, 2), {
+    from: 10,
+    items: ["item-11"],
+    page: 2,
+    pageCount: 2,
+    total: 11
+  });
+  assert.equal(pageIds(11, 9).page, 2);
+  assert.equal(pageIds(11, 0).page, 1);
+  assert.equal(pageIds(21, 3).items.length, 1);
+  assert.equal(pageIds(21, 3).pageCount, 3);
+  assert.deepEqual(pageIds(21, 2).items[0], "item-11");
+  // The picker renders the page slice; paging never re-fetches the catalog.
+  const picker = source(PICKER);
+  assert.match(picker, /paginateAssignmentCatalogEntries\(filteredEntries, filters\.page, ASSIGNMENT_CATALOG_PAGE_SIZE\)/);
+  assert.match(picker, /页码|第 \{pageData\.page\}\/\{pageData\.pageCount\} 页/);
+  assert.match(picker, /setAssignmentPickerPage\(state, activeItemType, pageData\.page - 1\)/);
+  assert.match(picker, /setAssignmentPickerPage\(state, activeItemType, pageData\.page \+ 1\)/);
+});
+
+test("selection survives paging and 全选当前结果 still covers the whole filtered result", () => {
+  const entries = Array.from({ length: 21 }, (_, index) =>
+    entry({ item_id: `we-${index + 1}`, item_type: "email" })
+  );
+  const filtered = filterAssignmentCatalogEntries(entries, { itemType: "email" });
+  const pageThree = paginateAssignmentCatalogEntries(filtered, 3);
+  assert.equal(pageThree.items.length, 1);
+  // 全选当前结果 acts on the whole filtered result, not the visible page.
+  let selection = selectAllAssignmentCatalogEntries(new Map(), filtered);
+  assert.equal(selection.size, 21);
+  assert.equal(isAssignmentCatalogEntrySelected(selection, pageThree.items[0]), true);
+  // Selection still survives a page change (nothing reads the page).
+  selection = toggleAssignmentCatalogSelection(selection, entries[0]);
+  assert.equal(selection.size, 20);
+  assert.equal(isAssignmentCatalogEntrySelected(selection, pageThree.items[0]), true);
+  const picker = source(PICKER);
+  assert.match(picker, /selectAllAssignmentCatalogEntries\(selection, filteredEntries\)/);
+  assert.match(picker, /clearAssignmentCatalogEntries\(selection, filteredEntries\)/);
+  assert.match(picker, /pageData\.from \+ index/);
+});
+
+test("every item type keeps its own filter set and page", () => {
+  let state = defaultAssignmentPickerState("reading");
+  assert.equal(state.activeItemType, "ctw");
+  // CTW: month + topic + page 3.
+  state = updateAssignmentPickerFilters(state, "ctw", { month: "2026-09", topic: "生物健康" });
+  state = setAssignmentPickerPage(state, "ctw", 3);
+  // RDL keeps its own length and page 2.
+  state = selectAssignmentPickerItemType(state, "rdl");
+  state = updateAssignmentPickerFilters(state, "rdl", { topic: "教育", length: "long" });
+  state = setAssignmentPickerPage(state, "rdl", 2);
+  // RAP stays untouched.
+  state = selectAssignmentPickerItemType(state, "rap");
+  assert.deepEqual(assignmentPickerFiltersFor(state, "rap"), {
+    itemType: "rap",
+    length: "all",
+    month: "",
+    page: 1,
+    query: "",
+    topic: ""
+  });
+  assert.deepEqual(assignmentPickerFiltersFor(state, "ctw"), {
+    itemType: "ctw",
+    length: "all",
+    month: "2026-09",
+    page: 3,
+    query: "",
+    topic: "生物健康"
+  });
+  assert.deepEqual(assignmentPickerFiltersFor(state, "rdl"), {
+    itemType: "rdl",
+    length: "long",
+    month: "",
+    page: 2,
+    query: "",
+    topic: "教育"
+  });
+  // A filter change resets only its own page; other tabs keep theirs.
+  const changed = updateAssignmentPickerFilters(state, "ctw", { topic: "动物" });
+  assert.equal(assignmentPickerFiltersFor(changed, "ctw").page, 1);
+  assert.equal(assignmentPickerFiltersFor(changed, "ctw").topic, "动物");
+  assert.equal(assignmentPickerFiltersFor(changed, "rdl").page, 2);
+  assert.equal(assignmentPickerFiltersFor(changed, "rdl").topic, "教育");
+  // Keeping the same value does not reset the page.
+  const unchanged = updateAssignmentPickerFilters(
+    state,
+    "ctw",
+    { topic: "生物健康" }
+  );
+  assert.equal(assignmentPickerFiltersFor(unchanged, "ctw").page, 3);
+  // Search is per-tab too.
+  const searched = updateAssignmentPickerFilters(
+    updateAssignmentPickerFilters(state, "ctw", { query: "refund" }),
+    "rdl",
+    { query: "technology" }
+  );
+  assert.equal(assignmentPickerFiltersFor(searched, "ctw").query, "refund");
+  assert.equal(assignmentPickerFiltersFor(searched, "rdl").query, "technology");
+  assert.equal(assignmentPickerFiltersFor(searched, "rap").query, "");
+});
+
+test("the real CTW topic → RDL/RAP isolation case never inherits another tab", () => {
+  const ctwA = entry({
+    item_id: "ctw-a",
+    item_type: "ctw",
+    months: ["2026-09"],
+    catalog_category: "生物健康",
+    title: "Tiger"
+  });
+  const rdl = entry({
+    item_id: "rdl-1",
+    item_type: "rdl",
+    months: ["2026-09"],
+    catalog_category: "教育",
+    reading_length: "short",
+    title: "A Short Passage"
+  });
+  const rapSameTopic = entry({
+    item_id: "rap-1",
+    item_type: "rap",
+    months: ["2026-06"],
+    catalog_category: "生物健康",
+    title: "Biology Passage"
+  });
+  const entries = [ctwA, rdl, rapSameTopic];
+  let state = defaultAssignmentPickerState("reading");
+  state = updateAssignmentPickerFilters(state, "ctw", { topic: "生物健康" });
+  assert.deepEqual(
+    filterAssignmentCatalogEntries(entries, {
+      itemType: state.activeItemType,
+      ...assignmentPickerFiltersFor(state, "ctw")
+    }).map((item) => item.item_id),
+    ["ctw-a"]
+  );
+  // Switch to RDL: its own filter is 全部, so the full RDL result shows.
+  state = selectAssignmentPickerItemType(state, "rdl");
+  assert.equal(assignmentPickerFiltersFor(state, "rdl").topic, "");
+  assert.deepEqual(
+    filterAssignmentCatalogEntries(entries, {
+      itemType: "rdl",
+      ...assignmentPickerFiltersFor(state, "rdl")
+    }).map((item) => item.item_id),
+    ["rdl-1"]
+  );
+  // Switch to RAP: even though a same-named topic exists there, it never
+  // inherits the CTW filter.
+  state = selectAssignmentPickerItemType(state, "rap");
+  assert.deepEqual(
+    filterAssignmentCatalogEntries(entries, {
+      itemType: "rap",
+      ...assignmentPickerFiltersFor(state, "rap")
+    }).map((item) => item.item_id),
+    ["rap-1"]
+  );
+  // Returning to CTW restores its own month / topic / page.
+  state = setAssignmentPickerPage(state, "ctw", 2);
+  state = selectAssignmentPickerItemType(state, "rdl");
+  state = selectAssignmentPickerItemType(state, "ctw");
+  assert.deepEqual(assignmentPickerFiltersFor(state, "ctw"), {
+    itemType: "ctw",
+    length: "all",
+    month: "",
+    page: 2,
+    query: "",
+    topic: "生物健康"
+  });
+  // RDL length only ever participates in the RDL tab.
+  const rdlLengthState = updateAssignmentPickerFilters(state, "rdl", { length: "long" });
+  assert.equal(assignmentPickerFiltersFor(rdlLengthState, "rdl").length, "long");
+  assert.equal(assignmentPickerFiltersFor(rdlLengthState, "ctw").length, "all");
+  assert.equal(assignmentPickerFiltersFor(rdlLengthState, "rap").length, "all");
+  assert.deepEqual(
+    filterAssignmentCatalogEntries(entries, {
+      itemType: "ctw",
+      ...assignmentPickerFiltersFor(rdlLengthState, "ctw")
+    }).map((item) => item.item_id),
+    ["ctw-a"]
+  );
+});
+
+test("the row style is compact, unbolded and shared by Writing and Reading", () => {
+  const picker = source(PICKER);
+  const row = picker.match(/function renderSelectableRow[\s\S]*?\n  \}\n\}/)?.[0] ?? "";
+  // Title and 查看题目 use the same font size; the title is normal weight.
+  assert.match(row, /text-sm font-normal text-student-text/);
+  assert.match(row, /text-sm font-normal text-student-primary/);
+  assert.doesNotMatch(row, /font-semibold|font-bold/);
+  // Compact rows with a still-clickable height.
+  assert.match(picker, /<li className="flex min-h-10 items-center gap-3 bg-white px-4 py-2"/);
+  assert.match(row, /<label className="flex min-w-0 flex-1 cursor-pointer items-center gap-3">/);
+  assert.match(row, /<input[\s\S]*?type="checkbox"/);
+  // The natural number stays a display-only prefix.
+  assert.match(row, /\{index \+ 1\}\. \{entry\.title\}/);
+  // Writing and Reading share this exact picker component.
+  const form = source(CREATE_FORM);
+  assert.match(form, /TeacherAssignmentCatalogPicker/);
+  assert.equal((form.match(/TeacherAssignmentCatalogPicker/g) ?? []).length >= 1, true);
+});
+
+test("the list block keeps a stable height across pages", () => {
+  const picker = source(PICKER);
+  // Every page pads to ten row slots so a short last page cannot move the
+  // content below the list.
+  assert.match(picker, /const emptySlots = pageData\.total === 0/);
+  assert.match(picker, /ASSIGNMENT_CATALOG_PAGE_SIZE - pageData\.items\.length/);
+  assert.match(picker, /ASSIGNMENT_CATALOG_PAGE_SIZE - 1/);
+  assert.match(picker, /\{pageSlots\.map\(\(slot\) => \(/);
+  assert.match(picker, /className="invisible min-h-10 bg-white px-4 py-2"/);
+  // Pagination lives inside the list block, next to the count line.
+  const listIndex = picker.indexOf("data-assignment-catalog-list");
+  const pagerIndex = picker.indexOf("题目分页");
+  assert.ok(listIndex > 0 && pagerIndex > listIndex);
 });
 
 // ---------------------------------------------------------------------------

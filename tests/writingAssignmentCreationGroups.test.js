@@ -243,7 +243,7 @@ test("creation form supports multi-select, custom multi-question editing, deadli
     "utf8"
   );
   const createForm = source.match(
-    /function TeacherWritingAssignmentCreateForm[\s\S]*?(?=function TeacherWritingAssignmentEditForm)/
+    /function TeacherAssignmentWizard[\s\S]*?(?=function CustomQuestionDraftCard)/
   )?.[0] ?? "";
   const picker = fs.readFileSync(
     path.join(projectRoot, "components/teacher/TeacherAssignmentCatalogPicker.tsx"),
@@ -263,7 +263,7 @@ test("creation form supports multi-select, custom multi-question editing, deadli
   assert.match(createForm, /分别设置/);
   assert.match(createForm, /individualDueAt/);
   assert.match(createForm, /WritingAssignmentQuestionPreview/);
-  assert.match(createForm, /assignments,\s*studentIds: selectedStudents/);
+  assert.match(createForm, /assignments: items,\s*studentIds: selectedStudents/);
   assert.match(createForm, /classId: selectedClassId/);
   assert.match(createForm, /customEmailRequirementCount\(draft\) !== 3/);
   assert.match(createForm, /defaultWritingAssignmentTitle/);

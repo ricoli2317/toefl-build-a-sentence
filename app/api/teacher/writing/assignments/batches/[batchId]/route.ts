@@ -2,9 +2,12 @@ import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
 import {
+  assignmentCatalogEntryKey,
   assignmentSnapshotSourceSetId,
   type AssignmentItemType
 } from "@/lib/assignmentCatalog";
+import { resolveAssignmentCatalogItemIds } from "@/lib/assignmentCatalog.server";
+import { loadWritingAssignmentClassRefs } from "@/lib/teacherClasses.server";
 import {
   assignmentStudentResult,
   loadAssignmentStudentResults
@@ -23,10 +26,10 @@ import {
   type WritingAssignmentStudentDetail
 } from "@/lib/writingAssignments";
 import {
-  assertLockedWritingAssignmentQuestionInput,
   chunkValues,
   prepareWritingAssignmentGroupEditMutation,
   requireWritingAssignmentTeacher,
+  writingAssignmentClassErrorMessage,
   writingAssignmentJson
 } from "@/lib/writingAssignmentsServer";
 
@@ -78,13 +81,13 @@ export async function GET(
     );
     if (assignmentsResult.error) throw assignmentsResult.error;
     const assignments = assignmentsResult.data ?? [];
-    if (assignments.length < 2) return notFound();
+    if (assignments.length < 1) return notFound();
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
     const reviewAssignmentIds = assignments
       .filter((assignment) => isWritingReviewItemType(assignment.task_type))
       .map((assignment) => assignment.assignment_id);
 
-    const [membersResult, attemptsResult, displayNames, groupTitles] = await Promise.all([
+    const [membersResult, attemptsResult, displayNames, groupTitles, catalogItemIds, classRefs] = await Promise.all([
       readAllSupabaseRows<MemberRow>((from, to) =>
         auth.supabase!
           .from("writing_assignment_students")
@@ -119,7 +122,16 @@ export async function GET(
             taskType: assignment.task_type as "email" | "academic_discussion"
           }))
       ),
-      loadWritingAssignmentGroupTitles(auth.supabase, [params.batchId])
+      loadWritingAssignmentGroupTitles(auth.supabase, [params.batchId]),
+      resolveAssignmentCatalogItemIds(
+        auth.supabase,
+        assignments.map((assignment) => ({
+          itemType: assignment.task_type,
+          questionId: assignment.question_id,
+          questionSource: assignment.question_source
+        }))
+      ),
+      loadWritingAssignmentClassRefs(auth.supabase, [params.batchId])
     ]);
     if (membersResult.error || attemptsResult.error) {
       throw membersResult.error ?? attemptsResult.error;
@@ -231,6 +243,14 @@ export async function GET(
         assignment_id: assignment.assignment_id,
         group_id: assignment.group_id,
         group_position: assignment.group_position,
+        class_id: classRefs.get(params.batchId)?.class_id ?? null,
+        class_name: classRefs.get(params.batchId)?.class_name ?? null,
+        catalog_item_id: assignment.question_id
+          ? catalogItemIds.get(assignmentCatalogEntryKey({
+              item_id: assignment.question_id,
+              item_type: assignment.task_type
+            })) ?? assignment.question_id
+          : undefined,
         task_type: assignment.task_type,
         question_source: assignment.question_source,
         question_id: assignment.question_id,
@@ -362,11 +382,14 @@ export async function PATCH(
       .order("assignment_id", { ascending: true });
     if (groupError) throw groupError;
     const currentItems = (groupAssignments ?? []) as GroupEditAssignmentRow[];
-    if (currentItems.length < 2) return notFound();
+    if (currentItems.length < 1) return notFound();
     if (currentItems.some((item) => item.status !== "withdrawn")) {
       return invalidState("只有已撤回的作业可以编辑。");
     }
 
+    // 撤回 guarantees the whole group has no attempt at all, so a withdrawn
+    // edit can add, remove and re-type items. Existing items keep their stable
+    // assignment id; new items carry none and are inserted by the RPC.
     const prepared = await prepareWritingAssignmentGroupEditMutation(auth.supabase, body, {
       actor: auth.actor ?? undefined
     });
@@ -375,22 +398,23 @@ export async function PATCH(
       currentItems.map((item) => item.assignment_id)
     );
     const currentById = new Map(currentItems.map((item) => [item.assignment_id, item]));
-    const rawItems = Array.isArray(body.items)
-      ? body.items.filter(isRecord)
-      : [];
-    const rawById = new Map(
-      rawItems.map((item) => [String(item.assignmentId ?? ""), item])
-    );
+    const seenItemIds = new Set<string>();
     const rpcItems = prepared.items.map((preparedItem) => {
+      if (!preparedItem.assignmentId) return preparedItem;
       const current = currentById.get(preparedItem.assignmentId);
-      if (!current) throw new Error("INVALID_GROUP_ITEMS");
+      if (!current || seenItemIds.has(preparedItem.assignmentId)) {
+        throw new Error("INVALID_GROUP_ITEMS");
+      }
+      seenItemIds.add(preparedItem.assignmentId);
       if (!submittedAssignmentIds.has(preparedItem.assignmentId)) return preparedItem;
       // Same frozen-question rule as the single edit route: the submitted item
       // must keep exactly its stored question.
-      assertLockedWritingAssignmentQuestionInput(
-        rawById.get(preparedItem.assignmentId) ?? {},
-        current
-      );
+      if (preparedItem.taskType !== current.task_type
+        || preparedItem.questionSource !== current.question_source
+        || preparedItem.questionId !== current.question_id
+        || JSON.stringify(preparedItem.questionSnapshot) !== JSON.stringify(current.question_snapshot)) {
+        throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
+      }
       return {
         ...preparedItem,
         taskType: current.task_type,
@@ -400,11 +424,14 @@ export async function PATCH(
       };
     });
 
+    const classId = typeof body.classId === "string" ? body.classId.trim() : "";
+    const title = typeof body.title === "string" ? body.title : null;
     const { error: updateError } = await auth.supabase.rpc(
       "update_withdrawn_writing_assignment_group",
       {
+        p_class_id: classId || null,
+        p_due_at: prepared.dueAt,
         p_group_id: params.batchId,
-        p_teacher_id: auth.teacherId,
         p_items: rpcItems.map((item) => ({
           assignment_id: item.assignmentId,
           task_type: item.taskType,
@@ -412,9 +439,11 @@ export async function PATCH(
           question_id: item.questionId,
           question_snapshot: item.questionSnapshot
         })),
-        p_student_ids: prepared.studentIds,
-        p_due_at: prepared.dueAt,
-        p_reactivate: body.reactivate === true
+        p_legacy_assignment_id: null,
+        p_reactivate: body.reactivate === true,
+        p_student_ids: classId ? [] : prepared.studentIds,
+        p_teacher_id: auth.teacherId,
+        p_title: title
       }
     );
     if (updateError) {
@@ -422,13 +451,25 @@ export async function PATCH(
       if (message.includes("QUESTION_LOCKED_AFTER_SUBMISSION")) {
         return invalidState("已有学生提交，题型和题目内容不能修改。");
       }
-      if (message.includes("STUDENT_HAS_ATTEMPT")) {
-        return invalidState("已有草稿或提交记录的学生不能移除。");
+      if (message.includes("STUDENT_HAS_ATTEMPT") || message.includes("ITEM_HAS_ATTEMPT")) {
+        return invalidState("已有草稿或提交记录的学生或题目不能移除。");
       }
       if (message.includes("ASSIGNMENT_GROUP_NOT_WITHDRAWN")) {
         return invalidState("只有已撤回的作业可以编辑或重新布置。");
       }
       if (message.includes("ASSIGNMENT_GROUP_NOT_FOUND")) return notFound();
+      if (message.includes("INVALID_GROUP_ITEMS")) {
+        return invalidState("作业题目状态已经发生变化，请刷新后重试。");
+      }
+      if (message.includes("CLASS_NOT_FOUND")
+        || message.includes("CLASS_NOT_WRITING_CLASS")
+        || message.includes("CLASS_NOT_READING_CLASS")
+        || message.includes("CLASS_HAS_NO_MEMBERS")) {
+        return writingAssignmentJson(
+          { code: "INVALID_ASSIGNMENT", message: writingAssignmentClassErrorMessage(message) },
+          { status: 400 }
+        );
+      }
       if (/^(请选择|请至少|请填写|请输入|所选|截止)/.test(message)) {
         return writingAssignmentJson({ code: "INVALID_ASSIGNMENT", message }, { status: 400 });
       }
@@ -437,15 +478,27 @@ export async function PATCH(
     return writingAssignmentJson({
       groupId: params.batchId,
       status: body.reactivate === true ? "active" : "withdrawn",
-      assignmentIds: rpcItems.map((item) => item.assignmentId)
+      assignmentIds: rpcItems.flatMap((item) => item.assignmentId ? [item.assignmentId] : [])
     });
   } catch (error) {
     const message = errorMessage(error);
     if (message.includes("QUESTION_LOCKED_AFTER_SUBMISSION")) {
       return invalidState("已有学生提交，题型和题目内容不能修改。");
     }
-    if (message.includes("STUDENT_HAS_ATTEMPT")) {
-      return invalidState("已有草稿或提交记录的学生不能移除。");
+    if (message.includes("STUDENT_HAS_ATTEMPT") || message.includes("ITEM_HAS_ATTEMPT")) {
+      return invalidState("已有草稿或提交记录的学生或题目不能移除。");
+    }
+    if (message.includes("INVALID_GROUP_ITEMS")) {
+      return invalidState("作业题目状态已经发生变化，请刷新后重试。");
+    }
+    if (message.includes("CLASS_NOT_FOUND")
+      || message.includes("CLASS_NOT_WRITING_CLASS")
+      || message.includes("CLASS_NOT_READING_CLASS")
+      || message.includes("CLASS_HAS_NO_MEMBERS")) {
+      return writingAssignmentJson(
+        { code: "INVALID_ASSIGNMENT", message: writingAssignmentClassErrorMessage(message) },
+        { status: 400 }
+      );
     }
     if (/^(请选择|请至少|请填写|请输入|所选|截止|一次最多)/.test(message)) {
       return writingAssignmentJson({ code: "INVALID_ASSIGNMENT", message }, { status: 400 });
