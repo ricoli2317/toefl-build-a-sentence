@@ -10,6 +10,7 @@ import {
   assignmentItemTypeLabel,
   assignmentSubjectLabel,
   isAssignmentItemType,
+  type AssignmentItemSnapshot,
   type AssignmentItemType,
   type AssignmentSubject
 } from "./assignmentCatalog.ts";
@@ -96,6 +97,12 @@ export type TeacherAssignmentItemResult = {
   kind: "bas_set" | "reading_attempt" | "reading_full_set";
   id: string;
   completed_at: string | null;
+  /**
+   * BAS only: the student's latest submitted attempt of that set. The teacher
+   * 套题记录 route is keyed by `id` (the raw set id), while the student result
+   * route is keyed by this attempt id.
+   */
+  attempt_id?: string | null;
 };
 
 export type StudentWritingAssignmentSummary = {
@@ -114,19 +121,35 @@ export type StudentWritingAssignmentSummary = {
   first_submitted_at: string | null;
   latest_submitted_attempt_id: string | null;
   published_review_attempt_id: string | null;
+  /**
+   * The student's own completed result for read-only item types (BAS / CTW /
+   * RDL / RAP / Full Set). This stays the existing attempt identity of that
+   * item's own practice result (`attempts.attempt_id` /
+   * `reading_attempts.attempt_id` / `reading_full_set_attempts.attempt_id`);
+   * no Assignment-specific attempt is ever created.
+   */
+  latest_result_attempt_id?: string | null;
+  /** Any existing draft / in-progress practice row for a read-only item. */
+  has_started_result?: boolean;
   question_id: string;
-  question_snapshot?: WritingQuestion;
+  /**
+   * BAS only: the raw question set of the existing student practice session
+   * route (`/student/practice/{source_set_id}`). It comes from the persisted
+   * Assignment snapshot, never from a newly invented identity.
+   */
+  source_set_id?: string | null;
+  question_snapshot?: WritingQuestion | AssignmentItemSnapshot;
   question_source: WritingAssignmentQuestionSource;
   status: WritingAssignmentLifecycleStatus;
   student_status: WritingAssignmentStudentStatus;
   submitted_attempt_count: number;
-  task_type: WritingTaskType;
+  task_type: AssignmentItemType;
 };
 
 export type StudentWritingAssignmentCalendarItem = {
   assignment_id: string;
   assignment_date: string;
-  task_type: WritingTaskType;
+  task_type: AssignmentItemType;
   title: string;
 };
 
@@ -878,23 +901,99 @@ export function compareStudentWritingAssignments(
   );
 }
 
+export type StudentAssignmentDisplayStatusInput = Pick<
+  StudentWritingAssignmentSummary,
+  | "draft_attempt_id"
+  | "due_at"
+  | "latest_submitted_attempt_id"
+  | "published_review_attempt_id"
+> & {
+  has_started_result?: boolean | null;
+  latest_result_attempt_id?: string | null;
+};
+
 export function getStudentWritingAssignmentDisplayStatus(
-  assignment: Pick<
-    StudentWritingAssignmentSummary,
-    | "draft_attempt_id"
-    | "due_at"
-    | "latest_submitted_attempt_id"
-    | "published_review_attempt_id"
-  >,
+  assignment: StudentAssignmentDisplayStatusInput,
   now = new Date()
 ): StudentWritingAssignmentDisplayStatus {
-  if (assignment.published_review_attempt_id) return "completed";
+  if (assignment.published_review_attempt_id || assignment.latest_result_attempt_id) {
+    return "completed";
+  }
   if (assignment.latest_submitted_attempt_id) return "submitted";
-  if (assignment.draft_attempt_id) return "in_progress";
+  if (assignment.draft_attempt_id || assignment.has_started_result) return "in_progress";
   if (assignment.due_at && now.getTime() > Date.parse(assignment.due_at)) {
     return "overdue";
   }
   return "not_started";
+}
+
+/**
+ * One shared student completion signal for every Assignment item type.
+ *
+ * WE / AD keep the historical completion rule (their review is published);
+ * read-only items (BAS / CTW / RDL / RAP / Full Set) complete through their
+ * own existing practice result and never enter the Writing Review chain.
+ */
+export function isStudentAssignmentItemCompleted(
+  assignment: Pick<
+    StudentWritingAssignmentSummary,
+    "published_review_attempt_id" | "latest_result_attempt_id" | "task_type"
+  >
+) {
+  return isWritingReviewItemType(assignment.task_type)
+    ? Boolean(assignment.published_review_attempt_id)
+    : Boolean(assignment.latest_result_attempt_id);
+}
+
+/**
+ * Any attempt / draft exists for the item, whatever its type. Used for
+ * "继续" display decisions only, never for completion.
+ */
+export function hasStudentAssignmentItemStarted(
+  assignment: Pick<
+    StudentWritingAssignmentSummary,
+    "draft_attempt_id" | "has_started_result"
+  >
+) {
+  return Boolean(assignment.draft_attempt_id || assignment.has_started_result);
+}
+
+/**
+ * One shared Student Details progress model for a single item and for an
+ * Assignment Group: a mixed group is only completed once every contained item
+ * is completed, and a read-only item is completed by its own practice result.
+ */
+export function studentAssignmentItemProgress(
+  assignments: ReadonlyArray<StudentWritingAssignmentSummary>
+) {
+  return {
+    completedCount: assignments.filter(isStudentAssignmentItemCompleted).length,
+    publishedCount: assignments.filter(
+      (assignment) => assignment.published_review_attempt_id
+    ).length,
+    reviewBased: assignments.some((assignment) =>
+      isWritingReviewItemType(assignment.task_type)
+    ),
+    submittedCount: assignments.filter(
+      (assignment) => assignment.latest_submitted_attempt_id
+    ).length,
+    totalCount: assignments.length
+  };
+}
+
+export function studentAssignmentGroupDisplayStatus(
+  assignments: ReadonlyArray<StudentAssignmentDisplayStatusInput>
+): StudentWritingAssignmentDisplayStatus {
+  const rank: Record<StudentWritingAssignmentDisplayStatus, number> = {
+    overdue: 0,
+    not_started: 1,
+    in_progress: 2,
+    submitted: 3,
+    completed: 4
+  };
+  return assignments
+    .map((assignment) => getStudentWritingAssignmentDisplayStatus(assignment))
+    .sort((left, right) => rank[left] - rank[right])[0] ?? "not_started";
 }
 
 export function studentWritingAssignmentDisplayStatusLabel(

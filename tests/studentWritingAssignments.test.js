@@ -12,9 +12,17 @@ const {
   getWritingAssignmentProgress,
   groupStudentWritingAssignments,
   groupTeacherWritingAssignments,
+  hasStudentAssignmentItemStarted,
+  isStudentAssignmentItemCompleted,
+  studentAssignmentGroupDisplayStatus,
+  studentAssignmentItemProgress,
   studentWritingAssignmentTitle,
   studentWritingAssignmentDisplayStatusLabel
 } = require("../lib/writingAssignments.ts");
+const {
+  studentAssignmentPracticeHref,
+  studentAssignmentResultHref
+} = require("../lib/studentAssignmentPractice.ts");
 const {
   DEFAULT_STUDENT_WRITING_MODE_AVAILABILITY,
   isStudentWritingModeAllowed,
@@ -130,7 +138,7 @@ test("student assignment calendar reads only a database-bounded minimal month in
   assert.match(route, /title:question_snapshot->>set_title/);
   assert.match(route, /assignment_date: date/);
   assert.doesNotMatch(route, /writing_attempts|writing_reviews|response_text|question_snapshot,/);
-  assert.match(ui, /WRITING_TASK_CONFIG\[assignment\.task_type\]\.label}: \{assignment\.title\}/);
+  assert.match(ui, /assignmentItemTypeLabel\(assignment\.task_type\)\}: \{assignment\.title\}/);
   assert.doesNotMatch(ui, /prefetch/);
 });
 
@@ -363,3 +371,221 @@ test("SQL scopes assignment drafts and defines the extensible student policy bou
   assert.match(policySql, /practice_mode_enabled boolean not null default true/);
   assert.match(policySql, /writing_attempts_require_allowed_mode/);
 });
+
+// ---------------------------------------------------------------------------
+// Assignment reception for every item type (BAS / CTW / RDL / RAP / Full Set)
+// ---------------------------------------------------------------------------
+
+test("student assignment dispatcher reuses each item type's canonical practice route", () => {
+  // WE / AD keep the existing Assignment entry so the attempt stays linked.
+  assert.equal(
+    studentAssignmentPracticeHref({ assignmentId: "assignment-1", itemId: "EMAIL-1", taskType: "email" }),
+    "/student/assignments/assignment-1"
+  );
+  assert.equal(
+    studentAssignmentPracticeHref({ assignmentId: "assignment-2", itemId: "AD-1", taskType: "academic_discussion" }),
+    "/student/assignments/assignment-2"
+  );
+  // Without an assignment context they fall back to the catalog practice route.
+  assert.equal(
+    studentAssignmentPracticeHref({ itemId: "AD-1", taskType: "academic_discussion" }),
+    "/student/academic-discussion/practice/AD-1"
+  );
+  // BAS uses practice_items.item_id for identity, but the existing practice
+  // session route is keyed by the raw source set id from the snapshot.
+  assert.equal(
+    studentAssignmentPracticeHref({
+      itemId: "practice-item-1",
+      sourceSetId: "202608-0818-1",
+      taskType: "build_sentence"
+    }),
+    "/student/practice/202608-0818-1"
+  );
+  for (const taskType of ["ctw", "rdl", "rap"]) {
+    assert.equal(
+      studentAssignmentPracticeHref({ itemId: `reading-${taskType}-item`, taskType }),
+      `/student/reading/practice/reading-${taskType}-item`,
+      taskType
+    );
+  }
+  assert.equal(
+    studentAssignmentPracticeHref({ itemId: "20260901A", taskType: "full_set" }),
+    "/student/reading/full-sets/20260901A"
+  );
+  // A missing identity never invents a route.
+  assert.equal(
+    studentAssignmentPracticeHref({ itemId: "", sourceSetId: null, taskType: "build_sentence" }),
+    null
+  );
+  assert.equal(
+    studentAssignmentPracticeHref({ itemId: null, taskType: "ctw" }),
+    null
+  );
+});
+
+test("student assignment results reuse the existing result routes of each item type", () => {
+  assert.equal(
+    studentAssignmentResultHref({ attemptId: "attempt-1", itemId: "set-1", taskType: "build_sentence" }),
+    "/student/results/attempt-1"
+  );
+  assert.equal(
+    studentAssignmentResultHref({ attemptId: "attempt-2", itemId: "reading-rdl-item", taskType: "rdl" }),
+    "/student/reading/results/attempt-2"
+  );
+  assert.equal(
+    studentAssignmentResultHref({ attemptId: "attempt-3", itemId: "20260901A", taskType: "full_set" }),
+    "/student/reading/full-sets/20260901A/result/attempt-3"
+  );
+  // WE / AD keep their historical submission / published-review chain.
+  assert.equal(
+    studentAssignmentResultHref({ attemptId: "attempt-4", itemId: "EMAIL-1", taskType: "email" }),
+    null
+  );
+  assert.equal(studentAssignmentResultHref({ attemptId: null, taskType: "ctw" }), null);
+});
+
+test("read-only assignment items complete through their own practice result", () => {
+  const readOnlyBase = {
+    draft_attempt_id: null,
+    due_at: null,
+    latest_submitted_attempt_id: null,
+    published_review_attempt_id: null
+  };
+  assert.equal(
+    isStudentAssignmentItemCompleted({
+      task_type: "rdl",
+      latest_result_attempt_id: "reading-attempt-1",
+      published_review_attempt_id: null
+    }),
+    true
+  );
+  assert.equal(
+    isStudentAssignmentItemCompleted({
+      task_type: "email",
+      latest_result_attempt_id: null,
+      published_review_attempt_id: null
+    }),
+    false
+  );
+  assert.equal(
+    isStudentAssignmentItemCompleted({
+      task_type: "email",
+      latest_result_attempt_id: null,
+      published_review_attempt_id: "attempt-1"
+    }),
+    true
+  );
+  assert.equal(
+    getStudentWritingAssignmentDisplayStatus({ ...readOnlyBase, latest_result_attempt_id: "ra-1" }),
+    "completed"
+  );
+  assert.equal(
+    getStudentWritingAssignmentDisplayStatus({ ...readOnlyBase, has_started_result: true }),
+    "in_progress"
+  );
+  assert.equal(getStudentWritingAssignmentDisplayStatus(readOnlyBase), "not_started");
+  assert.equal(hasStudentAssignmentItemStarted({ draft_attempt_id: null, has_started_result: true }), true);
+  assert.equal(hasStudentAssignmentItemStarted({ draft_attempt_id: "draft-1", has_started_result: false }), true);
+  assert.equal(hasStudentAssignmentItemStarted({ draft_attempt_id: null, has_started_result: false }), false);
+});
+
+test("a mixed assignment group only completes when every item is completed", () => {
+  const writingMixed = [
+    {
+      task_type: "email",
+      draft_attempt_id: null,
+      due_at: null,
+      latest_submitted_attempt_id: "attempt-1",
+      published_review_attempt_id: "attempt-1"
+    },
+    {
+      task_type: "academic_discussion",
+      draft_attempt_id: null,
+      due_at: null,
+      latest_submitted_attempt_id: "attempt-2",
+      published_review_attempt_id: null
+    },
+    {
+      task_type: "build_sentence",
+      draft_attempt_id: null,
+      due_at: null,
+      latest_submitted_attempt_id: null,
+      published_review_attempt_id: null,
+      latest_result_attempt_id: null,
+      has_started_result: false
+    }
+  ];
+  // One completed WE item never completes the whole WE + AD + BAS group.
+  assert.equal(studentAssignmentGroupDisplayStatus(writingMixed), "not_started");
+  const completedBas = { ...writingMixed[2], latest_result_attempt_id: "bas-attempt-1" };
+  assert.equal(studentAssignmentGroupDisplayStatus([writingMixed[0], writingMixed[1], completedBas]), "submitted");
+  const completedAd = { ...writingMixed[1], published_review_attempt_id: "attempt-2" };
+  assert.equal(studentAssignmentGroupDisplayStatus([writingMixed[0], completedAd, completedBas]), "completed");
+
+  const readingMixed = [
+    { task_type: "ctw", draft_attempt_id: null, due_at: null, latest_submitted_attempt_id: null, published_review_attempt_id: null, latest_result_attempt_id: "ra-1" },
+    { task_type: "rdl", draft_attempt_id: null, due_at: null, latest_submitted_attempt_id: null, published_review_attempt_id: null, latest_result_attempt_id: null, has_started_result: true },
+    { task_type: "rap", draft_attempt_id: null, due_at: null, latest_submitted_attempt_id: null, published_review_attempt_id: null, latest_result_attempt_id: null },
+    { task_type: "full_set", draft_attempt_id: null, due_at: null, latest_submitted_attempt_id: null, published_review_attempt_id: null, latest_result_attempt_id: null }
+  ];
+  // A completed CTW does not complete the CTW + RDL + RAP + Full Set group.
+  assert.equal(studentAssignmentGroupDisplayStatus(readingMixed), "not_started");
+  const readingProgress = studentAssignmentItemProgress(readingMixed);
+  assert.equal(readingProgress.completedCount, 1);
+  assert.equal(readingProgress.totalCount, 4);
+  assert.equal(readingProgress.reviewBased, false);
+  const writingProgress = studentAssignmentItemProgress(writingMixed);
+  assert.equal(writingProgress.reviewBased, true);
+  // A completed read-only item never counts as a published writing review.
+  assert.equal(writingProgress.publishedCount, 1);
+  assert.equal(
+    studentAssignmentItemProgress([writingMixed[0], completedBas]).publishedCount,
+    1
+  );
+});
+
+test("student assignment details resolve every item identity with batched completion reads", () => {
+  const details = source("lib/studentWritingAssignments.server.ts");
+  const locator = source("lib/assignmentResults.server.ts");
+  // The stable item identity is read from the row plus the snapshot aliases.
+  assert.match(details, /question_id:question_snapshot->>question_id/);
+  assert.match(details, /snapshot_item_id:question_snapshot->>item_id/);
+  assert.match(details, /snapshot_source_set_id:question_snapshot->>source_set_id/);
+  assert.match(details, /question_id: resolvedAssignmentItemId\(assignment\)/);
+  assert.match(details, /source_set_id: assignment\.snapshot_source_set_id/);
+  // One shared batched locator call for every read-only item.
+  assert.match(details, /loadAssignmentStudentResults\(\{/);
+  assert.match(details, /studentIds: \[input\.userId\]/);
+  assert.equal((details.match(/loadAssignmentStudentResults\(/g) ?? []).length, 1);
+  assert.match(details, /latest_result_attempt_id: itemResult\?\.available_result/);
+  // BAS keeps its set id for the teacher page and now exposes its attempt id.
+  assert.match(locator, /attempt_id: attempted\.attemptId/);
+});
+
+test("student assignment entry returns the published item identity for every item type", () => {
+  const entry = source("app/api/writing/assignments/entry/route.ts");
+  assert.match(entry, /snapshot_source_set_id:question_snapshot->>source_set_id/);
+  assert.match(entry, /resolvedAssignmentItemId\(assignment\)/);
+  assert.match(entry, /source_set_id: assignment\.snapshot_source_set_id/);
+  assert.match(entry, /task_type: assignment\.task_type/);
+});
+
+test("student assignment cards dispatch new item types without touching writing review", () => {
+  const ui = source("components/student/StudentWritingAssignments.tsx");
+  assert.match(ui, /studentAssignmentPracticeHref\(\{/);
+  assert.match(ui, /studentAssignmentResultHref\(\{/);
+  assert.match(ui, /StudentAssignmentPracticeRedirect/);
+  assert.match(ui, /ReadingRetakeButton/);
+  assert.match(ui, /ReadingFullSetRetakeButton/);
+  assert.match(ui, /isStudentAssignmentItemCompleted/);
+  assert.match(ui, /studentAssignmentGroupDisplayStatus/);
+  assert.match(ui, /studentAssignmentItemProgress/);
+  assert.match(ui, /isWritingReviewItemType\(assignment\.task_type\)/);
+  // The read-only branch never builds a Writing Review link.
+  const nonReviewStart = ui.indexOf(") : (\n          <>");
+  const nonReviewEnd = ui.indexOf("      </div>\n    </article>", nonReviewStart);
+  const nonReviewBranch = ui.slice(nonReviewStart, nonReviewEnd);
+  assert.ok(nonReviewStart > 0 && nonReviewEnd > nonReviewStart);
+  assert.doesNotMatch(nonReviewBranch, /writingReviewResultHref/);
+});
+

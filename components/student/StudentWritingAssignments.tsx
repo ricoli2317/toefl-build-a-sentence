@@ -10,13 +10,12 @@ import {
   FileCheck2,
   FilePenLine,
   Files,
-  Mail,
-  MessageCircleMore,
   Play,
   RotateCcw
 } from "lucide-react";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import {
   studentWritingAssignmentBatchCacheKey,
   studentWritingAssignmentEntryCacheKey,
@@ -32,6 +31,15 @@ import {
   StudentNavigation
 } from "@/components/student/StudentUI";
 import { WritingPractice } from "@/components/writing/WritingPractice";
+import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
+import { ReadingRetakeButton } from "@/components/reading/ReadingRetakeButton";
+import { ReadingFullSetRetakeButton } from "@/components/reading/ReadingFullSetRetakeButton";
+import {
+  assignmentItemSubject,
+  assignmentItemTypeLabel,
+  type AssignmentItemType
+} from "@/lib/assignmentCatalog";
+import { studentAssignmentPracticeHref, studentAssignmentResultHref } from "@/lib/studentAssignmentPractice";
 import { STUDENT_ROUTES, writingReviewResultHref } from "@/lib/studentNavigation";
 import { WRITING_TASK_CONFIG } from "@/lib/writing";
 import type {
@@ -47,12 +55,16 @@ import {
   formatAssignmentMonth,
   getStudentWritingAssignmentDisplayStatus,
   groupStudentWritingAssignments,
+  hasStudentAssignmentItemStarted,
   isAssignmentMonthKey,
+  isStudentAssignmentItemCompleted,
+  isWritingReviewItemType,
+  studentAssignmentGroupDisplayStatus,
+  studentAssignmentItemProgress,
   studentWritingAssignmentTitle,
   studentWritingAssignmentDisplayStatusLabel,
   writingAssignmentQuestionDisplayTitle,
-  writingAssignmentTaskTypeBadges,
-  type StudentWritingAssignmentDisplayStatus
+  writingAssignmentTaskTypeBadges
 } from "@/lib/writingAssignments";
 
 export function StudentWritingAssignmentCalendar({
@@ -161,7 +173,7 @@ export function StudentWritingAssignmentDayDetail({ date }: { date: string }) {
       ) : state.error || !state.data ? (
         <StudentErrorState text="加载当日作业失败，请稍后重试。" />
       ) : state.data.assignments.length === 0 ? (
-        <StudentEmptyState text="这一天没有写作作业。" />
+        <StudentEmptyState text="这一天没有作业。" />
       ) : (
         <div className="grid gap-3">
           {groupStudentWritingAssignments(state.data.assignments).map((entry) =>
@@ -203,15 +215,14 @@ export function StudentWritingAssignmentCollectionDetail({
       (right.group_position ?? Number.MAX_SAFE_INTEGER)
     ) ?? [];
   if (state.error || assignments.length < 2) {
-    return <StudentErrorState text="未找到这项写作作业。" />;
+    return <StudentErrorState text="未找到这项作业。" />;
   }
-  const submittedCount = assignments.filter(
-    (assignment) => assignment.latest_submitted_attempt_id
-  ).length;
-  const completedCount = assignments.filter(
-    (assignment) => assignment.published_review_attempt_id
-  ).length;
-  const collectionTitle = assignments[0]?.group_title?.trim() || `共 ${assignments.length} 篇写作`;
+  const progress = studentAssignmentItemProgress(assignments);
+  const collectionTitle = assignments[0]?.group_title?.trim()
+    || `共 ${assignments.length} ${studentAssignmentItemUnit(assignments[0]?.task_type)}`;
+  const progressText = progress.reviewBased
+    ? `${progress.submittedCount} / ${progress.totalCount} 已提交${progress.publishedCount ? ` · ${progress.publishedCount} 篇已完成批改` : ""}`
+    : `${progress.completedCount} / ${progress.totalCount} 已完成`;
 
   return (
     <div className="grid gap-5" aria-busy={state.refreshing}>
@@ -233,12 +244,11 @@ export function StudentWritingAssignmentCollectionDetail({
             {collectionTitle}
           </h1>
           <p className="mt-2 text-sm text-student-muted">
-            {submittedCount} / {assignments.length} 已提交
-            {completedCount ? ` · ${completedCount} 篇已完成批改` : ""}
+            {progressText}
           </p>
         </div>
         <span className="rounded-full bg-student-primary-soft px-3 py-1.5 text-xs font-bold text-student-primary">
-          每篇可独立完成
+          {progress.reviewBased ? "每篇可独立完成" : "每题可独立完成"}
         </span>
       </section>
       <div className="grid gap-3">
@@ -265,13 +275,12 @@ function StudentWritingAssignmentGroupCard({
   const batchHref = `${STUDENT_ROUTES.assignments}/batches/${encodeURIComponent(
     first.group_id ?? ""
   )}`;
-  const submittedCount = assignments.filter(
-    (assignment) => assignment.latest_submitted_attempt_id
-  ).length;
-  const completedCount = assignments.filter(
-    (assignment) => assignment.published_review_attempt_id
-  ).length;
-  const status = studentGroupDisplayStatus(assignments);
+  const progress = studentAssignmentItemProgress(assignments);
+  const reviewBased = progress.reviewBased;
+  const itemUnit = studentAssignmentItemUnit(first.task_type);
+  const completedCount = progress.completedCount;
+  const submittedCount = progress.submittedCount;
+  const status = studentAssignmentGroupDisplayStatus(assignments);
   const dueAt = assignments
     .flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
     .sort((left, right) => Date.parse(left) - Date.parse(right))[0] ?? null;
@@ -300,16 +309,17 @@ function StudentWritingAssignmentGroupCard({
               {studentWritingAssignmentDisplayStatusLabel(status)}
             </span>
             <span className="rounded-full bg-student-bg px-2.5 py-1 text-[11px] font-bold text-student-muted">
-              共 {assignments.length} 篇
+              共 {assignments.length} {itemUnit}
             </span>
           </div>
           <h2 className="mt-1.5 truncate text-lg font-bold text-student-text">
-            {title || `${studentWritingAssignmentTitle(first)} 等 ${assignments.length} 篇`}
+            {title || `${studentWritingAssignmentTitle(first)} 等 ${assignments.length} ${itemUnit}`}
           </h2>
           <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-student-muted">
             <span>
-              {submittedCount} / {assignments.length} 已提交
-              {completedCount ? ` · ${completedCount} 篇已完成批改` : ""}
+              {reviewBased
+                ? `${submittedCount} / ${assignments.length} 已提交${progress.publishedCount ? ` · ${progress.publishedCount} 篇已完成批改` : ""}`
+                : `${completedCount} / ${assignments.length} 已完成`}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <CalendarClock aria-hidden="true" size={14} />
@@ -325,21 +335,6 @@ function StudentWritingAssignmentGroupCard({
   );
 }
 
-function studentGroupDisplayStatus(
-  assignments: StudentWritingAssignmentSummary[]
-): StudentWritingAssignmentDisplayStatus {
-  const rank: Record<StudentWritingAssignmentDisplayStatus, number> = {
-    overdue: 0,
-    not_started: 1,
-    in_progress: 2,
-    submitted: 3,
-    completed: 4
-  };
-  return assignments
-    .map((assignment) => getStudentWritingAssignmentDisplayStatus(assignment))
-    .sort((left, right) => rank[left] - rank[right])[0] ?? "not_started";
-}
-
 export function StudentWritingAssignmentEntry({
   assignmentId,
   attemptId,
@@ -353,13 +348,28 @@ export function StudentWritingAssignmentEntry({
     studentWritingAssignmentEntryCacheKey(assignmentId),
     (session) => loadStudentWritingAssignmentEntry(assignmentId, session)
   );
-  if (state.loading) return <AssignmentEntryMessage text="正在准备写作作业..." />;
+  if (state.loading) return <AssignmentEntryMessage text="正在准备作业..." />;
   const assignment = state.data?.assignment;
   if (state.error || !assignment) {
-    return <AssignmentEntryMessage text="未找到这项写作作业。" />;
+    return <AssignmentEntryMessage text="未找到这项作业。" />;
   }
   if (assignment.status === "withdrawn" && !attemptId) {
     return <AssignmentEntryMessage text="该作业已被教师撤回。" />;
+  }
+  // WE / AD keep the existing WritingPractice entry (assignmentId included).
+  // Every read-only item enters its own existing practice route; the Assignment
+  // never re-implements a practice page.
+  if (!isWritingReviewItemType(assignment.task_type)) {
+    return (
+      <StudentAssignmentPracticeRedirect
+        href={studentAssignmentPracticeHref({
+          assignmentId: assignment.assignment_id,
+          itemId: assignment.question_id,
+          sourceSetId: assignment.source_set_id,
+          taskType: assignment.task_type
+        })}
+      />
+    );
   }
   return (
     <WritingPractice
@@ -368,6 +378,18 @@ export function StudentWritingAssignmentEntry({
       forceNew={forceNew}
       questionId={assignment.question_id}
       taskType={assignment.task_type}
+    />
+  );
+}
+
+function StudentAssignmentPracticeRedirect({ href }: { href: string | null }) {
+  const router = useRouter();
+  useEffect(() => {
+    if (href) router.replace(href);
+  }, [href, router]);
+  return (
+    <AssignmentEntryMessage
+      text={href ? "正在进入练习..." : "这项作业的题目暂时不可用。"}
     />
   );
 }
@@ -520,7 +542,7 @@ function CalendarAssignmentTitle({
           ? "block truncate whitespace-nowrap"
           : "[display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]"
       )}>
-        {WRITING_TASK_CONFIG[assignment.task_type].label}: {assignment.title}
+        {assignmentItemTypeLabel(assignment.task_type)}: {assignment.title}
       </span>
     </span>
   );
@@ -556,24 +578,49 @@ function StudentWritingAssignmentCard({
   questionTitleOnly?: boolean;
   returnTo?: string;
 }) {
-  const config = WRITING_TASK_CONFIG[assignment.task_type];
-  const TaskIcon = assignment.task_type === "email" ? Mail : MessageCircleMore;
+  const reviewType = isWritingReviewItemType(assignment.task_type);
+  const writingConfig = assignment.task_type === "email"
+    || assignment.task_type === "academic_discussion"
+    ? WRITING_TASK_CONFIG[assignment.task_type]
+    : null;
+  const TaskIcon = STUDENT_PRACTICE_ICONS[assignment.task_type] ?? FilePenLine;
   const entryHref = `${STUDENT_ROUTES.assignments}/${encodeURIComponent(
     assignment.assignment_id
   )}`;
-  const submissionHref = assignment.latest_submitted_attempt_id
-    ? `${config.submissionHref}/${encodeURIComponent(
+  const practiceHref = studentAssignmentPracticeHref({
+    assignmentId: assignment.assignment_id,
+    itemId: assignment.question_id,
+    sourceSetId: assignment.source_set_id,
+    taskType: assignment.task_type
+  });
+  const resultHref = studentAssignmentResultHref({
+    attemptId: assignment.latest_result_attempt_id,
+    itemId: assignment.question_id,
+    taskType: assignment.task_type
+  });
+  const completed = isStudentAssignmentItemCompleted(assignment);
+  const started = hasStudentAssignmentItemStarted(assignment);
+  const submissionHref = reviewType && writingConfig && assignment.latest_submitted_attempt_id
+    ? `${writingConfig.submissionHref}/${encodeURIComponent(
         assignment.latest_submitted_attempt_id
       )}`
     : null;
-  const reviewHref = assignment.published_review_attempt_id
+  const reviewHref = reviewType && assignment.published_review_attempt_id
     ? writingReviewResultHref(
         assignment.published_review_attempt_id,
         returnTo
       )
     : null;
-  const withdrawnWithoutSubmission =
-    assignment.status === "withdrawn" && !assignment.latest_submitted_attempt_id;
+  const readingRetakeType = assignment.task_type === "ctw"
+    || assignment.task_type === "rdl"
+    || assignment.task_type === "rap";
+  const primaryRetake =
+    completed
+    && assignment.status === "active"
+    && (readingRetakeType || assignment.task_type === "full_set");
+  const withdrawnWithoutProgress = reviewType
+    ? assignment.status === "withdrawn" && !assignment.latest_submitted_attempt_id
+    : assignment.status === "withdrawn" && !completed;
 
   return (
     <article className="student-card grid gap-4 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5">
@@ -612,7 +659,7 @@ function StudentWritingAssignmentCard({
               </span>
             ) : null}
           </div>
-          {withdrawnWithoutSubmission ? (
+          {withdrawnWithoutProgress ? (
             <p className="mt-2 text-sm font-semibold text-student-muted">
               该作业已被教师撤回。
             </p>
@@ -620,28 +667,68 @@ function StudentWritingAssignmentCard({
         </div>
       </div>
       <div className="flex flex-wrap justify-start gap-2 sm:max-w-[390px] sm:justify-end">
-        {assignment.status === "active" && assignment.draft_attempt_id ? (
-          <AssignmentAction
-            href={`${entryHref}?attempt=${encodeURIComponent(assignment.draft_attempt_id)}`}
-            icon={FilePenLine}
-            label="继续作答"
-            primary
-          />
-        ) : null}
-        {submissionHref ? (
-          <AssignmentAction href={submissionHref} icon={Eye} label="查看提交" />
-        ) : null}
-        {reviewHref ? (
-          <AssignmentAction href={reviewHref} icon={FileCheck2} label="查看批改" primary />
-        ) : null}
-        {assignment.status === "active" && !assignment.draft_attempt_id ? (
-          <AssignmentAction
-            href={assignment.latest_submitted_attempt_id ? `${entryHref}?new=1` : entryHref}
-            icon={assignment.latest_submitted_attempt_id ? RotateCcw : Play}
-            label={assignment.latest_submitted_attempt_id ? "重新作答" : "开始作业"}
-            primary={!reviewHref}
-          />
-        ) : null}
+        {reviewType ? (
+          <>
+            {assignment.status === "active" && assignment.draft_attempt_id ? (
+              <AssignmentAction
+                href={`${entryHref}?attempt=${encodeURIComponent(assignment.draft_attempt_id)}`}
+                icon={FilePenLine}
+                label="继续作答"
+                primary
+              />
+            ) : null}
+            {submissionHref ? (
+              <AssignmentAction href={submissionHref} icon={Eye} label="查看提交" />
+            ) : null}
+            {reviewHref ? (
+              <AssignmentAction href={reviewHref} icon={FileCheck2} label="查看批改" primary />
+            ) : null}
+            {assignment.status === "active" && !assignment.draft_attempt_id ? (
+              <AssignmentAction
+                href={assignment.latest_submitted_attempt_id ? `${entryHref}?new=1` : entryHref}
+                icon={assignment.latest_submitted_attempt_id ? RotateCcw : Play}
+                label={assignment.latest_submitted_attempt_id ? "重新作答" : "开始作业"}
+                primary={!reviewHref}
+              />
+            ) : null}
+          </>
+        ) : (
+          <>
+            {resultHref ? (
+              <AssignmentAction
+                href={resultHref}
+                icon={Eye}
+                label="查看结果"
+                primary={!primaryRetake}
+              />
+            ) : null}
+            {completed && assignment.status === "active" && readingRetakeType && assignment.latest_result_attempt_id ? (
+              <ReadingRetakeButton
+                attemptId={assignment.latest_result_attempt_id}
+                compact
+                label="重新练习"
+              />
+            ) : null}
+            {completed && assignment.status === "active" && assignment.task_type === "full_set" ? (
+              <ReadingFullSetRetakeButton
+                compact
+                fullSetId={assignment.question_id}
+                label="重新练习"
+              />
+            ) : null}
+            {completed && assignment.status === "active" && assignment.task_type === "build_sentence" && practiceHref ? (
+              <AssignmentAction href={practiceHref} icon={RotateCcw} label="重新练习" />
+            ) : null}
+            {!completed && assignment.status === "active" && practiceHref ? (
+              <AssignmentAction
+                href={practiceHref}
+                icon={started ? FilePenLine : Play}
+                label={started ? "继续练习" : "开始练习"}
+                primary
+              />
+            ) : null}
+          </>
+        )}
       </div>
     </article>
   );
@@ -706,11 +793,17 @@ type StudentWritingAssignmentEntryPayload = {
   assignment: {
     assignment_id: string;
     question_id: string;
+    source_set_id?: string | null;
     status: "active" | "withdrawn";
-    task_type: "email" | "academic_discussion";
+    task_type: AssignmentItemType;
   };
   error?: string;
 };
+
+/** 写作 counts 篇, 阅读 counts 题; both keep the existing card text. */
+function studentAssignmentItemUnit(taskType: AssignmentItemType | undefined) {
+  return taskType && assignmentItemSubject(taskType) === "reading" ? "题" : "篇";
+}
 
 type CalendarCell = {
   dateKey: string;

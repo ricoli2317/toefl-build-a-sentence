@@ -3,6 +3,7 @@ import { STUDENT_UI_TEXT } from "./studentUiText.ts";
 export const STUDENT_ROUTES = {
   home: "/student/sets",
   buildASentence: "/student/practice-sets",
+  buildASentencePractice: "/student/practice",
   writeEmail: "/student/write-email",
   academicDiscussion: "/student/academic-discussion",
   assignments: "/student/assignments",

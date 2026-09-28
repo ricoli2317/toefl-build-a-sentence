@@ -48,3 +48,6 @@ pnpm-debug.log*
 .DS_Store
 
 .codex/*.local
+
+# local browser verification screenshots (OpenChamber browser panel)
+.openchamber/screenshots/

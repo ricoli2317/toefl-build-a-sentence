@@ -14,7 +14,7 @@ export default function StudentAssignmentsPage({
     ? requestedMonth
     : assignmentMonthKey();
   return (
-    <StudentPage subtitle="查看教师布置的写作任务，继续草稿或查看已发布批改。" title="我的作业">
+    <StudentPage subtitle="查看教师布置的作业，继续练习或查看结果。" title="我的作业">
       <StudentWritingAssignmentCalendar initialMonth={initialMonth} />
     </StudentPage>
   );

@@ -8,7 +8,7 @@ export default function StudentWritingAssignmentCollectionPage({
 }) {
   return (
     <StudentPage
-      subtitle="每篇写作都可以分别开始、保存草稿和提交。"
+      subtitle="每一项作业都可以独立开始、继续和完成。"
       title="作业详情"
     >
       <StudentWritingAssignmentCollectionDetail collectionId={params.batchId} />

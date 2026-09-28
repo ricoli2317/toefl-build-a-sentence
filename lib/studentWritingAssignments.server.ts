@@ -2,16 +2,32 @@ import { createServiceSupabase } from "@/lib/supabase/server";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
 import { loadWritingAssignmentGroupTitles } from "@/lib/writingAssignmentsGroupTitles.server";
 import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
-import type { WritingAttempt, WritingMode, WritingTaskType } from "@/lib/writing";
+import type { WritingAttempt, WritingMode } from "@/lib/writing";
+import type { AssignmentItemType } from "@/lib/assignmentCatalog";
+import {
+  assignmentStudentResult,
+  loadAssignmentStudentResults,
+  type AssignmentResultLookupItem,
+  type AssignmentStudentResultMap
+} from "@/lib/assignmentResults.server";
 import {
   calculateWritingAssignmentStudentStatus,
   compareStudentWritingAssignments,
   earliestWritingAssignmentSubmission,
+  isWritingReviewItemType,
   type StudentWritingAssignmentSummary,
   type WritingAssignmentLifecycleStatus,
   type WritingAssignmentQuestionSource
 } from "@/lib/writingAssignments";
 
+/**
+ * The student Assignment detail index.
+ *
+ * It stays one database-bounded query for the memberships plus batched
+ * hydration: writing attempts only for WE / AD, and one batched result lookup
+ * for every read-only item (BAS / CTW / RDL / RAP / Full Set). No question
+ * bodies, no per-item queries and no full attempt history are read here.
+ */
 export const STUDENT_ASSIGNMENT_DETAIL_SELECT = `
   assignment_id,
   assigned_at,
@@ -21,7 +37,10 @@ export const STUDENT_ASSIGNMENT_DETAIL_SELECT = `
     group_position,
     task_type,
     question_source,
-    question_id:question_snapshot->>question_id,
+    question_id,
+    snapshot_question_id:question_snapshot->>question_id,
+    snapshot_item_id:question_snapshot->>item_id,
+    snapshot_source_set_id:question_snapshot->>source_set_id,
     title:question_snapshot->>set_title,
     due_at,
     status,
@@ -33,9 +52,12 @@ type EmbeddedAssignmentRow = {
   assignment_id: string;
   group_id: string | null;
   group_position: number | null;
-  task_type: WritingTaskType;
+  task_type: AssignmentItemType;
   question_source: WritingAssignmentQuestionSource;
-  question_id: string;
+  question_id: string | null;
+  snapshot_question_id: string | null;
+  snapshot_item_id: string | null;
+  snapshot_source_set_id: string | null;
   title: string;
   due_at: string | null;
   status: WritingAssignmentLifecycleStatus;
@@ -76,40 +98,69 @@ export async function loadStudentAssignmentDetails(input: {
   if (rows.length === 0) return { assignments: [] as StudentWritingAssignmentSummary[] };
 
   const assignmentIds = rows.map(({ assignment }) => assignment.assignment_id);
-  const [attemptResult, displayNames, groupTitles] = await Promise.all([
-    measureDatabase(input.timing, "assignment_day_attempts_and_reviews", () =>
-      createServiceSupabase()
-        .from("writing_attempts")
-        .select(`
-          assignment_id,
-          attempt_id,
-          status,
-          writing_mode,
-          submitted_at,
-          created_at,
-          updated_at,
-          writing_reviews(status,published_at)
-        `)
-        .eq("user_id", input.userId)
-        .in("assignment_id", assignmentIds)
-        .order("updated_at", { ascending: false })
-        .limit(5000)
-    ),
+  // The read-only item lookup is one batched query per table for the whole
+  // visible list; nothing is fetched per item.
+  const resultItems: AssignmentResultLookupItem[] = rows.flatMap(({ assignment }) => {
+    if (isWritingReviewItemType(assignment.task_type)) return [];
+    const itemId = resolvedAssignmentItemId(assignment);
+    return itemId
+      ? [{
+          assignmentId: assignment.assignment_id,
+          itemId,
+          itemType: assignment.task_type,
+          sourceSetId: assignment.snapshot_source_set_id
+        }]
+      : [];
+  });
+  const reviewRows = rows.filter(({ assignment }) =>
+    isWritingReviewItemType(assignment.task_type)
+  );
+  const db = createServiceSupabase();
+  const [attemptResult, displayNames, groupTitles, studentResultMap] = await Promise.all([
+    reviewRows.length > 0
+      ? measureDatabase(input.timing, "assignment_day_attempts_and_reviews", () =>
+          db
+            .from("writing_attempts")
+            .select(`
+              assignment_id,
+              attempt_id,
+              status,
+              writing_mode,
+              submitted_at,
+              created_at,
+              updated_at,
+              writing_reviews(status,published_at)
+            `)
+            .eq("user_id", input.userId)
+            .in("assignment_id", assignmentIds)
+            .order("updated_at", { ascending: false })
+            .limit(5000)
+        )
+      : Promise.resolve({ data: [] as AttemptRow[], error: null }),
     loadWritingAssignmentDisplayNames(
-      createServiceSupabase(),
-      rows.map(({ assignment }) => ({
+      db,
+      reviewRows.map(({ assignment }) => ({
         assignmentId: assignment.assignment_id,
         fallbackDisplayName: assignment.title?.trim() || "未命名作业",
-        questionId: assignment.question_id,
+        questionId: resolvedAssignmentItemId(assignment),
         questionSource: assignment.question_source,
-        taskType: assignment.task_type
+        taskType: assignment.task_type as "email" | "academic_discussion"
       })),
       input.timing
     ),
     loadWritingAssignmentGroupTitles(
-      createServiceSupabase(),
+      db,
       rows.map(({ assignment }) => assignment.group_id)
-    )
+    ),
+    resultItems.length > 0
+      ? measureDatabase(input.timing, "assignment_item_results", () =>
+          loadAssignmentStudentResults({
+            db,
+            items: resultItems,
+            studentIds: [input.userId]
+          })
+        )
+      : Promise.resolve<AssignmentStudentResultMap>(new Map())
   ]);
   if (attemptResult.error) return { assignments: null, error: attemptResult.error };
 
@@ -143,6 +194,10 @@ export async function loadStudentAssignmentDetails(input: {
       submitted.map((attempt) => attempt.submitted_at)
     );
     const published = submitted.find((attempt) => publishedAttemptIds.has(attempt.attempt_id));
+    const reviewType = isWritingReviewItemType(assignment.task_type);
+    const itemResult = reviewType
+      ? null
+      : assignmentStudentResult(studentResultMap, assignment.assignment_id, input.userId);
     return {
       assignment_id: assignment.assignment_id,
       group_id: assignment.group_id,
@@ -160,7 +215,14 @@ export async function loadStudentAssignmentDetails(input: {
       first_submitted_at: firstSubmittedAt,
       latest_submitted_attempt_id: submitted[0]?.attempt_id ?? null,
       published_review_attempt_id: published?.attempt_id ?? null,
-      question_id: assignment.question_id,
+      latest_result_attempt_id: itemResult?.available_result
+        ? assignment.task_type === "build_sentence"
+          ? itemResult.available_result.attempt_id ?? null
+          : itemResult.available_result.id
+        : null,
+      has_started_result: Boolean(itemResult?.started),
+      question_id: resolvedAssignmentItemId(assignment),
+      source_set_id: assignment.snapshot_source_set_id?.trim() || null,
       question_source: assignment.question_source,
       status: assignment.status,
       student_status: calculateWritingAssignmentStudentStatus({
@@ -173,6 +235,22 @@ export async function loadStudentAssignmentDetails(input: {
   });
   assignments.sort(compareStudentWritingAssignments);
   return { assignments };
+}
+
+/**
+ * One identity resolution for every Assignment item type. Historical Writing
+ * rows keep the persisted snapshot question id (custom items included); the
+ * read-only item types store their stable item id on the row itself.
+ */
+export function resolvedAssignmentItemId(assignment: {
+  question_id: string | null;
+  snapshot_question_id?: string | null;
+  snapshot_item_id?: string | null;
+}) {
+  return assignment.question_id?.trim()
+    || assignment.snapshot_question_id?.trim()
+    || assignment.snapshot_item_id?.trim()
+    || "";
 }
 
 export function embeddedAssignment<T>(value: T | T[] | null) {

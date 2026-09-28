@@ -1,8 +1,9 @@
-import type { WritingTaskType } from "@/lib/writing";
+import type { AssignmentItemType } from "@/lib/assignmentCatalog";
 import {
   assignmentDateKey,
   assignmentMonthRange,
   isAssignmentMonthKey,
+  isWritingReviewItemType,
   type StudentWritingAssignmentCalendarItem,
   type WritingAssignmentQuestionSource
 } from "@/lib/writingAssignments";
@@ -18,7 +19,7 @@ export const dynamic = "force-dynamic";
 type CalendarAssignmentRow = {
   assignment_id: string;
   group_id: string | null;
-  task_type: WritingTaskType;
+  task_type: AssignmentItemType;
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
   title: string | null;
@@ -81,14 +82,19 @@ export async function GET(request: Request) {
         if (!assignment || !date || !fallbackDisplayName) return [];
         return [{ assignment, date, fallbackDisplayName }];
       });
+    // Only the WE / AD review types have a question-bank display name; every
+    // read-only type (BAS / Reading) shows its persisted snapshot title.
+    const reviewEntries = entries.filter(({ assignment }) =>
+      isWritingReviewItemType(assignment.task_type)
+    );
     const displayNames = await loadWritingAssignmentDisplayNames(
       createServiceSupabase(),
-      entries.map(({ assignment, fallbackDisplayName }) => ({
+      reviewEntries.map(({ assignment, fallbackDisplayName }) => ({
         assignmentId: String(assignment.assignment_id),
         fallbackDisplayName,
         questionId: assignment.question_id,
         questionSource: assignment.question_source,
-        taskType: assignment.task_type
+        taskType: assignment.task_type as "email" | "academic_discussion"
       })),
       timing
     );

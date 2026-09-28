@@ -71,6 +71,9 @@ const BASE_INVALIDATION_MATRIX: Record<
     "studentPracticeState",
     "studentPracticeHistory",
     "studentWrongQuestions",
+    // A BAS item can be one item of an Assignment Group, so its own attempt
+    // is also the completion signal for the Assignment cards.
+    "studentAssignments",
     "teacherStats",
     "teacherDashboard"
   ],

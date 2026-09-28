@@ -129,23 +129,32 @@ export async function loadAssignmentStudentResults(input: {
     }
   }
 
-  const basAttemptedSets = new Map<string, string | null>();
+  const basAttemptedSets = new Map<string, { attemptId: string | null; submittedAt: string | null }>();
   for (const row of basRows) {
     const key = `${String(row.set_id)}:${row.student_id}`;
     const current = basAttemptedSets.get(key);
-    if (current === undefined || (row.submitted_at && (!current || row.submitted_at > current))) {
-      basAttemptedSets.set(key, row.submitted_at);
+    if (
+      !current
+      || (row.submitted_at && (!current.submittedAt || row.submitted_at > current.submittedAt))
+    ) {
+      basAttemptedSets.set(key, {
+        attemptId: String(row.attempt_id),
+        submittedAt: row.submitted_at
+      });
     }
   }
   for (const item of basItems) {
     for (const studentId of studentIds) {
       const key = `${item.sourceSetId}:${studentId}`;
-      if (!basAttemptedSets.has(key)) continue;
+      const attempted = basAttemptedSets.get(key);
+      if (!attempted) continue;
       setResult(results, item.assignmentId, studentId, {
         // The existing teacher 套题记录 route is keyed by the raw set id, not the
-        // attempt id; the set page then lists the student's own attempts.
+        // attempt id; the set page then lists the student's own attempts. The
+        // student result route is keyed by the latest submitted attempt id.
         available_result: {
-          completed_at: basAttemptedSets.get(key) ?? null,
+          attempt_id: attempted.attemptId,
+          completed_at: attempted.submittedAt,
           id: item.sourceSetId!,
           kind: "bas_set"
         },

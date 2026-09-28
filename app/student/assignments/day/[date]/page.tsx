@@ -10,7 +10,7 @@ export default function StudentWritingAssignmentDayPage({
   const valid = isAssignmentDateKey(params.date);
   return (
     <StudentPage
-      subtitle="仅显示这一天布置的写作任务。"
+      subtitle="仅显示这一天布置的作业。"
       title={valid ? formatAssignmentDate(params.date) : "作业日期无效"}
     >
       {valid ? (
