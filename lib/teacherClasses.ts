@@ -138,23 +138,6 @@ export function classAssignmentTitleBase(className: string, assignedAt: Date | s
 }
 
 /**
- * Removing Writing from a class (subjects or a member removal decision) is the
- * only case where the teacher must decide about the writing relation. Reading
- * never asks.
- */
-export function writingDecisionRequired(previousSubjects: unknown, nextSubjects: unknown) {
-  return classIncludesWriting(normalizeClassSubjects(previousSubjects))
-    && !classIncludesWriting(normalizeClassSubjects(nextSubjects));
-}
-
-/** Domains to release for a teacher decision. "keep" releases nothing. */
-export function writingDecisionReleasedDomains(
-  decision: "keep" | "remove"
-): StudentBindingDomain[] {
-  return decision === "remove" ? ["writing"] : [];
-}
-
-/**
  * Per-student completion over exactly the supplied class items. Callers pass
  * only the items of one class, so direct (one-to-one) assignments and other
  * classes can never leak into the rate.

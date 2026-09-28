@@ -18,9 +18,7 @@ import {
   normalizeClassSubjects,
   parseClassMemberInputs,
   validateClassName,
-  writingClassesOnly,
-  writingDecisionReleasedDomains,
-  writingDecisionRequired
+  writingClassesOnly
 } from "../lib/teacherClasses.ts";
 import {
   accountAutoSuffixAllowed,
@@ -170,17 +168,17 @@ test("class assignment recipients are the creation-time member snapshot", () => 
   );
 });
 
-test("removing a member never touches assignment, attempt or review history", () => {
+test("removing a member only deletes the membership row", () => {
   const removeRpc = rpcBlock("remove_class_member");
   assert.doesNotMatch(removeRpc, /writing_assignments/);
   assert.doesNotMatch(removeRpc, /writing_attempts/);
   assert.doesNotMatch(removeRpc, /writing_reviews/);
   assert.match(removeRpc, /delete from public\.class_members/);
-  // The released writing relation is scoped to the current teacher only.
-  assert.match(
-    removeRpc,
-    /delete from public\.teacher_student_bindings[\s\S]{0,200}teacher_id = p_teacher_id/
-  );
+  // The RPC keeps its legacy optional binding release, but the app always
+  // calls it with false, so memberships and bindings are fully independent.
+  const server = read("lib/teacherClasses.server.ts");
+  const removeCall = server.slice(server.indexOf('db.rpc("remove_class_member"'));
+  assert.match(removeCall.slice(0, 320), /p_remove_writing: false/);
 });
 
 // 12 + 13 + 14: titles
@@ -275,27 +273,41 @@ test("class lists, filters and reviews never mix classes or direct assignments",
   assert.match(server, /groupToClass\.get\(String\(row\.group_id\)\)/);
 });
 
-// 18 + 19 + 20: writing decisions, teacher isolation, no Reading prompts
-test("writing removal decisions map to the documented binding changes", () => {
-  assert.deepEqual(writingDecisionReleasedDomains("keep"), []);
-  assert.deepEqual(writingDecisionReleasedDomains("remove"), ["writing"]);
-  assert.equal(writingDecisionRequired(["reading", "writing"], ["reading"]), true);
-  assert.equal(writingDecisionRequired(["reading", "writing"], ["reading", "writing"]), false);
-  assert.equal(writingDecisionRequired(["reading"], ["reading", "writing"]), false);
-  // Reading never asks.
-  assert.equal(writingDecisionRequired(["reading"], ["reading"]), false);
-
-  const memberRoute = read("app/api/teacher/classes/[classId]/members/[studentId]/route.ts");
-  assert.match(memberRoute, /classIncludesWriting\(subjects\) && decision !== "keep" && decision !== "remove"/);
-  assert.match(memberRoute, /decision === "remove"/);
+// 18 + 19 + 20: frozen binding rules, teacher isolation, no Writing prompts
+test("class subject and membership changes never release a member binding", () => {
+  // Removing a class subject only updates the class row plus the missing
+  // bindings for the remaining subjects; existing bindings stay untouched.
   const server = read("lib/teacherClasses.server.ts");
-  assert.match(server, /p_remove_writing/);
+  const updateCall = server.slice(server.indexOf('db.rpc("update_class_subjects"'));
+  assert.match(updateCall.slice(0, 320), /p_remove_writing: false/);
+  const releaseCalls = server.match(/p_remove_writing: false/g) ?? [];
+  assert.equal(releaseCalls.length, 2);
+  assert.doesNotMatch(server, /removeWriting/);
+  assert.doesNotMatch(server, /writingDecision/);
+
+  // The old 是否继续接收写作作业 decision is gone from both API routes.
+  const subjectsRoute = read("app/api/teacher/classes/[classId]/route.ts");
+  assert.match(subjectsRoute, /updateTeacherClassSubjects\(/);
+  assert.doesNotMatch(subjectsRoute, /writingDecision/);
+  assert.doesNotMatch(subjectsRoute, /WRITING_DECISION_REQUIRED/);
+  const memberRoute = read("app/api/teacher/classes/[classId]/members/[studentId]/route.ts");
+  assert.match(memberRoute, /removeTeacherClassMember\(/);
+  assert.doesNotMatch(memberRoute, /writingDecision/);
+  assert.doesNotMatch(memberRoute, /WRITING_DECISION_REQUIRED/);
+
   const detail = read("components/teacher/TeacherClassDetail.tsx");
-  assert.match(detail, /if \(!classIncludesWriting\(detail\.class\.subjects\)\)/);
-  assert.match(detail, /void removeMember\(member, null\)/);
-  assert.match(detail, /是否继续接收他的写作练习/);
-  assert.match(detail, /继续接收/);
-  assert.match(detail, /不再接收/);
+  assert.doesNotMatch(detail, /是否继续接收/);
+  assert.doesNotMatch(detail, /继续接收|不再接收/);
+  assert.doesNotMatch(detail, /writingDecision/);
+  // The detail modal and the home class list share one client request helper.
+  assert.match(detail, /updateTeacherClassSubjectsRequest/);
+  const client = read("lib/teacherClassClient.ts");
+  assert.match(client, /export async function updateTeacherClassSubjectsRequest/);
+  assert.match(client, /applyClassSubjectsMutation/);
+  const classList = read("components/teacher/TeacherClassList.tsx");
+  assert.match(classList, /updateTeacherClassSubjectsRequest/);
+  assert.match(classList, /applyClassSubjectsMutation/);
+  assert.doesNotMatch(classList, /teacher_student_bindings|student-bindings/);
 });
 
 test("classes never create a teacher-student relation from an arbitrary id", () => {

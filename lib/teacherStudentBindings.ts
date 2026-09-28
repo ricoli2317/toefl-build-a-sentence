@@ -262,6 +262,27 @@ export async function createTeacherStudentBindings(
 }
 
 /**
+ * Removes exactly one teacher/student/domain binding. The caller supplies the
+ * teacher id from the authenticated session, so a request can never delete
+ * another teacher's binding for the same student. Deleting a binding never
+ * touches class subjects or class memberships.
+ */
+export async function removeTeacherStudentBinding(
+  supabase: SupabaseClient,
+  input: { teacherId: string; studentId: string; domain: StudentBindingDomain }
+): Promise<{ ok: true; removed: boolean } | { ok: false; error: string }> {
+  const result = await supabase
+    .from("teacher_student_bindings")
+    .delete()
+    .eq("teacher_id", input.teacherId)
+    .eq("student_id", input.studentId)
+    .eq("domain", input.domain)
+    .select("binding_id");
+  if (result.error) return { ok: false, error: result.error.message };
+  return { ok: true, removed: (result.data?.length ?? 0) > 0 };
+}
+
+/**
  * Removes a student account created during a failed request. Deleting the
  * profile row cascades to teacher_student_bindings, so no half-created
  * student or partial binding remains.

@@ -5,7 +5,8 @@ import { UsersRound } from "lucide-react";
 import { TeacherClassIcon } from "@/components/icons/TeacherClassIcon";
 import {
   TEACHER_CLASSES_CACHE_KEY,
-  useTeacherCachedData
+  useTeacherCachedData,
+  useTeacherDataCache
 } from "@/components/TeacherDataCache";
 import {
   TeacherDataError,
@@ -13,8 +14,16 @@ import {
   TeacherSkeleton,
   TeacherTextLink
 } from "@/components/teacher/TeacherUI";
-import { SubjectChip } from "@/components/teacher/TeacherStudentOverview";
+import { SubjectBindingBadges } from "@/components/teacher/SubjectBadges";
+import {
+  STUDENT_BINDING_DOMAINS,
+  type StudentBindingDomain
+} from "@/lib/studentBindings";
 import { filterClassSummariesByName, type TeacherClassSummary } from "@/lib/teacherClasses";
+import {
+  applyClassSubjectsMutation,
+  updateTeacherClassSubjectsRequest
+} from "@/lib/teacherClassClient";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 
 type ClassListResponse = { classes: TeacherClassSummary[] };
@@ -22,13 +31,39 @@ type ClassListResponse = { classes: TeacherClassSummary[] };
 /**
  * 班级列表 of the home list card. One row per class with the minimum the card
  * needs; member counts come from the list payload and never trigger per-class
- * requests.
+ * requests. The 授课科目 column edits the CLASS subject set only (removing a
+ * subject never releases a member's binding).
  */
 export function TeacherClassList({ query }: { query: string }) {
+  const cache = useTeacherDataCache();
   const { data, error, loading } = useTeacherCachedData<ClassListResponse>(
     TEACHER_CLASSES_CACHE_KEY,
     () => teacherApiFetch("/api/teacher/classes")
   );
+
+  async function mutateClassSubjects(
+    entry: TeacherClassSummary,
+    next: StudentBindingDomain[]
+  ) {
+    const payload = await updateTeacherClassSubjectsRequest(entry.class_id, next);
+    applyClassSubjectsMutation(cache, payload);
+  }
+
+  async function addClassSubject(entry: TeacherClassSummary, domain: StudentBindingDomain) {
+    await mutateClassSubjects(
+      entry,
+      STUDENT_BINDING_DOMAINS.filter(
+        (item) => item === domain || entry.subjects.includes(item)
+      )
+    );
+  }
+
+  async function removeClassSubject(entry: TeacherClassSummary, domain: StudentBindingDomain) {
+    await mutateClassSubjects(
+      entry,
+      entry.subjects.filter((item) => item !== domain)
+    );
+  }
 
   if (loading) return <ClassTableSkeleton />;
   if (error) {
@@ -76,13 +111,22 @@ export function TeacherClassList({ query }: { query: string }) {
                 </div>
               </td>
               <td className="px-3 py-3">
-                <div className="flex flex-wrap gap-1.5">
-                  {entry.subjects.length > 0 ? (
-                    entry.subjects.map((domain) => <SubjectChip domain={domain} key={domain} />)
-                  ) : (
-                    <span className="text-student-muted">—</span>
-                  )}
-                </div>
+                {entry.subjects.length > 0 ? (
+                  <SubjectBindingBadges
+                    actionFallback="授课科目更新失败，请稍后重试。"
+                    domains={entry.subjects}
+                    onAddDomain={(domain) => addClassSubject(entry, domain)}
+                    onRemoveDomain={(domain) => removeClassSubject(entry, domain)}
+                    removeBlockedReason={() =>
+                      // The class subject set is constrained to 1..2 by the
+                      // database; removing the last subject is not possible.
+                      entry.subjects.length <= 1 ? "班级至少保留一个授课科目。" : null
+                    }
+                    removeSubjectLabel="该班级"
+                  />
+                ) : (
+                  <span className="text-student-muted">—</span>
+                )}
               </td>
               <td className="px-3 py-3 tabular-nums text-student-text">
                 <span className="inline-flex items-center gap-2">

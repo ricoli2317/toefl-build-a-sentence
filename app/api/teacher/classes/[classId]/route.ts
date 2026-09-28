@@ -4,8 +4,7 @@ import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   normalizeClassSubjects,
   validateClassName,
-  validateClassSubjects,
-  writingDecisionRequired
+  validateClassSubjects
 } from "@/lib/teacherClasses";
 import {
   loadTeacherClassDetail,
@@ -81,27 +80,13 @@ export async function PATCH(
       const subjects = validateClassSubjects(body.subjects);
       if (!subjects.ok) return json({ code: "INVALID_CLASS", error: subjects.error }, { status: 400 });
 
-      const classRow = await loadTeacherClassRow(db, auth.userId, params.classId);
-      if (!classRow) return json({ code: "CLASS_NOT_FOUND", error: "班级不存在或无权操作。" }, { status: 404 });
-      const previousSubjects = normalizeClassSubjects(classRow.subjects);
-      const needsWritingDecision = writingDecisionRequired(previousSubjects, subjects.subjects);
-      const decision = body.writingDecision;
-      if (needsWritingDecision && decision !== "keep" && decision !== "remove") {
-        return json(
-          {
-            code: "WRITING_DECISION_REQUIRED",
-            error: "请选择是否继续接收这些学生的写作练习。"
-          },
-          { status: 400 }
-        );
-      }
-
+      // Subject changes only ever add the required member bindings; removing a
+      // subject from a class never releases a student's binding.
       const updated = await updateTeacherClassSubjects(
         db,
         auth.userId,
         params.classId,
-        subjects.subjects,
-        needsWritingDecision && decision === "remove"
+        subjects.subjects
       );
       if (!updated.ok) return json({ code: updated.code, error: updated.error }, { status: updated.status });
     }

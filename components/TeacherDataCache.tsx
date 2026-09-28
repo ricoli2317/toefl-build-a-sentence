@@ -41,6 +41,8 @@ export const TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX =
 export const TEACHER_CLASSES_CACHE_KEY = "teacher:classes:v1";
 export const TEACHER_CLASS_DETAIL_CACHE_PREFIX = "teacher:class-detail:v1";
 export const TEACHER_CLASS_STUDENTS_CACHE_KEY = "teacher:class-students:v1";
+export const TEACHER_STUDENT_BAS_SET_CACHE_PREFIX = "teacher:student-bas-set:v1";
+export const TEACHER_STUDENT_BAS_ANSWER_CACHE_PREFIX = "teacher:student-bas-answer:v1";
 export const TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY = "teacher:writing-class-reviews:v1";
 export const TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX =
   "teacher:writing-class-review-list:v1";
@@ -260,6 +262,13 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               invalidate(TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX);
               break;
           }
+        }
+        // A binding change that carries a student id also drops that student's
+        // cached 套题记录 / 答题详情 pages. A teacher who no longer holds any
+        // binding must never keep reading a previously loaded detail view.
+        if (event.type === "TEACHER_BINDING_UPDATED" && event.studentId) {
+          invalidate(`${TEACHER_STUDENT_BAS_SET_CACHE_PREFIX}:${event.studentId}`);
+          invalidate(`${TEACHER_STUDENT_BAS_ANSWER_CACHE_PREFIX}:${event.studentId}`);
         }
       }),
     [invalidate]

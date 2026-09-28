@@ -23,6 +23,8 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import { useCurrentAccount } from "@/components/RoleGate";
 import {
   TEACHER_STATS_CACHE_KEY,
+  TEACHER_STUDENT_BAS_ANSWER_CACHE_PREFIX,
+  TEACHER_STUDENT_BAS_SET_CACHE_PREFIX,
   useTeacherCachedData
 } from "@/components/TeacherDataCache";
 import type { StudentBindingDomain } from "@/lib/studentBindings";
@@ -306,7 +308,7 @@ export function TeacherStudentSetDetails({
   const className = useTeacherClassDisplayName(studentContext?.classId ?? "");
   const selfHref = teacherReturnToHref(teacherStudentSetDetailsHref(studentId, groupId), returnTo);
   const state = useTeacherCachedData<TeacherStudentSetDetailsPayload>(
-    `teacher:student-bas-set:v1:${studentId}:${groupId}`,
+    `${TEACHER_STUDENT_BAS_SET_CACHE_PREFIX}:${studentId}:${groupId}`,
     () => loadTeacherStudentSetDetails(studentId, groupId)
   );
   const detail = state.data;
@@ -394,7 +396,7 @@ export function TeacherStudentQuestionDetail({
   const studentContext = parseTeacherStudentChildReturnTo(returnTo);
   const className = useTeacherClassDisplayName(studentContext?.classId ?? "");
   const state = useTeacherCachedData<TeacherStudentAnswerDetailPayload>(
-    `teacher:student-bas-answer:v1:${studentId}:${attemptAnswerId}`,
+    `${TEACHER_STUDENT_BAS_ANSWER_CACHE_PREFIX}:${studentId}:${attemptAnswerId}`,
     () => loadTeacherStudentAnswerDetail(studentId, attemptAnswerId)
   );
   const detail = state.data;

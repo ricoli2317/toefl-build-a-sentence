@@ -32,9 +32,13 @@ import {
   TeacherSectionTitle,
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
-import { SubjectChip } from "@/components/teacher/TeacherStudentOverview";
+import { SubjectChip } from "@/components/teacher/SubjectBadges";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
+import {
+  applyClassSubjectsMutation,
+  updateTeacherClassSubjectsRequest
+} from "@/lib/teacherClassClient";
 import {
   teacherClassDetailHref,
   teacherReturnToHref,
@@ -64,7 +68,7 @@ type ClassMutationPayload = {
   }>;
 };
 
-type DialogState = "none" | "name" | "subjects" | "add" | "remove";
+type DialogState = "none" | "name" | "subjects" | "add";
 
 /**
  * 班级首页 / 详情: class header (rename + subjects), member list with the
@@ -87,17 +91,15 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
   const [dialog, setDialog] = useState<DialogState>("none");
   const [busy, setBusy] = useState(false);
   const [dialogError, setDialogError] = useState("");
+  const [memberError, setMemberError] = useState("");
   const [nameDraft, setNameDraft] = useState("");
   const [subjectsDraft, setSubjectsDraft] = useState<StudentBindingDomain[]>([]);
-  const [writingDecision, setWritingDecision] = useState<"keep" | "remove" | null>(null);
   const [addDrafts, setAddDrafts] = useState<ClassMemberDraft[]>([]);
-  const [removeTarget, setRemoveTarget] = useState<TeacherClassMember | null>(null);
 
   function closeDialog() {
     setDialog("none");
     setBusy(false);
     setDialogError("");
-    setRemoveTarget(null);
   }
 
   function openNameDialog() {
@@ -110,7 +112,6 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
   function openSubjectsDialog() {
     if (!detail) return;
     setSubjectsDraft(detail.class.subjects);
-    setWritingDecision(null);
     setDialogError("");
     setDialog("subjects");
   }
@@ -119,19 +120,6 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
     setAddDrafts([]);
     setDialogError("");
     setDialog("add");
-  }
-
-  function openRemoveDialog(member: TeacherClassMember) {
-    if (!detail) return;
-    // Reading-only classes remove the membership directly, without a
-    // writing-style confirmation.
-    if (!classIncludesWriting(detail.class.subjects)) {
-      void removeMember(member, null);
-      return;
-    }
-    setRemoveTarget(member);
-    setDialogError("");
-    setDialog("remove");
   }
 
   function applyDetail(payload: ClassMutationPayload, options?: { bindingsChanged?: boolean }) {
@@ -165,25 +153,14 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
   async function saveSubjects() {
     if (!detail) return;
     if (subjectsDraft.length === 0) return setDialogError("请至少选择一个授课科目。");
-    const needsDecision =
-      classIncludesWriting(detail.class.subjects) && !classIncludesWriting(subjectsDraft);
-    if (needsDecision && !writingDecision) {
-      return setDialogError("请选择是否继续接收这些学生的写作练习。");
-    }
     setBusy(true);
     setDialogError("");
     try {
-      const payload = await teacherApiFetch<ClassMutationPayload>(
-        `/api/teacher/classes/${encodeURIComponent(classId)}`,
-        {
-          method: "PATCH",
-          body: JSON.stringify({
-            subjects: subjectsDraft,
-            ...(needsDecision ? { writingDecision } : {})
-          })
-        }
-      );
-      applyDetail(payload, { bindingsChanged: true });
+      // Same request the home class list quick badges use: the class subject
+      // set is updated and missing member bindings are backfilled; removing a
+      // subject never releases a member's binding.
+      const payload = await updateTeacherClassSubjectsRequest(classId, subjectsDraft);
+      applyClassSubjectsMutation(cache, payload);
       closeDialog();
     } catch (mutation) {
       setDialogError(localizeClassError(mutation, "保存失败，请稍后重试。"));
@@ -234,22 +211,25 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
     }
   }
 
-  async function removeMember(member: TeacherClassMember, decision: "keep" | "remove" | null) {
+  /**
+   * Leaving a class only deletes the membership; the teacher's reading /
+   * writing bindings for this student always stay untouched, so there is no
+   * writing decision prompt anymore.
+   */
+  async function removeMember(member: TeacherClassMember) {
     setBusy(true);
-    setDialogError("");
+    setMemberError("");
     try {
-      const query = decision ? `?writingDecision=${decision}` : "";
       const payload = await teacherApiFetch<ClassMutationPayload>(
-        `/api/teacher/classes/${encodeURIComponent(classId)}/members/${encodeURIComponent(member.student_id)}${query}`,
+        `/api/teacher/classes/${encodeURIComponent(classId)}/members/${encodeURIComponent(member.student_id)}`,
         { method: "DELETE" }
       );
-      applyDetail(payload, { bindingsChanged: decision !== null });
+      applyDetail(payload);
       closeDialog();
     } catch (mutation) {
-      if (decision !== null) {
-        setDialogError(localizeClassError(mutation, "移除学生失败，请稍后重试。"));
-        setBusy(false);
-      }
+      setMemberError(localizeClassError(mutation, "移除学生失败，请稍后重试。"));
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -278,8 +258,6 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
 
   const { class: classInfo, members } = detail;
   const writingClass = classIncludesWriting(classInfo.subjects);
-  const needsWritingDecision =
-    classIncludesWriting(classInfo.subjects) && !classIncludesWriting(subjectsDraft);
 
   return (
     <div className="grid gap-5">
@@ -342,6 +320,7 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
       <TeacherCard className="p-0">
         <div className="px-6 pt-6">
           <TeacherSectionTitle>班级成员</TeacherSectionTitle>
+          {memberError ? <p className="teacher-error mt-3">{memberError}</p> : null}
         </div>
         <div className="overflow-x-auto px-6 pb-6 pt-4">
           <table className="w-full min-w-[720px] border-collapse text-left text-sm">
@@ -398,7 +377,8 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
                           </Link>
                           <button
                             className="teacher-button-secondary text-student-error"
-                            onClick={() => openRemoveDialog(member)}
+                            disabled={busy}
+                            onClick={() => void removeMember(member)}
                             type="button"
                           >
                             移除
@@ -436,37 +416,11 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
         <p className="text-base font-bold text-student-text">修改授课科目</p>
         <div className="mt-4">
           <TeacherSubjectFieldset
-            helpText="可同时选择阅读和写作；移除写作时会询问是否继续接收这些学生的写作练习。"
-            onChange={(next) => {
-              setSubjectsDraft(next);
-              setWritingDecision(null);
-            }}
+            helpText="可同时选择阅读和写作；取消某个科目只修改本班级的授课科目，不会解除学生已绑定的科目。"
+            onChange={setSubjectsDraft}
             value={subjectsDraft}
           />
         </div>
-        {needsWritingDecision ? (
-          <div className="mt-4 rounded-xl border border-student-primary-border bg-student-primary-soft/40 p-4">
-            <p className="text-sm font-bold text-student-text">是否继续接收这些学生的写作练习？</p>
-            <div className="mt-3 flex flex-wrap gap-3">
-              <button
-                aria-pressed={writingDecision === "keep"}
-                className={writingDecision === "keep" ? "teacher-button-primary" : "teacher-button-secondary"}
-                onClick={() => setWritingDecision("keep")}
-                type="button"
-              >
-                继续接收
-              </button>
-              <button
-                aria-pressed={writingDecision === "remove"}
-                className={writingDecision === "remove" ? "teacher-button-primary" : "teacher-button-secondary"}
-                onClick={() => setWritingDecision("remove")}
-                type="button"
-              >
-                不再接收
-              </button>
-            </div>
-          </div>
-        ) : null}
         {dialogError ? <p className="teacher-error mt-3">{dialogError}</p> : null}
         <div className="mt-6 flex justify-end gap-3">
           <button className="teacher-button-secondary" disabled={busy} onClick={closeDialog} type="button">取消</button>
@@ -499,35 +453,6 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
           <button className="teacher-button-secondary" disabled={busy} onClick={closeDialog} type="button">取消</button>
           <button className="teacher-button-primary" disabled={busy} onClick={() => void saveAddedMembers()} type="button">
             {busy ? "添加中…" : "添加"}
-          </button>
-        </div>
-      </ModalShell>
-
-      <ModalShell open={dialog === "remove" && removeTarget !== null} onClose={closeDialog}>
-        <p className="text-base font-bold text-student-text">移除学生</p>
-        <p className="mt-3 text-sm text-student-muted">
-          将「{removeTarget?.student_name ?? ""}」移出「{classInfo.name}」后，是否继续接收他的写作练习？
-        </p>
-        {dialogError ? <p className="teacher-error mt-3">{dialogError}</p> : null}
-        <div className="mt-6 grid gap-3">
-          <button
-            className="teacher-button-primary"
-            disabled={busy}
-            onClick={() => removeTarget && void removeMember(removeTarget, "keep")}
-            type="button"
-          >
-            继续接收
-          </button>
-          <button
-            className="teacher-button-secondary"
-            disabled={busy}
-            onClick={() => removeTarget && void removeMember(removeTarget, "remove")}
-            type="button"
-          >
-            不再接收
-          </button>
-          <button className="text-sm font-medium text-student-muted hover:text-student-text" onClick={closeDialog} type="button">
-            取消
           </button>
         </div>
       </ModalShell>

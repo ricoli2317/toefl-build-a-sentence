@@ -37,6 +37,12 @@ import {
   type StudentSearchMetadata
 } from "@/lib/studentSearch";
 import type { StudentBindingDomain } from "@/lib/studentBindings";
+import { STUDENT_BINDING_DOMAINS } from "@/lib/studentBindings";
+import { SubjectBindingBadges } from "@/components/teacher/SubjectBadges";
+import {
+  addStudentBindingDomains,
+  removeStudentBindingDomain
+} from "@/lib/teacherStudentBindingClient";
 import {
   formatLatestPracticeAt,
   formatPracticeDuration,
@@ -50,10 +56,6 @@ type StudentSearchEntry = StudentSearchMetadata & {
 };
 
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-const DOMAIN_LABELS: Record<StudentBindingDomain, string> = {
-  reading: "阅读",
-  writing: "写作"
-};
 
 /**
  * Lightweight student overview. It only renders the shared practice summary
@@ -108,6 +110,58 @@ export function TeacherStudentOverviewList({
   const filtered = filterStudentEntries(entries, query);
   const sections = groupStudentEntries(filtered);
   const availableLetters = new Set(sections.map(([letter]) => letter));
+
+  /**
+   * 授课科目 quick edit. It mutates exactly the current teacher's binding for
+   * this student and then patches the loaded overview row in place. The
+   * invalidation is published first (so stats/dashboard/reading surfaces
+   * refetch) and the row is re-seeded right after, which keeps the list from
+   * flashing back into a loading state.
+   */
+  async function addStudentDomain(studentId: string, domain: StudentBindingDomain) {
+    await addStudentBindingDomains(studentId, [domain]);
+    patchStudentDomains(studentId, (current) => [...current, domain]);
+  }
+
+  async function removeStudentDomain(studentId: string, domain: StudentBindingDomain) {
+    await removeStudentBindingDomain(studentId, domain);
+    patchStudentDomains(studentId, (current) => current.filter((item) => item !== domain));
+  }
+
+  function patchStudentDomains(
+    studentId: string,
+    mutate: (current: StudentBindingDomain[]) => StudentBindingDomain[]
+  ) {
+    const entry = cache.getEntry(TEACHER_STUDENT_OVERVIEW_CACHE_KEY);
+    const latest =
+      entry?.status === "success" || entry?.status === "refreshing"
+        ? (entry.data as StudentOverviewResponse)
+        : null;
+    const nextStudents = latest
+      ? latest.students
+          .map((student) =>
+            student.studentId === studentId
+              ? {
+                  ...student,
+                  domains: STUDENT_BINDING_DOMAINS.filter((domain) =>
+                    mutate(student.domains).includes(domain)
+                  )
+                }
+              : student
+          )
+          // A student with no remaining binding leaves this teacher's scope.
+          .filter((student) => student.domains.length > 0)
+      : null;
+
+    publishCacheInvalidation({ type: "TEACHER_BINDING_UPDATED", studentId });
+
+    if (latest && nextStudents) {
+      cache.set<StudentOverviewResponse>(TEACHER_STUDENT_OVERVIEW_CACHE_KEY, {
+        ...latest,
+        students: nextStudents
+      });
+    }
+  }
 
   async function renameStudent(studentId: string, fullName: string) {
     const result = await teacherApiFetch<{ student?: { displayName?: string } }>(
@@ -239,7 +293,7 @@ export function TeacherStudentOverviewList({
                 <thead>
                   <tr className="border-b border-student-border text-student-muted">
                     <th className="px-3 py-3 font-medium">学生</th>
-                    <th className="px-3 py-3 font-medium">学科</th>
+                    <th className="px-3 py-3 font-medium">授课科目</th>
                     <th className="px-3 py-3 font-medium">练习总时间</th>
                     <th className="px-3 py-3 font-medium">最近练习</th>
                     <th className="w-px whitespace-nowrap px-3 py-3 font-medium">操作</th>
@@ -296,15 +350,18 @@ export function TeacherStudentOverviewList({
                           </div>
                         </td>
                         <td className="px-3 py-3">
-                          <div className="flex flex-wrap gap-1.5">
-                            {entry.student.domains.length > 0 ? (
-                              entry.student.domains.map((domain) => (
-                                <SubjectChip domain={domain} key={domain} />
-                              ))
-                            ) : (
-                              <span className="text-student-muted">—</span>
-                            )}
-                          </div>
+                          <SubjectBindingBadges
+                            actionFallback="授课科目更新失败，请稍后重试。"
+                            domains={entry.student.domains}
+                            lastRemovalWarning="取消后该学生将不再出现在你的学生列表中，可通过「绑定学生」重新添加。"
+                            onAddDomain={(domain) =>
+                              addStudentDomain(entry.student.studentId, domain)
+                            }
+                            onRemoveDomain={(domain) =>
+                              removeStudentDomain(entry.student.studentId, domain)
+                            }
+                            removeSubjectLabel="该学生"
+                          />
                         </td>
                         <td className="px-3 py-3 tabular-nums text-student-text">
                           {formatPracticeDuration(entry.student.totalPracticeSeconds)}
@@ -369,21 +426,6 @@ export function TeacherStudentOverviewList({
   );
 }
 
-export function SubjectChip({ domain }: { domain: StudentBindingDomain }) {
-  const reading = domain === "reading";
-  return (
-    <span
-      className={
-        reading
-          ? "rounded-full border border-[#cfe3f8] bg-[#eef6ff] px-2.5 py-0.5 text-xs font-semibold text-[#347fdc]"
-          : "rounded-full border border-student-primary-border bg-student-primary-soft px-2.5 py-0.5 text-xs font-semibold text-student-primary"
-      }
-    >
-      {DOMAIN_LABELS[domain]}
-    </span>
-  );
-}
-
 function createStudentSearchEntry(student: TeacherStudentOverviewEntry): StudentSearchEntry {
   const displayName = student.studentDisplayName.trim();
   return {
@@ -428,7 +470,7 @@ function StudentTableSkeleton() {
         <thead>
           <tr className="border-b border-student-border text-student-muted">
             <th className="px-3 py-3 font-medium">学生</th>
-            <th className="px-3 py-3 font-medium">学科</th>
+            <th className="px-3 py-3 font-medium">授课科目</th>
             <th className="px-3 py-3 font-medium">练习总时间</th>
             <th className="px-3 py-3 font-medium">最近练习</th>
             <th className="px-3 py-3 font-medium">操作</th>
@@ -457,7 +499,7 @@ function StudentTableError({ text }: { text: string }) {
         <thead>
           <tr className="border-b border-student-border text-student-muted">
             <th className="px-3 py-3 font-medium">学生</th>
-            <th className="px-3 py-3 font-medium">学科</th>
+            <th className="px-3 py-3 font-medium">授课科目</th>
             <th className="px-3 py-3 font-medium">练习总时间</th>
             <th className="px-3 py-3 font-medium">最近练习</th>
             <th className="px-3 py-3 font-medium">操作</th>

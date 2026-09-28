@@ -6,10 +6,24 @@ import { useMemo, useState } from "react";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
   TEACHER_STUDENT_PRACTICE_CACHE_PREFIX,
-  useTeacherCachedData
+  useTeacherCachedData,
+  useTeacherDataCache
 } from "@/components/TeacherDataCache";
+import { ModalShell } from "@/components/shared/ConfirmDialog";
 import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
 import { useTeacherClassDisplayName } from "@/components/teacher/TeacherNavigationContext";
+import { SubjectBadgeStack } from "@/components/teacher/SubjectBadges";
+import { TeacherSubjectFieldset } from "@/components/teacher/TeacherSubjectFieldset";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
+import {
+  STUDENT_BINDING_DOMAINS,
+  type StudentBindingDomain
+} from "@/lib/studentBindings";
+import {
+  addStudentBindingDomains,
+  removeStudentBindingDomain,
+  studentBindingErrorMessage
+} from "@/lib/teacherStudentBindingClient";
 import {
   safeTeacherReturnTo,
   teacherClassIdFromReturnTo,
@@ -58,19 +72,120 @@ export function TeacherStudentPracticeWorkspace({
   returnTo?: string;
   studentId: string;
 }) {
+  const cache = useTeacherDataCache();
   const [selectedDay, setSelectedDay] = useState(() => startOfLocalDay());
   const [selectedTasks, setSelectedTasks] = useState(ALL_TASKS_SELECTED);
+  const [subjectsDraft, setSubjectsDraft] = useState<StudentBindingDomain[]>([]);
+  const [subjectsDialogOpen, setSubjectsDialogOpen] = useState(false);
+  const [subjectsBusy, setSubjectsBusy] = useState(false);
+  const [subjectsError, setSubjectsError] = useState("");
+  // Local override keeps the header badges instant after a save; the practice
+  // payload itself refreshes from the server.
+  const [domainsOverride, setDomainsOverride] = useState<StudentBindingDomain[] | null>(null);
   const range = useMemo(() => localDayRange(selectedDay), [selectedDay]);
   const parentReturnTo = safeTeacherReturnTo(returnTo, TEACHER_HOME_HREF);
   const className = useTeacherClassDisplayName(teacherClassIdFromReturnTo(parentReturnTo));
   const selfHref = teacherReturnToHref(teacherStudentDetailHref(studentId), parentReturnTo);
+  const practiceCacheKey =
+    `${TEACHER_STUDENT_PRACTICE_CACHE_PREFIX}:${studentId}:${range.startAt}:${range.endAt}`;
+  // A teacher with no binding for this student can no longer load their
+  // practice; render the closed state instead of a request that would 403.
+  const noDomains = domainsOverride !== null && domainsOverride.length === 0;
   const state = useTeacherCachedData<TeacherStudentPracticePayload>(
-    `${TEACHER_STUDENT_PRACTICE_CACHE_PREFIX}:${studentId}:${range.startAt}:${range.endAt}`,
-    () => loadTeacherStudentPractice(studentId, range.startAt, range.endAt)
+    practiceCacheKey,
+    () => loadTeacherStudentPractice(studentId, range.startAt, range.endAt),
+    { enabled: !noDomains }
   );
   const payload = state.data;
+  const studentDomains =
+    domainsOverride ?? payload?.student.domains ?? [];
   const readingRecords = filterRecords(payload?.reading?.records ?? [], selectedTasks);
   const writingRecords = filterRecords(payload?.writing?.records ?? [], selectedTasks);
+
+  function openSubjectsDialog() {
+    setSubjectsDraft(studentDomains);
+    setSubjectsError("");
+    setSubjectsDialogOpen(true);
+  }
+
+  /**
+   * 修改授课科目 edits exactly the current teacher's binding for this student:
+   * a newly checked subject inserts the binding, an unchecked one deletes it.
+   * Class subjects, memberships and other teachers are never touched.
+   */
+  async function saveSubjects() {
+    const current = studentDomains;
+    const next = STUDENT_BINDING_DOMAINS.filter((domain) => subjectsDraft.includes(domain));
+    const toAdd = next.filter((domain) => !current.includes(domain));
+    const toRemove = current.filter((domain) => !next.includes(domain));
+    if (toAdd.length === 0 && toRemove.length === 0) {
+      setSubjectsDialogOpen(false);
+      return;
+    }
+    setSubjectsBusy(true);
+    setSubjectsError("");
+    try {
+      if (toAdd.length > 0) await addStudentBindingDomains(studentId, toAdd);
+      for (const domain of toRemove) await removeStudentBindingDomain(studentId, domain);
+
+      setDomainsOverride(next);
+      // The student id lets the shared cache drop this student's cached
+      // sub-pages too, so losing the last binding never leaves a readable
+      // cached detail view behind.
+      publishCacheInvalidation({ type: "TEACHER_BINDING_UPDATED", studentId });
+      // The invalidation above drops this page's practice entry; re-seed it
+      // (badges and already loaded records) so the panel never flashes back to
+      // a loading state. A removed subject's section is cleared immediately.
+      if (payload && next.length > 0) {
+        cache.set<TeacherStudentPracticePayload>(practiceCacheKey, {
+          ...payload,
+          student: { ...payload.student, domains: next },
+          reading: next.includes("reading") ? payload.reading : null,
+          writing: next.includes("writing") ? payload.writing : null
+        });
+      }
+      if (next.length > 0) {
+        // Refresh in the background so a newly added subject's section loads
+        // without a manual reload.
+        void cache.refresh<TeacherStudentPracticePayload>(practiceCacheKey, () =>
+          loadTeacherStudentPractice(studentId, range.startAt, range.endAt)
+        );
+      }
+      setSubjectsDialogOpen(false);
+    } catch (mutation) {
+      setSubjectsError(studentBindingErrorMessage(mutation, "授课科目保存失败，请稍后重试。"));
+    } finally {
+      setSubjectsBusy(false);
+    }
+  }
+
+  if (noDomains) {
+    return (
+      <div className="grid gap-5">
+        <TeacherBreadcrumbs
+          crumbs={teacherStudentDetailCrumbs({
+            className,
+            returnTo: parentReturnTo,
+            studentName: payload?.student.displayName ?? "学生详情"
+          })}
+        />
+        <StudentAccessRemovedCard
+          message="你已不再负责该学生的任何授课科目，无法查看其练习记录。如需恢复，请重新选择授课科目。"
+          onEditSubjects={openSubjectsDialog}
+          returnHref={parentReturnTo}
+        />
+        <StudentSubjectsDialog
+          busy={subjectsBusy}
+          error={subjectsError}
+          onClose={() => (subjectsBusy ? undefined : setSubjectsDialogOpen(false))}
+          onSave={() => void saveSubjects()}
+          onChange={setSubjectsDraft}
+          open={subjectsDialogOpen}
+          value={subjectsDraft}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-5">
@@ -87,11 +202,21 @@ export function TeacherStudentPracticeWorkspace({
           <TeacherStudentPracticeSkeleton />
         </>
       ) : null}
-      {state.error ? <TeacherDataError text={toPracticeErrorMessage(state.error)} /> : null}
+      {state.error ? (
+        practiceAccessLost(state.error) ? (
+          <StudentAccessRemovedCard
+            message="无法查看该学生的练习记录：该学生已不再由你负责，或已停用。如需恢复，请重新选择授课科目。"
+            onEditSubjects={openSubjectsDialog}
+            returnHref={parentReturnTo}
+          />
+        ) : (
+          <TeacherDataError text={toPracticeErrorMessage(state.error)} />
+        )
+      ) : null}
       {!state.loading && !state.error && payload ? (
         <>
           <TeacherCard className="flex min-h-[96px] items-center p-5">
-            <div className="flex min-w-0 items-center gap-4">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-3">
               <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-student-primary-soft text-student-primary">
                 <UserRound aria-hidden="true" size={28} strokeWidth={1.9} />
               </span>
@@ -103,13 +228,18 @@ export function TeacherStudentPracticeWorkspace({
                   账号：{formatAccountForDisplay(payload.student.account) || "学生数据暂时无法显示"}
                 </p>
               </div>
-              {payload.student.domains.length > 0 ? (
-                <div className="ml-auto flex flex-wrap gap-1.5">
-                  {payload.student.domains.map((domain) => (
-                    <DomainChip domain={domain} key={domain} />
-                  ))}
-                </div>
-              ) : null}
+              <div className="flex flex-wrap items-center gap-3">
+                {studentDomains.length > 0 ? (
+                  <SubjectBadgeStack direction="column" domains={studentDomains} />
+                ) : null}
+                <button
+                  className="teacher-button-secondary shrink-0"
+                  onClick={openSubjectsDialog}
+                  type="button"
+                >
+                  修改授课科目
+                </button>
+              </div>
             </div>
           </TeacherCard>
 
@@ -253,7 +383,63 @@ export function TeacherStudentPracticeWorkspace({
           ) : null}
         </>
       ) : null}
+
+      <StudentSubjectsDialog
+        busy={subjectsBusy}
+        error={subjectsError}
+        onChange={setSubjectsDraft}
+        onClose={() => (subjectsBusy ? undefined : setSubjectsDialogOpen(false))}
+        onSave={() => void saveSubjects()}
+        open={subjectsDialogOpen}
+        value={subjectsDraft}
+      />
     </div>
+  );
+}
+
+/**
+ * 修改授课科目 for one student. Reuses the class-detail modal shell, subject
+ * checkbox fieldset and save/cancel buttons, but the checked boxes are the
+ * current teacher's real reading/writing bindings for this student.
+ */
+function StudentSubjectsDialog({
+  busy,
+  error,
+  onChange,
+  onClose,
+  onSave,
+  open,
+  value
+}: {
+  busy: boolean;
+  error: string;
+  onChange: (domains: StudentBindingDomain[]) => void;
+  onClose: () => void;
+  onSave: () => void;
+  open: boolean;
+  value: StudentBindingDomain[];
+}) {
+  return (
+    <ModalShell open={open} onClose={onClose} size="wide">
+      <p className="text-base font-bold text-student-text">修改授课科目</p>
+      <div className="mt-4">
+        <TeacherSubjectFieldset
+          disabled={busy}
+          helpText="勾选表示由你负责该学生的对应科目；只修改当前教师与这个学生的绑定，不影响班级授课科目和其他教师。"
+          onChange={onChange}
+          value={value}
+        />
+      </div>
+      {error ? <p className="teacher-error mt-3">{error}</p> : null}
+      <div className="mt-6 flex justify-end gap-3">
+        <button className="teacher-button-secondary" disabled={busy} onClick={onClose} type="button">
+          取消
+        </button>
+        <button className="teacher-button-primary" disabled={busy} onClick={onSave} type="button">
+          {busy ? "保存中…" : "保存"}
+        </button>
+      </div>
+    </ModalShell>
   );
 }
 
@@ -379,6 +565,40 @@ function filterRecords(
 function toPracticeErrorMessage(message: string) {
   if (/无权|forbidden/i.test(message)) return "无权查看该学生的练习记录。";
   return /[\u3400-\u9fff]/.test(message) ? message : "练习记录加载失败，请稍后重试。";
+}
+
+/**
+ * The student detail endpoint removes the student from the teacher's scope
+ * once no binding is left (404 未找到该学生) or answers 403 for a bound domain
+ * that no longer matches. That state must never fall back to cached practice
+ * data: the page shows the explicit "no longer responsible" card instead.
+ */
+function practiceAccessLost(message: string) {
+  return /未找到该学生|无权查看|forbidden/i.test(message);
+}
+
+function StudentAccessRemovedCard({
+  message,
+  onEditSubjects,
+  returnHref
+}: {
+  message: string;
+  onEditSubjects: () => void;
+  returnHref: string;
+}) {
+  return (
+    <TeacherCard className="grid gap-4 p-6">
+      <p className="text-sm text-student-muted">{message}</p>
+      <div className="flex flex-wrap gap-3">
+        <button className="teacher-button-secondary" onClick={onEditSubjects} type="button">
+          修改授课科目
+        </button>
+        <Link className="teacher-button-secondary" href={returnHref}>
+          返回学生列表
+        </Link>
+      </div>
+    </TeacherCard>
+  );
 }
 
 function formatPercent(value: number) {

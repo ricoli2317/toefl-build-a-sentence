@@ -546,18 +546,24 @@ export async function renameTeacherClass(
   return { ok: true, class: mapClassSummary(row, await classMemberCount(db, classId)) };
 }
 
+/**
+ * Updates only the class's own subject set and backfills the bindings the new
+ * subjects require for the current members. Removing a subject from a class
+ * NEVER releases a member's binding: the RPC's legacy p_remove_writing
+ * parameter is always sent as false, so a member keeps reading/writing
+ * bindings the teacher holds even when the class no longer teaches them.
+ */
 export async function updateTeacherClassSubjects(
   db: Db,
   teacherId: string,
   classId: string,
-  subjects: StudentBindingDomain[],
-  removeWriting: boolean
+  subjects: StudentBindingDomain[]
 ): Promise<TeacherClassActionResult> {
   const { error } = await db.rpc("update_class_subjects", {
     p_teacher_id: teacherId,
     p_class_id: classId,
     p_subjects: subjects,
-    p_remove_writing: removeWriting
+    p_remove_writing: false
   });
   if (error) {
     if (/CLASS_NOT_FOUND/.test(error.message)) {
@@ -572,18 +578,23 @@ export async function updateTeacherClassSubjects(
   return { ok: true, class: mapClassSummary(classRow, await classMemberCount(db, classId)) };
 }
 
+/**
+ * Removes only the class membership. The teacher's reading/writing bindings
+ * for that student are never released by leaving a class (p_remove_writing is
+ * always false); releasing a subject is only possible through the per-student
+ * binding entry points.
+ */
 export async function removeTeacherClassMember(
   db: Db,
   teacherId: string,
   classId: string,
-  studentId: string,
-  removeWriting: boolean
+  studentId: string
 ): Promise<TeacherClassActionResult> {
   const { error } = await db.rpc("remove_class_member", {
     p_teacher_id: teacherId,
     p_class_id: classId,
     p_student_id: studentId,
-    p_remove_writing: removeWriting
+    p_remove_writing: false
   });
   if (error) {
     if (/CLASS_NOT_FOUND/.test(error.message)) {

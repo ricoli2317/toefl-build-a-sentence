@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
-import { classIncludesWriting, normalizeClassSubjects } from "@/lib/teacherClasses";
 import {
   loadTeacherClassDetail,
   loadTeacherClassRow,
@@ -39,23 +38,13 @@ export async function DELETE(
       return json({ code: "CLASS_NOT_FOUND", error: "班级不存在或无权操作。" }, { status: 404 });
     }
 
-    const subjects = normalizeClassSubjects(classRow.subjects);
-    const decision = new URL(request.url).searchParams.get("writingDecision");
-    // A class that includes Writing asks the teacher whether the writing
-    // relation continues; a Reading-only class removes the membership directly.
-    if (classIncludesWriting(subjects) && decision !== "keep" && decision !== "remove") {
-      return json(
-        { code: "WRITING_DECISION_REQUIRED", error: "请选择是否继续接收他的写作练习。" },
-        { status: 400 }
-      );
-    }
-
+    // Leaving a class only deletes the membership; the teacher's
+    // reading/writing bindings for this student always stay untouched.
     const result = await removeTeacherClassMember(
       db,
       auth.userId,
       params.classId,
-      params.studentId,
-      decision === "remove"
+      params.studentId
     );
     if (!result.ok) {
       return json({ code: result.code, error: result.error }, { status: result.status });

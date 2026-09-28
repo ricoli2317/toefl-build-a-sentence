@@ -272,9 +272,10 @@ test("student list UI only renders the lightweight overview surface", () => {
   assert.match(list, /\/api\/teacher\/students\/overview/);
   assert.match(list, /练习总时间/);
   assert.match(list, /最近练习/);
-  assert.match(list, /学科/);
-  assert.match(list, /reading: "阅读"/);
-  assert.match(list, /writing: "写作"/);
+  assert.match(list, /授课科目/);
+  assert.doesNotMatch(list, /<th className="px-3 py-3 font-medium">学科<\/th>/);
+  assert.match(list, /SubjectBindingBadges/);
+  assert.match(list, /STUDENT_BINDING_DOMAINS/);
   assert.match(list, /支持中文精确搜索，例如：张三；支持拼音模糊搜索，例如：zhang \/ san/);
   assert.match(list, /\/teacher\/writing\/assignments\?studentId=\$\{encodeURIComponent\(entry\.student\.studentId\)\}/);
   assert.match(list, /\/teacher\/students\/\$\{encodeURIComponent\(entry\.student\.studentId\)\}/);

@@ -36,6 +36,20 @@ export function validateBindingDomains(
   return { ok: true, domains };
 }
 
+/**
+ * The single missing domain that a dashed empty badge adds: only defined when
+ * the teacher currently holds exactly one of the two subjects. The empty badge
+ * always sits to the right of the single active badge and targets the missing
+ * subject (Reading -> add Writing, Writing -> add Reading).
+ */
+export function emptyBindingDomain(
+  domains: readonly StudentBindingDomain[]
+): StudentBindingDomain | null {
+  const active = STUDENT_BINDING_DOMAINS.filter((domain) => domains.includes(domain));
+  if (active.length !== 1) return null;
+  return STUDENT_BINDING_DOMAINS.find((domain) => domain !== active[0]) ?? null;
+}
+
 export function bindingDomainsForTeacher(
   bindings: ReadonlyArray<{ teacherId: string; studentId: string; domain: string }>,
   teacherId: string,
