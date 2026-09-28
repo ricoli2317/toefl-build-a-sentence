@@ -1,6 +1,7 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { listVisibleStudentIds } from "@/lib/accountAccess";
+import { isAssignmentSubject } from "@/lib/assignmentCatalog";
 import {
   requireWritingAssignmentTeacher,
   writingAssignmentJson
@@ -15,10 +16,14 @@ export async function GET(request: Request) {
     const auth = await requireWritingAssignmentTeacher(request);
     if (auth.error) return auth.error;
     if (!auth.supabase || !auth.actor) return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
+    // The eligible-student list follows the Assignment subject: a 阅读
+    // Assignment can only be given to students bound for 阅读.
+    const subjectParam = new URL(request.url).searchParams.get("subject");
+    const subject = isAssignmentSubject(subjectParam) ? subjectParam : "writing";
     const studentIds = await listVisibleStudentIds(
       auth.supabase,
       auth.actor,
-      auth.actor.role === "admin" ? undefined : "writing"
+      auth.actor.role === "admin" ? undefined : subject
     );
     if (studentIds.length === 0) return writingAssignmentJson({ students: [] });
     const result = await readAllSupabaseRows<StudentRow>((from, to) =>

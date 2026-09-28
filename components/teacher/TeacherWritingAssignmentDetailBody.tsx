@@ -6,10 +6,10 @@ import {
   TeacherCard,
   TeacherDataError
 } from "@/components/teacher/TeacherUI";
-import { WRITING_TASK_CONFIG } from "@/lib/writing";
+import { assignmentItemTypeLabel } from "@/lib/assignmentCatalog";
 import {
   collectWritingAssignmentStudentProgress,
-  getWritingAssignmentReviewAction,
+  isWritingReviewItemType,
   writingAssignmentProgressBadgeClass,
   writingAssignmentTaskTypeBadges,
   writingAssignmentTitle,
@@ -17,7 +17,7 @@ import {
   type WritingAssignmentProgress,
   type WritingAssignmentStudentDetail
 } from "@/lib/writingAssignments";
-import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
+import { teacherAssignmentItemAction } from "@/lib/teacherAssignmentItems";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 /**
@@ -61,6 +61,9 @@ export function TeacherWritingAssignmentDetailBody({
   totalCount: number;
 }) {
   const students = collectWritingAssignmentStudentProgress(assignments);
+  const reviewBased = assignments.some((assignment) =>
+    isWritingReviewItemType(assignment.task_type)
+  );
   return (
     <div className="grid gap-5" aria-busy={refreshing}>
       <TeacherCard className="p-5">
@@ -78,13 +81,21 @@ export function TeacherWritingAssignmentDetailBody({
             </div>
             <h2 className="mt-3 text-xl font-bold text-student-text">{title}</h2>
             <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-student-muted">
-              <span className="font-semibold text-student-text">
-                {completedCount} / {totalCount} 已提交
-              </span>
-              <span className={pendingReviewCount ? "font-semibold text-amber-700" : ""}>
-                {pendingReviewCount} 篇待批改
-              </span>
-              <span>{publishedCount} 篇已发布</span>
+              {reviewBased ? (
+                <>
+                  <span className="font-semibold text-student-text">
+                    {completedCount} / {totalCount} 已提交
+                  </span>
+                  <span className={pendingReviewCount ? "font-semibold text-amber-700" : ""}>
+                    {pendingReviewCount} 篇待批改
+                  </span>
+                  <span>{publishedCount} 篇已发布</span>
+                </>
+              ) : (
+                <span className="font-semibold text-student-text">
+                  {completedCount} / {totalCount} 已完成
+                </span>
+              )}
               <span>截止：{dueAt ? formatDate(dueAt) : "无"}</span>
               <span>布置：{formatDate(createdAt)}</span>
             </div>
@@ -108,7 +119,8 @@ export function TeacherWritingAssignmentDetailBody({
       <div className="grid gap-4">
         {students.map((student) => {
           const submittedCount = student.assignments.filter(
-            ({ progress: studentProgress }) => studentProgress.latest_submitted_attempt_id
+            ({ progress: studentProgress }) =>
+              Boolean(studentProgress.completed || studentProgress.latest_submitted_attempt_id)
           ).length;
           return (
             <TeacherCard className="grid gap-4 p-5" key={student.student_id}>
@@ -136,7 +148,7 @@ export function TeacherWritingAssignmentDetailBody({
                       <tr key={assignment.assignment_id}>
                         <td className="px-4 py-3">
                           <span className="block text-xs font-bold text-student-primary">
-                            第 {index + 1} 篇 · {WRITING_TASK_CONFIG[assignment.task_type].label}
+                            第 {index + 1} 篇 · {assignmentItemTypeLabel(assignment.task_type)}
                           </span>
                           <span className="mt-1 block font-semibold text-student-text">
                             {assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}
@@ -150,8 +162,10 @@ export function TeacherWritingAssignmentDetailBody({
                         </td>
                         <td className="px-4 py-3 text-right">
                           <StudentWritingReviewAction
+                            itemType={assignment.task_type}
                             progress={studentProgress}
                             returnTo={returnTo}
+                            studentId={student.student_id}
                           />
                         </td>
                       </tr>
@@ -173,8 +187,9 @@ function StudentWritingProgressBadge({
   progress: WritingAssignmentStudentDetail;
 }) {
   const published = progress.latest_review_status === "published";
+  const completed = Boolean(progress.completed || published);
   const submitted = Boolean(progress.latest_submitted_attempt_id);
-  const label = published
+  const label = completed
     ? "已完成"
     : submitted
       ? "已提交"
@@ -183,14 +198,14 @@ function StudentWritingProgressBadge({
         : progress.status === "overdue"
           ? "已逾期"
           : "等待";
-  const className = published
+  const className = completed
     ? "bg-emerald-50 text-emerald-700"
     : submitted
       ? "bg-amber-50 text-amber-700"
       : progress.status === "overdue"
         ? "bg-student-error-soft text-student-error"
         : "bg-student-primary-soft text-student-primary";
-  const Icon = published ? CheckCircle2 : submitted ? FilePenLine : Clock3;
+  const Icon = completed ? CheckCircle2 : submitted ? FilePenLine : Clock3;
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${className}`}>
       <Icon aria-hidden="true" size={13} />{label}
@@ -198,22 +213,34 @@ function StudentWritingProgressBadge({
   );
 }
 
+/**
+ * One shared row action for every item type: WE / AD open the Writing Review
+ * workspace (批改), while BAS / CTW / RDL / RAP / Full Set open the existing
+ * teacher read-only result page (查看). An unfinished read-only item has no
+ * action.
+ */
 function StudentWritingReviewAction({
+  itemType,
   progress,
-  returnTo
+  returnTo,
+  studentId
 }: {
+  itemType: WritingAssignmentDetail["task_type"];
   progress: WritingAssignmentStudentDetail;
   returnTo: string;
+  studentId: string;
 }) {
-  const action = getWritingAssignmentReviewAction({
-    latestSubmittedAttemptId: progress.latest_submitted_attempt_id,
-    latestReviewStatus: progress.latest_review_status
+  const action = teacherAssignmentItemAction({
+    itemType,
+    returnTo,
+    student: progress,
+    studentId
   });
-  if (!action) return <span className="text-student-muted">等待提交</span>;
+  if (!action) return <span className="text-student-muted">{progress.has_attempt ? "等待提交" : "—"}</span>;
   return (
     <Link
       className="text-sm font-semibold text-student-primary underline-offset-4 hover:text-student-primary-hover hover:underline"
-      href={teacherWritingReviewWorkspaceHref(action.attemptId, returnTo)}
+      href={action.href}
     >
       {action.label}
     </Link>

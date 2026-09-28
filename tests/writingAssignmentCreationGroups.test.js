@@ -5,6 +5,7 @@ const path = require("node:path");
 const {
   buildCustomWritingQuestionSnapshot,
   defaultWritingAssignmentTitle,
+  nextWritingAssignmentAutoTitle,
   parseCustomEmailPrompt,
   toggleWritingAssignmentQuestionSelection
 } = require("../lib/writingAssignments.ts");
@@ -169,18 +170,24 @@ test("recipient recognition defaults To while a manual To change leaves the orig
   );
 });
 
-test("assignment title defaults use the assignment date and the first selected student", () => {
+test("assignment title defaults use the subject, date and the first selected student", () => {
   const assignedAt = new Date("2026-08-20T04:00:00.000Z");
   assert.equal(defaultWritingAssignmentTitle({
     assignedAt,
     firstStudentName: "张三",
     studentCount: 1
-  }), "张三 2026-08-20");
+  }), "张三 写作 2026-08-20");
   assert.equal(defaultWritingAssignmentTitle({
     assignedAt,
     firstStudentName: "张三",
     studentCount: 3
-  }), "张三等 2026-08-20");
+  }), "张三等 写作 2026-08-20");
+  assert.equal(defaultWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "reading"
+  }), "张三 阅读 2026-08-20");
 });
 
 test("assignment title date reuses the Shanghai assignment date rule", () => {
@@ -189,7 +196,34 @@ test("assignment title date reuses the Shanghai assignment date rule", () => {
     assignedAt: new Date("2026-08-16T16:30:00.000Z"),
     firstStudentName: "李四",
     studentCount: 1
-  }), "李四 2026-08-17");
+  }), "李四 写作 2026-08-17");
+});
+
+test("the subject keeps the same-day auto sequence scoped to one subject", () => {
+  // 阅读 does not consume the 写作 sequence and vice versa: the base title
+  // already contains the subject, so nextWritingAssignmentAutoTitle only sees
+  // identical base titles as taken.
+  assert.equal(nextWritingAssignmentAutoTitle("张三 阅读 2026-09-28", [
+    "张三 写作 2026-09-28"
+  ]), "张三 阅读 2026-09-28");
+  assert.equal(nextWritingAssignmentAutoTitle("张三 阅读 2026-09-28", [
+    "张三 阅读 2026-09-28"
+  ]), "张三 阅读 2026-09-28 (2)");
+  assert.equal(nextWritingAssignmentAutoTitle("张三 阅读 2026-09-28", [
+    "张三 阅读 2026-09-28",
+    "张三 阅读 2026-09-28 (2)",
+    "张三 写作 2026-09-28 (3)"
+  ]), "张三 阅读 2026-09-28 (3)");
+});
+
+test("a BAS-only writing assignment still auto-titles as 写作", () => {
+  // The subject is chosen on step 1; a BAS item never changes it.
+  assert.equal(defaultWritingAssignmentTitle({
+    assignedAt: new Date("2026-09-28T04:00:00.000Z"),
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "writing"
+  }), "张三 写作 2026-09-28");
 });
 
 test("question-bank multi-selection survives replacing the visible search results", () => {
@@ -211,9 +245,18 @@ test("creation form supports multi-select, custom multi-question editing, deadli
   const createForm = source.match(
     /function TeacherWritingAssignmentCreateForm[\s\S]*?(?=function TeacherWritingAssignmentEditForm)/
   )?.[0] ?? "";
-  assert.match(createForm, /Map<string, LogicalWritingQuestionSearchResult>/);
-  assert.match(createForm, /已选择 \{selectedQuestions\.size\} 篇/);
-  assert.match(createForm, /切换搜索或翻页不会清除已选题目/);
+  const picker = fs.readFileSync(
+    path.join(projectRoot, "components/teacher/TeacherAssignmentCatalogPicker.tsx"),
+    "utf8"
+  );
+  // The unified picker owns the cross-type selection; the create form only
+  // holds the selection map and the shared preview.
+  assert.match(createForm, /AssignmentCatalogSelection/);
+  assert.match(createForm, /TeacherAssignmentCatalogPicker/);
+  assert.match(picker, /已选 \{selection\.size\} 篇/);
+  assert.match(picker, /全选当前结果/);
+  assert.match(picker, /filterAssignmentCatalogEntries/);
+  assert.match(picker, /onSelectionChange\(toggleAssignmentCatalogSelection\(selection, entry\)\)/);
   assert.match(createForm, /添加一篇/);
   assert.match(createForm, /setCustomQuestions\(\(current\) => current\.filter/);
   assert.match(createForm, /统一截止时间/);

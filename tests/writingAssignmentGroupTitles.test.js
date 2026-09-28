@@ -204,25 +204,27 @@ test("creation form keeps per-task-type selections and sends one titled group pa
   const createForm = form.match(
     /function TeacherWritingAssignmentCreateForm[\s\S]*?(?=function TeacherWritingAssignmentEditForm)/
   )?.[0] ?? "";
-  assert.match(createForm, /selectedQuestionsByType/);
-  assert.match(createForm, /Record<WritingTaskType, Map<string, LogicalWritingQuestionSearchResult>>/);
+  // The unified catalog picker keeps one cross-type selection Map; switching
+  // the tab, the filters or the source never clears it.
+  assert.match(createForm, /AssignmentCatalogSelection/);
+  assert.match(createForm, /selectedBankEntries/);
   assert.match(createForm, /作业标题/);
   assert.match(createForm, /setAssignmentTitleManuallyEdited\(true\)/);
   assert.match(createForm, /assignmentTitleManuallyEdited/);
   assert.match(createForm, /studentIds: selectedStudents/);
   assert.match(createForm, /classId: selectedClassId/);
-  assert.match(createForm, /taskType: entryTaskType/);
+  assert.match(createForm, /itemType: entry\.item_type/);
   assert.match(createForm, /draft\.taskType/);
-  const chooseTaskType = createForm.match(
-    /function chooseTaskType[\s\S]*?(?=function chooseSource)/
-  )?.[0] ?? "";
-  assert.doesNotMatch(chooseTaskType, /setSelectedQuestionsByType/);
-  assert.doesNotMatch(chooseTaskType, /setCustomQuestions/);
   const chooseSource = createForm.match(
-    /function chooseSource[\s\S]*?(?=async function searchQuestions)/
+    /function chooseSource[\s\S]*?(?=function updateCustomQuestion)/
   )?.[0] ?? "";
-  assert.doesNotMatch(chooseSource, /setSelectedQuestionsByType/);
+  assert.doesNotMatch(chooseSource, /setSelection\(new Map/);
   assert.doesNotMatch(chooseSource, /setCustomQuestions/);
+  const chooseSubject = createForm.match(
+    /function chooseSubject[\s\S]*?(?=function chooseSource)/
+  )?.[0] ?? "";
+  // Switching the subject is the only place that starts a clean selection.
+  assert.match(chooseSubject, /setSelection\(new Map\(\)\)/);
 });
 
 test("phase A migration is additive, keeps the legacy RPCs and moves title and order into the new transaction", () => {

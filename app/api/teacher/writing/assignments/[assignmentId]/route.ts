@@ -1,12 +1,18 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
+import { assignmentSnapshotSourceSetId } from "@/lib/assignmentCatalog";
+import {
+  assignmentStudentResult,
+  loadAssignmentStudentResults
+} from "@/lib/assignmentResults.server";
 import { loadWritingAssignmentGroupTitles } from "@/lib/writingAssignmentsGroupTitles.server";
 import {
   buildCustomWritingQuestionSnapshot,
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  isWritingReviewItemType,
   writingAssignmentTitle,
   type WritingAssignmentDetail
 } from "@/lib/writingAssignments";
@@ -48,6 +54,7 @@ export async function GET(
     if (!assignment) return notFound();
 
     const snapshotTitle = writingAssignmentTitle(assignment.question_snapshot);
+    const reviewBased = isWritingReviewItemType(assignment.task_type);
     const [membersResult, displayNames, groupTitles] = await Promise.all([
       readAllSupabaseRows<MemberRow>((from, to) =>
         auth.supabase!
@@ -58,13 +65,15 @@ export async function GET(
           .order("student_id", { ascending: true })
           .range(from, to)
       ),
-      loadWritingAssignmentDisplayNames(auth.supabase, [{
-        assignmentId: String(assignment.assignment_id),
-        fallbackDisplayName: snapshotTitle,
-        questionId: assignment.question_id,
-        questionSource: assignment.question_source,
-        taskType: assignment.task_type
-      }]),
+      reviewBased
+        ? loadWritingAssignmentDisplayNames(auth.supabase, [{
+            assignmentId: String(assignment.assignment_id),
+            fallbackDisplayName: snapshotTitle,
+            questionId: assignment.question_id,
+            questionSource: assignment.question_source,
+            taskType: assignment.task_type as "email" | "academic_discussion"
+          }])
+        : Promise.resolve(new Map<string, string>()),
       // The detail heading is the Assignment title, never the question title,
       // so a single-item Assignment Group resolves its persisted group title
       // exactly like the list card does.
@@ -73,17 +82,31 @@ export async function GET(
     if (membersResult.error) throw membersResult.error;
     const members = membersResult.data ?? [];
     const studentIds = members.map((member) => member.student_id);
-    const [profiles, attempts] = await Promise.all([
+    const [profiles, attempts, studentResultMap] = await Promise.all([
       readProfiles(auth.supabase, studentIds),
-      readAllSupabaseRows<AttemptRow>((from, to) =>
-        auth.supabase!
-          .from("writing_attempts")
-          .select("attempt_id,user_id,status,submitted_at")
-          .eq("assignment_id", params.assignmentId)
-          .order("submitted_at", { ascending: true, nullsFirst: false })
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
-      )
+      reviewBased
+        ? readAllSupabaseRows<AttemptRow>((from, to) =>
+            auth.supabase!
+              .from("writing_attempts")
+              .select("attempt_id,user_id,status,submitted_at")
+              .eq("assignment_id", params.assignmentId)
+              .order("submitted_at", { ascending: true, nullsFirst: false })
+              .order("attempt_id", { ascending: true })
+              .range(from, to)
+          )
+        : Promise.resolve({ data: [] as AttemptRow[], error: null }),
+      reviewBased || !assignment.question_id
+        ? Promise.resolve(new Map())
+        : loadAssignmentStudentResults({
+            db: auth.supabase,
+            items: [{
+              assignmentId: String(assignment.assignment_id),
+              itemId: assignment.question_id,
+              itemType: assignment.task_type,
+              sourceSetId: assignmentSnapshotSourceSetId(assignment.question_snapshot)
+            }],
+            studentIds
+          })
     ]);
     if (attempts.error) throw attempts.error;
     const profileById = new Map(profiles.map((profile) => [profile.id, profile]));
@@ -133,6 +156,20 @@ export async function GET(
         submissionsByStudent.get(member.student_id) ?? []
       );
       const latestSubmission = latestSubmissionByStudent.get(member.student_id);
+      const result = assignmentStudentResult(
+        studentResultMap,
+        String(assignment.assignment_id),
+        member.student_id
+      );
+      // Read-only items (BAS / Reading) never enter the Writing Review chain:
+      // their own practice result is the completion signal and the located
+      // result is only ever 查看, never 批改.
+      const completed = reviewBased
+        ? Boolean(firstSubmittedAt)
+        : Boolean(result.available_result);
+      const completedAt = reviewBased
+        ? firstSubmittedAt
+        : result.available_result?.completed_at ?? null;
       return {
         student_id: member.student_id,
         student_name: getPreferredUserDisplayName({
@@ -141,19 +178,21 @@ export async function GET(
         }),
         student_email: profile?.email ?? "",
         assigned_at: member.assigned_at,
-        first_submitted_at: firstSubmittedAt,
-        has_attempt: attemptStudents.has(member.student_id),
-        latest_submitted_attempt_id: latestSubmission?.attempt_id ?? null,
-        latest_review_status: latestSubmission
+        first_submitted_at: completedAt,
+        has_attempt: reviewBased ? attemptStudents.has(member.student_id) : result.started,
+        latest_submitted_attempt_id: reviewBased ? latestSubmission?.attempt_id ?? null : null,
+        latest_review_status: reviewBased && latestSubmission
           ? reviewStatusByAttemptId.get(latestSubmission.attempt_id) ?? null
           : null,
+        available_result: reviewBased ? null : result.available_result,
+        completed,
         status: calculateWritingAssignmentStudentStatus({
           dueAt: assignment.due_at,
-          firstSubmittedAt
+          firstSubmittedAt: completedAt
         })
       };
     });
-    const completedCount = students.filter((student) => student.first_submitted_at).length;
+    const completedCount = students.filter((student) => student.completed).length;
     const publishedCount = students.filter(
       (student) => student.latest_review_status === "published"
     ).length;
@@ -175,10 +214,10 @@ export async function GET(
       assigned_count: members.length,
       completed_count: completedCount,
       published_count: publishedCount,
-      has_attempts: attemptStudents.size > 0,
-      has_submitted_attempts: Array.from(submissionsByStudent.values()).some(
-        (values) => values.length > 0
-      ),
+      has_attempts: attemptStudents.size > 0 || students.some((student) => student.completed),
+      has_submitted_attempts: reviewBased
+        ? Array.from(submissionsByStudent.values()).some((values) => values.length > 0)
+        : students.some((student) => student.completed),
       students
     };
     return writingAssignmentJson({ assignment: detail });
@@ -300,13 +339,17 @@ export async function PATCH(
     if (submittedAttempt) assertLockedWritingAssignmentQuestionInput(body, assignment);
     const prepared = submittedAttempt
       ? {
-          ...(await prepareWritingAssignmentMembership(auth.supabase, body, auth.actor ?? undefined)),
+          ...(await prepareWritingAssignmentMembership(auth.supabase, body, {
+            actor: auth.actor ?? undefined
+          })),
           taskType: assignment.task_type,
           questionSource: assignment.question_source,
           questionId: assignment.question_id,
           questionSnapshot: assignment.question_snapshot
         }
-      : await prepareWritingAssignmentMutation(auth.supabase, body, { actor: auth.actor ?? undefined });
+      : await prepareWritingAssignmentMutation(auth.supabase, body, {
+          actor: auth.actor ?? undefined
+        });
     const { error: updateError } = await auth.supabase.rpc(
       "update_withdrawn_writing_assignment",
       {

@@ -5,6 +5,8 @@ const path = require("node:path");
 
 const {
   collectWritingAssignmentStudentProgress,
+  getTeacherAssignmentCollectionProgress,
+  getTeacherAssignmentProgress,
   getWritingAssignmentCollectionProgress,
   getWritingAssignmentProgress,
   writingAssignmentProgressBadgeClass,
@@ -158,10 +160,34 @@ test("status computation is untouched while cards and detail headers share one t
   // the one helper instead of local color chains.
   const list = source(LIST);
   assert.match(list, /writingAssignmentProgressBadgeClass\(progress\.progress\)/);
-  assert.match(list, /getWritingAssignmentCollectionProgress\(/);
+  // The card / detail adapter maps read-only Assignments (BAS / 阅读) onto the
+  // existing 已完成 state instead of inventing a new badge.
+  assert.match(list, /getTeacherAssignmentCollectionProgress\(/);
+  assert.match(list, /getTeacherAssignmentProgress\(/);
   assert.doesNotMatch(list, /progressClassName/);
   assert.match(source(DETAIL_BODY), /writingAssignmentProgressBadgeClass\(progress\.progress\)/);
-  assert.match(source(COLLECTION_DETAIL), /getWritingAssignmentCollectionProgress\(/);
+  assert.match(source(COLLECTION_DETAIL), /getTeacherAssignmentCollectionProgress\(/);
+  assert.equal(typeof getTeacherAssignmentCollectionProgress, "function");
+  assert.deepEqual(
+    getTeacherAssignmentCollectionProgress({
+      completedCount: 2,
+      itemTypes: ["rdl", "rap"],
+      publishedCount: 0,
+      totalCount: 2,
+      withdrawn: false
+    }),
+    { label: "已完成", progress: "completed" }
+  );
+  assert.deepEqual(
+    getTeacherAssignmentProgress({
+      assignedCount: 1,
+      completedCount: 1,
+      itemTypes: ["build_sentence"],
+      lifecycleStatus: "active",
+      publishedCount: 0
+    }),
+    { label: "已完成", progress: "completed" }
+  );
 });
 
 test("every teacher Assignment Detail renders the same body and title rules", () => {
@@ -221,7 +247,7 @@ test("student completion is one card per student and one row per assignment", ()
   assert.match(body, /collectWritingAssignmentStudentProgress\(assignments\)/);
   assert.match(body, /students\.map\(\(student\)/);
   assert.match(body, /student\.assignments\.map\(/);
-  assert.match(body, /第 \{index \+ 1\} 篇 · \{WRITING_TASK_CONFIG\[assignment\.task_type\]\.label\}/);
+  assert.match(body, /第 \{index \+ 1\} 篇 · \{assignmentItemTypeLabel\(assignment\.task_type\)\}/);
   assert.match(body, /<StudentWritingProgressBadge progress=\{studentProgress\} \/>/);
   assert.match(body, /等待提交/);
 });

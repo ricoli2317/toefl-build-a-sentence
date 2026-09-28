@@ -18,8 +18,9 @@ import { TeacherPopover } from "@/components/teacher/TeacherPopover";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
   getWritingAssignmentReviewAction,
-  getWritingAssignmentProgress,
-  getWritingAssignmentCollectionProgress,
+  isWritingReviewItemType,
+  getTeacherAssignmentCollectionProgress,
+  getTeacherAssignmentProgress,
   groupTeacherWritingAssignments,
   teacherWritingAssignmentCardActions,
   writingAssignmentProgressBadgeClass,
@@ -29,6 +30,7 @@ import {
   type WritingAssignmentRecipient,
   type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
+
 import { teacherWritingReviewWorkspaceHref } from "@/lib/teacherWritingReviewNavigation";
 import { teacherReturnToHref } from "@/lib/teacherNavigation";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
@@ -189,7 +191,11 @@ export function TeacherWritingAssignmentList({
               <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-student-muted">
                 <span className="inline-flex items-center gap-2"><Users aria-hidden="true" size={16} /><AssignmentRecipientNames recipients={assignment.recipients ?? []} /></span>
                 {assignment.class_id ? <span>{assignment.assigned_count} 名学生</span> : null}
-                <span>{assignment.completed_count} 人已提交 · {assignment.published_count} 人已发布</span>
+                {isWritingReviewItemType(assignment.task_type) ? (
+                  <span>{assignment.completed_count} 人已提交 · {assignment.published_count} 人已发布</span>
+                ) : (
+                  <span className="font-semibold text-student-text">{assignment.completed_count} / {assignment.assigned_count} 已完成</span>
+                )}
                 <span className="inline-flex items-center gap-2"><CalendarClock aria-hidden="true" size={16} />截止：{formatDateTime(assignment.due_at, "无")}</span>
                 <span>布置：{formatDateTime(assignment.created_at, "—")}</span>
               </div>
@@ -292,8 +298,11 @@ function TeacherWritingAssignmentCollectionCard({
     hasAttempts: entry.assignments.some((assignment) => assignment.has_attempts)
   });
   const actionAssignmentId = entry.assignments[0].assignment_id;
-  const progress = getWritingAssignmentCollectionProgress({
+  const itemTypes = entry.assignments.map((assignment) => assignment.task_type);
+  const reviewBased = itemTypes.some(isWritingReviewItemType);
+  const progress = getTeacherAssignmentCollectionProgress({
     completedCount: entry.completed_count,
+    itemTypes,
     publishedCount: entry.published_count,
     totalCount: entry.total_count,
     withdrawn: allWithdrawn
@@ -304,7 +313,7 @@ function TeacherWritingAssignmentCollectionCard({
   const taskTypeBadges = writingAssignmentTaskTypeBadges(
     entry.assignments.map((assignment) => assignment.task_type)
   );
-  const fallbackTitle = `${entry.assignments[0].display_name || writingAssignmentTitle(entry.assignments[0].question_snapshot)} 等 ${entry.assignments.length} 篇写作`;
+  const fallbackTitle = `${entry.assignments[0].display_name || writingAssignmentTitle(entry.assignments[0].question_snapshot)} 等 ${entry.assignments.length} 篇${entry.assignments[0].subject === "reading" ? "阅读" : "写作"}`;
 
   return (
     <article className="teacher-card flex flex-wrap items-center gap-5 p-5">
@@ -339,12 +348,20 @@ function TeacherWritingAssignmentCollectionCard({
             <Users aria-hidden="true" size={16} /><AssignmentRecipientNames recipients={entry.recipients} />
           </span>
           {entry.assignments[0].class_id ? <span>{entry.recipients.length} 名学生</span> : null}
-          <span className="font-semibold text-student-text">
-            {entry.completed_count} / {entry.total_count} 已提交
-          </span>
-          <span className={entry.pending_review_count ? "font-semibold text-amber-700" : ""}>
-            {entry.pending_review_count} 篇待批改
-          </span>
+          {reviewBased ? (
+            <>
+              <span className="font-semibold text-student-text">
+                {entry.completed_count} / {entry.total_count} 已提交
+              </span>
+              <span className={entry.pending_review_count ? "font-semibold text-amber-700" : ""}>
+                {entry.pending_review_count} 篇待批改
+              </span>
+            </>
+          ) : (
+            <span className="font-semibold text-student-text">
+              {entry.completed_count} / {entry.total_count} 已完成
+            </span>
+          )}
           <span className="inline-flex items-center gap-2">
             <CalendarClock aria-hidden="true" size={16} />最近截止：{formatDateTime(dueDates[0] ?? null, "无")}
           </span>
@@ -382,11 +399,12 @@ function TeacherWritingAssignmentCollectionCard({
 }
 
 function AssignmentProgressBadge({ assignment }: { assignment: WritingAssignmentSummary }) {
-  const progress = getWritingAssignmentProgress({
+  const progress = getTeacherAssignmentProgress({
     assignedCount: assignment.assigned_count,
+    completedCount: assignment.completed_count,
+    itemTypes: [assignment.task_type],
     lifecycleStatus: assignment.status,
-    publishedCount: assignment.published_count,
-    submittedCount: assignment.completed_count
+    publishedCount: assignment.published_count
   });
   return <span className={`rounded-full px-3 py-1 text-xs font-bold ${writingAssignmentProgressBadgeClass(progress.progress)}`}>{progress.label}</span>;
 }

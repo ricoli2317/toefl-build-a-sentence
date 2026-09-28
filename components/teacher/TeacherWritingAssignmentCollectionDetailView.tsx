@@ -13,7 +13,7 @@ import {
 import { TeacherWritingAssignmentDetailBody } from "@/components/teacher/TeacherWritingAssignmentDetailBody";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
-  getWritingAssignmentCollectionProgress,
+  getTeacherAssignmentCollectionProgress,
   writingAssignmentTitle,
   type WritingAssignmentCollectionDetail
 } from "@/lib/writingAssignments";
@@ -63,8 +63,10 @@ export function TeacherWritingAssignmentCollectionDetailView({
   const allWithdrawn = collection.assignments.every(
     (assignment) => assignment.status === "withdrawn"
   );
-  const collectionProgress = getWritingAssignmentCollectionProgress({
+  const itemTypes = collection.assignments.map((assignment) => assignment.task_type);
+  const collectionProgress = getTeacherAssignmentCollectionProgress({
     completedCount: collection.completed_count,
+    itemTypes,
     publishedCount: collection.published_count,
     totalCount: collection.total_count,
     withdrawn: allWithdrawn

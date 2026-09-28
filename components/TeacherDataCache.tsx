@@ -32,8 +32,13 @@ export const TEACHER_WRITING_REVIEWS_CACHE_KEY =
   "teacher:writing-reviews:historical-display-v2";
 export const TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX = "teacher:writing-assignments";
 export const TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY = "teacher:writing-assignments:list";
+export const TEACHER_ASSIGNMENT_CATALOG_CACHE_PREFIX = "teacher:assignment-catalog";
 export const TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY =
   "teacher:writing-assignments:students";
+export const TEACHER_ASSIGNMENT_STUDENTS_CACHE_PREFIX = "teacher:assignment-students";
+export function teacherAssignmentStudentsCacheKey(subject: "writing" | "reading") {
+  return `${TEACHER_ASSIGNMENT_STUDENTS_CACHE_PREFIX}:${subject}`;
+}
 export const TEACHER_WRITING_ASSIGNMENT_AVATARS_CACHE_KEY =
   "teacher:writing-assignments:academic-discussion-avatars";
 export const TEACHER_WRITING_REVIEW_WORKSPACE_CACHE_PREFIX =
@@ -234,6 +239,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               break;
             case "teacherQuestionBank":
               invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);
+              invalidate(TEACHER_ASSIGNMENT_CATALOG_CACHE_PREFIX);
               break;
             case "teacherWritingReviews":
               invalidate(TEACHER_WRITING_REVIEWS_CACHE_KEY);

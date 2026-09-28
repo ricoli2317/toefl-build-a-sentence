@@ -299,9 +299,14 @@ test("student and teacher multi-question pages reuse existing writing and review
   assert.match(studentUi, /loadStudentWritingAssignmentBatch/);
   assert.match(studentUi, /<StudentWritingAssignmentCard/);
   assert.match(studentUi, /<WritingPractice/);
-  assert.match(teacherUi, /getWritingAssignmentReviewAction/);
-  assert.match(teacherUi, /teacherWritingReviewWorkspaceHref/);
+  assert.match(teacherUi, /teacherAssignmentItemAction/);
+  assert.match(teacherUi, /StudentWritingReviewAction/);
   assert.match(teacherUi, /等待提交/);
+  // The review workspace href is built by the one shared item action helper.
+  assert.match(
+    source("lib/teacherAssignmentItems.ts"),
+    /teacherWritingReviewWorkspaceHref\(review\.attemptId, input\.returnTo\)/
+  );
   assert.match(teacherRoute, /from\("writing_attempts"\)/);
   assert.match(teacherRoute, /from\("writing_reviews"\)/);
   assert.doesNotMatch(teacherRoute, /\.(?:insert|update|delete)\(/i);
@@ -318,8 +323,8 @@ test("teacher assignment APIs count published reviews for the latest submission"
   assert.match(detailRoute, /from\("writing_reviews"\)/);
   assert.match(detailRoute, /review\.status === "published" && review\.published_at/);
   assert.match(detailRoute, /published_count/);
-  assert.match(listUi, /getWritingAssignmentProgress/);
-  assert.match(detailUi, /getWritingAssignmentProgress/);
+  assert.match(listUi, /getTeacherAssignmentProgress/);
+  assert.match(detailUi, /getTeacherAssignmentProgress/);
 });
 
 test("attempt APIs persist assignment_id and scope ordinary and assignment drafts", () => {

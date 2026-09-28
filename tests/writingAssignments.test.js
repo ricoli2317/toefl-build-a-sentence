@@ -476,7 +476,11 @@ test("assignment list and detail hide withdrawal as soon as any attempt exists",
     "utf8"
   );
   assert.match(listRoute, /assignmentsWithAttempts\.add\(attempt\.assignment_id\)/);
-  assert.match(listRoute, /has_attempts: assignmentsWithAttempts\.has/);
+  // Writing items keep the historical attempt set; read-only items (BAS /
+  // Reading) derive has_attempts from their own located practice results.
+  assert.match(listRoute, /let hasAttempts = assignmentsWithAttempts\.has/);
+  assert.match(listRoute, /has_attempts: hasAttempts/);
+  assert.match(listRoute, /if \(result\.started\) hasAttempts = true/);
   // The list reads the same rule through the shared action matrix; the detail
   // view keeps its inline active + no-attempts gate.
   assert.match(list, /teacherWritingAssignmentCardActions\(\{\s*\n\s*status: assignment\.status,\s*\n\s*hasAttempts: assignment\.has_attempts/);
@@ -509,14 +513,21 @@ test("assignment student rows link latest submissions to the existing review wor
   assert.match(route, /\.select\("attempt_id,status,published_at"\)/);
   assert.match(route, /latest_submitted_attempt_id:/);
   assert.match(route, /latest_review_status:/);
-  // Every detail page renders its review entry through the one shared body.
-  assert.match(body, /getWritingAssignmentReviewAction/);
-  assert.match(body, /teacherWritingReviewWorkspaceHref\(action\.attemptId, returnTo\)/);
+  // Every detail page renders its row action through the one shared body and
+  // the one shared item action helper (WE / AD = 批改, everything else = 查看).
+  assert.match(body, /teacherAssignmentItemAction/);
+  assert.match(body, /href=\{action\.href\}/);
   assert.match(body, /text-sm font-semibold text-student-primary/);
   const reviewAction = body.match(
     /function StudentWritingReviewAction[\s\S]*?(?=\nfunction formatDate)/
   )?.[0] ?? "";
   assert.doesNotMatch(reviewAction, /teacher-button-primary|teacher-button-secondary/);
+  const itemActions = fs.readFileSync(
+    path.join(projectRoot, "lib/teacherAssignmentItems.ts"),
+    "utf8"
+  );
+  assert.match(itemActions, /teacherWritingReviewWorkspaceHref\/\*|teacherWritingReviewWorkspaceHref\(/);
+  assert.match(itemActions, /label: "查看"/);
   assert.match(workspace, /cache\.invalidate\(TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX\)/);
 });
 
@@ -592,7 +603,7 @@ test("withdrawn assignment UI reuses the form and exposes lifecycle actions", ()
   assert.match(form, /保存并重新布置/);
   assert.match(editWrapper, /TeacherWritingAssignmentForm initialAssignment=/);
   for (const source of [list, detail]) {
-    assert.match(source, /getWritingAssignmentProgress/);
+    assert.match(source, /getTeacherAssignmentProgress/);
     assert.match(source, /编辑作业/);
     assert.match(source, /重新布置/);
     assert.match(source, /删除作业/);

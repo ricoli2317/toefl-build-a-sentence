@@ -34,14 +34,32 @@ import {
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (relativePath) => readFileSync(resolve(projectRoot, relativePath), "utf8");
 const sql = read("supabase/teacher_classes.sql");
+// The subject-aware Assignment RPCs (写作 / 阅读) live in the later migration;
+// the class / membership RPCs stay in supabase/teacher_classes.sql.
+const assignmentSql = read("supabase/assignment_subjects_and_item_types.sql");
 
 function rpcBlock(name, signatureHint = "") {
   const pattern = new RegExp(
-    `create or replace function public\\.${name}\\([\\s\\S]*?\\n\\$\\$;`
+    `create or replace function public\\.${name}\\([\\s\\S]*?\\n\\$\\$;`,
+    "g"
   );
-  const match = sql.match(pattern);
-  assert.ok(match, `${name} must be defined in supabase/teacher_classes.sql${signatureHint}`);
-  return match[0];
+  const matches = [
+    ...(assignmentSql.match(pattern) ?? []),
+    ...(sql.match(pattern) ?? [])
+  ];
+  assert.ok(matches.length > 0, `${name} must be defined in the SQL migrations${signatureHint}`);
+  // create_writing_assignment_group has a student-mode and a class-mode
+  // overload; the class model tests always exercise the class-aware one.
+  const classAware = matches.find((block) => block.includes("p_class_id uuid"));
+  return classAware ?? matches[0];
+}
+
+function assignmentRpcBlocks(name) {
+  const pattern = new RegExp(
+    `create or replace function public\\.${name}\\([\\s\\S]*?\\n\\$\\$;`,
+    "g"
+  );
+  return assignmentSql.match(pattern) ?? [];
 }
 
 // 1 + 2 + 3: many-to-many membership across classes/teachers with ownership
@@ -118,8 +136,9 @@ test("auto suffix keeps account candidates unique and respects manual edits", ()
 test("class assignments accept exactly one Writing class", () => {
   const assignRpc = rpcBlock("create_writing_assignment_group");
   assert.match(assignRpc, /p_class_id uuid/);
-  assert.match(assignRpc, /if not \('writing' = any\(class_row\.subjects\)\)/);
+  assert.match(assignRpc, /if not \(p_subject = any\(class_row\.subjects\)\)/);
   assert.match(assignRpc, /raise exception 'CLASS_NOT_WRITING_CLASS'/);
+  assert.match(assignRpc, /raise exception 'CLASS_NOT_READING_CLASS'/);
   assert.match(assignRpc, /raise exception 'CLASS_NOT_FOUND'/);
   assert.match(assignRpc, /insert into public\.writing_assignment_groups \(teacher_id, title, class_id\)/);
 
@@ -127,10 +146,11 @@ test("class assignments accept exactly one Writing class", () => {
   assert.match(route, /const classId = typeof body\.classId === "string"/);
   assert.match(route, /p_class_id: classId/);
   assert.match(route, /CLASS_NOT_WRITING_CLASS": "该班级不包含写作科目。/);
-  assert.match(route, /loadWritingClassForAssignment/);
+  assert.match(route, /loadTeacherClassForAssignment/);
+  assert.match(route, /prepared\.subject === "reading"/);
   const form = read("components/teacher/TeacherWritingAssignmentForm.tsx");
   assert.match(form, /一次只能选择一个班级/);
-  assert.match(form, /writingClasses/);
+  assert.match(form, /classesForAssignmentSubject/);
   assert.equal(classIncludesWriting(["reading"]), false);
   assert.equal(classIncludesWriting(["reading", "writing"]), true);
   assert.deepEqual(writingClassesOnly([{ subjects: ["reading"] }, { subjects: ["writing"] }]), [
@@ -185,26 +205,30 @@ test("removing a member only deletes the membership row", () => {
 test("class assignment titles use class name + Shanghai date with (2)(3) sequence", () => {
   // 2026-09-27 00:00 in Asia/Shanghai.
   const assignedAt = new Date("2026-09-26T16:00:00.000Z");
-  assert.equal(classAssignmentTitleBase("周六写作班", assignedAt), "周六写作班 2026-09-27");
+  assert.equal(classAssignmentTitleBase("周六写作班", assignedAt), "周六写作班 写作 2026-09-27");
   assert.equal(
-    nextWritingAssignmentAutoTitle("周六写作班 2026-09-27", ["周六写作班 2026-09-27"]),
-    "周六写作班 2026-09-27 (2)"
+    classAssignmentTitleBase("周六阅读班", assignedAt, "reading"),
+    "周六阅读班 阅读 2026-09-27"
   );
   assert.equal(
-    nextWritingAssignmentAutoTitle("周六写作班 2026-09-27", [
-      "周六写作班 2026-09-27",
-      "周六写作班 2026-09-27 (2)"
+    nextWritingAssignmentAutoTitle("周六写作班 写作 2026-09-27", ["周六写作班 写作 2026-09-27"]),
+    "周六写作班 写作 2026-09-27 (2)"
+  );
+  assert.equal(
+    nextWritingAssignmentAutoTitle("周六写作班 写作 2026-09-27", [
+      "周六写作班 写作 2026-09-27",
+      "周六写作班 写作 2026-09-27 (2)"
     ]),
-    "周六写作班 2026-09-27 (3)"
+    "周六写作班 写作 2026-09-27 (3)"
   );
-  // Direct student titles keep their existing format.
+  // Direct student titles carry the subject in the same place.
   assert.equal(
     defaultWritingAssignmentTitle({
       assignedAt,
       firstStudentName: "张三",
       studentCount: 1
     }),
-    "张三 2026-09-27"
+    "张三 写作 2026-09-27"
   );
   assert.equal(
     defaultWritingAssignmentTitle({
@@ -212,12 +236,12 @@ test("class assignment titles use class name + Shanghai date with (2)(3) sequenc
       firstStudentName: "张三",
       studentCount: 3
     }),
-    "张三等 2026-09-27"
+    "张三等 写作 2026-09-27"
   );
   // Historical titles are never rewritten on rename: the group title comes
   // from the persisted value, not from the current class name.
   const route = read("app/api/teacher/writing/assignments/route.ts");
-  assert.match(route, /titleIsAutomatic[\s\S]{0,120}classAssignmentTitleBase\(writingClass\.name/);
+  assert.match(route, /titleIsAutomatic[\s\S]{0,160}classAssignmentTitleBase\(assignmentClass\.name, new Date\(\), prepared\.subject\)/);
 });
 
 // 15 + 16: completion and reviews only count the class's own assignments

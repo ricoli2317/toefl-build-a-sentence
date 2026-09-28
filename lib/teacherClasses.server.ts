@@ -623,13 +623,22 @@ async function classMemberCount(db: Db, classId: string) {
 
 /**
  * Assignment creation guard: the class must belong to the teacher and include
- * Writing. Returns null when either check fails.
+ * the Assignment subject (写作 / 阅读). Returns null when either check fails.
  */
 export async function loadWritingClassForAssignment(db: Db, teacherId: string, classId: string) {
+  return loadTeacherClassForAssignment(db, teacherId, classId, "writing");
+}
+
+export async function loadTeacherClassForAssignment(
+  db: Db,
+  teacherId: string,
+  classId: string,
+  subject: "writing" | "reading"
+) {
   const row = await loadTeacherClassRow(db, teacherId, classId);
   if (!row) return null;
   const subjects = normalizeClassSubjects(row.subjects);
-  if (!subjects.includes("writing")) return null;
+  if (!subjects.includes(subject)) return null;
   return mapClassSummary(row, 0);
 }
 

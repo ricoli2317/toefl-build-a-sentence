@@ -1,5 +1,4 @@
 import {
-  WRITING_TASK_CONFIG,
   type AcademicDiscussionQuestion,
   type AcademicDiscussionProfessorAvatarType,
   type AcademicDiscussionStudentAvatarType,
@@ -7,6 +6,13 @@ import {
   type WritingQuestion,
   type WritingTaskType
 } from "./writing.ts";
+import {
+  assignmentItemTypeLabel,
+  assignmentSubjectLabel,
+  isAssignmentItemType,
+  type AssignmentItemType,
+  type AssignmentSubject
+} from "./assignmentCatalog.ts";
 import {
   isProfessorAvatarType,
   isStudentAvatarType
@@ -37,7 +43,9 @@ export type WritingAssignmentSummary = {
   group_position: number | null;
   /** Persisted Assignment Group title. Historical groups may still be null. */
   group_title?: string | null;
-  task_type: WritingTaskType;
+  /** Assignment subject: 写作 or 阅读 (new column; historical rows are writing). */
+  subject?: AssignmentSubject;
+  task_type: AssignmentItemType;
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
   question_snapshot: WritingQuestion;
@@ -70,6 +78,24 @@ export type WritingAssignmentStudentDetail = {
   latest_submitted_attempt_id: string | null;
   latest_review_status: "reviewing" | "published" | null;
   status: WritingAssignmentStudentStatus;
+  /**
+   * True when the student finished this item, whatever its type. Writing items
+   * complete by submitting; read-only items (BAS / Reading) complete through
+   * their own practice flow.
+   */
+  completed?: boolean;
+  /**
+   * Existing teacher-side result identity for item types that are read-only
+   * (BAS / CTW / RDL / RAP / Full Set). The Assignment Detail only locates the
+   * student's own existing result; it never creates one.
+   */
+  available_result?: TeacherAssignmentItemResult | null;
+};
+
+export type TeacherAssignmentItemResult = {
+  kind: "bas_set" | "reading_attempt" | "reading_full_set";
+  id: string;
+  completed_at: string | null;
 };
 
 export type StudentWritingAssignmentSummary = {
@@ -233,16 +259,17 @@ export function teacherWritingAssignmentCardActions(input: {
 /**
  * One shared task-type badge rule for both ends. Every contained task type is
  * its own badge, and only counts above one get an `×N` suffix. Mixed groups
- * therefore render two independent badges (`Write an Email` and
- * `Academic Discussion`) instead of one concatenated label.
+ * therefore render independent badges (`Write an Email` and
+ * `Academic Discussion`, or `Complete the Words` and `Read in Daily Life`)
+ * instead of one concatenated label.
  */
 export function writingAssignmentTaskTypeBadges(
-  taskTypes: ReadonlyArray<WritingTaskType>
+  taskTypes: ReadonlyArray<AssignmentItemType>
 ): string[] {
-  return (["email", "academic_discussion"] as const).flatMap((taskType) => {
+  return (Array.from(new Set(taskTypes)) as AssignmentItemType[]).flatMap((taskType) => {
+    if (!isAssignmentItemType(taskType)) return [];
     const count = taskTypes.filter((value) => value === taskType).length;
-    if (count === 0) return [];
-    const label = WRITING_TASK_CONFIG[taskType].label;
+    const label = assignmentItemTypeLabel(taskType);
     return [count > 1 ? `${label} ×${count}` : label];
   });
 }
@@ -352,15 +379,19 @@ function shiftAssignmentDateKey(dateKey: string, days: number) {
 }
 
 /**
- * Default Assignment Group title: `学生姓名 YYYY-MM-DD` for one recipient and
- * `第一位学生等 YYYY-MM-DD` for several. The date reuses the shared assignment
- * date rule (Asia/Shanghai) so the title can never drift a day away from the
- * date the list shows for the same timestamp.
+ * Default Assignment Group title:
+ * `学生姓名 写作 YYYY-MM-DD` (阅读 for Reading Assignments) for one recipient
+ * and `第一位学生等 写作 YYYY-MM-DD` for several. The date reuses the shared
+ * assignment date rule (Asia/Shanghai) so the title can never drift a day away
+ * from the date the list shows for the same timestamp. The subject keeps the
+ * same-day `(2)`, `(3)` sequence scoped to one subject: a 写作 title never
+ * occupies a 阅读 sequence.
  */
 export function defaultWritingAssignmentTitle(input: {
   assignedAt: Date | string;
   firstStudentName: string;
   studentCount: number;
+  subject?: AssignmentSubject;
 }) {
   const date = input.assignedAt instanceof Date
     ? input.assignedAt
@@ -370,7 +401,8 @@ export function defaultWritingAssignmentTitle(input: {
   if (!dateKey) throw new Error("作业布置日期无效。");
   const studentName = normalizeAssignmentText(input.firstStudentName);
   if (!studentName) throw new Error("请选择学生后再确认作业标题。");
-  return `${studentName}${input.studentCount > 1 ? "等" : ""} ${dateKey}`;
+  const subjectLabel = assignmentSubjectLabel(input.subject ?? "writing");
+  return `${studentName}${input.studentCount > 1 ? "等" : ""} ${subjectLabel} ${dateKey}`;
 }
 
 export type StudentWritingAssignmentListEntry =
@@ -720,6 +752,38 @@ export function writingAssignmentProgressBadgeClass(
 }
 
 /**
+ * WE / AD are the only item types that enter the Writing Review / AI 批改 chain.
+ * BAS and every Reading type are graded by their own student practice flow, so
+ * the teacher side only ever 查看 their existing result.
+ */
+export function isWritingReviewItemType(itemType: AssignmentItemType) {
+  return itemType === "email" || itemType === "academic_discussion";
+}
+
+/**
+ * One shared progress adapter for the existing card / detail status UI.
+ *
+ * Writing assignments keep the historical submitted + published counts. A
+ * read-only Assignment (BAS / Reading) has no publish step, so its completed
+ * count maps onto the existing 已完成 state instead of inventing a new badge.
+ */
+export function getTeacherAssignmentProgress(input: {
+  itemTypes: ReadonlyArray<AssignmentItemType>;
+  assignedCount: number;
+  completedCount: number;
+  publishedCount: number;
+  lifecycleStatus: WritingAssignmentLifecycleStatus;
+}) {
+  const reviewBased = input.itemTypes.some(isWritingReviewItemType);
+  return getWritingAssignmentProgress({
+    assignedCount: input.assignedCount,
+    lifecycleStatus: input.lifecycleStatus,
+    publishedCount: reviewBased ? input.publishedCount : input.completedCount,
+    submittedCount: input.completedCount
+  });
+}
+
+/**
  * Assignment Group progress keeps its exact historical labels (已完成 /
  * 全部已提交 / 部分已提交 / 进行中 / 已撤回) so the collection card and the
  * collection detail header can never drift apart; only the tone comes from the
@@ -742,6 +806,22 @@ export function getWritingAssignmentCollectionProgress(input: {
     return { label: "部分已提交", progress: "partial_submitted" };
   }
   return { label: "进行中", progress: "ongoing" };
+}
+
+export function getTeacherAssignmentCollectionProgress(input: {
+  itemTypes: ReadonlyArray<AssignmentItemType>;
+  completedCount: number;
+  publishedCount: number;
+  totalCount: number;
+  withdrawn: boolean;
+}) {
+  const reviewBased = input.itemTypes.some(isWritingReviewItemType);
+  return getWritingAssignmentCollectionProgress({
+    completedCount: input.completedCount,
+    publishedCount: reviewBased ? input.publishedCount : input.completedCount,
+    totalCount: input.totalCount,
+    withdrawn: input.withdrawn
+  });
 }
 
 export function writingAssignmentWithdrawBlockedMessage(input: {
@@ -990,8 +1070,8 @@ function groupAssignmentsByCollection<T extends {
   return grouped;
 }
 
-export function writingAssignmentTitle(question: WritingQuestion) {
-  return question.set_title.trim() || "自定义题目";
+export function writingAssignmentTitle(question: { set_title?: string | null }) {
+  return question?.set_title?.trim() || "自定义题目";
 }
 
 export function normalizeAssignmentText(value: unknown) {

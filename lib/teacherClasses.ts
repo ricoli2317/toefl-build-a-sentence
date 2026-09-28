@@ -1,4 +1,5 @@
 import { assignmentDateKey } from "./writingAssignments.ts";
+import { assignmentSubjectLabel, type AssignmentSubject } from "./assignmentCatalog.ts";
 import {
   STUDENT_BINDING_DOMAINS,
   normalizeBindingDomains,
@@ -125,16 +126,21 @@ export function validateClassSubjects(
 }
 
 /**
- * Class-mode automatic Assignment title base: `班级名称 YYYY-MM-DD`.
- * The date reuses the shared assignment date rule (Asia/Shanghai), and the
- * RPC appends the same-day `(2)`, `(3)` sequence on top of this base.
+ * Class-mode automatic Assignment title base:
+ * `班级名称 写作 YYYY-MM-DD` / `班级名称 阅读 YYYY-MM-DD`.
+ * The date reuses the shared assignment date rule (Asia/Shanghai), and the RPC
+ * appends the same-day `(2)`, `(3)` sequence on top of this base.
  */
-export function classAssignmentTitleBase(className: string, assignedAt: Date | string) {
+export function classAssignmentTitleBase(
+  className: string,
+  assignedAt: Date | string,
+  subject: AssignmentSubject = "writing"
+) {
   const name = className.trim().replace(/\s+/g, " ");
   if (!name) throw new Error("请先选择班级。");
   const dateKey = assignmentDateKey(assignedAt);
   if (!dateKey) throw new Error("作业布置日期无效。");
-  return `${name} ${dateKey}`;
+  return `${name} ${assignmentSubjectLabel(subject)} ${dateKey}`;
 }
 
 /**
@@ -199,6 +205,24 @@ export function writingClassesOnly<T extends { subjects: readonly StudentBinding
   classes: readonly T[]
 ) {
   return classes.filter((entry) => classIncludesWriting(entry.subjects));
+}
+
+/**
+ * Reading Assignment classes: the same membership rule as 写作, only the
+ * subject guard differs. A class that does not include 阅读 can never receive a
+ * Reading Assignment.
+ */
+export function readingClassesOnly<T extends { subjects: readonly StudentBindingDomain[] }>(
+  classes: readonly T[]
+) {
+  return classes.filter((entry) => classIncludesReading(entry.subjects));
+}
+
+export function classesForAssignmentSubject<T extends { subjects: readonly StudentBindingDomain[] }>(
+  classes: readonly T[],
+  subject: AssignmentSubject
+) {
+  return subject === "reading" ? readingClassesOnly(classes) : writingClassesOnly(classes);
 }
 
 /**

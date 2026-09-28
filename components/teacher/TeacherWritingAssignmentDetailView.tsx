@@ -17,7 +17,7 @@ import {
 import { TeacherWritingAssignmentDetailBody } from "@/components/teacher/TeacherWritingAssignmentDetailBody";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
-  getWritingAssignmentProgress,
+  getTeacherAssignmentProgress,
   writingAssignmentTitle,
   type WritingAssignmentDetail
 } from "@/lib/writingAssignments";
@@ -60,11 +60,12 @@ export function TeacherWritingAssignmentDetailView({
     teacherAssignmentDetailHref(assignmentId),
     returnTo
   );
-  const assignmentProgress = getWritingAssignmentProgress({
+  const assignmentProgress = getTeacherAssignmentProgress({
     assignedCount: assignment.assigned_count,
+    completedCount: assignment.completed_count,
+    itemTypes: [assignment.task_type],
     lifecycleStatus: assignment.status,
-    publishedCount: assignment.published_count,
-    submittedCount: assignment.completed_count
+    publishedCount: assignment.published_count
   });
   const assignmentTitle = assignment.group_title?.trim()
     || assignment.display_name || writingAssignmentTitle(assignment.question_snapshot);

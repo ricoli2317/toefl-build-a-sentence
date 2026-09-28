@@ -8,6 +8,18 @@ import {
   type WritingTaskType
 } from "@/lib/writing";
 import {
+  assignmentItemSubject,
+  buildAssignmentItemSnapshot,
+  isAssignmentItemType,
+  type AssignmentCatalogEntry,
+  type AssignmentItemType,
+  type AssignmentSubject
+} from "@/lib/assignmentCatalog";
+import {
+  loadAssignmentCatalogEntryMap,
+  resolveTeacherAssignmentCatalogEntry
+} from "@/lib/assignmentCatalog.server";
+import {
   buildCustomWritingQuestionSnapshot,
   isWritingAssignmentQuestionSource,
   isWritingQuestionSnapshot,
@@ -109,29 +121,56 @@ export function chunkValues<T>(values: T[], size = 100) {
 export async function prepareWritingAssignmentMutation(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,
-  options: { canonicalizeQuestionBank?: boolean; actor?: AccountActor } = {}
+  options: {
+    canonicalizeQuestionBank?: boolean;
+    actor?: AccountActor;
+    subject?: AssignmentSubject;
+  } = {}
 ) {
-  const membership = await prepareWritingAssignmentMembership(supabase, body, options.actor);
   const question = await prepareWritingAssignmentQuestion(supabase, body, options);
-  return { ...membership, ...question };
+  const subject = options.subject ?? assignmentItemSubject(question.taskType);
+  const membership = await prepareWritingAssignmentMembership(supabase, body, {
+    actor: options.actor,
+    subject
+  });
+  return { ...membership, ...question, subject };
 }
 
 export async function prepareWritingAssignmentGroupMutation(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,
-  options: { canonicalizeQuestionBank?: boolean; actor?: AccountActor } = {}
+  options: {
+    canonicalizeQuestionBank?: boolean;
+    actor?: AccountActor;
+    subject?: AssignmentSubject;
+  } = {}
 ) {
   if (!Array.isArray(body.assignments) || body.assignments.length === 0) {
     throw new Error("请至少添加一道题目。");
   }
   if (body.assignments.length > 50) throw new Error("一次最多布置 50 道题目。");
-  const membership = await prepareWritingAssignmentMembership(supabase, body, options.actor);
+  const itemValues = body.assignments.filter(isRecord);
+  const subject = resolveAssignmentGroupSubject(itemValues, options.subject);
+  const catalogEntries = await loadAssignmentCatalogEntryMap(
+    supabase,
+    itemValues.flatMap((value) => {
+      const itemType = readAssignmentItemType(value);
+      return itemType && !isWritingTaskType(itemType) ? [itemType] : [];
+    })
+  );
+  const membership = await prepareWritingAssignmentMembership(supabase, body, {
+    actor: options.actor,
+    subject
+  });
   const assignments = [];
   for (const value of body.assignments) {
     if (!isRecord(value)) throw new Error("请完整填写每道题目。");
-    assignments.push(await prepareWritingAssignmentQuestion(supabase, value, options));
+    assignments.push(await prepareWritingAssignmentQuestion(supabase, value, {
+      ...options,
+      catalogEntries
+    }));
   }
-  return { assignments, studentIds: membership.studentIds };
+  return { assignments, studentIds: membership.studentIds, subject };
 }
 
 /**
@@ -142,18 +181,34 @@ export async function prepareWritingAssignmentGroupMutation(
 export async function prepareClassWritingAssignmentGroupMutation(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,
-  options: { canonicalizeQuestionBank?: boolean; actor?: AccountActor } = {}
+  options: {
+    canonicalizeQuestionBank?: boolean;
+    actor?: AccountActor;
+    subject?: AssignmentSubject;
+  } = {}
 ) {
   if (!Array.isArray(body.assignments) || body.assignments.length === 0) {
     throw new Error("请至少添加一道题目。");
   }
   if (body.assignments.length > 50) throw new Error("一次最多布置 50 道题目。");
+  const itemValues = body.assignments.filter(isRecord);
+  const subject = resolveAssignmentGroupSubject(itemValues, options.subject);
+  const catalogEntries = await loadAssignmentCatalogEntryMap(
+    supabase,
+    itemValues.flatMap((value) => {
+      const itemType = readAssignmentItemType(value);
+      return itemType && !isWritingTaskType(itemType) ? [itemType] : [];
+    })
+  );
   const assignments = [];
   for (const value of body.assignments) {
     if (!isRecord(value)) throw new Error("请完整填写每道题目。");
-    assignments.push(await prepareWritingAssignmentQuestion(supabase, value, options));
+    assignments.push(await prepareWritingAssignmentQuestion(supabase, value, {
+      ...options,
+      catalogEntries
+    }));
   }
-  return { assignments };
+  return { assignments, subject };
 }
 
 /**
@@ -164,13 +219,29 @@ export async function prepareClassWritingAssignmentGroupMutation(
 export async function prepareWritingAssignmentGroupEditMutation(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,
-  options: { canonicalizeQuestionBank?: boolean; actor?: AccountActor } = {}
+  options: {
+    canonicalizeQuestionBank?: boolean;
+    actor?: AccountActor;
+    subject?: AssignmentSubject;
+  } = {}
 ) {
   if (!Array.isArray(body.items) || body.items.length === 0) {
     throw new Error("请至少添加一道题目。");
   }
   if (body.items.length > 50) throw new Error("一次最多布置 50 道题目。");
-  const membership = await prepareWritingAssignmentMembership(supabase, body, options.actor);
+  const itemValues = body.items.filter(isRecord);
+  const subject = resolveAssignmentGroupSubject(itemValues, options.subject);
+  const catalogEntries = await loadAssignmentCatalogEntryMap(
+    supabase,
+    itemValues.flatMap((value) => {
+      const itemType = readAssignmentItemType(value);
+      return itemType && !isWritingTaskType(itemType) ? [itemType] : [];
+    })
+  );
+  const membership = await prepareWritingAssignmentMembership(supabase, body, {
+    actor: options.actor,
+    subject
+  });
   const items = [];
   for (const value of body.items) {
     if (!isRecord(value)) throw new Error("请完整填写每道题目。");
@@ -178,27 +249,36 @@ export async function prepareWritingAssignmentGroupEditMutation(
     if (!assignmentId) throw new Error("请完整填写每道题目。");
     items.push({
       assignmentId,
-      ...(await prepareWritingAssignmentQuestion(supabase, value, options))
+      ...(await prepareWritingAssignmentQuestion(supabase, value, {
+        ...options,
+        catalogEntries
+      }))
     });
   }
-  return { dueAt: membership.dueAt, items, studentIds: membership.studentIds };
+  return { dueAt: membership.dueAt, items, studentIds: membership.studentIds, subject };
 }
 
 /**
  * The withdrawn-edit lock: once an item has a submitted attempt its question
  * content is frozen. Shared by the single edit route and the group edit route.
+ * Catalog items (BAS / Reading) are frozen by their stable item identity.
  */
 export function assertLockedWritingAssignmentQuestionInput(
   body: Record<string, unknown>,
   assignment: {
-    task_type: "email" | "academic_discussion";
+    task_type: AssignmentItemType;
     question_source: "question_bank" | "custom";
     question_id: string | null;
     question_snapshot: Record<string, unknown>;
   }
 ) {
-  if (body.taskType !== assignment.task_type || body.questionSource !== assignment.question_source) {
+  const bodyItemType = readAssignmentItemType(body);
+  if (bodyItemType !== assignment.task_type || body.questionSource !== assignment.question_source) {
     throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
+  }
+  if (!isWritingTaskType(assignment.task_type)) {
+    if (body.questionId !== assignment.question_id) throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
+    return;
   }
   if (assignment.question_source === "question_bank") {
     if (body.questionId !== assignment.question_id) throw new Error("QUESTION_LOCKED_AFTER_SUBMISSION");
@@ -229,15 +309,38 @@ export function assertLockedWritingAssignmentQuestionInput(
 async function prepareWritingAssignmentQuestion(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,
-  options: { canonicalizeQuestionBank?: boolean } = {}
+  options: {
+    canonicalizeQuestionBank?: boolean;
+    catalogEntries?: ReadonlyMap<string, AssignmentCatalogEntry>;
+  } = {}
 ) {
-  if (!isWritingTaskType(body.taskType)) throw new Error("请选择有效的写作题型。");
+  const taskType = readAssignmentItemType(body);
+  if (!taskType) throw new Error("请选择有效的题型。");
   if (!isWritingAssignmentQuestionSource(body.questionSource)) {
     throw new Error("请选择有效的题目来源。");
   }
   const dueAt = validOptionalDueAt(body.dueAt);
-  const taskType = body.taskType;
   const questionSource = body.questionSource;
+
+  // BAS / CTW / RDL / RAP / Full Set reuse the assignment item abstraction with
+  // a catalog item identity: the stable item id is stored in question_id and
+  // the snapshot only keeps lightweight catalog metadata.
+  if (!isWritingTaskType(taskType)) {
+    if (questionSource !== "question_bank") throw new Error("该题型只能从题库选择。");
+    const questionId = typeof body.questionId === "string" ? body.questionId.trim() : "";
+    if (!questionId) throw new Error("请选择一道题库题目。");
+    const entry = options.catalogEntries?.get(`${taskType}:${questionId}`)
+      ?? await resolveTeacherAssignmentCatalogEntry(supabase, taskType, questionId);
+    if (!entry) throw new Error("所选题目不存在或已下线。");
+    return {
+      dueAt,
+      questionId,
+      questionSnapshot: buildAssignmentItemSnapshot(entry) as unknown as WritingQuestion,
+      questionSource: questionSource satisfies WritingAssignmentQuestionSource,
+      taskType
+    };
+  }
+
   let questionId: string | null = null;
   let questionSnapshot: WritingQuestion;
 
@@ -308,19 +411,25 @@ async function resolveCanonicalWritingAssignmentQuestionId(
 export async function prepareWritingAssignmentMembership(
   supabase: ReturnType<typeof createServiceSupabase>,
   body: Record<string, unknown>,
-  actor?: AccountActor
+  options: { actor?: AccountActor; subject?: AssignmentSubject } = {}
 ) {
   const studentIds = uniqueStrings(body.studentIds);
   if (studentIds.length === 0) throw new Error("请至少选择一名学生。");
   const dueAt = validOptionalDueAt(body.dueAt);
-  await assertWritingAssignmentStudentIds(supabase, studentIds, actor);
+  await assertWritingAssignmentStudentIds(
+    supabase,
+    studentIds,
+    options.actor,
+    options.subject ?? "writing"
+  );
   return { dueAt, studentIds };
 }
 
 async function assertWritingAssignmentStudentIds(
   supabase: ReturnType<typeof createServiceSupabase>,
   studentIds: string[],
-  actor?: AccountActor
+  actor: AccountActor | undefined,
+  subject: AssignmentSubject
 ) {
   if (actor?.role === "admin") {
     let count = 0;
@@ -342,12 +451,34 @@ async function assertWritingAssignmentStudentIds(
     await listVisibleStudentIds(
       supabase,
       actor ?? { userId: "", role: "teacher" },
-      "writing"
+      subject
     )
   );
   for (const studentId of studentIds) {
     if (!eligible.has(studentId)) throw new Error("所选学生中包含无效账号。");
   }
+}
+
+/** One Assignment Group is single-subject; mixed writing + reading is rejected. */
+function resolveAssignmentGroupSubject(
+  items: ReadonlyArray<Record<string, unknown>>,
+  requested?: AssignmentSubject
+): AssignmentSubject {
+  const subjects = new Set<AssignmentSubject>();
+  for (const item of items) {
+    const itemType = readAssignmentItemType(item);
+    if (!itemType) throw new Error("请选择有效的题型。");
+    subjects.add(assignmentItemSubject(itemType));
+  }
+  if (subjects.size > 1) throw new Error("同一份作业不能同时包含写作和阅读题目。");
+  const subject = Array.from(subjects)[0] ?? requested ?? "writing";
+  if (requested && requested !== subject) throw new Error("作业科目与所选题目不匹配。");
+  return subject;
+}
+
+function readAssignmentItemType(value: Record<string, unknown>): AssignmentItemType | null {
+  const raw = value.itemType ?? value.taskType;
+  return isAssignmentItemType(raw) ? raw : null;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -36,6 +36,24 @@ export type ReadingFullSetCatalogPage = {
 };
 
 /**
+ * The complete valid Full Set catalog without any student state. The teacher
+ * Assignment picker uses it as its lightweight Full Set list: it reuses the
+ * exact same validation as the student catalog, and it never loads attempts or
+ * question bodies.
+ */
+export async function loadReadingFullSetPickerCatalog(
+  db: SupabaseClient
+): Promise<ReadingFullSetCatalogItem[]> {
+  const occurrenceResult = await loadReadingFullSetOccurrenceRows(db);
+  if (occurrenceResult.error) {
+    throw new Error(`read Reading Full Set catalog: ${occurrenceResult.error.message}`);
+  }
+  return buildReadingFullSetCatalog(buildReadingFullSets(
+    (occurrenceResult.data ?? []).map(readingFullSetOccurrenceInput)
+  ));
+}
+
+/**
  * Validates the complete catalog before applying pagination. The M1-question-1
  * rows are only candidates: incomplete or otherwise invalid Full Sets can also
  * have one, so paginating those rows would create short/empty pages and inflate

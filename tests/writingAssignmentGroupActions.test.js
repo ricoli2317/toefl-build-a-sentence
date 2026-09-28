@@ -124,10 +124,13 @@ test("group edit form loads all items and restores recipients for mixed groups",
   assert.match(form, /setSelectedStudents\(first\.students\.map/);
   assert.match(form, /setLockedStudentIds\(locked\)/);
   // Every item is submitted together with its assignmentId.
-  assert.match(form, /items: items\.map\(\(item\) => item\.source === "question_bank"/);
+  // Catalog items (BAS / 阅读) keep their stable identity; Writing items submit
+  // their edited question or custom fields.
+  assert.match(form, /items: items\.map\(\(item\) => !isWritingReviewItemType\(item\.taskType\)/);
   assert.match(form, /assignmentId: item\.assignmentId/);
   assert.match(form, /questionSource: "question_bank"/);
   assert.match(form, /questionSource: "custom"/);
+  assert.match(form, /questionId: item\.catalogItemId/);
   // Reuses the existing editing pieces instead of a second implementation.
   assert.match(form, /QuestionResults/);
   assert.match(form, /CustomQuestionFields/);

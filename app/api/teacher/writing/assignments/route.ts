@@ -1,8 +1,18 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import {
+  assignmentSnapshotSourceSetId,
+  isAssignmentItemType,
+  type AssignmentItemType
+} from "@/lib/assignmentCatalog";
+import {
+  assignmentStudentResult,
+  loadAssignmentStudentResults
+} from "@/lib/assignmentResults.server";
+import {
   earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  isWritingReviewItemType,
   type WritingAssignmentRecipient,
   type WritingAssignmentSummary
 } from "@/lib/writingAssignments";
@@ -20,9 +30,10 @@ import {
   loadWritingAssignmentRecipientOrders
 } from "@/lib/writingAssignmentsGroupTitles.server";
 import { classAssignmentTitleBase } from "@/lib/teacherClasses";
+import { isAssignmentSubject } from "@/lib/assignmentCatalog";
 import {
-  loadWritingAssignmentClassRefs,
-  loadWritingClassForAssignment
+  loadTeacherClassForAssignment,
+  loadWritingAssignmentClassRefs
 } from "@/lib/teacherClasses.server";
 
 export const dynamic = "force-dynamic";
@@ -43,6 +54,7 @@ type AssignmentRow = Omit<
   teacher_id: string;
   updated_at: string;
   set_title: string | null;
+  source_set_id: string | null;
 };
 type AssignmentStudentRow = { assignment_id: string; student_id: string; assigned_at: string };
 type ProfileRow = { id: string; email: string | null; full_name: string | null };
@@ -57,7 +69,7 @@ export async function GET(request: Request) {
     const assignmentsResult = await readAllSupabaseRows<AssignmentRow>((from, to) =>
       auth.supabase!
         .from("writing_assignments")
-        .select("assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,set_title:question_snapshot->>set_title,due_at,status,created_at,updated_at")
+        .select("assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,set_title:question_snapshot->>set_title,source_set_id:question_snapshot->>source_set_id,due_at,status,created_at,updated_at")
         .eq("teacher_id", auth.teacherId!)
         .is("deleted_at", null)
         .order("created_at", { ascending: false })
@@ -80,13 +92,15 @@ export async function GET(request: Request) {
       readAssignmentReviewStatuses(auth.supabase, assignmentIds),
       loadWritingAssignmentDisplayNames(
         auth.supabase,
-        assignments.map((assignment) => ({
-          assignmentId: assignment.assignment_id,
-          taskType: assignment.task_type,
-          questionSource: assignment.question_source,
-          questionId: assignment.question_id,
-          fallbackDisplayName: assignmentSnapshotTitle(assignment)
-        }))
+        assignments
+          .filter((assignment) => isWritingReviewItemType(assignment.task_type))
+          .map((assignment) => ({
+            assignmentId: assignment.assignment_id,
+            taskType: assignment.task_type as "email" | "academic_discussion",
+            questionSource: assignment.question_source,
+            questionId: assignment.question_id,
+            fallbackDisplayName: assignmentSnapshotTitle(assignment)
+          }))
       ),
       loadWritingAssignmentGroupTitles(
         auth.supabase,
@@ -139,6 +153,25 @@ export async function GET(request: Request) {
         }))
       );
     }
+    // One bulk lookup for every read-only item (BAS / Reading): it locates each
+    // student's existing result identity without touching content or scores.
+    const catalogResultItems = assignments
+      .filter((assignment) => !isWritingReviewItemType(assignment.task_type))
+      .flatMap((assignment) => assignment.question_id
+        ? [{
+            assignmentId: assignment.assignment_id,
+            itemId: assignment.question_id,
+            itemType: assignment.task_type,
+            sourceSetId: assignment.source_set_id
+          }]
+        : []);
+    const studentResultMap = catalogResultItems.length > 0
+      ? await loadAssignmentStudentResults({
+          db: auth.supabase,
+          items: catalogResultItems,
+          studentIds: members.map((member) => member.student_id)
+        })
+      : new Map();
     const submissions = new Map<string, string[]>();
     const latestSubmission = new Map<string, AssignmentAttemptRow>();
     const assignmentsWithAttempts = new Set<string>();
@@ -155,20 +188,34 @@ export async function GET(request: Request) {
     const now = Date.now();
     const enrichedAssignments = assignments.map((assignment) => {
         const students = assignedByAssignment.get(assignment.assignment_id) ?? new Set();
+        const reviewBased = isWritingReviewItemType(assignment.task_type);
         let completedCount = 0;
         let publishedCount = 0;
+        let hasAttempts = assignmentsWithAttempts.has(assignment.assignment_id);
         for (const studentId of Array.from(students)) {
-          const key = `${assignment.assignment_id}:${studentId}`;
-          if (earliestWritingAssignmentSubmission(submissions.get(key) ?? [])) {
-            completedCount += 1;
+          if (reviewBased) {
+            const key = `${assignment.assignment_id}:${studentId}`;
+            if (earliestWritingAssignmentSubmission(submissions.get(key) ?? [])) {
+              completedCount += 1;
+            }
+            const latest = latestSubmission.get(key);
+            if (latest && reviewStatuses.get(latest.attempt_id) === "published") {
+              publishedCount += 1;
+            }
+            continue;
           }
-          const latest = latestSubmission.get(key);
-          if (latest && reviewStatuses.get(latest.attempt_id) === "published") {
-            publishedCount += 1;
-          }
+          // Read-only items (BAS / Reading): the student's own existing result
+          // is the completion signal; there is no review / publish step.
+          const result = assignmentStudentResult(
+            studentResultMap,
+            assignment.assignment_id,
+            studentId
+          );
+          if (result.available_result) completedCount += 1;
+          if (result.started) hasAttempts = true;
         }
         const singleStudentId = students.size === 1 ? Array.from(students)[0] : null;
-        const singleStudentSubmission = singleStudentId
+        const singleStudentSubmission = reviewBased && singleStudentId
           ? latestSubmission.get(`${assignment.assignment_id}:${singleStudentId}`)
           : undefined;
         const snapshotTitle = assignmentSnapshotTitle(assignment);
@@ -182,6 +229,7 @@ export async function GET(request: Request) {
           group_title: groupTitles.get(assignment.group_id ?? "") ?? null,
           class_id: classRef?.class_id ?? null,
           class_name: classRef?.class_name ?? null,
+          subject: assignment.subject,
           task_type: assignment.task_type,
           question_source: assignment.question_source,
           question_id: assignment.question_id,
@@ -194,7 +242,7 @@ export async function GET(request: Request) {
           assigned_count: students.size,
           completed_count: completedCount,
           published_count: publishedCount,
-          has_attempts: assignmentsWithAttempts.has(assignment.assignment_id),
+          has_attempts: hasAttempts,
           single_student_latest_submitted_attempt_id:
             singleStudentSubmission?.attempt_id ?? null,
           single_student_latest_review_status: singleStudentSubmission
@@ -255,31 +303,39 @@ export async function POST(request: Request) {
     const classId = typeof body.classId === "string" ? body.classId.trim() : "";
     const groupTitle = normalizeAssignmentGroupTitle(body.title);
     const titleIsAutomatic = body.titleIsAutomatic === true;
+    const requestedSubject = isAssignmentSubject(body.subject) ? body.subject : undefined;
 
     // Student mode and class mode are mutually exclusive. Class mode resolves
     // its recipients from the class members inside the RPC, so the client
     // never supplies student ids there, and the class must belong to the
-    // current teacher and include Writing.
+    // current teacher and include the Assignment subject (写作 / 阅读).
     let rpcArgs: Record<string, unknown>;
     let assignmentCount: number;
     let recipientCount: number;
     let resolvedTitle = groupTitle;
 
     if (classId) {
-      const writingClass = await loadWritingClassForAssignment(
-        auth.supabase,
-        auth.teacherId,
-        classId
-      );
-      if (!writingClass) return invalid("所选班级不存在或不包含写作科目。");
       const prepared = await prepareClassWritingAssignmentGroupMutation(auth.supabase, groupBody, {
         canonicalizeQuestionBank: true,
-        actor: auth.actor ?? undefined
+        actor: auth.actor ?? undefined,
+        subject: requestedSubject
       });
-      // Automatic class titles always use the class's current name + today;
-      // the RPC appends the same-day (2), (3) sequence on top of the base.
+      const assignmentClass = await loadTeacherClassForAssignment(
+        auth.supabase,
+        auth.teacherId,
+        classId,
+        prepared.subject
+      );
+      if (!assignmentClass) {
+        return invalid(prepared.subject === "reading"
+          ? "所选班级不存在或不包含阅读科目。"
+          : "所选班级不存在或不包含写作科目。");
+      }
+      // Automatic class titles always use the class's current name + subject +
+      // today; the RPC appends the same-day (2), (3) sequence on top of the
+      // base.
       resolvedTitle = titleIsAutomatic
-        ? classAssignmentTitleBase(writingClass.name, new Date())
+        ? classAssignmentTitleBase(assignmentClass.name, new Date(), prepared.subject)
         : groupTitle;
       if (!resolvedTitle) return invalid("请填写作业标题。");
       rpcArgs = {
@@ -294,6 +350,7 @@ export async function POST(request: Request) {
         p_student_ids: [],
         p_title: resolvedTitle,
         p_title_is_automatic: titleIsAutomatic,
+        p_subject: prepared.subject,
         p_class_id: classId
       };
       assignmentCount = prepared.assignments.length;
@@ -301,7 +358,8 @@ export async function POST(request: Request) {
     } else {
       const prepared = await prepareWritingAssignmentGroupMutation(auth.supabase, groupBody, {
         canonicalizeQuestionBank: true,
-        actor: auth.actor ?? undefined
+        actor: auth.actor ?? undefined,
+        subject: requestedSubject
       });
       // The final Assignment title is part of the same atomic RPC as the group,
       // the items and the recipients. Automatic titles are numbered by the RPC
@@ -320,7 +378,8 @@ export async function POST(request: Request) {
         })),
         p_student_ids: prepared.studentIds,
         p_title: groupTitle,
-        p_title_is_automatic: titleIsAutomatic
+        p_title_is_automatic: titleIsAutomatic,
+        p_subject: prepared.subject
       };
       assignmentCount = prepared.assignments.length;
       recipientCount = prepared.studentIds.length;
@@ -436,14 +495,19 @@ const WRITING_ASSIGNMENT_RPC_INPUT_ERROR_MESSAGES: Record<string, string> = {
   "Assignments must contain between 1 and 50 items": "请至少添加一道题目，且一次最多布置 50 道题目。",
   "At least one student is required": "请至少选择一名学生。",
   "One or more students are invalid": "所选学生中包含无效账号。",
-  "Invalid writing task type": "请选择有效的写作题型。",
+  "Invalid writing task type": "请选择有效的题型。",
+  "Invalid assignment item type": "请选择有效的题型。",
   "Invalid question source": "请选择有效的题目来源。",
+  "Reading assignment requires question_bank source": "该题型只能从题库选择。",
+  "Invalid assignment subject": "请选择有效的作业科目。",
+  "MIXED_ASSIGNMENT_SUBJECT": "同一份作业不能同时包含写作和阅读题目。",
   "Question snapshot must be an object": "请完整填写每道题目。",
   "Question bank assignment requires question_id": "请选择一道题库题目。",
   "Custom assignment cannot include question_id": "请完整填写每道题目。",
   "Assignment title is too long": "作业标题不能超过 120 个字。",
   "CLASS_NOT_FOUND": "所选班级不存在或无权布置作业。",
   "CLASS_NOT_WRITING_CLASS": "该班级不包含写作科目。",
+  "CLASS_NOT_READING_CLASS": "该班级不包含阅读科目。",
   "CLASS_HAS_NO_MEMBERS": "该班级还没有学生，请先添加学生。"
 };
 

@@ -1,12 +1,21 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import { loadWritingAssignmentDisplayNames } from "@/lib/historicalPracticeDisplay";
+import {
+  assignmentSnapshotSourceSetId,
+  type AssignmentItemType
+} from "@/lib/assignmentCatalog";
+import {
+  assignmentStudentResult,
+  loadAssignmentStudentResults
+} from "@/lib/assignmentResults.server";
 import { loadWritingAssignmentGroupTitles } from "@/lib/writingAssignmentsGroupTitles.server";
-import type { WritingQuestion, WritingTaskType } from "@/lib/writing";
+import type { WritingQuestion } from "@/lib/writing";
 import {
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  isWritingReviewItemType,
   writingAssignmentTitle,
   type WritingAssignmentCollectionDetail,
   type WritingAssignmentLifecycleStatus,
@@ -27,7 +36,8 @@ type AssignmentRow = {
   assignment_id: string;
   group_id: string;
   group_position: number;
-  task_type: WritingTaskType;
+  subject?: "writing" | "reading";
+  task_type: AssignmentItemType;
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
   question_snapshot: WritingQuestion;
@@ -70,6 +80,9 @@ export async function GET(
     const assignments = assignmentsResult.data ?? [];
     if (assignments.length < 2) return notFound();
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
+    const reviewAssignmentIds = assignments
+      .filter((assignment) => isWritingReviewItemType(assignment.task_type))
+      .map((assignment) => assignment.assignment_id);
 
     const [membersResult, attemptsResult, displayNames, groupTitles] = await Promise.all([
       readAllSupabaseRows<MemberRow>((from, to) =>
@@ -83,24 +96,28 @@ export async function GET(
           .order("assignment_id", { ascending: true })
           .range(from, to)
       ),
-      readAllSupabaseRows<AttemptRow>((from, to) =>
-        auth.supabase!
-          .from("writing_attempts")
-          .select("assignment_id,attempt_id,user_id,status,submitted_at")
-          .in("assignment_id", assignmentIds)
-          .order("submitted_at", { ascending: true, nullsFirst: false })
-          .order("attempt_id", { ascending: true })
-          .range(from, to)
-      ),
+      reviewAssignmentIds.length
+        ? readAllSupabaseRows<AttemptRow>((from, to) =>
+            auth.supabase!
+              .from("writing_attempts")
+              .select("assignment_id,attempt_id,user_id,status,submitted_at")
+              .in("assignment_id", reviewAssignmentIds)
+              .order("submitted_at", { ascending: true, nullsFirst: false })
+              .order("attempt_id", { ascending: true })
+              .range(from, to)
+          )
+        : Promise.resolve({ data: [] as AttemptRow[], error: null }),
       loadWritingAssignmentDisplayNames(
         auth.supabase,
-        assignments.map((assignment) => ({
-          assignmentId: assignment.assignment_id,
-          fallbackDisplayName: writingAssignmentTitle(assignment.question_snapshot),
-          questionId: assignment.question_id,
-          questionSource: assignment.question_source,
-          taskType: assignment.task_type
-        }))
+        assignments
+          .filter((assignment) => isWritingReviewItemType(assignment.task_type))
+          .map((assignment) => ({
+            assignmentId: assignment.assignment_id,
+            fallbackDisplayName: writingAssignmentTitle(assignment.question_snapshot),
+            questionId: assignment.question_id,
+            questionSource: assignment.question_source,
+            taskType: assignment.task_type as "email" | "academic_discussion"
+          }))
       ),
       loadWritingAssignmentGroupTitles(auth.supabase, [params.batchId])
     ]);
@@ -108,10 +125,29 @@ export async function GET(
       throw membersResult.error ?? attemptsResult.error;
     }
     const members = membersResult.data ?? [];
-    const profiles = await readProfiles(
-      auth.supabase,
-      Array.from(new Set(members.map((member) => member.student_id)))
-    );
+    const memberStudentIds = Array.from(new Set(members.map((member) => member.student_id)));
+    const [profiles, studentResultMap] = await Promise.all([
+      readProfiles(auth.supabase, memberStudentIds),
+      (() => {
+        const items = assignments
+          .filter((assignment) => !isWritingReviewItemType(assignment.task_type))
+          .flatMap((assignment) => assignment.question_id
+            ? [{
+                assignmentId: assignment.assignment_id,
+                itemId: assignment.question_id,
+                itemType: assignment.task_type,
+                sourceSetId: assignmentSnapshotSourceSetId(assignment.question_snapshot)
+              }]
+            : []);
+        return items.length
+          ? loadAssignmentStudentResults({
+              db: auth.supabase,
+              items,
+              studentIds: memberStudentIds
+            })
+          : Promise.resolve(new Map());
+      })()
+    ]);
     const profileById = new Map(profiles.map((profile) => [profile.id, profile]));
     const membersByAssignment = new Map<string, MemberRow[]>();
     for (const member of members) {
@@ -142,6 +178,7 @@ export async function GET(
     let completedCount = 0;
     let publishedCount = 0;
     const details = assignments.map((assignment) => {
+      const reviewBased = isWritingReviewItemType(assignment.task_type);
       const assignmentMembers = membersByAssignment.get(assignment.assignment_id) ?? [];
       const students: WritingAssignmentStudentDetail[] = assignmentMembers.map((member) => {
         const key = assignmentStudentKey(assignment.assignment_id, member.student_id);
@@ -150,8 +187,19 @@ export async function GET(
         const latestReviewStatus = latest
           ? reviewStatusByAttemptId.get(latest.attempt_id) ?? null
           : null;
-        if (firstSubmittedAt) completedCount += 1;
-        if (latestReviewStatus === "published") publishedCount += 1;
+        const result = assignmentStudentResult(
+          studentResultMap,
+          assignment.assignment_id,
+          member.student_id
+        );
+        const completed = reviewBased
+          ? Boolean(firstSubmittedAt)
+          : Boolean(result.available_result);
+        const completedAt = reviewBased
+          ? firstSubmittedAt
+          : result.available_result?.completed_at ?? null;
+        if (completed) completedCount += 1;
+        if (reviewBased && latestReviewStatus === "published") publishedCount += 1;
         const profile = profileById.get(member.student_id);
         return {
           student_id: member.student_id,
@@ -161,18 +209,20 @@ export async function GET(
           }),
           student_email: profile?.email ?? "",
           assigned_at: member.assigned_at,
-          first_submitted_at: firstSubmittedAt,
-          has_attempt: attemptStudents.has(key),
-          latest_submitted_attempt_id: latest?.attempt_id ?? null,
-          latest_review_status: latestReviewStatus,
+          first_submitted_at: completedAt,
+          has_attempt: reviewBased ? attemptStudents.has(key) : result.started,
+          latest_submitted_attempt_id: reviewBased ? latest?.attempt_id ?? null : null,
+          latest_review_status: reviewBased ? latestReviewStatus : null,
+          available_result: reviewBased ? null : result.available_result,
+          completed,
           status: calculateWritingAssignmentStudentStatus({
             dueAt: assignment.due_at,
-            firstSubmittedAt
+            firstSubmittedAt: completedAt
           })
         };
       });
       const assignmentCompletedCount = students.filter(
-        (student) => student.first_submitted_at
+        (student) => student.completed
       ).length;
       const assignmentPublishedCount = students.filter(
         (student) => student.latest_review_status === "published"
@@ -196,7 +246,7 @@ export async function GET(
         completed_count: assignmentCompletedCount,
         published_count: assignmentPublishedCount,
         has_attempts: students.some((student) => student.has_attempt),
-        has_submitted_attempts: students.some((student) => student.first_submitted_at),
+        has_submitted_attempts: students.some((student) => student.completed),
         students
       };
     });
@@ -274,7 +324,7 @@ async function readProfiles(
 
 type GroupEditAssignmentRow = {
   assignment_id: string;
-  task_type: WritingTaskType;
+  task_type: AssignmentItemType;
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
   question_snapshot: WritingQuestion;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Search, UserRound } from "lucide-react";
 import {
@@ -41,15 +42,22 @@ import {
   teacherReturnToHref
 } from "@/lib/teacherNavigation";
 import { WRITING_TASK_CONFIG, type WritingQuestion, type WritingTaskType } from "@/lib/writing";
+import type { AssignmentItemType } from "@/lib/assignmentCatalog";
 import {
   buildCustomWritingQuestionSnapshot,
+  isWritingReviewItemType,
   normalizeEmailRequirementsInput,
   parseEmailRequirements,
   suggestAcademicDiscussionAvatarType,
+  writingAssignmentTitle,
   type WritingAssignmentCollectionDetail,
   type WritingAssignmentDetail,
   type WritingAssignmentQuestionSource
 } from "@/lib/writingAssignments";
+import {
+  assignmentItemTypeLabel,
+  assignmentItemViewerHref
+} from "@/lib/assignmentCatalog";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 type StudentOption = { id: string; displayName: string; email: string };
@@ -57,6 +65,9 @@ type StudentOption = { id: string; displayName: string; email: string };
 type GroupEditItemState = {
   assignmentId: string;
   bankQuestion: WritingQuestion | null;
+  /** Stable catalog identity for BAS / Reading items (never edited here). */
+  catalogItemId: string | null;
+  catalogItemTitle: string;
   customFields: Record<string, string>;
   locked: boolean;
   manuallySelectedAvatars: string[];
@@ -66,7 +77,7 @@ type GroupEditItemState = {
   searching: boolean;
   showSearch: boolean;
   source: WritingAssignmentQuestionSource;
-  taskType: WritingTaskType;
+  taskType: AssignmentItemType;
 };
 
 const AVATAR_FIELDS = Object.values(AVATAR_FIELD_BY_NAME);
@@ -274,6 +285,9 @@ export function TeacherWritingAssignmentGroupEditForm({
     setSubmitError("");
     if (items.length < 2) return setSubmitError("这组作业无法编辑。");
     for (const item of items) {
+      // BAS / Reading items keep their stable catalog identity; only students
+      // and the deadline can change for them.
+      if (!isWritingReviewItemType(item.taskType)) continue;
       if (item.source === "question_bank") {
         if (!item.bankQuestion) return setSubmitError("每篇题库题目都需要选择一道题。");
         continue;
@@ -302,13 +316,20 @@ export function TeacherWritingAssignmentGroupEditForm({
         body: JSON.stringify({
           action: "edit",
           reactivate,
-          items: items.map((item) => item.source === "question_bank"
+          items: items.map((item) => !isWritingReviewItemType(item.taskType)
             ? {
                 assignmentId: item.assignmentId,
                 taskType: item.taskType,
                 questionSource: "question_bank",
-                questionId: item.bankQuestion?.question_id ?? null
+                questionId: item.catalogItemId
               }
+            : item.source === "question_bank"
+              ? {
+                  assignmentId: item.assignmentId,
+                  taskType: item.taskType,
+                  questionSource: "question_bank",
+                  questionId: item.bankQuestion?.question_id ?? null
+                }
             : {
                 assignmentId: item.assignmentId,
                 taskType: item.taskType,
@@ -366,12 +387,32 @@ export function TeacherWritingAssignmentGroupEditForm({
         <TeacherCard className="grid gap-4 p-5" key={item.assignmentId}>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <TeacherSectionTitle>
-              第 {index + 1} 篇 · {WRITING_TASK_CONFIG[item.taskType].label}
+              第 {index + 1} 篇 · {assignmentItemTypeLabel(item.taskType)}
             </TeacherSectionTitle>
             {item.locked ? (
               <span className="text-xs text-student-muted">已有学生提交，题型和题目内容已锁定。</span>
             ) : null}
           </div>
+          {!isWritingReviewItemType(item.taskType) ? (
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-semibold text-student-text">{item.catalogItemTitle}</p>
+              {assignmentItemViewerHref({
+                item_id: item.catalogItemId ?? "",
+                item_type: item.taskType
+              }) ? (
+                <Link
+                  className="text-sm font-semibold text-student-primary underline-offset-4 hover:underline"
+                  href={assignmentItemViewerHref({
+                    item_id: item.catalogItemId ?? "",
+                    item_type: item.taskType
+                  })!}
+                >
+                  查看题目
+                </Link>
+              ) : null}
+            </div>
+          ) : (
+          <>
           <div className="grid gap-3 sm:grid-cols-2">
             {(["email", "academic_discussion"] as const).map((type) => (
               <ChoiceButton
@@ -471,6 +512,8 @@ export function TeacherWritingAssignmentGroupEditForm({
               />
               <CustomItemPreview item={item} />
             </div>
+          )}
+          </>
           )}
         </TeacherCard>
       ))}
@@ -574,10 +617,16 @@ export function TeacherWritingAssignmentGroupEditForm({
 function itemStateFromAssignment(assignment: WritingAssignmentDetail): GroupEditItemState {
   return {
     assignmentId: assignment.assignment_id,
-    bankQuestion: assignment.question_source === "question_bank" ? assignment.question_snapshot : null,
+    bankQuestion: assignment.question_source === "question_bank"
+      && isWritingReviewItemType(assignment.task_type)
+      ? assignment.question_snapshot
+      : null,
     customFields: assignment.question_source === "custom"
       ? customFieldsFromSnapshot(assignment.question_snapshot)
       : {},
+    catalogItemId: assignment.question_id,
+    catalogItemTitle: assignment.display_name
+      || writingAssignmentTitle(assignment.question_snapshot),
     locked: Boolean(assignment.has_submitted_attempts),
     manuallySelectedAvatars: assignment.question_source === "custom"
       && assignment.task_type === "academic_discussion"
@@ -595,9 +644,10 @@ function itemStateFromAssignment(assignment: WritingAssignmentDetail): GroupEdit
 
 function CustomItemPreview({ item }: { item: GroupEditItemState }) {
   const question = useMemo(() => {
+    if (!isWritingReviewItemType(item.taskType)) return null;
     try {
       return buildCustomWritingQuestionSnapshot({
-        taskType: item.taskType,
+        taskType: item.taskType as WritingTaskType,
         fields: item.customFields,
         id: `preview-${item.assignmentId}`
       });
@@ -608,5 +658,5 @@ function CustomItemPreview({ item }: { item: GroupEditItemState }) {
   if (!question) {
     return <p className="text-xs text-student-muted">填写完整后这里会显示学生看到的题目预览。</p>;
   }
-  return <WritingAssignmentQuestionPreview question={question} questionSource="custom" taskType={item.taskType} />;
+  return <WritingAssignmentQuestionPreview question={question} questionSource="custom" taskType={item.taskType as WritingTaskType} />;
 }
