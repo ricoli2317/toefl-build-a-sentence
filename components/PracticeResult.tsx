@@ -2,13 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
+  ArrowLeft,
   Clock3,
   ListFilter,
   Target,
   Trophy,
   type LucideIcon
 } from "lucide-react";
-import { buildSentenceDisplay } from "@/lib/questionText";
+import { buildSentenceDisplay, splitTextItems } from "@/lib/questionText";
+import { buildBasReviewQuestionState } from "@/lib/basReviewState";
+import { QuestionDisplay } from "@/components/shared/QuestionDisplay";
 import {
   StudentErrorState,
   StudentLoadingState,
@@ -143,6 +146,7 @@ export function PracticeResult({
         crumbs={navigation.crumbs}
       />}
       payload={peerComparison ? { ...payload, peer_comparison: peerComparison } : payload}
+      questionView="overview"
     />
   );
 }
@@ -153,6 +157,7 @@ export function PracticeResultView({
   initialQuestionId,
   navigation,
   payload,
+  questionView = "detail",
   showQuestionTime = false
 }: {
   answerLabel?: string;
@@ -160,23 +165,186 @@ export function PracticeResultView({
   initialQuestionId?: string;
   navigation?: React.ReactNode;
   payload: ResultPayload;
+  /**
+   * `overview` is the BAS student result: the attempt summary plus one status
+   * chip per question, where every chip opens that question's readonly BAS
+   * practice UI built from this attempt's submitted data. `detail` keeps the
+   * per-question answer cards used by the teacher views.
+   */
+  questionView?: "detail" | "overview";
   showQuestionTime?: boolean;
 }) {
   const [showIncorrectOnly, setShowIncorrectOnly] = useState(false);
+  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
   const { answers, attempt } = payload;
   const peerComparison = payload.peer_comparison ?? EMPTY_RESULT_PEER_COMPARISON;
   const visibleAnswers = showIncorrectOnly ? answers.filter((answer) => !answer.is_correct) : answers;
+  const activeAnswerIndex = activeQuestionId
+    ? answers.findIndex((answer) => answer.question_id === activeQuestionId)
+    : -1;
+  const activeAnswer = activeAnswerIndex >= 0 ? answers[activeAnswerIndex] : null;
+  const activeReadonlyState = activeAnswer
+    ? buildBasReviewQuestionState({
+        optionsText: activeAnswer.options_text,
+        questionId: activeAnswer.question_id,
+        submittedOrderText: activeAnswer.submitted_order_text
+      })
+    : null;
+  const activeQuestionTimeSeconds =
+    activeAnswer && Number.isFinite(activeAnswer.question_time_seconds)
+      ? activeAnswer.question_time_seconds
+      : null;
 
   useEffect(() => {
-    if (!initialQuestionId) return;
+    if (questionView !== "overview") return;
+    const hash = window.location.hash;
+    if (!hash.startsWith("#question-")) return;
+    let questionId = hash.slice("#question-".length);
+    try {
+      questionId = decodeURIComponent(questionId);
+    } catch {
+      // Keep the raw hash so an unencoded question id can still match.
+    }
+    if (answers.some((answer) => answer.question_id === questionId)) {
+      setActiveQuestionId(questionId);
+    }
+  }, [answers, questionView]);
+
+  useEffect(() => {
+    const questionId = initialQuestionId
+      ?? (questionView === "overview" ? activeQuestionId : null);
+    if (!questionId) return;
     const frame = window.requestAnimationFrame(() => {
-      document.getElementById(`question-${initialQuestionId}`)?.scrollIntoView({
+      document.getElementById(`question-${questionId}`)?.scrollIntoView({
         behavior: "smooth",
-        block: "center"
+        block: questionView === "overview" ? "start" : "center"
       });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [initialQuestionId]);
+  }, [activeQuestionId, initialQuestionId, questionView]);
+
+  if (questionView === "overview") {
+    return (
+      <div className="space-y-6">
+        {navigation}
+        <ResultSummary attempt={attempt} peerComparison={peerComparison} />
+        <section className="student-card" data-testid="practice-result-detail">
+          <div>
+            <h2 className="text-xl font-bold text-student-text">作答详情</h2>
+            <p className="mt-1 text-sm text-student-muted">
+              提交于 {formatSubmittedAt(attempt.submitted_at)}
+            </p>
+          </div>
+          <div
+            className="mt-4 flex flex-wrap justify-center gap-3"
+            data-testid="practice-result-question-chips"
+          >
+            {answers.map((answer) => {
+              const selected = answer.question_id === activeQuestionId;
+              return (
+                <button
+                  aria-current={selected ? "true" : undefined}
+                  aria-label={`第${answer.question_order}题，${answer.is_correct ? "正确" : "错误"}`}
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold tabular-nums transition ${resultAnswerToneClassName(answer.is_correct)} ${
+                    selected
+                      ? answer.is_correct
+                        ? "border-student-primary ring-2 ring-student-primary-border"
+                        : "border-student-error ring-2 ring-student-error-border"
+                      : ""
+                  }`}
+                  data-answer-state={answer.is_correct ? "correct" : "incorrect"}
+                  key={answer.attempt_answer_id}
+                  onClick={() => setActiveQuestionId(answer.question_id)}
+                  type="button"
+                >
+                  {answer.question_order}
+                </button>
+              );
+            })}
+          </div>
+          {activeAnswer && activeReadonlyState ? (
+            <div
+              className="mt-5 grid gap-5 border-t border-student-border pt-5"
+              data-testid="practice-result-readonly-question"
+              id={`question-${activeAnswer.question_id}`}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <button
+                  className="student-button-secondary min-h-9 px-3.5"
+                  onClick={() => setActiveQuestionId(null)}
+                  type="button"
+                >
+                  <ArrowLeft aria-hidden="true" size={16} />
+                  返回结果
+                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-sm font-semibold text-student-text">
+                    第 {activeAnswer.question_order} 题 / 共 {attempt.total_questions} 题
+                  </p>
+                  {activeQuestionTimeSeconds !== null ? (
+                    <span className="rounded-full border border-student-border bg-white px-3 py-1 text-xs font-semibold text-student-muted">
+                      用时 {formatDuration(activeQuestionTimeSeconds)}
+                    </span>
+                  ) : null}
+                  <span
+                    className={`rounded-full px-3 py-1 text-xs font-semibold text-white ${
+                      activeAnswer.is_correct ? "bg-student-primary" : "bg-student-error"
+                    }`}
+                  >
+                    {activeAnswer.is_correct ? "正确" : "错误"}
+                  </span>
+                </div>
+              </div>
+              <QuestionDisplay
+                answers={activeReadonlyState.placedChunks}
+                hideQuestionNumber
+                locale="zh-CN"
+                options={activeReadonlyState.optionChunks}
+                prompt={activeAnswer.prompt}
+                questionNumber={activeAnswer.question_order}
+                readOnly
+                template={activeAnswer.sentence_template}
+              />
+              {/* Same correct-answer presentation the teacher question bank shows for a BAS question. */}
+              <section className="teacher-card border-student-primary-border bg-student-primary-soft/55 p-5">
+                <p className="text-sm font-semibold text-student-primary">正确答案</p>
+                <p className="mt-2 text-lg font-semibold leading-7 text-student-text">
+                  {activeAnswer.final_sentence ||
+                    buildSentenceDisplay(
+                      activeAnswer.sentence_template,
+                      activeAnswer.correct_order_text
+                    ) ||
+                    splitTextItems(activeAnswer.correct_order_text).join(" ")}
+                </p>
+              </section>
+              <div className="flex flex-wrap justify-end gap-3">
+                <button
+                  className="student-button-secondary min-h-10 px-4 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={activeAnswerIndex === 0}
+                  onClick={() =>
+                    setActiveQuestionId(answers[activeAnswerIndex - 1]?.question_id ?? activeAnswer.question_id)
+                  }
+                  type="button"
+                >
+                  上一题
+                </button>
+                <button
+                  className="student-button-primary min-h-10 px-4 disabled:cursor-not-allowed disabled:opacity-60"
+                  disabled={activeAnswerIndex === answers.length - 1}
+                  onClick={() =>
+                    setActiveQuestionId(answers[activeAnswerIndex + 1]?.question_id ?? activeAnswer.question_id)
+                  }
+                  type="button"
+                >
+                  下一题
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -317,11 +485,7 @@ function ResultQuestionCard({
 
   return (
     <article
-      className={`rounded-xl border p-4 ${
-        answer.is_correct
-          ? "border-student-primary-border bg-student-primary-soft"
-          : "border-student-error-border bg-student-error-soft"
-      }`}
+      className={`rounded-xl border p-4 ${resultAnswerToneClassName(answer.is_correct)}`}
       id={`question-${answer.question_id}`}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -523,4 +687,18 @@ function formatDuration(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
+/** BAS result status tones: correct keeps the product primary, wrong keeps the error tone. */
+function resultAnswerToneClassName(isCorrect: boolean) {
+  return isCorrect
+    ? "border-student-primary-border bg-student-primary-soft text-student-primary"
+    : "border-student-error-border bg-student-error-soft text-student-error";
+}
+
+function formatSubmittedAt(value: string) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? "时间未知"
+    : new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(date);
 }
