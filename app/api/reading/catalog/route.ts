@@ -1,4 +1,4 @@
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, loadStudentCatalogAuthorization, verifyAuthenticatedIdentity } from "@/lib/auth";
 import {
   attachReadingCatalogStudentStates,
   buildReadingCatalogPayload,
@@ -8,47 +8,69 @@ import {
 } from "@/lib/reading/catalog";
 import { loadCachedPublicReadingCatalog } from "@/lib/reading/catalogCache.server";
 import { loadStudentPracticeItemStates } from "@/lib/studentPracticeItemState.server";
+import { runStudentCatalogCriticalPath } from "@/lib/studentCatalogCriticalPath.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const token = bearerToken(request);
-  const auth = await requireUserWithRole(token, "student");
-  if (auth.error || !auth.userId || !token) {
-    return json({ error: "请先登录后再查看阅读练习。" }, { status: 401 });
-  }
-  const taskType = new URL(request.url).searchParams.get("taskType");
-  if (!isReadingModule(taskType)) {
-    return json({ error: "请选择有效的阅读练习类型。" }, { status: 400 });
-  }
-
-  // Authentication is checked above; the service client lets the launched
-  // catalog read the finalized inventory without mutating its legacy release flag.
-  const db = createServiceSupabase();
+  const timing = createStudentPerformanceTrace("/api/reading/catalog");
+  const respond = (data: unknown, init?: ResponseInit) => json(data, init, timing);
   try {
-    // One request: cached public lightweight catalog + one sparse indexed
-    // student-state query, merged server-side. Search text is never read here.
-    const [publicCatalog, stateResult] = await Promise.all([
-      loadCachedPublicReadingCatalog(taskType),
-      loadStudentPracticeItemStates(db, { studentId: auth.userId, taskType })
-    ]);
-    if (stateResult.available) {
-      return json(attachReadingCatalogStudentStates(publicCatalog, stateResult.rows));
+    const token = bearerToken(request);
+    const taskType = new URL(request.url).searchParams.get("taskType");
+    if (!isReadingModule(taskType)) {
+      return respond({ error: "请选择有效的阅读练习类型。" }, { status: 400 });
     }
 
-    // Transitional fallback while the sparse state migration is rolling out.
-    const legacy = await loadLegacyReadingCatalogInput(db, auth.userId, taskType);
-    if (legacy.error) {
-      console.error("Reading catalog load failed", { error: legacy.error });
-      return json({ error: "阅读练习列表加载失败，请稍后重试。" }, { status: 500 });
+    // Authentication is gated by runStudentCatalogCriticalPath; the service
+    // client lets the launched catalog read the finalized inventory without
+    // mutating its legacy release flag. One request: cached public lightweight
+    // catalog + one sparse indexed student-state query, merged server-side.
+    // Search text is never read here.
+    const db = createServiceSupabase();
+    const result = await runStudentCatalogCriticalPath({
+      timing,
+      identity: async () => {
+        const identity = await verifyAuthenticatedIdentity(token, timing);
+        return identity.error || !identity.userId
+          ? { ok: false as const, status: 401 as const, error: "请先登录后再查看阅读练习。" }
+          : { ok: true as const, userId: identity.userId };
+      },
+      loadCatalog: () => loadCachedPublicReadingCatalog(taskType),
+      loadState: (studentId) => loadStudentPracticeItemStates(db, {
+        studentId,
+        taskType,
+        timing
+      }),
+      authorization: (userId) => loadStudentCatalogAuthorization(token, userId, timing),
+      merge: async (publicCatalogResult, stateResult, studentId) => {
+        if (!publicCatalogResult.ok) throw publicCatalogResult.error;
+        if (!stateResult.ok) throw stateResult.error;
+        const publicCatalog = publicCatalogResult.value;
+        const state = stateResult.value;
+        if (state.available) {
+          return attachReadingCatalogStudentStates(publicCatalog, state.rows);
+        }
+
+        // Transitional fallback while the sparse state migration is rolling out.
+        const legacy = await loadLegacyReadingCatalogInput(db, studentId, taskType);
+        if (legacy.error) {
+          throw new Error(legacy.error);
+        }
+        return buildReadingCatalogPayload(legacy);
+      }
+    });
+    if (result.forbidden) {
+      return respond({ error: result.error }, { status: result.status });
     }
-    return json(buildReadingCatalogPayload(legacy));
+    return respond(result.data);
   } catch (error) {
     console.error("Reading catalog load failed", { error });
-    return json({ error: "阅读练习列表加载失败，请稍后重试。" }, { status: 500 });
+    return respond({ error: "阅读练习列表加载失败，请稍后重试。" }, { status: 500 });
   }
 }
 
@@ -88,8 +110,13 @@ async function loadLegacyReadingCatalogInput(
   };
 }
 
-function json(data: unknown, init?: ResponseInit) {
-  const headers = new Headers(init?.headers);
-  headers.set("Cache-Control", "no-store");
-  return NextResponse.json(data, { ...init, headers });
+function json(
+  data: unknown,
+  init: ResponseInit | undefined,
+  timing: ReturnType<typeof createStudentPerformanceTrace>
+) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: timing.finishHeaders({ ...init?.headers, "Cache-Control": "no-store" })
+  });
 }

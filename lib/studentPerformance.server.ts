@@ -14,6 +14,31 @@ export type StudentPerformanceTraceContext = {
   traceId?: string | null;
 };
 
+/**
+ * Handle for one explicitly named Server-Timing phase. Created when the phase
+ * starts, recorded when it settles, so parallel phases report their own real
+ * wall-clock duration instead of a summed total.
+ */
+export type StudentPerformancePhaseStart = {
+  readonly name: string;
+  readonly layer: StudentPerformanceLayer;
+  readonly startedAt: number;
+};
+
+/**
+ * Stable Server-Timing phase names shared by the student first-screen catalog
+ * APIs. The client and production dashboards read these without parsing layer
+ * prefixes, so the names must not contain student identity or other secrets.
+ */
+export const STUDENT_CATALOG_TIMING_PHASES = {
+  authClaims: "auth_claims",
+  catalogRevision: "catalog_revision",
+  merge: "merge",
+  profile: "profile",
+  publicCatalog: "public_catalog",
+  studentState: "student_state"
+} as const;
+
 export type StudentPerformanceTrace = {
   measure: <T>(
     layer: StudentPerformanceLayer,
@@ -25,9 +50,15 @@ export type StudentPerformanceTrace = {
     name: string,
     operation: () => T
   ) => T;
+  phase: <T>(name: string, operation: () => PromiseLike<T>) => Promise<T>;
+  phaseSync: <T>(name: string, operation: () => T) => T;
+  startPhase: (name: string, layer?: StudentPerformanceLayer) => StudentPerformancePhaseStart;
+  recordPhase: (phase: StudentPerformancePhaseStart) => void;
   finishHeaders: (headers?: HeadersInit, success?: boolean) => Headers;
   traceId: string;
 };
+
+type RecordedMetric = StudentPerformanceMetric & { explicitName: boolean };
 
 function roundDuration(value: number) {
   return Math.round(value * 10) / 10;
@@ -49,7 +80,8 @@ export function createStudentPerformanceTrace(
   const startedAtIso = new Date().toISOString();
   const requestId = crypto.randomUUID();
   const traceId = validTraceId(context.traceId) ? context.traceId : requestId;
-  const metrics: StudentPerformanceMetric[] = [];
+  const metrics: RecordedMetric[] = [];
+  const openPhases = new Set<StudentPerformancePhaseStart>();
   let finished = false;
 
   function record(
@@ -57,15 +89,54 @@ export function createStudentPerformanceTrace(
     name: string,
     start: number,
     success: boolean,
-    error?: unknown
+    error?: unknown,
+    explicitName = false
   ) {
     metrics.push({
       durationMs: roundDuration(performance.now() - start),
       failure: success ? null : performanceFailure(error),
       layer,
       name,
-      success
+      success,
+      explicitName
     });
+  }
+
+  function startPhase(name: string, layer: StudentPerformanceLayer = "processing") {
+    const phase: StudentPerformancePhaseStart = { layer, name, startedAt: performance.now() };
+    openPhases.add(phase);
+    return phase;
+  }
+
+  function recordPhase(phase: StudentPerformancePhaseStart) {
+    if (!openPhases.delete(phase)) return;
+    record(phase.layer, phase.name, phase.startedAt, true, undefined, true);
+  }
+
+  async function trackPhase<T>(name: string, operation: () => PromiseLike<T>) {
+    const phase = startPhase(name);
+    try {
+      const result = await operation();
+      recordPhase(phase);
+      return result;
+    } catch (error) {
+      openPhases.delete(phase);
+      record(phase.layer, phase.name, phase.startedAt, false, error, true);
+      throw error;
+    }
+  }
+
+  function trackPhaseSync<T>(name: string, operation: () => T) {
+    const phase = startPhase(name);
+    try {
+      const result = operation();
+      recordPhase(phase);
+      return result;
+    } catch (error) {
+      openPhases.delete(phase);
+      record(phase.layer, phase.name, phase.startedAt, false, error, true);
+      throw error;
+    }
   }
 
   return {
@@ -95,6 +166,10 @@ export function createStudentPerformanceTrace(
         throw error;
       }
     },
+    phase: trackPhase,
+    phaseSync: trackPhaseSync,
+    startPhase,
+    recordPhase,
     finishHeaders(initialHeaders?: HeadersInit, success = true) {
       const headers = new Headers(initialHeaders);
       if (finished) return headers;
@@ -104,9 +179,12 @@ export function createStudentPerformanceTrace(
       const totalMs = roundDuration(performance.now() - startedAt);
       const timingValues = [
         `api_total;dur=${totalMs};desc="API total"`,
-        ...metrics.map((metric, index) =>
-          `${serverTimingToken(metric.layer)}_${index + 1};dur=${metric.durationMs};desc="${serverTimingDescription(metric.name)}"`
-        )
+        ...metrics.map((metric, index) => {
+          if (metric.explicitName) {
+            return `${serverTimingToken(metric.name)};dur=${metric.durationMs};desc="${serverTimingDescription(metric.name)}"`;
+          }
+          return `${serverTimingToken(metric.layer)}_${index + 1};dur=${metric.durationMs};desc="${serverTimingDescription(metric.name)}"`;
+        })
       ];
       headers.set("Server-Timing", timingValues.join(", "));
       headers.set("X-Student-Perf-Request-Id", requestId);
@@ -144,4 +222,20 @@ function validTraceId(value: string | null | undefined): value is string {
 function performanceFailure(error: unknown) {
   if (error instanceof Error) return error.name;
   return typeof error === "string" ? "Error" : "UnknownError";
+}
+
+export type SettledResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; error: unknown };
+
+/**
+ * Converts a started promise into a settled result so the route can keep the
+ * parallel data preloads running without creating unhandled rejections when an
+ * authorization gate wins the race and returns early.
+ */
+export function settleParallelResult<T>(promise: Promise<T>): Promise<SettledResult<T>> {
+  return promise.then(
+    (value) => ({ ok: true, value }),
+    (error) => ({ ok: false, error })
+  );
 }

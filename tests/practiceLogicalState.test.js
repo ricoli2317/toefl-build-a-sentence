@@ -400,6 +400,14 @@ test("practice-catalog passes authenticated student identity into logical state 
     path.join(projectRoot, "app/api/practice-catalog/route.ts"),
     "utf8"
   );
-  assert.match(route, /requireUserWithRole\(bearerToken\(request\), "student"\)/);
-  assert.match(route, /studentId: auth\.userId/);
+  // The catalog gate now runs as a two-stage split: verified JWT identity,
+  // then the per-request database profile authorization, both through the
+  // shared critical-path helper.
+  assert.match(route, /verifyAuthenticatedIdentity\(token, timing\)/);
+  assert.match(route, /loadStudentCatalogAuthorization\(token, userId, timing\)/);
+  assert.match(route, /runStudentCatalogCriticalPath/);
+  // The sparse state read is bound to the verified user id, never to a
+  // client-supplied id.
+  assert.match(route, /loadState: \(studentId\) => loadStudentPracticeItemStates\(db, \{[\s\S]{0,80}studentId/);
+  assert.doesNotMatch(route, /searchParams\.get\("studentId"\)|body\.studentId/);
 });

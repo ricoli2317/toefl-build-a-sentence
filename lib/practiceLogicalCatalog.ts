@@ -20,6 +20,7 @@ import {
   type WritingLogicalAttemptRow
 } from "./practiceLogicalState.ts";
 import { loadStudentPracticeItemStates } from "./studentPracticeItemState.server.ts";
+import type { StudentPracticeItemStateLoadResult } from "./studentPracticeItemState.server.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 import { countOccurrenceDates, type OccurrenceDateCount } from "./catalogOccurrenceDates.ts";
@@ -172,36 +173,64 @@ export function buildLogicalPracticeCatalog(input: {
   };
 }
 
-export async function getLogicalPracticeItems(input: {
+type LogicalPracticeInputBase = {
   supabase: SupabaseClient;
   studentId: string;
   taskType: PracticeTaskType;
   timing?: StudentPerformanceTrace;
   loadPublicCatalog?: () => Promise<PublicLogicalPracticeCatalogData>;
-}): Promise<LogicalPracticeCatalogWithStudentState> {
-  const loadPublic = input.loadPublicCatalog ?? (() =>
-    loadPublicLogicalPracticeCatalog({
-      supabase: input.supabase,
-      taskType: input.taskType,
-      timing: input.timing
-    }));
-  const publicCatalogPromise = input.timing
-    ? input.timing.measure("cache", "public_practice_catalog", loadPublic)
-    : loadPublic();
-  // Sparse state read first: one indexed query for `student_id + task_type`,
-  // with no full attempt-history scan.
+};
+
+type LogicalPracticeLoadInput = Omit<LogicalPracticeInputBase, "studentId"> & {
+  /** Pre-started load, for example started before the auth gate resolved. */
+  publicCatalogPromise?: Promise<PublicLogicalPracticeCatalogData>;
+  /** Pre-started sparse state load, for example started before the auth gate resolved. */
+  studentStatePromise?: Promise<StudentPracticeItemStateLoadResult>;
+  /** Required unless both pre-started promises are supplied. */
+  studentId?: string;
+};
+
+/**
+ * One student first-screen catalog request: cached public practice catalog +
+ * one sparse indexed student-state query, merged server-side.
+ *
+ * The loads may already be in flight (`publicCatalogPromise` /
+ * `studentStatePromise`): the route starts them in parallel with the database
+ * profile authorization and only calls this after the profile gate passes.
+ */
+export async function getLogicalPracticeItems(
+  input: LogicalPracticeInputBase
+): Promise<LogicalPracticeCatalogWithStudentState>;
+export async function getLogicalPracticeItems(
+  input: LogicalPracticeLoadInput
+): Promise<LogicalPracticeCatalogWithStudentState>;
+export async function getLogicalPracticeItems(
+  input: LogicalPracticeLoadInput
+): Promise<LogicalPracticeCatalogWithStudentState> {
+  const publicCatalogPromise = input.publicCatalogPromise ?? (input.timing
+    ? input.timing.phase("public_catalog", () => loadStartedPublicCatalog(input))
+    : loadStartedPublicCatalog(input));
+  const staticStudentId = input.studentId;
+  const studentStatePromise = input.studentStatePromise ?? (staticStudentId
+    ? loadStartedStudentState({
+        supabase: input.supabase,
+        studentId: staticStudentId,
+        taskType: input.taskType,
+        timing: input.timing
+      })
+    : undefined);
+  if (!studentStatePromise) {
+    throw new Error("getLogicalPracticeItems requires studentId or a pre-started student state load.");
+  }
+
   const [publicCatalog, stateResult] = await Promise.all([
     publicCatalogPromise,
-    loadStudentPracticeItemStates(input.supabase, {
-      studentId: input.studentId,
-      taskType: input.taskType,
-      timing: input.timing
-    })
+    studentStatePromise
   ]);
   const { catalog, sources } = publicCatalog;
 
   if (stateResult.available) {
-    const buildResult = () => ({
+    const buildMergedResult = () => ({
       ...catalog,
       items: attachLogicalPracticeStudentStateFromRows({
         items: catalog.items,
@@ -209,15 +238,15 @@ export async function getLogicalPracticeItems(input: {
       })
     });
     return input.timing
-      ? input.timing.measureSync("processing", "merge_student_catalog_state", buildResult)
-      : buildResult();
+      ? input.timing.phaseSync("merge", buildMergedResult)
+      : buildMergedResult();
   }
 
   // Transitional fallback while the state migration is rolling out: rebuild
   // the same state from the student's attempt history exactly as before.
   const attemptRows = await loadLogicalPracticeStudentAttempts({
     supabase: input.supabase,
-    studentId: input.studentId,
+    studentId: input.studentId ?? "",
     taskType: input.taskType,
     timing: input.timing
   });
@@ -230,8 +259,32 @@ export async function getLogicalPracticeItems(input: {
     })
   });
   return input.timing
-    ? input.timing.measureSync("processing", "attach_student_catalog_state", buildLegacyResult)
+    ? input.timing.phaseSync("merge", buildLegacyResult)
     : buildLegacyResult();
+}
+
+function loadStartedPublicCatalog(
+  input: Omit<LogicalPracticeInputBase, "studentId">
+) {
+  return (input.loadPublicCatalog ?? (() =>
+    loadPublicLogicalPracticeCatalog({
+      supabase: input.supabase,
+      taskType: input.taskType,
+      timing: input.timing
+    })))();
+}
+
+function loadStartedStudentState(input: { studentId: string } & Pick<
+  LogicalPracticeInputBase,
+  "supabase" | "taskType" | "timing"
+>) {
+  // Sparse state read: one indexed query for `student_id + task_type`,
+  // with no full attempt-history scan.
+  return loadStudentPracticeItemStates(input.supabase, {
+    studentId: input.studentId,
+    taskType: input.taskType,
+    timing: input.timing
+  });
 }
 
 export async function loadPublicLogicalPracticeCatalog(input: {

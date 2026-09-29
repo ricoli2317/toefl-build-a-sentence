@@ -1,8 +1,10 @@
-import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { bearerToken, loadStudentCatalogAuthorization, verifyAuthenticatedIdentity } from "@/lib/auth";
 import {
   getLogicalPracticeItems,
   isLogicalPracticeTaskType
 } from "@/lib/practiceLogicalCatalog";
+import { loadStudentPracticeItemStates } from "@/lib/studentPracticeItemState.server";
+import { runStudentCatalogCriticalPath } from "@/lib/studentCatalogCriticalPath.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import { loadCachedPublicPracticeCatalog } from "@/lib/practiceCatalogCache.server";
@@ -20,24 +22,43 @@ export async function GET(request: Request) {
       return respond({ error: "Invalid practice task type." }, { status: 400 });
     }
 
-    const auth = await timing.measure("auth", "require_student", () =>
-      requireUserWithRole(bearerToken(request), "student")
-    );
-    if (auth.error || !auth.userId) {
-      return respond({ error: auth.error ?? "Unauthorized" }, { status: 401 });
-    }
-
-    // One request: cached public lightweight catalog + sparse student state,
-    // merged server-side. The payload has no search text; the separate search
-    // index is prefetched by the client after the first screen renders.
-    const catalog = await getLogicalPracticeItems({
-      supabase: createServiceSupabase(),
-      studentId: auth.userId,
-      taskType,
+    const token = bearerToken(request);
+    const db = createServiceSupabase();
+    // One request: a cached public lightweight catalog and one sparse student
+    // state query, both started in parallel with the database profile
+    // authorization. The payload has no search text; the search index is a
+    // separate request prefetched by the client after the first screen renders.
+    const result = await runStudentCatalogCriticalPath({
       timing,
-      loadPublicCatalog: () => loadCachedPublicPracticeCatalog(taskType)
+      identity: async () => {
+        const identity = await verifyAuthenticatedIdentity(token, timing);
+        return identity.error || !identity.userId
+          ? { ok: false as const, status: 401 as const, error: identity.error ?? "Unauthorized" }
+          : { ok: true as const, userId: identity.userId };
+      },
+      loadCatalog: () => loadCachedPublicPracticeCatalog(taskType),
+      loadState: (studentId) => loadStudentPracticeItemStates(db, {
+        studentId,
+        taskType,
+        timing
+      }),
+      authorization: (userId) => loadStudentCatalogAuthorization(token, userId, timing),
+      merge: async (catalogResult, stateResult) => {
+        if (!catalogResult.ok) throw catalogResult.error;
+        if (!stateResult.ok) throw stateResult.error;
+        return getLogicalPracticeItems({
+          supabase: db,
+          taskType,
+          timing,
+          publicCatalogPromise: Promise.resolve(catalogResult.value),
+          studentStatePromise: Promise.resolve(stateResult.value)
+        });
+      }
     });
-    return respond(catalog);
+    if (result.forbidden) {
+      return respond({ error: result.error }, { status: result.status });
+    }
+    return respond(result.data);
   } catch (error) {
     console.error("[practice-catalog] logical_list_failed", error);
     return respond({ error: "Could not load the logical practice catalog." }, { status: 500 });

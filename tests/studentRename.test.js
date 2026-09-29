@@ -230,7 +230,10 @@ test("admin student list reuses the same inline editor against the admin endpoin
 
 test("account context exposes the profile display name from /api/account/me", () => {
   const auth = read("lib/auth.ts");
-  assert.match(auth, /select\("role,is_active,full_name,email"\)/);
+  // The account path selects the display-name fields; the catalog hot path
+  // selects only role,is_active.
+  assert.match(auth, /select: "role,is_active,full_name,email"/);
+  assert.match(auth, /select: "role,is_active"/);
   assert.match(auth, /getPreferredUserDisplayName/);
   assert.match(auth, /displayName: string \| null/);
 

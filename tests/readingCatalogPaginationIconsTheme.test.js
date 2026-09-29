@@ -59,8 +59,11 @@ test("Full Set API returns the complete validated catalog; the browser slices pa
   assert.doesNotMatch(route, /searchParams\.get\("page"\)|searchParams\.get\("limit"\)/);
   assert.doesNotMatch(route, /loadReadingFullSetCatalogPage/);
   assert.match(route, /loadCachedPublicReadingFullSetCatalog\(\)/);
-  assert.match(route, /loadStudentPracticeItemStates\(db, \{ studentId: auth\.userId, taskType: "full_set" \}\)/);
-  assert.match(route, /attachReadingFullSetStudentStates\(publicCatalog, stateResult\.rows\)/);
+  // The sparse state read is bound to the verified user id through the shared
+  // catalog critical-path orchestrator.
+  assert.match(route, /loadStudentPracticeItemStates\(db, \{\s*studentId,[\s\S]{0,60}taskType: "full_set"/);
+  assert.match(route, /runStudentCatalogCriticalPath\(\{/);
+  assert.match(route, /attachReadingFullSetStudentStates\(publicCatalog, state\.rows\)/);
   assert.match(server, /buildReadingFullSetCatalog\(buildReadingFullSets\(/);
   assert.match(server, /loadReadingFullSetDefinitions/);
   assert.match(cache, /reading-full-set-catalog/);
