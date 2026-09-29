@@ -20,6 +20,7 @@ import {
   getReadingFullSetResultNavigation,
   readingFullSetResultHref,
   withReadingResultSource,
+  withStudentReturnTo,
   type ReadingResultSource
 } from "@/lib/studentNavigation";
 import { ReadingFullSetQuestionNavigator } from "./ReadingFullSetQuestionNavigator";
@@ -28,10 +29,12 @@ import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
 export function ReadingFullSetResult({
   attemptId,
   fullSetId,
+  returnTo,
   source
 }: {
   attemptId: string;
   fullSetId: string;
+  returnTo?: string | string[];
   source?: ReadingResultSource;
 }) {
   const state = useStudentCachedData<ReadingFullSetResultPayload>(
@@ -45,12 +48,12 @@ export function ReadingFullSetResult({
   const questionHrefBase = readingFullSetResultHref(fullSetId, attemptId);
   const reviewItems = buildReadingFullSetReviewItems(
     result.answers,
-    (answerIndex) => withReadingResultSource(
+    (answerIndex) => withStudentReturnTo(withReadingResultSource(
       `${questionHrefBase}/questions/${answerIndex}`,
       source
-    )
+    ), returnTo)
   );
-  const navigation = getReadingFullSetResultNavigation(result.attempt.title, source);
+  const navigation = getReadingFullSetResultNavigation(result.attempt.title, source, returnTo);
   return (
     <div className="student-result-overview-layout">
       <div className="student-result-overview-navigation">

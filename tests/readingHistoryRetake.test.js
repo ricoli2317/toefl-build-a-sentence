@@ -237,7 +237,8 @@ test("submit invalidates Reading caches and unified History before opening the o
   assert.match(cache, /STUDENT_READING_RESULT_CACHE_PREFIX = "reading:result"/);
   assert.match(readingPracticeUi, /invalidate\(STUDENT_READING_HISTORY_CACHE_PREFIX\)/);
   assert.match(readingPracticeUi, /invalidate\(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX\)/);
-  assert.match(readingPracticeUi, /router\.replace\(`\/student\/reading\/results\/\$\{encodeURIComponent\(result\.attempt\.attemptId\)\}`\)/);
+  assert.match(readingPracticeUi, /router\.replace\(withStudentReturnTo\(/);
+  assert.match(readingPracticeUi, /\/student\/reading\/results\/\$\{encodeURIComponent\(result\.attempt\.attemptId\)\}/);
   assert.doesNotMatch(readingPracticeUi, /setAttempt\(result\.attempt\)/);
   assert.doesNotMatch(readingPracticeUi, /if \(attempt\.status === "submitted"\)[\s\S]*PracticeResultSummary/);
   assert.doesNotMatch(readingPracticeUi, /invalidate\(STUDENT_SETS_CACHE|clear\(\)/);
@@ -250,7 +251,7 @@ test("History and Result UI provide Back, loading, error, empty, view, and retak
   assert.match(readingHistoryUi, /StudentEmptyState/);
   assert.match(readingHistoryUi, /查看结果/);
   assert.match(readingHistoryUi, /ReadingRetakeButton/);
-  assert.match(readingResultUi, /getReadingResultNavigation\(attempt\.taskType, source\)/);
+  assert.match(readingResultUi, /getReadingResultNavigation\(attempt\.taskType, source, returnTo\)/);
   assert.match(readingResultUi, /ReadingRetakeButton/);
   assert.doesNotMatch(readingHistoryUi, />\{attempt\.attemptId\}<|>\{attempt\.logicalItemId\}</);
 });

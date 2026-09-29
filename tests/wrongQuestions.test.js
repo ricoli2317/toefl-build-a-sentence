@@ -883,7 +883,7 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
   assert.match(shell, /aria-label=\{label\}/);
   assert.match(shell, /\{canGoNext \|\| readOnly \? \([\s\S]*label="Submit"/);
   assert.doesNotMatch(shell, /Submit Module/);
-  assert.match(shell, /readingQuestionNavigationTargets\(reviewItems\.map\(\(item\) => item\.questionId\), reviewIndex\)/);
+  assert.match(shell, /readingQuestionNavigationTargets\(reviewNavigationKeys, reviewIndex\)/);
   assert.match(fullSetReview, /readingQuestionNavigationTargets\([\s\S]*candidate\.occurrenceId[\s\S]*candidate\.questionId/);
   assert.match(todayPage, /itemId=\{searchParams\.itemId\}/);
   assert.match(historyPage, /itemId=\{searchParams\.itemId\}/);

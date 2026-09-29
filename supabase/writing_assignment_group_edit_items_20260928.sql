@@ -386,10 +386,17 @@ begin
   where group_id = effective_group_id
     and teacher_id = p_teacher_id;
 
+  -- New items are appended after the highest position the group has EVER used,
+  -- including soft-deleted items. `writing_assignments_group_position_unique`
+  -- is a plain unique index on (group_id, group_position) that is NOT partial on
+  -- deleted_at, so a soft-deleted row keeps occupying its position: reusing the
+  -- highest visible position (which is what a 换题型 / 换科目 edit does after the
+  -- old items were just soft-deleted) raised
+  --   23505 duplicate key ... writing_assignments_group_position_unique
+  -- and surfaced as 作业更新失败. Historical deleted positions are never reused.
   select coalesce(max(group_position), 0) into next_position
   from public.writing_assignments
-  where group_id = effective_group_id
-    and deleted_at is null;
+  where group_id = effective_group_id;
 
   for provided_item in select value from jsonb_array_elements(p_items)
   loop
@@ -470,36 +477,15 @@ revoke all on function public.update_withdrawn_writing_assignment_group(
 grant execute on function public.update_withdrawn_writing_assignment_group(
   uuid, uuid, uuid, text, jsonb, uuid[], timestamptz, boolean, uuid
 ) to service_role;
-
 -- ---------------------------------------------------------------------------
--- Verification SQL (read-only; run after applying)
+-- Validation (read-only; run after applying)
+-- Expect: function_count = 1, position_fix = 1
 -- ---------------------------------------------------------------------------
 --
--- 1. The function exists exactly once, with the new signature:
---
--- select p.proname, pg_get_function_identity_arguments(p.oid)
--- from pg_proc p
--- join pg_namespace n on n.oid = p.pronamespace
--- where n.nspname = 'public'
---   and p.proname = 'update_withdrawn_writing_assignment_group';
---
--- 2. A withdrawn group with its items and recipients (replace the values):
---
--- select a.assignment_id, a.group_position, a.task_type, a.question_source,
---        a.question_id, a.status, a.deleted_at
--- from public.writing_assignments a
--- where a.group_id = '<group_id>'
--- order by a.group_position, a.assignment_id;
---
--- select s.assignment_id, s.student_id, s.sort_order
--- from public.writing_assignment_students s
--- join public.writing_assignments a on a.assignment_id = s.assignment_id
--- where a.group_id = '<group_id>'
--- order by s.assignment_id, s.sort_order;
---
--- 3. No withdrawn item may carry an attempt (should return 0 rows):
---
--- select a.assignment_id
--- from public.writing_assignments a
--- join public.writing_attempts t on t.assignment_id = a.assignment_id
--- where a.status = 'withdrawn' and a.deleted_at is null;
+-- select
+--   (select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+--     where n.nspname = 'public' and p.proname = 'update_withdrawn_writing_assignment_group') as function_count,
+--   (select case when position('deleted_at' in left(rest, position('for provided_item' in rest) - 1)) = 0 then 1 else 0 end
+--      from (select substring(pg_get_functiondef(p.oid) from position('into next_position' in pg_get_functiondef(p.oid))) as rest
+--              from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+--             where n.nspname = 'public' and p.proname = 'update_withdrawn_writing_assignment_group') s) as position_fix;

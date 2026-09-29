@@ -1,4 +1,4 @@
-import { assignmentDateKey } from "./writingAssignments.ts";
+import { assignmentDateKey, defaultWritingAssignmentTitle, normalizeAssignmentText, writingAssignmentAutoTitleSequence } from "./writingAssignments.ts";
 import { assignmentSubjectLabel, type AssignmentSubject } from "./assignmentCatalog.ts";
 import {
   STUDENT_BINDING_DOMAINS,
@@ -141,6 +141,71 @@ export function classAssignmentTitleBase(
   const dateKey = assignmentDateKey(assignedAt);
   if (!dateKey) throw new Error("作业布置日期无效。");
   return `${name} ${assignmentSubjectLabel(subject)} ${dateKey}`;
+}
+
+/**
+ * The automatic title base a seed would use: 班级名称 when the group belongs
+ * to a class, otherwise 学生姓名(等). Returns "" when the seed cannot form a
+ * base (no date, no name).
+ */
+export function seededAssignmentTitleBase(input: {
+  assignedAt: Date | string | null | undefined;
+  className?: string | null;
+  firstStudentName?: string | null;
+  studentCount?: number;
+  subject?: AssignmentSubject;
+}): string {
+  if (!input.assignedAt) return "";
+  const subject = input.subject ?? "writing";
+  const className = normalizeAssignmentText(input.className ?? "");
+  if (className) {
+    try {
+      return classAssignmentTitleBase(className, input.assignedAt, subject);
+    } catch {
+      return "";
+    }
+  }
+  const firstStudentName = normalizeAssignmentText(input.firstStudentName ?? "");
+  if (!firstStudentName) return "";
+  try {
+    return defaultWritingAssignmentTitle({
+      assignedAt: input.assignedAt,
+      firstStudentName,
+      studentCount: Math.max(1, Math.trunc(input.studentCount ?? 1)),
+      subject
+    });
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * True when a persisted Assignment Group title is one the shared wizard would
+ * itself have generated for this seed: `学生姓名/班级名称 写作/阅读 YYYY-MM-DD`
+ * with the optional same-day `(n)` sequence. Only such a title may keep being
+ * regenerated on a withdrawn edit; anything else (teacher-written text, a
+ * renamed class, a changed date) is treated as a manual title and is never
+ * overwritten.
+ */
+export function isAutomaticWritingAssignmentTitle(input: {
+  assignedAt: Date | string | null | undefined;
+  className?: string | null;
+  firstStudentName?: string | null;
+  studentCount?: number;
+  subject?: AssignmentSubject;
+  title: string;
+}) {
+  const title = normalizeAssignmentText(input.title);
+  if (!title || !input.assignedAt) return false;
+  if (Number.isNaN(new Date(input.assignedAt).getTime())) return false;
+  const bases = Array.from(new Set([
+    seededAssignmentTitleBase(input),
+    seededAssignmentTitleBase({ ...input, className: null }),
+    seededAssignmentTitleBase({ ...input, className: null, studentCount: 1 })
+  ])).filter(Boolean);
+  return bases.some(
+    (base) => writingAssignmentAutoTitleSequence(title, base) !== null
+  );
 }
 
 /**

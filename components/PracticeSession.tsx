@@ -21,7 +21,7 @@ import {
   useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
-import { isVirtualPracticeSetId } from "@/lib/studentNavigation";
+import { isVirtualPracticeSetId, withStudentReturnTo } from "@/lib/studentNavigation";
 import { broadcastStudentPracticeCompleted } from "@/lib/studentCacheEvents";
 import {
   logStudentPerformance,
@@ -53,6 +53,7 @@ export function PracticeSession({
   allowEndPractice = false,
   hideQuestionCardNumber = false,
   initialQuestions,
+  returnTo,
   setId,
   setTitle,
   submitAnsweredOnly = false,
@@ -62,6 +63,8 @@ export function PracticeSession({
   allowEndPractice?: boolean;
   hideQuestionCardNumber?: boolean;
   initialQuestions?: PublicQuestion[];
+  /** Assignment-origin safe return path forwarded to the result page. */
+  returnTo?: string | null;
   setId: string;
   setTitle?: string;
   submitAnsweredOnly?: boolean;
@@ -209,7 +212,7 @@ export function PracticeSession({
             event: "bas_core_submission_ready",
             totalMs: Math.round((performance.now() - submitStartedAt) * 10) / 10
           });
-          router.push(`/student/results/${payload.attemptId}`);
+          router.push(withStudentReturnTo(`/student/results/${payload.attemptId}`, returnTo));
         } else {
           setError("Submit succeeded but no attempt id was returned.");
         }
@@ -230,6 +233,7 @@ export function PracticeSession({
       timed,
       totalSeconds,
       recordOfficialAttempt,
+      returnTo,
       usesProvidedQuestions
     ]
   );

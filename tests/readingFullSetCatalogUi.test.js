@@ -79,7 +79,7 @@ test("Full Set action opens a preparation page backed by the detail API", () => 
   assert.match(catalog, /开始练习/);
   assert.match(detailPage, /ReadingFullSetDetail/);
   assert.match(detail, /fetch\(`\/api\/reading\/full-sets\/\$\{encodeURIComponent\(fullSetId\)\}`/);
-  assert.match(detail, /backHref=\{STUDENT_ROUTES\.readingFullSets\}/);
+  assert.match(detail, /backHref=\{safeReturnTo \?\? STUDENT_ROUTES\.readingFullSets\}/);
   assert.match(detail, /两个 Module 分别计时/);
   assert.match(detail, /Module 1 提交后进入 Module 2/);
   assert.match(detail, /每个 Module 开始后独立倒计时/);

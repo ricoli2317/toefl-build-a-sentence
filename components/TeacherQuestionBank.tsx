@@ -320,7 +320,6 @@ export function TeacherQuestionBankItemViewer({
         <BasLogicalItemViewer
           currentIndex={currentIndex}
           onChange={setCurrentIndex}
-          preview={preview}
           questions={data.questions ?? []}
         />
       ) : data.question ? (
@@ -344,12 +343,10 @@ export function TeacherQuestionBankItemViewer({
 function BasLogicalItemViewer({
   currentIndex,
   onChange,
-  preview = false,
   questions
 }: {
   currentIndex: number;
   onChange: (index: number) => void;
-  preview?: boolean;
   questions: Question[];
 }) {
   const currentQuestion = questions[currentIndex];
@@ -378,13 +375,13 @@ function BasLogicalItemViewer({
             splitTextItems(currentQuestion.correct_order_text).join(" ")}
         </p>
       </TeacherCard>
-      {preview ? null : (
-        <QuestionViewerNav
-          currentIndex={currentIndex}
-          onChange={onChange}
-          questionCount={questions.length}
-        />
-      )}
+      {/* Same-set internal navigation (Q1 → Q10) stays available in preview:
+          only cross item / cross feature navigation is blocked. */}
+      <QuestionViewerNav
+        currentIndex={currentIndex}
+        onChange={onChange}
+        questionCount={questions.length}
+      />
     </div>
   );
 }

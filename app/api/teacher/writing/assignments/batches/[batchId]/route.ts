@@ -18,6 +18,7 @@ import {
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  isTeacherAssignmentStudentCompleted,
   isWritingReviewItemType,
   writingAssignmentTitle,
   type WritingAssignmentCollectionDetail,
@@ -138,19 +139,35 @@ export async function GET(
     }
     const members = membersResult.data ?? [];
     const memberStudentIds = Array.from(new Set(members.map((member) => member.student_id)));
+    const membersByAssignment = new Map<string, MemberRow[]>();
+    for (const member of members) {
+      membersByAssignment.set(member.assignment_id, [
+        ...(membersByAssignment.get(member.assignment_id) ?? []),
+        member
+      ]);
+    }
     const [profiles, studentResultMap] = await Promise.all([
       readProfiles(auth.supabase, memberStudentIds),
       (() => {
+        // One lookup row per (assignment, student): each carries the
+        // membership's assigned_at so only attempts completed after this
+        // Assignment became effective can satisfy it.
         const items = assignments
           .filter((assignment) => !isWritingReviewItemType(assignment.task_type))
-          .flatMap((assignment) => assignment.question_id
-            ? [{
-                assignmentId: assignment.assignment_id,
-                itemId: assignment.question_id,
-                itemType: assignment.task_type,
-                sourceSetId: assignmentSnapshotSourceSetId(assignment.question_snapshot)
-              }]
-            : []);
+          .flatMap((assignment) => {
+            const itemId = assignment.question_id;
+            if (!itemId) return [];
+            return (membersByAssignment.get(assignment.assignment_id) ?? []).map((member) => ({
+              assignmentId: assignment.assignment_id,
+              // assigned_at is the authoritative boundary; a legacy row without
+              // it falls back to the item's created_at instead of "no boundary".
+              boundaryAt: member.assigned_at ?? assignment.created_at,
+              itemId,
+              itemType: assignment.task_type,
+              sourceSetId: assignmentSnapshotSourceSetId(assignment.question_snapshot),
+              studentId: member.student_id
+            }));
+          });
         return items.length
           ? loadAssignmentStudentResults({
               db: auth.supabase,
@@ -161,13 +178,6 @@ export async function GET(
       })()
     ]);
     const profileById = new Map(profiles.map((profile) => [profile.id, profile]));
-    const membersByAssignment = new Map<string, MemberRow[]>();
-    for (const member of members) {
-      membersByAssignment.set(member.assignment_id, [
-        ...(membersByAssignment.get(member.assignment_id) ?? []),
-        member
-      ]);
-    }
 
     const attemptStudents = new Set<string>();
     const submissions = new Map<string, string[]>();
@@ -204,14 +214,20 @@ export async function GET(
           assignment.assignment_id,
           member.student_id
         );
-        const completed = reviewBased
-          ? Boolean(firstSubmittedAt)
-          : Boolean(result.available_result);
+        // WE / AD complete only once the review of the latest submission is
+        // published; BAS / Reading complete through their own result inside the
+        // Assignment's time window.
+        const publishedReview = reviewBased && latestReviewStatus === "published";
+        const completed = isTeacherAssignmentStudentCompleted({
+          hasResult: Boolean(result.available_result),
+          itemType: assignment.task_type,
+          publishedReview
+        });
         const completedAt = reviewBased
           ? firstSubmittedAt
           : result.available_result?.completed_at ?? null;
         if (completed) completedCount += 1;
-        if (reviewBased && latestReviewStatus === "published") publishedCount += 1;
+        if (publishedReview) publishedCount += 1;
         const profile = profileById.get(member.student_id);
         return {
           student_id: member.student_id,
@@ -470,7 +486,7 @@ export async function PATCH(
           { status: 400 }
         );
       }
-      if (/^(请选择|请至少|请填写|请输入|所选|截止)/.test(message)) {
+      if (/^(请选择|请至少|请填写|请输入|所选|截止|一次最多|同一份作业|作业科目|该题型)/.test(message)) {
         return writingAssignmentJson({ code: "INVALID_ASSIGNMENT", message }, { status: 400 });
       }
       throw updateError;
@@ -500,7 +516,7 @@ export async function PATCH(
         { status: 400 }
       );
     }
-    if (/^(请选择|请至少|请填写|请输入|所选|截止|一次最多)/.test(message)) {
+    if (/^(请选择|请至少|请填写|请输入|所选|截止|一次最多|同一份作业|作业科目|该题型)/.test(message)) {
       return writingAssignmentJson({ code: "INVALID_ASSIGNMENT", message }, { status: 400 });
     }
     console.error("[writing-assignments] group_edit_failed", error);

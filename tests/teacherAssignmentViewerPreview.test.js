@@ -42,17 +42,19 @@ test("the question-bank item page renders preview mode without the teacher shell
   assert.match(page, /TeacherReadingQuestionBankItemViewer[\s\S]{0,160}preview=\{preview\}/);
 });
 
-test("the writing item viewer hides every navigation entry in preview mode", () => {
+test("the writing item viewer hides cross-feature navigation but keeps BAS internal paging", () => {
   const viewer = source(WRITING_VIEWER);
   assert.match(viewer, /preview = false/);
   // Breadcrumbs and 返回教师题库 only exist outside preview.
   assert.match(viewer, /\{preview \? null : \([\s\S]{0,600}TeacherBreadcrumbs[\s\S]{0,600}返回教师题库/);
-  // BAS question navigation (题号 / 上一题 / 下一题) is hidden in preview.
-  assert.match(viewer, /preview=\{preview\}/);
-  assert.match(viewer, /\{preview \? null : \([\s\S]{0,200}<QuestionViewerNav/);
+  // BAS keeps its own 套题内部 navigation (same set, Q1 → Q10) even in preview.
+  assert.match(viewer, /<BasLogicalItemViewer[\s\S]{0,160}questions=\{data\.questions \?\? \[\]\}/);
+  assert.doesNotMatch(viewer, /\{preview \? null : \([\s\S]{0,200}<QuestionViewerNav/);
+  const basViewer = viewer.slice(viewer.indexOf("function BasLogicalItemViewer"));
+  assert.match(basViewer, /<QuestionViewerNav[\s\S]{0,160}questionCount=\{questions\.length\}/);
 });
 
-test("the reading item viewer renders the standalone read-only shell", () => {
+test("the reading item viewer renders the standalone read-only shell with internal paging", () => {
   const viewer = source(READING_VIEWER);
   assert.match(viewer, /preview = false/);
   assert.match(viewer, /standalone=\{preview\}/);
@@ -62,8 +64,15 @@ test("the reading item viewer renders the standalone read-only shell", () => {
   const shell = source(READING_SHELL);
   assert.match(shell, /standalone = false/);
   assert.match(shell, /onBack=\{standalone \? undefined : onBack\}/);
-  assert.match(shell, /canGoNext=\{!standalone && reviewNavigationTargets\.nextIndex !== null\}/);
-  assert.match(shell, /canGoPrevious=\{!standalone && reviewNavigationTargets\.previousIndex !== null\}/);
+  // Previous / Next stay enabled in standalone preview: they only move inside
+  // the current logical item's own review items (the answer-key preview steps
+  // through slots as well, so CTW 填空 keeps its internal navigation).
+  assert.match(shell, /reviewItems\.map\(\(item\) =>\s*\n?\s*answerKeyOnly && item\.slotId \? item\.slotId : item\.questionId/);
+  assert.match(shell, /readingQuestionNavigationTargets\(reviewNavigationKeys, reviewIndex\)/);
+  assert.match(shell, /canGoNext=\{reviewNavigationTargets\.nextIndex !== null\}/);
+  assert.match(shell, /canGoPrevious=\{reviewNavigationTargets\.previousIndex !== null\}/);
+  assert.doesNotMatch(shell, /canGoNext=\{!standalone/);
+  assert.doesNotMatch(shell, /canGoPrevious=\{!standalone/);
   // The header only renders a Back control when a back handler exists.
   assert.match(shell, /\{onBack \? \([\s\S]{0,300}onClick=\{onBack\}/);
 });

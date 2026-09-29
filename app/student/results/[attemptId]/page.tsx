@@ -1,12 +1,13 @@
 import { PracticeResult } from "@/components/PracticeResult";
 import { StudentPage } from "@/components/student/StudentUI";
+import { safeStudentReturnTo } from "@/lib/studentNavigation";
 
 export default function StudentResultPage({
   params,
   searchParams
 }: {
   params: { attemptId: string };
-  searchParams: { setId?: string; source?: string };
+  searchParams: { returnTo?: string | string[]; setId?: string; source?: string };
 }) {
   const source =
     searchParams.source === "practice-history" ||
@@ -19,6 +20,7 @@ export default function StudentResultPage({
       <PracticeResult
         attemptId={params.attemptId}
         historySetId={searchParams.setId}
+        returnTo={safeStudentReturnTo(searchParams.returnTo)}
         source={source}
       />
     </StudentPage>

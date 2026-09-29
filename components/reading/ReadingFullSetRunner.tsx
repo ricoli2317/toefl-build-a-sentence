@@ -93,7 +93,7 @@ import {
 } from "@/lib/reading/fullSetReadonlySnapshot.client";
 import type { ReadingFullSetReviewPayload } from "@/lib/reading/fullSetReview";
 import type { ReadingFullSetResultPayload } from "@/lib/reading/fullSetResults";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { STUDENT_ROUTES, safeStudentReturnTo, withStudentReturnTo } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import {
   ReadingPracticeHeader,
@@ -188,12 +188,15 @@ type OccurrenceNavigation = {
 
 export function ReadingFullSetRunner({
   attemptId,
-  expectedFullSetId
+  expectedFullSetId,
+  returnTo
 }: {
   attemptId: string;
   expectedFullSetId: string;
+  returnTo?: string;
 }) {
   const router = useRouter();
+  const safeReturnTo = safeStudentReturnTo(returnTo);
   const {
     getEntry,
     getSession,
@@ -1740,8 +1743,11 @@ export function ReadingFullSetRunner({
       setError(pauseError instanceof Error ? pauseError.message : "Module 计时暂停失败，请重试。");
       return;
     }
-    router.push(`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(expectedFullSetId)}`);
-  }, [commitActiveQuestionTime, expectedFullSetId, flushPendingSave, pauseActiveModule, router, stageCurrentOccurrenceSave]);
+    router.push(withStudentReturnTo(
+      `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(expectedFullSetId)}`,
+      safeReturnTo
+    ));
+  }, [commitActiveQuestionTime, expectedFullSetId, flushPendingSave, pauseActiveModule, router, safeReturnTo, stageCurrentOccurrenceSave]);
 
   const submitModule = useCallback(async (automatic = false) => {
     const activeRunner = runnerRef.current;
@@ -2059,7 +2065,10 @@ export function ReadingFullSetRunner({
   if (phase === "completed") {
     return (
       <RunnerMessage
-        actionHref={`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(expectedFullSetId)}/result/${encodeURIComponent(attemptId)}`}
+        actionHref={withStudentReturnTo(
+          `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(expectedFullSetId)}/result/${encodeURIComponent(attemptId)}`,
+          safeReturnTo
+        )}
         actionLabel="查看结果"
         description="两个 Module 均已提交。"
         title="练习已完成"

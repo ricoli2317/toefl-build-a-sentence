@@ -6,16 +6,20 @@ const path = require("node:path");
 const {
   assignmentDateKey,
   assignmentDateRange,
+  assignmentGroupProgress,
+  assignmentGroupProgressText,
   assignmentMonthRange,
   compareStudentWritingAssignments,
   getStudentWritingAssignmentDisplayStatus,
-  getWritingAssignmentProgress,
   groupStudentWritingAssignments,
   groupTeacherWritingAssignments,
   hasStudentAssignmentItemStarted,
   isStudentAssignmentItemCompleted,
+  isTeacherAssignmentStudentCompleted,
   studentAssignmentGroupDisplayStatus,
+  studentAssignmentGroupProgress,
   studentAssignmentItemProgress,
+  studentAssignmentItemStatusLabel,
   studentWritingAssignmentTitle,
   studentWritingAssignmentDisplayStatusLabel
 } = require("../lib/writingAssignments.ts");
@@ -93,6 +97,13 @@ test("student presentation status follows no attempt, draft, submission, and pub
     ["not_started", "in_progress", "submitted", "completed", "overdue"].map(studentWritingAssignmentDisplayStatusLabel),
     ["未开始", "进行中", "已提交", "已完成", "已逾期"]
   );
+  // Item-level WE / AD submissions keep the extra 等待批改 hint; read-only items
+  // never grow a review stage.
+  assert.equal(studentAssignmentItemStatusLabel("submitted", "email"), "已提交，等待批改");
+  assert.equal(studentAssignmentItemStatusLabel("submitted", "academic_discussion"), "已提交，等待批改");
+  assert.equal(studentAssignmentItemStatusLabel("submitted", "ctw"), "已提交");
+  assert.equal(studentAssignmentItemStatusLabel("completed", "rdl"), "已完成");
+  assert.equal(studentAssignmentItemStatusLabel("not_started", "full_set"), "未开始");
 });
 
 test("student assignment grouping keeps standalone work and collapses each multi-question batch", () => {
@@ -216,43 +227,60 @@ test("teacher assignment grouping aggregates submission and pending-review progr
   assert.equal(entries[0].pending_review_count, 2);
 });
 
-test("teacher assignment progress follows submission and published-review counts", () => {
-  assert.deepEqual(getWritingAssignmentProgress({
-    assignedCount: 1,
-    lifecycleStatus: "active",
-    publishedCount: 0,
-    submittedCount: 0
-  }), { label: "进行中", progress: "ongoing" });
-  assert.deepEqual(getWritingAssignmentProgress({
-    assignedCount: 1,
-    lifecycleStatus: "active",
-    publishedCount: 0,
-    submittedCount: 1
-  }), { label: "已提交", progress: "submitted" });
-  assert.deepEqual(getWritingAssignmentProgress({
-    assignedCount: 3,
-    lifecycleStatus: "active",
-    publishedCount: 1,
-    submittedCount: 2
-  }), { label: "2 人已提交", progress: "partial_submitted" });
-  assert.deepEqual(getWritingAssignmentProgress({
-    assignedCount: 3,
-    lifecycleStatus: "active",
-    publishedCount: 2,
-    submittedCount: 3
-  }), { label: "全部已提交", progress: "all_submitted" });
-  assert.deepEqual(getWritingAssignmentProgress({
-    assignedCount: 3,
-    lifecycleStatus: "active",
-    publishedCount: 3,
-    submittedCount: 3
-  }), { label: "已完成", progress: "completed" });
-  assert.deepEqual(getWritingAssignmentProgress({
-    assignedCount: 3,
+test("the shared group status contract keeps exactly 未完成 / 进行中 / 已完成", () => {
+  const notStarted = assignmentGroupProgress({ completedCount: 0, totalCount: 3 });
+  assert.equal(notStarted.status, "not_started");
+  assert.equal(notStarted.label, "未完成");
+  assert.equal(notStarted.badgeClass, "bg-amber-50 text-amber-700");
+  assert.equal(notStarted.progressText, "0 / 3 已完成");
+
+  const inProgress = assignmentGroupProgress({ completedCount: 1, totalCount: 3 });
+  assert.equal(inProgress.status, "in_progress");
+  assert.equal(inProgress.label, "进行中");
+  assert.equal(inProgress.badgeClass, "bg-student-primary-soft text-student-primary");
+  assert.equal(inProgress.progressText, "1 / 3 已完成");
+
+  const completed = assignmentGroupProgress({ completedCount: 3, totalCount: 3 });
+  assert.equal(completed.status, "completed");
+  assert.equal(completed.label, "已完成");
+  assert.equal(completed.badgeClass, "bg-emerald-50 text-emerald-700");
+  assert.equal(completed.progressText, "3 / 3 已完成");
+
+  // A withdrawn group keeps its lifecycle badge instead of a progress state.
+  const withdrawn = assignmentGroupProgress({
+    completedCount: 2,
     lifecycleStatus: "withdrawn",
-    publishedCount: 3,
-    submittedCount: 3
-  }), { label: "已撤回", progress: "withdrawn" });
+    totalCount: 3
+  });
+  assert.equal(withdrawn.badge, "withdrawn");
+  assert.equal(withdrawn.label, "已撤回");
+  assert.equal(withdrawn.badgeClass, "bg-slate-100 text-slate-600");
+  assert.equal(withdrawn.progressText, "2 / 3 已完成");
+
+  // The removed group labels never come back.
+  for (const label of [notStarted, inProgress, completed].map((value) => value.label)) {
+    assert.ok(!["已提交", "部分已提交", "部分已完成", "全部已提交", "待批改", "已发布"].includes(label));
+  }
+  assert.equal(assignmentGroupProgressText(2, 5), "2 / 5 已完成");
+});
+
+test("one item completion rule: WE / AD complete only on published review", () => {
+  assert.equal(
+    isTeacherAssignmentStudentCompleted({ itemType: "email", hasResult: false, publishedReview: false }),
+    false
+  );
+  assert.equal(
+    isTeacherAssignmentStudentCompleted({ itemType: "academic_discussion", hasResult: false, publishedReview: true }),
+    true
+  );
+  assert.equal(
+    isTeacherAssignmentStudentCompleted({ itemType: "ctw", hasResult: true, publishedReview: false }),
+    true
+  );
+  assert.equal(
+    isTeacherAssignmentStudentCompleted({ itemType: "full_set", hasResult: false, publishedReview: false }),
+    false
+  );
 });
 
 test("assignment entry reuses WritingPractice and its shared mode choice", () => {
@@ -320,19 +348,27 @@ test("student and teacher multi-question pages reuse existing writing and review
   assert.doesNotMatch(teacherRoute, /\.(?:insert|update|delete)\(/i);
 });
 
-test("teacher assignment APIs count published reviews for the latest submission", () => {
+test("teacher assignment APIs count published reviews and keep the item time boundary", () => {
   const listRoute = source("app/api/teacher/writing/assignments/route.ts");
   const detailRoute = source("app/api/teacher/writing/assignments/[assignmentId]/route.ts");
+  const batchRoute = source("app/api/teacher/writing/assignments/batches/[batchId]/route.ts");
   const listUi = source("components/teacher/TeacherWritingAssignmentList.tsx");
-  const detailUi = source("components/teacher/TeacherWritingAssignmentDetailView.tsx");
+  const detailUi = source("components/teacher/TeacherWritingAssignmentDetailBody.tsx");
   assert.match(listRoute, /from\("writing_reviews"\)/);
   assert.match(listRoute, /review\.status === "published" && review\.published_at/);
   assert.match(listRoute, /published_count/);
+  assert.match(listRoute, /isTeacherAssignmentStudentCompleted/);
   assert.match(detailRoute, /from\("writing_reviews"\)/);
   assert.match(detailRoute, /review\.status === "published" && review\.published_at/);
-  assert.match(detailRoute, /published_count/);
-  assert.match(listUi, /getTeacherAssignmentProgress/);
-  assert.match(detailUi, /getTeacherAssignmentProgress/);
+  assert.match(detailRoute, /isTeacherAssignmentStudentCompleted/);
+  // Every read-only lookup carries the membership's own assigned_at boundary.
+  assert.match(detailRoute, /boundaryAt: member\.assigned_at/);
+  assert.match(batchRoute, /boundaryAt: member\.assigned_at/);
+  assert.match(listRoute, /boundaryAt: member\.assigned_at/);
+  assert.match(listUi, /AssignmentStatusBadge/);
+  assert.match(detailUi, /AssignmentStatusBadge/);
+  assert.doesNotMatch(listUi, /人已提交|人已发布|篇待批改/);
+  assert.doesNotMatch(detailUi, /人已提交|人已发布|篇待批改/);
 });
 
 test("attempt APIs persist assignment_id and scope ordinary and assignment drafts", () => {
@@ -515,12 +551,36 @@ test("a mixed assignment group only completes when every item is completed", () 
       has_started_result: false
     }
   ];
-  // One completed WE item never completes the whole WE + AD + BAS group.
-  assert.equal(studentAssignmentGroupDisplayStatus(writingMixed), "not_started");
+  // One published WE only makes the WE + AD + BAS group 进行中; a submitted but
+  // unpublished AD never counts, so the group is never 已完成.
+  assert.equal(studentAssignmentGroupDisplayStatus(writingMixed), "in_progress");
+  assert.equal(
+    studentAssignmentGroupProgress(writingMixed).group.progressText,
+    "1 / 3 已完成"
+  );
+  const nothingCompleted = [
+    writingMixed[1],
+    { ...writingMixed[2], latest_result_attempt_id: null }
+  ];
+  assert.equal(studentAssignmentGroupDisplayStatus(nothingCompleted), "not_started");
+  assert.equal(
+    studentAssignmentGroupProgress(nothingCompleted).group.progressText,
+    "0 / 2 已完成"
+  );
   const completedBas = { ...writingMixed[2], latest_result_attempt_id: "bas-attempt-1" };
-  assert.equal(studentAssignmentGroupDisplayStatus([writingMixed[0], writingMixed[1], completedBas]), "submitted");
+  // 1 / 3 completed stays 进行中 even though two items were submitted.
+  assert.equal(studentAssignmentGroupDisplayStatus([writingMixed[0], writingMixed[1], completedBas]), "in_progress");
   const completedAd = { ...writingMixed[1], published_review_attempt_id: "attempt-2" };
   assert.equal(studentAssignmentGroupDisplayStatus([writingMixed[0], completedAd, completedBas]), "completed");
+  // The group progress text is always `X / Y 已完成`.
+  assert.equal(
+    studentAssignmentGroupProgress([writingMixed[0], completedAd, completedBas]).group.progressText,
+    "3 / 3 已完成"
+  );
+  assert.equal(
+    studentAssignmentGroupProgress([writingMixed[0], writingMixed[1], completedBas]).group.progressText,
+    "2 / 3 已完成"
+  );
 
   const readingMixed = [
     { task_type: "ctw", draft_attempt_id: null, due_at: null, latest_submitted_attempt_id: null, published_review_attempt_id: null, latest_result_attempt_id: "ra-1" },
@@ -528,8 +588,12 @@ test("a mixed assignment group only completes when every item is completed", () 
     { task_type: "rap", draft_attempt_id: null, due_at: null, latest_submitted_attempt_id: null, published_review_attempt_id: null, latest_result_attempt_id: null },
     { task_type: "full_set", draft_attempt_id: null, due_at: null, latest_submitted_attempt_id: null, published_review_attempt_id: null, latest_result_attempt_id: null }
   ];
-  // A completed CTW does not complete the CTW + RDL + RAP + Full Set group.
-  assert.equal(studentAssignmentGroupDisplayStatus(readingMixed), "not_started");
+  // A completed CTW never completes the CTW + RDL + RAP + Full Set group.
+  assert.equal(studentAssignmentGroupDisplayStatus(readingMixed), "in_progress");
+  assert.equal(
+    studentAssignmentGroupProgress(readingMixed).group.progressText,
+    "1 / 4 已完成"
+  );
   const readingProgress = studentAssignmentItemProgress(readingMixed);
   assert.equal(readingProgress.completedCount, 1);
   assert.equal(readingProgress.totalCount, 4);
@@ -553,13 +617,20 @@ test("student assignment details resolve every item identity with batched comple
   assert.match(details, /snapshot_source_set_id:question_snapshot->>source_set_id/);
   assert.match(details, /question_id: resolvedAssignmentItemId\(assignment\)/);
   assert.match(details, /source_set_id: assignment\.snapshot_source_set_id/);
-  // One shared batched locator call for every read-only item.
+  // One shared batched locator call for every read-only item, with the
+  // membership's own assigned_at as the per-Assignment time boundary.
   assert.match(details, /loadAssignmentStudentResults\(\{/);
-  assert.match(details, /studentIds: \[input\.userId\]/);
+  assert.match(details, /boundaryAt: membership\.assigned_at/);
+  assert.match(details, /studentId: input\.userId/);
   assert.equal((details.match(/loadAssignmentStudentResults\(/g) ?? []).length, 1);
   assert.match(details, /latest_result_attempt_id: itemResult\?\.available_result/);
-  // BAS keeps its set id for the teacher page and now exposes its attempt id.
-  assert.match(locator, /attempt_id: attempted\.attemptId/);
+  // The locator applies the boundary in memory instead of querying per item.
+  assert.match(locator, /isInsideAssignmentWindow/);
+  assert.match(locator, /boundaryAt/);
+  assert.match(locator, /created_at/);
+  assert.doesNotMatch(locator, /\.eq\("logical_item_id"/);
+  // BAS keeps its set id for the teacher page and exposes its attempt id.
+  assert.match(locator, /attempt_id: latest\.attemptId/);
 });
 
 test("student assignment entry returns the published item identity for every item type", () => {
@@ -578,14 +649,35 @@ test("student assignment cards dispatch new item types without touching writing 
   assert.match(ui, /ReadingRetakeButton/);
   assert.match(ui, /ReadingFullSetRetakeButton/);
   assert.match(ui, /isStudentAssignmentItemCompleted/);
-  assert.match(ui, /studentAssignmentGroupDisplayStatus/);
-  assert.match(ui, /studentAssignmentItemProgress/);
+  assert.match(ui, /studentAssignmentGroupProgress/);
   assert.match(ui, /isWritingReviewItemType\(assignment\.task_type\)/);
   // The read-only branch never builds a Writing Review link.
-  const nonReviewStart = ui.indexOf(") : (\n          <>");
-  const nonReviewEnd = ui.indexOf("      </div>\n    </article>", nonReviewStart);
+  const nonReviewStart = ui.indexOf(") : (\n            <>");
+  const nonReviewEnd = ui.indexOf("        </>\n      }\n      badges=", nonReviewStart);
   const nonReviewBranch = ui.slice(nonReviewStart, nonReviewEnd);
   assert.ok(nonReviewStart > 0 && nonReviewEnd > nonReviewStart);
   assert.doesNotMatch(nonReviewBranch, /writingReviewResultHref/);
+  // Retention buttons use the shared action sizing (no compact mini size).
+  assert.doesNotMatch(ui, /ReadingRetakeButton[\s\S]{0,160}?\bcompact\b/);
+  assert.doesNotMatch(ui, /ReadingFullSetRetakeButton[\s\S]{0,160}?\bcompact\b/);
+});
+
+test("student cards and the detail header share the teacher presentation primitives", () => {
+  const ui = source("components/student/StudentWritingAssignments.tsx");
+  // The student list card, group card and detail header render through the same
+  // shared shell the teacher list / detail use.
+  assert.match(ui, /AssignmentSummaryCard/);
+  assert.match(ui, /AssignmentStatusBadge/);
+  assert.match(ui, /AssignmentProgressText/);
+  assert.match(ui, /AssignmentMetaItem/);
+  const teacherList = source("components/teacher/TeacherWritingAssignmentList.tsx");
+  const teacherDetail = source("components/teacher/TeacherWritingAssignmentDetailBody.tsx");
+  assert.match(teacherList, /from "@\/components\/assignments\/AssignmentPresentation"/);
+  assert.match(teacherDetail, /from "@\/components\/assignments\/AssignmentPresentation"/);
+  // Role-specific actions stay in the role-specific files.
+  assert.match(teacherList, /teacher-button-primary/);
+  assert.match(ui, /student-button-primary/);
+  assert.doesNotMatch(ui, /teacher-button/);
+  assert.doesNotMatch(ui, /teacherApiFetch|TeacherWritingAssignment|TeacherDataError/);
 });
 

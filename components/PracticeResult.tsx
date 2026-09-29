@@ -73,10 +73,12 @@ export type ResultPayload = {
 export function PracticeResult({
   attemptId,
   historySetId,
+  returnTo,
   source
 }: {
   attemptId: string;
   historySetId?: string;
+  returnTo?: string | string[];
   source?: StudentResultSource;
 }) {
   const { data: payload, error, loading } = useStudentCachedData<ResultPayload>(
@@ -131,6 +133,7 @@ export function PracticeResult({
   const { attempt } = payload;
   const navigation = getStudentResultNavigation(attempt.set_id, {
     historySetId,
+    returnTo,
     source
   });
   return (

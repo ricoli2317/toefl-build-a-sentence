@@ -1,5 +1,5 @@
 import type { AssignmentItemType } from "./assignmentCatalog.ts";
-import { STUDENT_ROUTES } from "./studentNavigation.ts";
+import { STUDENT_ROUTES, withStudentReturnTo } from "./studentNavigation.ts";
 import { WRITING_TASK_CONFIG } from "./writing.ts";
 
 /**
@@ -29,35 +29,37 @@ export type StudentAssignmentPracticeItem = {
 };
 
 export function studentAssignmentPracticeHref(
-  item: StudentAssignmentPracticeItem
+  item: StudentAssignmentPracticeItem,
+  returnTo?: string | string[] | null
 ): string | null {
   const itemId = item.itemId?.trim() ?? "";
+  const withReturnTo = (href: string) => withStudentReturnTo(href, returnTo);
   switch (item.taskType) {
     case "email":
     case "academic_discussion": {
       const assignmentId = item.assignmentId?.trim() ?? "";
       if (assignmentId) {
-        return `${STUDENT_ROUTES.assignments}/${encodeURIComponent(assignmentId)}`;
+        return withReturnTo(`${STUDENT_ROUTES.assignments}/${encodeURIComponent(assignmentId)}`);
       }
       return itemId
-        ? `${WRITING_TASK_CONFIG[item.taskType].practiceHref}/${encodeURIComponent(itemId)}`
+        ? withReturnTo(`${WRITING_TASK_CONFIG[item.taskType].practiceHref}/${encodeURIComponent(itemId)}`)
         : null;
     }
     case "build_sentence": {
       const sourceSetId = item.sourceSetId?.trim() ?? "";
       return sourceSetId
-        ? `${STUDENT_ROUTES.buildASentencePractice}/${encodeURIComponent(sourceSetId)}`
+        ? withReturnTo(`${STUDENT_ROUTES.buildASentencePractice}/${encodeURIComponent(sourceSetId)}`)
         : null;
     }
     case "ctw":
     case "rdl":
     case "rap":
       return itemId
-        ? `/student/reading/practice/${encodeURIComponent(itemId)}`
+        ? withReturnTo(`/student/reading/practice/${encodeURIComponent(itemId)}`)
         : null;
     case "full_set":
       return itemId
-        ? `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(itemId)}`
+        ? withReturnTo(`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(itemId)}`)
         : null;
   }
 }
@@ -71,20 +73,20 @@ export function studentAssignmentResultHref(input: {
   attemptId?: string | null;
   itemId?: string | null;
   taskType: AssignmentItemType;
-}): string | null {
+}, returnTo?: string | string[] | null): string | null {
   const attemptId = input.attemptId?.trim() ?? "";
   if (!attemptId) return null;
   switch (input.taskType) {
     case "build_sentence":
-      return `/student/results/${encodeURIComponent(attemptId)}`;
+      return withStudentReturnTo(`/student/results/${encodeURIComponent(attemptId)}`, returnTo);
     case "ctw":
     case "rdl":
     case "rap":
-      return `/student/reading/results/${encodeURIComponent(attemptId)}`;
+      return withStudentReturnTo(`/student/reading/results/${encodeURIComponent(attemptId)}`, returnTo);
     case "full_set": {
       const itemId = input.itemId?.trim() ?? "";
       return itemId
-        ? `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(itemId)}/result/${encodeURIComponent(attemptId)}`
+        ? withStudentReturnTo(`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(itemId)}/result/${encodeURIComponent(attemptId)}`, returnTo)
         : null;
     }
     default:

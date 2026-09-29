@@ -32,7 +32,7 @@ import {
   type ReadingFullSetPerformanceTrace
 } from "@/lib/reading/fullSetPerformance.client";
 import { formatReadingFullSetTime } from "@/lib/reading/fullSetPresentation";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { STUDENT_ROUTES, safeStudentReturnTo, withStudentReturnTo } from "@/lib/studentNavigation";
 import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
 
 type ReadingFullSetDetailPayload = {
@@ -43,11 +43,18 @@ type ReadingFullSetAttemptPayload = {
   attempt: ReadingFullSetAttemptSummary | null;
 };
 
-export function ReadingFullSetDetail({ fullSetId }: { fullSetId: string }) {
+export function ReadingFullSetDetail({
+  fullSetId,
+  returnTo
+}: {
+  fullSetId: string;
+  returnTo?: string;
+}) {
   const router = useRouter();
   const cache = useStudentDataCache();
   const cacheKey = `reading:full-sets:detail:${fullSetId}`;
   const attemptCacheKey = `reading:full-sets:attempt:${fullSetId}`;
+  const safeReturnTo = safeStudentReturnTo(returnTo);
   const [starting, setStarting] = useState(false);
   const [actionError, setActionError] = useState("");
   const detailState = useStudentCachedData<ReadingFullSetDetailPayload>(
@@ -94,9 +101,10 @@ export function ReadingFullSetDetail({ fullSetId }: { fullSetId: string }) {
           route: `${STUDENT_ROUTES.readingFullSets}/${fullSetId}/attempt/${attempt.attemptId}`
         });
       }
-      router.push(
-        `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/attempt/${encodeURIComponent(attempt.attemptId)}`
-      );
+      router.push(withStudentReturnTo(
+        `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/attempt/${encodeURIComponent(attempt.attemptId)}`,
+        safeReturnTo
+      ));
     } catch (error) {
       setActionError(error instanceof Error ? error.message : "暂时无法进入套题练习。");
     } finally {
@@ -107,12 +115,18 @@ export function ReadingFullSetDetail({ fullSetId }: { fullSetId: string }) {
   return (
     <div className="grid gap-5">
       <StudentNavigation
-        backHref={STUDENT_ROUTES.readingFullSets}
-        crumbs={[
-          { label: "学生首页", href: STUDENT_ROUTES.home },
-          { label: "Full Set Practice", href: STUDENT_ROUTES.readingFullSets },
-          { label: title }
-        ]}
+        backHref={safeReturnTo ?? STUDENT_ROUTES.readingFullSets}
+        crumbs={safeReturnTo
+          ? [
+              { label: "学生首页", href: STUDENT_ROUTES.home },
+              { label: "我的作业", href: STUDENT_ROUTES.assignments },
+              { label: title }
+            ]
+          : [
+              { label: "学生首页", href: STUDENT_ROUTES.home },
+              { label: "Full Set Practice", href: STUDENT_ROUTES.readingFullSets },
+              { label: title }
+            ]}
       />
       {detailState.loading ? <ReadingFullSetDetailSkeleton /> : null}
       {!detailState.loading && (detailState.error || !detailState.data?.fullSet) ? (
@@ -136,6 +150,7 @@ export function ReadingFullSetDetail({ fullSetId }: { fullSetId: string }) {
           completedAttemptId={action.action === "completed" ? attemptState.data?.attempt?.attemptId ?? null : null}
           fullSet={detailState.data.fullSet}
           onAction={() => void enterPractice()}
+          safeReturnTo={safeReturnTo}
         />
       ) : null}
     </div>
@@ -149,7 +164,8 @@ function FullSetPreparation({
   actionUnavailable,
   fullSet,
   completedAttemptId,
-  onAction
+  onAction,
+  safeReturnTo
 }: {
   actionError: string;
   actionLabel: string;
@@ -158,6 +174,7 @@ function FullSetPreparation({
   fullSet: ReadingFullSet;
   completedAttemptId: string | null;
   onAction: () => void;
+  safeReturnTo?: string;
 }) {
   return (
     <section className="student-card overflow-hidden p-0">
@@ -204,11 +221,14 @@ function FullSetPreparation({
             <>
               <Link
                 className="student-button-secondary"
-                href={`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSet.fullSetId!)}/result/${encodeURIComponent(completedAttemptId)}`}
+                href={withStudentReturnTo(
+                  `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSet.fullSetId!)}/result/${encodeURIComponent(completedAttemptId)}`,
+                  safeReturnTo
+                )}
               >
                 <Eye aria-hidden="true" size={17} />查看结果
               </Link>
-              <ReadingFullSetRetakeButton fullSetId={fullSet.fullSetId!} />
+              <ReadingFullSetRetakeButton fullSetId={fullSet.fullSetId!} returnTo={safeReturnTo} />
             </>
           ) : (
             <button

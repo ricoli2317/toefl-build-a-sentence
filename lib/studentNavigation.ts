@@ -65,8 +65,11 @@ export function readingFullSetResultHref(
 
 export function getReadingResultNavigation(
   taskType: keyof typeof READING_RESULT_DESTINATIONS,
-  source?: ReadingResultSource
+  source?: ReadingResultSource,
+  returnTo?: string | string[]
 ): { backHref: string; crumbs: StudentBreadcrumbItem[] } {
+  const safeReturnTo = safeStudentReturnTo(returnTo);
+  if (safeReturnTo) return assignmentResultNavigation(safeReturnTo);
   const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
   if (source === "practice-history") {
     return {
@@ -91,8 +94,11 @@ export function getReadingResultNavigation(
 
 export function getReadingFullSetResultNavigation(
   title: string,
-  source?: ReadingResultSource
+  source?: ReadingResultSource,
+  returnTo?: string | string[]
 ): { backHref: string; crumbs: StudentBreadcrumbItem[] } {
+  const safeReturnTo = safeStudentReturnTo(returnTo);
+  if (safeReturnTo) return assignmentResultNavigation(safeReturnTo);
   const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
   if (source === "practice-history") {
     return {
@@ -128,9 +134,42 @@ export function safeStudentReturnTo(value: string | string[] | undefined) {
   }
 }
 
+/**
+ * The one safe origin-aware link helper for Assignment-entered student routes.
+ * `returnTo` is always a same-site `/student/...` path; anything else is
+ * dropped, so an Assignment link can never become an open redirect and the
+ * ordinary catalog links (no returnTo) keep their own back behavior.
+ */
+export function withStudentReturnTo(href: string, returnTo?: string | string[] | null) {
+  const safeReturnTo = safeStudentReturnTo(returnTo ?? undefined);
+  if (!safeReturnTo) return href;
+  const separator = href.includes("?") ? "&" : "?";
+  return `${href}${separator}returnTo=${encodeURIComponent(safeReturnTo)}`;
+}
+
 export function writingReviewResultHref(attemptId: string, returnTo: string) {
   const params = new URLSearchParams({ returnTo: safeWritingReviewReturnTo(returnTo) });
   return `${STUDENT_ROUTES.writingReviews}/${encodeURIComponent(attemptId)}?${params}`;
+}
+
+/**
+ * The one shared back navigation for any student route entered from an
+ * Assignment (practice or result): the Assignment Detail is restored exactly,
+ * including its own returnTo, while the ordinary catalog flow (no returnTo)
+ * keeps its default destination.
+ */
+export function assignmentResultNavigation(returnTo: string): {
+  backHref: string;
+  crumbs: StudentBreadcrumbItem[];
+} {
+  return {
+    backHref: returnTo,
+    crumbs: [
+      { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
+      { label: "我的作业", href: STUDENT_ROUTES.assignments },
+      { label: STUDENT_UI_TEXT.result }
+    ]
+  };
 }
 
 export function safeWritingReviewReturnTo(value: string | string[] | undefined) {
@@ -213,11 +252,13 @@ export function isVirtualPracticeSetId(setId: string) {
 
 export function getStudentResultNavigation(
   setId: string,
-  options?: { historySetId?: string; source?: StudentResultSource }
+  options?: { historySetId?: string; returnTo?: string | string[]; source?: StudentResultSource }
 ): {
   backHref: string;
   crumbs: StudentBreadcrumbItem[];
 } {
+  const safeReturnTo = safeStudentReturnTo(options?.returnTo);
+  if (safeReturnTo) return assignmentResultNavigation(safeReturnTo);
   const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
   const wrongQuestionsCrumb = {
     label: STUDENT_UI_TEXT.wrongQuestions,

@@ -61,6 +61,8 @@ import { normalizeWritingOvertimeRanges, updateWritingOvertimeRanges } from "@/l
 import { WritingOvertimeText } from "@/components/writing/WritingOvertimeText";
 import {
   getWritingResultNavigation,
+  safeStudentReturnTo,
+  withStudentReturnTo,
   writingReviewResultHref,
   writingSubmissionResultHref
 } from "@/lib/studentNavigation";
@@ -389,11 +391,11 @@ function WritingPracticeSession({
   );
   const dirty = editor.text !== lastSavedText || JSON.stringify(editor.overtimeRanges) !== JSON.stringify(lastSavedRanges);
   const listHref = initialAttempt.assignment_id
-    ? "/student/assignments"
+    ? safeStudentReturnTo(returnTo) ?? "/student/assignments"
     : WRITING_TASK_CONFIG[taskType].listHref;
   const retakeHref = initialAttempt.assignment_id
     ? assignmentAvailable
-      ? `/student/assignments/${encodeURIComponent(initialAttempt.assignment_id)}?new=1`
+      ? withStudentReturnTo(`/student/assignments/${encodeURIComponent(initialAttempt.assignment_id)}?new=1`, returnTo)
       : undefined
     : `${WRITING_TASK_CONFIG[taskType].practiceHref}/${encodeURIComponent(
         question.question_id
@@ -603,11 +605,12 @@ function WritingPracticeSession({
           questionId: submittedAttempt.question_id
         });
         setMessage(automatic ? "时间到，答案已自动提交" : "提交成功");
-        router.replace(
+        router.replace(withStudentReturnTo(
           `${WRITING_TASK_CONFIG[taskType].submissionHref}/${encodeURIComponent(
             submittedAttempt.attempt_id
-          )}`
-        );
+          )}`,
+          returnTo
+        ));
       } catch (submitError) {
         submitStartedRef.current = false;
         submittingRef.current = false;
@@ -623,6 +626,7 @@ function WritingPracticeSession({
       invalidateWritingData,
       question,
       requestUpdate,
+      returnTo,
       router,
       setData,
       taskType

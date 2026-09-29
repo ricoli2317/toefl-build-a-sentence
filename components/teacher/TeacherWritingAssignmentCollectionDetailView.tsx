@@ -13,7 +13,6 @@ import {
 import { TeacherWritingAssignmentDetailBody } from "@/components/teacher/TeacherWritingAssignmentDetailBody";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
-  getTeacherAssignmentCollectionProgress,
   writingAssignmentTitle,
   type WritingAssignmentCollectionDetail
 } from "@/lib/writingAssignments";
@@ -63,14 +62,6 @@ export function TeacherWritingAssignmentCollectionDetailView({
   const allWithdrawn = collection.assignments.every(
     (assignment) => assignment.status === "withdrawn"
   );
-  const itemTypes = collection.assignments.map((assignment) => assignment.task_type);
-  const collectionProgress = getTeacherAssignmentCollectionProgress({
-    completedCount: collection.completed_count,
-    itemTypes,
-    publishedCount: collection.published_count,
-    totalCount: collection.total_count,
-    withdrawn: allWithdrawn
-  });
   const dueDates = collection.assignments
     .flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
     .sort((left, right) => Date.parse(left) - Date.parse(right));
@@ -83,10 +74,8 @@ export function TeacherWritingAssignmentCollectionDetailView({
       completedCount={collection.completed_count}
       createdAt={collection.created_at}
       dueAt={dueDates[0] ?? null}
+      lifecycleStatus={allWithdrawn ? "withdrawn" : "active"}
       onRefresh={() => cache.invalidate(cacheKey)}
-      pendingReviewCount={collection.pending_review_count}
-      progress={collectionProgress}
-      publishedCount={collection.published_count}
       refreshing={refreshing}
       returnTo={detailHref}
       title={collectionTitle}

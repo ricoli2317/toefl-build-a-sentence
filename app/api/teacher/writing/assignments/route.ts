@@ -10,8 +10,8 @@ import {
   loadAssignmentStudentResults
 } from "@/lib/assignmentResults.server";
 import {
-  earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  isTeacherAssignmentStudentCompleted,
   isWritingReviewItemType,
   type WritingAssignmentRecipient,
   type WritingAssignmentSummary
@@ -155,16 +155,24 @@ export async function GET(request: Request) {
     }
     // One bulk lookup for every read-only item (BAS / Reading): it locates each
     // student's existing result identity without touching content or scores.
+    // Every lookup row carries the membership's own assigned_at so the time
+    // boundary stays per Assignment × student.
     const catalogResultItems = assignments
       .filter((assignment) => !isWritingReviewItemType(assignment.task_type))
-      .flatMap((assignment) => assignment.question_id
-        ? [{
-            assignmentId: assignment.assignment_id,
-            itemId: assignment.question_id,
-            itemType: assignment.task_type,
-            sourceSetId: assignment.source_set_id
-          }]
-        : []);
+      .flatMap((assignment) => {
+        const itemId = assignment.question_id;
+        if (!itemId) return [];
+        return (recipientRowsByAssignment.get(assignment.assignment_id) ?? []).map((member) => ({
+          assignmentId: assignment.assignment_id,
+          // assigned_at is the authoritative boundary; a legacy row without it
+          // falls back to the item's created_at instead of "no boundary".
+          boundaryAt: member.assigned_at ?? assignment.created_at,
+          itemId,
+          itemType: assignment.task_type,
+          sourceSetId: assignment.source_set_id,
+          studentId: member.student_id
+        }));
+      });
     const studentResultMap = catalogResultItems.length > 0
       ? await loadAssignmentStudentResults({
           db: auth.supabase,
@@ -172,14 +180,12 @@ export async function GET(request: Request) {
           studentIds: members.map((member) => member.student_id)
         })
       : new Map();
-    const submissions = new Map<string, string[]>();
     const latestSubmission = new Map<string, AssignmentAttemptRow>();
     const assignmentsWithAttempts = new Set<string>();
     for (const attempt of attempts) {
       assignmentsWithAttempts.add(attempt.assignment_id);
       if (attempt.status !== "submitted" || !attempt.submitted_at) continue;
       const key = `${attempt.assignment_id}:${attempt.user_id}`;
-      submissions.set(key, [...(submissions.get(key) ?? []), attempt.submitted_at]);
       const current = latestSubmission.get(key);
       if (!current || isLaterWritingAssignmentSubmission(attempt, current)) {
         latestSubmission.set(key, attempt);
@@ -191,27 +197,48 @@ export async function GET(request: Request) {
         const reviewBased = isWritingReviewItemType(assignment.task_type);
         let completedCount = 0;
         let publishedCount = 0;
+        let unresolvedCount = 0;
         let hasAttempts = assignmentsWithAttempts.has(assignment.assignment_id);
         for (const studentId of Array.from(students)) {
+          const key = `${assignment.assignment_id}:${studentId}`;
           if (reviewBased) {
-            const key = `${assignment.assignment_id}:${studentId}`;
-            if (earliestWritingAssignmentSubmission(submissions.get(key) ?? [])) {
+            const latest = latestSubmission.get(key);
+            // WE / AD complete only once the review of the latest submission is
+            // published; a submitted-but-unpublished attempt never counts.
+            const publishedReview = Boolean(
+              latest && reviewStatuses.get(latest.attempt_id) === "published"
+            );
+            if (isTeacherAssignmentStudentCompleted({
+              hasResult: false,
+              itemType: assignment.task_type,
+              publishedReview
+            })) {
               completedCount += 1;
             }
-            const latest = latestSubmission.get(key);
-            if (latest && reviewStatuses.get(latest.attempt_id) === "published") {
-              publishedCount += 1;
-            }
+            if (publishedReview) publishedCount += 1;
+            // 逾期未完成 keeps its historical meaning: a submitted (even if
+            // not yet published) writing item is no longer "未完成" for the
+            // deadline signal.
+            if (!latest) unresolvedCount += 1;
             continue;
           }
           // Read-only items (BAS / Reading): the student's own existing result
-          // is the completion signal; there is no review / publish step.
+          // inside the Assignment window is the completion signal; there is no
+          // review / publish step.
           const result = assignmentStudentResult(
             studentResultMap,
             assignment.assignment_id,
             studentId
           );
-          if (result.available_result) completedCount += 1;
+          if (isTeacherAssignmentStudentCompleted({
+            hasResult: Boolean(result.available_result),
+            itemType: assignment.task_type,
+            publishedReview: false
+          })) {
+            completedCount += 1;
+          } else {
+            unresolvedCount += 1;
+          }
           if (result.started) hasAttempts = true;
         }
         const singleStudentId = students.size === 1 ? Array.from(students)[0] : null;
@@ -249,7 +276,7 @@ export async function GET(request: Request) {
             ? reviewStatuses.get(singleStudentSubmission.attempt_id) ?? null
             : null,
           has_overdue_students: Boolean(
-            assignment.due_at && Date.parse(assignment.due_at) < now && completedCount < students.size
+            assignment.due_at && Date.parse(assignment.due_at) < now && unresolvedCount > 0
           )
         } satisfies WritingAssignmentSummary;
     });

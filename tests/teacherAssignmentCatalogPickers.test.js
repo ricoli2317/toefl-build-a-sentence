@@ -23,12 +23,10 @@ const {
   ASSIGNMENT_PREVIEW_LIMIT
 } = require("../lib/assignmentCatalog.ts");
 const {
+  assignmentGroupProgress,
   defaultWritingAssignmentTitle,
-  getTeacherAssignmentCollectionProgress,
-  getTeacherAssignmentProgress,
   isWritingReviewItemType,
-  nextWritingAssignmentAutoTitle,
-  writingAssignmentProgressBadgeClass
+  nextWritingAssignmentAutoTitle
 } = require("../lib/writingAssignments.ts");
 const {
   teacherAssignmentItemAction,
@@ -395,60 +393,31 @@ test("automatic titles carry the subject and keep the sequence per subject", () 
 // 5. Card status adapter
 // ---------------------------------------------------------------------------
 
-test("Reading and Writing cards share one status badge tone mapping", () => {
-  const writing = getTeacherAssignmentProgress({
-    assignedCount: 2,
-    completedCount: 2,
-    itemTypes: ["email"],
-    lifecycleStatus: "active",
-    publishedCount: 2
-  });
-  const reading = getTeacherAssignmentProgress({
-    assignedCount: 2,
-    completedCount: 2,
-    itemTypes: ["ctw"],
-    lifecycleStatus: "active",
-    publishedCount: 0
-  });
-  assert.deepEqual(writing, { label: "已完成", progress: "completed" });
-  assert.deepEqual(reading, { label: "已完成", progress: "completed" });
+test("Reading and Writing cards share one group status badge mapping", () => {
+  const writing = assignmentGroupProgress({ completedCount: 2, totalCount: 2 });
+  const reading = assignmentGroupProgress({ completedCount: 2, totalCount: 2 });
+  assert.equal(writing.label, "已完成");
+  assert.equal(reading.label, "已完成");
+  assert.equal(writing.badgeClass, reading.badgeClass);
   assert.equal(
-    writingAssignmentProgressBadgeClass(writing.progress),
-    writingAssignmentProgressBadgeClass(reading.progress)
+    assignmentGroupProgress({ completedCount: 1, totalCount: 3 }).label,
+    "进行中"
   );
-  assert.deepEqual(
-    getTeacherAssignmentProgress({
-      assignedCount: 3,
-      completedCount: 1,
-      itemTypes: ["rdl"],
-      lifecycleStatus: "active",
-      publishedCount: 0
-    }),
-    { label: "1 人已提交", progress: "partial_submitted" }
+  assert.equal(
+    assignmentGroupProgress({ completedCount: 1, totalCount: 3 }).progressText,
+    "1 / 3 已完成"
   );
-  assert.deepEqual(
-    getTeacherAssignmentCollectionProgress({
-      completedCount: 4,
-      itemTypes: ["ctw", "rap"],
-      publishedCount: 0,
-      totalCount: 4,
-      withdrawn: false
-    }),
-    { label: "已完成", progress: "completed" }
+  assert.equal(
+    assignmentGroupProgress({ completedCount: 0, totalCount: 4 }).label,
+    "未完成"
   );
-  assert.deepEqual(
-    getTeacherAssignmentCollectionProgress({
-      completedCount: 2,
-      itemTypes: ["ctw", "rap"],
-      publishedCount: 0,
-      totalCount: 4,
-      withdrawn: false
-    }),
-    { label: "部分已提交", progress: "partial_submitted" }
+  assert.equal(
+    assignmentGroupProgress({ completedCount: 0, totalCount: 4 }).badgeClass,
+    "bg-amber-50 text-amber-700"
   );
   const list = source(LIST);
-  assert.match(list, /getTeacherAssignmentProgress\(\{/);
-  assert.match(list, /getTeacherAssignmentCollectionProgress\(\{/);
+  assert.match(list, /AssignmentStatusBadge/);
+  assert.match(list, /AssignmentProgressText/);
 });
 
 // ---------------------------------------------------------------------------

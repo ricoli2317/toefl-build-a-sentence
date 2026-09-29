@@ -99,16 +99,23 @@ export async function loadStudentAssignmentDetails(input: {
 
   const assignmentIds = rows.map(({ assignment }) => assignment.assignment_id);
   // The read-only item lookup is one batched query per table for the whole
-  // visible list; nothing is fetched per item.
-  const resultItems: AssignmentResultLookupItem[] = rows.flatMap(({ assignment }) => {
+  // visible list; nothing is fetched per item. Every item carries the
+  // membership's own assigned_at, so only attempts completed after this
+  // Assignment became effective can ever satisfy it.
+  const resultItems: AssignmentResultLookupItem[] = rows.flatMap(({ assignment, membership }) => {
     if (isWritingReviewItemType(assignment.task_type)) return [];
     const itemId = resolvedAssignmentItemId(assignment);
     return itemId
       ? [{
           assignmentId: assignment.assignment_id,
+          // Safe fallback only: a legacy membership without assigned_at must
+          // never fall back to "no boundary" (the old pollution bug). The
+          // item's own created_at is a conservative lower bound.
+          boundaryAt: membership.assigned_at ?? assignment.created_at,
           itemId,
           itemType: assignment.task_type,
-          sourceSetId: assignment.snapshot_source_set_id
+          sourceSetId: assignment.snapshot_source_set_id,
+          studentId: input.userId
         }]
       : [];
   });

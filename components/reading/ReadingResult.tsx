@@ -30,6 +30,7 @@ import {
   getReadingResultNavigation,
   readingResultHref,
   withReadingResultSource,
+  withStudentReturnTo,
   type ReadingResultSource
 } from "@/lib/studentNavigation";
 import { ReadingRetakeButton } from "./ReadingRetakeButton";
@@ -37,9 +38,11 @@ import { ReadingQuestionStatusChips } from "./ReadingQuestionStatusChips";
 
 export function ReadingResult({
   attemptId,
+  returnTo,
   source
 }: {
   attemptId: string;
+  returnTo?: string | string[];
   source?: ReadingResultSource;
 }) {
   const state = useStudentCachedData<ReadingResultPayload>(
@@ -76,7 +79,7 @@ export function ReadingResult({
   const timeComparison = peerComparison
     ? formatTimeComparison(peerComparison)
     : RESULT_COMPARISON_LOADING_TEXT;
-  const navigation = getReadingResultNavigation(attempt.taskType, source);
+  const navigation = getReadingResultNavigation(attempt.taskType, source, returnTo);
 
   return (
     <div className="student-result-overview-layout">
@@ -97,6 +100,7 @@ export function ReadingResult({
       <ReadingDetailCard
         answers={answers}
         attemptId={attempt.attemptId}
+        returnTo={returnTo}
         source={source}
         submittedAt={attempt.submittedAt}
       />
@@ -107,11 +111,13 @@ export function ReadingResult({
 function ReadingDetailCard({
   answers,
   attemptId,
+  returnTo,
   source,
   submittedAt,
 }: {
   answers: ReadingResultAnswer[];
   attemptId: string;
+  returnTo?: string | string[];
   source?: ReadingResultSource;
   submittedAt: string;
 }) {
@@ -122,14 +128,14 @@ function ReadingDetailCard({
           <h2 className="text-xl font-bold text-student-text">作答详情</h2>
           <p className="mt-1 text-sm text-student-muted">提交于 {formatDateTime(submittedAt)}</p>
         </div>
-        <ReadingRetakeButton attemptId={attemptId} />
+        <ReadingRetakeButton attemptId={attemptId} returnTo={returnTo} />
       </div>
       <ReadingQuestionStatusChips
         answers={answers}
-        questionHref={(reviewIndex) => withReadingResultSource(
+        questionHref={(reviewIndex) => withStudentReturnTo(withReadingResultSource(
           `${readingResultHref(attemptId)}/questions/${reviewIndex}`,
           source
-        )}
+        ), returnTo)}
         questionHrefBase={`/student/reading/results/${encodeURIComponent(attemptId)}`}
       />
     </section>

@@ -14,6 +14,7 @@ import {
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
   isLaterWritingAssignmentSubmission,
+  isTeacherAssignmentStudentCompleted,
   isWritingReviewItemType,
   writingAssignmentTitle,
   type WritingAssignmentDetail
@@ -108,12 +109,16 @@ export async function GET(
         ? Promise.resolve(new Map())
         : loadAssignmentStudentResults({
             db: auth.supabase,
-            items: [{
+            items: members.map((member) => ({
               assignmentId: String(assignment.assignment_id),
-              itemId: assignment.question_id,
+              // assigned_at is the authoritative boundary; a legacy row without
+              // it falls back to the item's created_at instead of "no boundary".
+              boundaryAt: member.assigned_at ?? assignment.created_at,
+              itemId: assignment.question_id!,
               itemType: assignment.task_type,
-              sourceSetId: assignmentSnapshotSourceSetId(assignment.question_snapshot)
-            }],
+              sourceSetId: assignmentSnapshotSourceSetId(assignment.question_snapshot),
+              studentId: member.student_id
+            })),
             studentIds
           })
     ]);
@@ -171,11 +176,17 @@ export async function GET(
         member.student_id
       );
       // Read-only items (BAS / Reading) never enter the Writing Review chain:
-      // their own practice result is the completion signal and the located
-      // result is only ever 查看, never 批改.
-      const completed = reviewBased
-        ? Boolean(firstSubmittedAt)
-        : Boolean(result.available_result);
+      // their own practice result inside the Assignment window is the
+      // completion signal and the located result is only ever 查看, never 批改.
+      // WE / AD complete only once the review of the latest submission is
+      // published.
+      const completed = isTeacherAssignmentStudentCompleted({
+        hasResult: Boolean(result.available_result),
+        itemType: assignment.task_type,
+        publishedReview: reviewBased && latestSubmission
+          ? reviewStatusByAttemptId.get(latestSubmission.attempt_id) === "published"
+          : false
+      });
       const completedAt = reviewBased
         ? firstSubmittedAt
         : result.available_result?.completed_at ?? null;
@@ -421,7 +432,7 @@ export async function PATCH(
       || message.includes("CLASS_HAS_NO_MEMBERS")) {
       return invalid(writingAssignmentClassErrorMessage(message));
     }
-    if (/^(请选择|请至少|请填写|请输入|所选|截止)/.test(message)) {
+    if (/^(请选择|请至少|请填写|请输入|所选|截止|一次最多|同一份作业|作业科目|该题型)/.test(message)) {
       return writingAssignmentJson({ code: "INVALID_ASSIGNMENT", message }, { status: 400 });
     }
     console.error("[writing-assignments] mutation_failed", error);

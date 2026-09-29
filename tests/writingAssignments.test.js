@@ -610,16 +610,26 @@ test("withdrawn assignment UI reuses the form and exposes lifecycle actions", ()
   assert.match(form, /保存并重新布置/);
   assert.match(form, /buildWizardSeed/);
   assert.match(editWrapper, /TeacherWritingAssignmentForm initialAssignment=/);
+  // The list card and the detail header render the one shared group status
+  // badge instead of a local progress mapping.
+  assert.match(list, /AssignmentStatusBadge/);
+  assert.match(detail, /TeacherWritingAssignmentDetailBody/);
+  assert.match(
+    fs.readFileSync(
+      path.join(projectRoot, "components/teacher/TeacherWritingAssignmentDetailBody.tsx"),
+      "utf8"
+    ),
+    /AssignmentStatusBadge/
+  );
   for (const source of [list, detail]) {
-    assert.match(source, /getTeacherAssignmentProgress/);
     assert.match(source, /编辑作业/);
     assert.match(source, /重新布置/);
     assert.match(source, /删除作业/);
     assert.match(source, /撤回后，学生将不能再通过该作业开始或继续未提交的练习/);
     assert.match(source, /学生已有提交和批改记录不会被删除/);
   }
-  assert.match(assignmentDomain, /label: "进行中"/);
-  assert.match(assignmentDomain, /label: "已撤回"/);
+  assert.match(assignmentDomain, /\? "进行中"/);
+  assert.match(assignmentDomain, /\? "已撤回"/);
 });
 
 test("deleted or withdrawn assignment snapshots remain readable by review pipelines", () => {

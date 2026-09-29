@@ -108,7 +108,9 @@ import { storeReadingQuestionTimes } from "@/lib/reading/resultSession";
 import {
   readingFullSetResultHref,
   readingResultHref,
+  safeStudentReturnTo,
   withReadingResultSource,
+  withStudentReturnTo,
   type ReadingResultSource
 } from "@/lib/studentNavigation";
 import {
@@ -213,9 +215,10 @@ const rapFramelessInteractionStyle = {
   WebkitAppearance: "none"
 } as CSSProperties;
 
-export function ReadingPractice({ itemId }: { itemId: string }) {
+export function ReadingPractice({ itemId, returnTo }: { itemId: string; returnTo?: string }) {
   const router = useRouter();
   const { invalidate } = useStudentDataCache();
+  const safeReturnTo = safeStudentReturnTo(returnTo);
   const [practice, setPractice] = useState<StudentReadingPracticePayload | null>(null);
   const [attempt, setAttempt] = useState<ReadingAttemptSummary | null>(null);
   const [error, setError] = useState("");
@@ -288,8 +291,9 @@ export function ReadingPractice({ itemId }: { itemId: string }) {
   return (
     <ReadingPracticeShell
       attempt={attempt}
-      onBack={() => router.back()}
+      onBack={() => safeReturnTo ? router.push(safeReturnTo) : router.back()}
       practice={practice}
+      resultReturnTo={safeReturnTo}
     />
   );
 }
@@ -569,6 +573,7 @@ export function ReadingPracticeShell({
   mode = "active",
   onBack,
   practice,
+  resultReturnTo,
   reviewItems = [],
   reviewDisclosures = {},
   reviewTitle,
@@ -581,6 +586,8 @@ export function ReadingPracticeShell({
   mode?: ReadingPracticeMode;
   onBack: () => void;
   practice: StudentReadingPracticePayload;
+  /** Assignment-origin safe return path forwarded to the result page. */
+  resultReturnTo?: string | null;
   reviewItems?: SubmittedReadingReviewItem[];
   reviewDisclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
   reviewTitle?: string;
@@ -634,8 +641,11 @@ export function ReadingPracticeShell({
 
   useEffect(() => {
     if (readOnly || attempt.status !== "submitted") return;
-    router.replace(`/student/reading/results/${encodeURIComponent(attempt.attemptId)}`);
-  }, [attempt.attemptId, attempt.status, readOnly, router]);
+    router.replace(withStudentReturnTo(
+      `/student/reading/results/${encodeURIComponent(attempt.attemptId)}`,
+      resultReturnTo
+    ));
+  }, [attempt.attemptId, attempt.status, readOnly, resultReturnTo, router]);
 
   const currentQuestion = practice.questions[navigation.currentIndex] ?? practice.questions[0];
   const progressLabel = practice.item.module === "ctw"
@@ -712,7 +722,10 @@ export function ReadingPracticeShell({
         invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
         invalidate(studentReadingCatalogCacheKey(result.attempt.taskType));
         invalidateStudentWrongbook(session.user.id);
-        router.replace(`/student/reading/results/${encodeURIComponent(result.attempt.attemptId)}`);
+        router.replace(withStudentReturnTo(
+          `/student/reading/results/${encodeURIComponent(result.attempt.attemptId)}`,
+          resultReturnTo
+        ));
       }
     } catch (submitFailure) {
       setSubmitError(
@@ -723,7 +736,7 @@ export function ReadingPracticeShell({
     } finally {
       setSubmitting(false);
     }
-  }, [answers, attempt, captureCurrentQuestionTime, elapsedSeconds, invalidate, practice, readOnly, router, submitting, wrongbook]);
+  }, [answers, attempt, captureCurrentQuestionTime, elapsedSeconds, invalidate, practice, readOnly, resultReturnTo, router, submitting, wrongbook]);
 
   if (readOnly) {
     return (
@@ -2666,8 +2679,9 @@ export function ReadingReadonlyReviewShell({
   reviewDisclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
   reviewItems: SubmittedReadingReviewItem[];
   /**
-   * Standalone preview (查看题目 in a new tab): only this item is rendered and
-   * every navigation control (back / previous / next) is hidden.
+   * Standalone preview (查看题目 in a new tab): the shell / breadcrumbs / back
+   * link stay hidden, but Previous / Next keep working inside the current
+   * logical item — cross item and cross feature navigation stays blocked.
    */
   standalone?: boolean;
   title?: string;
@@ -2676,9 +2690,20 @@ export function ReadingReadonlyReviewShell({
   const [reviewIndex, setReviewIndex] = useState(() =>
     Math.max(0, Math.min(reviewItems.length - 1, initialReviewIndex))
   );
+  // Same Assignment item internal navigation only: Previous / Next move through
+  // this item's own review items. The student submitted review navigates per
+  // question; the teacher answer-key preview (standalone 查看题目) steps through
+  // the item's slots as well (CTW 填空), so both keep working inside exactly one
+  // logical item while every cross-item / cross-feature entry stays hidden.
+  const reviewNavigationKeys = useMemo(
+    () => reviewItems.map((item) =>
+      answerKeyOnly && item.slotId ? item.slotId : item.questionId
+    ),
+    [answerKeyOnly, reviewItems]
+  );
   const reviewNavigationTargets = useMemo(
-    () => readingQuestionNavigationTargets(reviewItems.map((item) => item.questionId), reviewIndex),
-    [reviewIndex, reviewItems]
+    () => readingQuestionNavigationTargets(reviewNavigationKeys, reviewIndex),
+    [reviewIndex, reviewNavigationKeys]
   );
   const currentReviewItem = reviewItems[reviewIndex] ?? null;
   const reviewQuestionIndex = currentReviewItem
@@ -2725,8 +2750,8 @@ export function ReadingReadonlyReviewShell({
           />
         ) : null}
         <ReadingQuestionViewport
-          canGoNext={!standalone && reviewNavigationTargets.nextIndex !== null}
-          canGoPrevious={!standalone && reviewNavigationTargets.previousIndex !== null}
+          canGoNext={reviewNavigationTargets.nextIndex !== null}
+          canGoPrevious={reviewNavigationTargets.previousIndex !== null}
           module={practice.item.module}
           onNext={() => move(1)}
           onPrevious={() => move(-1)}

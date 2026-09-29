@@ -16,16 +16,19 @@ import {
   logReadingFullSetPerformancePhase,
   readingFullSetTraceHeaders
 } from "@/lib/reading/fullSetPerformance.client";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
 
 export function ReadingFullSetRetakeButton({
   compact = false,
   fullSetId,
-  label
+  label,
+  returnTo
 }: {
   compact?: boolean;
   fullSetId: string;
   label?: string;
+  /** Assignment-origin safe return path for the new attempt run. */
+  returnTo?: string | string[] | null;
 }) {
   const router = useRouter();
   const cache = useStudentDataCache();
@@ -77,7 +80,10 @@ export function ReadingFullSetRetakeButton({
         moduleNumber: 1,
         route: `${STUDENT_ROUTES.readingFullSets}/${fullSetId}/attempt/${payload.runner.attempt.attemptId}`
       });
-      router.push(`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/attempt/${encodeURIComponent(payload.runner.attempt.attemptId)}`);
+      router.push(withStudentReturnTo(
+        `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSetId)}/attempt/${encodeURIComponent(payload.runner.attempt.attemptId)}`,
+        returnTo
+      ));
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "暂时无法开始再次练习。");
       setLoading(false);

@@ -6,6 +6,13 @@ const { createMockSupabase } = require("./fixtures/mockSupabase.js");
 const {
   prepareWritingAssignmentGroupEditMutation
 } = require("../lib/writingAssignmentMutation.server.ts");
+const {
+  isAutomaticWritingAssignmentTitle,
+  seededAssignmentTitleBase
+} = require("../lib/teacherClasses.ts");
+const {
+  nextWritingAssignmentAutoTitle
+} = require("../lib/writingAssignments.ts");
 
 const projectRoot = path.resolve(__dirname, "..");
 const source = (relativePath) =>
@@ -333,7 +340,8 @@ test("the withdrawn editor reuses the create wizard seeded with the persisted gr
   assert.match(form, /buildWizardSeed/);
   assert.match(form, /assignmentCatalogEntryFromAssignment/);
   assert.match(form, /customQuestionDraftFromAssignment/);
-  assert.match(form, /students: assignments\[0\]\?\.students\.map/);
+  assert.match(form, /students: firstAssignment\?\.students\.map/);
+  assert.match(form, /titleAssignedAt: firstAssignment\?\.created_at/);
   assert.match(form, /dueAt: assignments\.flatMap/);
   assert.match(form, /title: groupTitle\?\.trim\(\)/);
   // Adding and removing items: custom drafts can be added and removed, the
@@ -381,4 +389,167 @@ test("the legacy group-less withdrawn edit is adopted by the same RPC", () => {
   // must be a new item.
   assert.match(route, /item\.assignmentId !== params\.assignmentId/);
   assert.match(route, /INVALID_GROUP_ITEMS/);
+});
+
+// ---------------------------------------------------------------------------
+// 5. Cross-subject withdrawn edit (写作 ↔ 阅读)
+// ---------------------------------------------------------------------------
+
+test("switching the subject asks first and only clears the old selection on confirm", () => {
+  const form = source(FORM);
+  // No selection: switch directly. With selected bank items or custom drafts the
+  // wizard asks before anything changes.
+  assert.match(form, /const hasItems = selection\.size > 0 \|\| customQuestions\.length > 0/);
+  assert.match(
+    form,
+    /已选择写作题目，切换到阅读会清空已选题目。是否切换？/
+  );
+  assert.match(
+    form,
+    /已选择阅读题目，切换到写作会清空已选题目。是否切换？/
+  );
+  const chooseSubject = form.slice(
+    form.indexOf("function chooseSubject("),
+    form.indexOf("function chooseSource(")
+  );
+  // Cancel returns before any state change; confirm clears the selection, the
+  // custom drafts and the picker state for the new subject.
+  const confirmIndex = chooseSubject.indexOf("window.confirm(message)");
+  const firstStateChange = chooseSubject.indexOf("setSubject(next)");
+  assert.ok(confirmIndex > 0 && firstStateChange > confirmIndex);
+  assert.match(chooseSubject, /setSelection\(new Map\(\)\)/);
+  assert.match(chooseSubject, /setCustomQuestions\(\[\]\)/);
+  assert.match(chooseSubject, /defaultAssignmentPickerState\(next\)/);
+  // The submitted payload can never mix subjects: both the bank entries and the
+  // custom drafts are filtered by the current subject.
+  assert.match(form, /entry\.item_type\) === assignmentSubject/);
+  assert.match(
+    form,
+    /assignmentSubject === "writing"[\s\S]{0,160}isWritingReviewItemType\(draft\.taskType\)/
+  );
+});
+
+test("the group edit RPC re-targets the whole group to exactly one subject", () => {
+  const sql = source("supabase/writing_assignment_group_edit_items_20260928.sql");
+  // The subject is derived from the provided items and never locked to the old
+  // subject; a mixed payload is rejected outright.
+  assert.match(sql, /derived_subject := group_subjects\[1\]/);
+  assert.match(sql, /MIXED_ASSIGNMENT_SUBJECT/);
+  // Kept items move to the derived subject, new items are inserted with it.
+  assert.match(sql, /subject = derived_subject/);
+  assert.match(sql, /derived_subject,\s*\n\s*effective_group_id/);
+  // Withdraw-only, attempt protection and single-subject validation stay.
+  assert.match(sql, /ASSIGNMENT_GROUP_NOT_WITHDRAWN/);
+  assert.match(sql, /ITEM_HAS_ATTEMPT/);
+  assert.match(sql, /STUDENT_HAS_ATTEMPT/);
+  assert.match(sql, /for update/);
+  // The route maps a mixed / mismatched payload to a 400 instead of a 500.
+  const batchRoute = source(BATCH_ROUTE);
+  assert.match(batchRoute, /同一份作业\|作业科目/);
+});
+
+// ---------------------------------------------------------------------------
+// 6. Automatic vs manual titles on a withdrawn edit
+// ---------------------------------------------------------------------------
+
+test("automatic titles are recognized per student / class / subject / date", () => {
+  const assignedAt = "2026-09-28T12:00:00+08:00";
+  // Student mode, one student.
+  assert.equal(seededAssignmentTitleBase({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "writing"
+  }), "张三 写作 2026-09-28");
+  assert.equal(isAutomaticWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "writing",
+    title: "张三 写作 2026-09-28"
+  }), true);
+  // The same-day sequence is still an automatic title.
+  assert.equal(isAutomaticWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "writing",
+    title: "张三 写作 2026-09-28 (2)"
+  }), true);
+  // Multi-student 张三等 is recognized as well.
+  assert.equal(isAutomaticWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 3,
+    subject: "reading",
+    title: "张三等 阅读 2026-09-28"
+  }), true);
+  // Class mode uses the class name.
+  assert.equal(isAutomaticWritingAssignmentTitle({
+    assignedAt,
+    className: "周六阅读班",
+    subject: "reading",
+    title: "周六阅读班 阅读 2026-09-28"
+  }), true);
+  // The other subject label never matches.
+  assert.equal(isAutomaticWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "reading",
+    title: "张三 写作 2026-09-28"
+  }), false);
+  // Another date never matches.
+  assert.equal(isAutomaticWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "writing",
+    title: "张三 写作 2026-09-27"
+  }), false);
+  // A teacher-written title is never recognized, even when it starts with the
+  // same name.
+  assert.equal(isAutomaticWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "writing",
+    title: "张三 写作 2026-09-28 补充版"
+  }), false);
+  assert.equal(isAutomaticWritingAssignmentTitle({
+    assignedAt,
+    firstStudentName: "张三",
+    studentCount: 1,
+    subject: "writing",
+    title: "九月写作专项"
+  }), false);
+  // Title numbering keeps the existing rule.
+  assert.equal(nextWritingAssignmentAutoTitle("张三 写作 2026-09-28", [
+    "张三 写作 2026-09-28",
+    "张三 写作 2026-09-28 (2)"
+  ]), "张三 写作 2026-09-28 (3)");
+});
+
+test("the wizard keeps regenerating automatic titles and protects manual ones", () => {
+  const form = source(FORM);
+  // The seed decides once whether the persisted title is automatic.
+  assert.match(form, /isAutomaticWritingAssignmentTitle\(\{/);
+  assert.match(form, /assignedAt: seed\.titleAssignedAt/);
+  assert.match(form, /firstStudentName: seed\.firstStudentName/);
+  assert.match(form, /className: seed\.className/);
+  // The automatic title keeps the assignment's own 布置日期 on edit.
+  assert.match(form, /const assignmentTitleDate = useMemo\(/);
+  assert.match(form, /editing && seed\.titleAssignedAt \? seed\.titleAssignedAt : new Date\(\)/);
+  assert.match(form, /assignedAt: assignmentTitleDate/);
+  assert.match(form, /classAssignmentTitleBase\(classEntry\.name, assignmentTitleDate, assignmentSubject\)/);
+  // The edited group never counts against its own auto-title sequence.
+  assert.match(form, /initialGroupId && assignment\.group_id === initialGroupId/);
+  // Student / class / subject changes all flow through the shared generators.
+  assert.match(form, /classAssignmentTitleBase\(selectedClass\.name, titleAssignedAt, assignmentSubject\)/);
+  assert.match(form, /defaultWritingAssignmentTitle\(\{/);
+  assert.match(form, /subject: assignmentSubject/);
+  // A manual title is never overwritten by the regeneration effect.
+  assert.match(form, /if \(assignmentTitleManuallyEdited\) return;/);
+  // On withdraw-edit the resolved candidate is persisted verbatim.
+  assert.match(form, /editing \? candidateAssignmentTitle\.trim\(\)/);
 });

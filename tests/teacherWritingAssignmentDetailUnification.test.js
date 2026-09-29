@@ -4,12 +4,12 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const {
+  assignmentGroupProgress,
+  assignmentGroupProgressText,
+  assignmentGroupStatusBadgeClass,
+  assignmentGroupStatusLabel,
   collectWritingAssignmentStudentProgress,
-  getTeacherAssignmentCollectionProgress,
-  getTeacherAssignmentProgress,
-  getWritingAssignmentCollectionProgress,
-  getWritingAssignmentProgress,
-  writingAssignmentProgressBadgeClass,
+  isTeacherAssignmentStudentCompleted,
   writingAssignmentTaskTypeBadges
 } = require("../lib/writingAssignments.ts");
 
@@ -24,6 +24,8 @@ const DETAIL_BODY = "components/teacher/TeacherWritingAssignmentDetailBody.tsx";
 const CREATE_FORM = "components/teacher/TeacherWritingAssignmentForm.tsx";
 const GROUP_EDIT_FORM = "components/teacher/TeacherWritingAssignmentGroupEditForm.tsx";
 const DETAIL_ROUTE = "app/api/teacher/writing/assignments/[assignmentId]/route.ts";
+const SHARED = "components/assignments/AssignmentPresentation.tsx";
+const STUDENT_UI = "components/student/StudentWritingAssignments.tsx";
 
 function student(studentId, overrides = {}) {
   return {
@@ -63,143 +65,84 @@ function assignment(assignmentId, students) {
   };
 }
 
-test("assignment status badge colors restore the historical four-tone mapping", () => {
-  const ongoing = writingAssignmentProgressBadgeClass("ongoing");
-  const partial = writingAssignmentProgressBadgeClass("partial_submitted");
-  const submitted = writingAssignmentProgressBadgeClass("submitted");
-  const allSubmitted = writingAssignmentProgressBadgeClass("all_submitted");
-  const completed = writingAssignmentProgressBadgeClass("completed");
-  const withdrawn = writingAssignmentProgressBadgeClass("withdrawn");
-  // 进行中 / 部分已提交 / 已完成 / 已撤回 all keep distinct variants again.
-  assert.equal(ongoing, "bg-student-primary-soft text-student-primary");
-  assert.equal(partial, "bg-amber-50 text-amber-700");
-  assert.equal(completed, "bg-emerald-50 text-emerald-700");
-  assert.equal(withdrawn, "bg-slate-100 text-slate-600");
-  assert.equal(submitted, partial);
-  assert.equal(allSubmitted, partial);
-  assert.equal(new Set([ongoing, partial, completed, withdrawn]).size, 4);
+test("the group badge keeps the three shared states and the historical tones", () => {
+  const notStarted = assignmentGroupProgress({ completedCount: 0, totalCount: 3 });
+  const inProgress = assignmentGroupProgress({ completedCount: 1, totalCount: 3 });
+  const completed = assignmentGroupProgress({ completedCount: 3, totalCount: 3 });
+  const withdrawn = assignmentGroupProgress({
+    completedCount: 1,
+    lifecycleStatus: "withdrawn",
+    totalCount: 3
+  });
+  assert.equal(notStarted.label, "未完成");
+  assert.equal(notStarted.badgeClass, "bg-amber-50 text-amber-700");
+  assert.equal(inProgress.label, "进行中");
+  assert.equal(inProgress.badgeClass, "bg-student-primary-soft text-student-primary");
+  assert.equal(completed.label, "已完成");
+  assert.equal(completed.badgeClass, "bg-emerald-50 text-emerald-700");
+  assert.equal(withdrawn.label, "已撤回");
+  assert.equal(withdrawn.badgeClass, "bg-slate-100 text-slate-600");
+  assert.equal(new Set([notStarted.badgeClass, inProgress.badgeClass, completed.badgeClass, withdrawn.badgeClass]).size, 4);
+  // The former group-level labels never come back on top.
+  for (const removed of ["已提交", "部分已提交", "部分已完成", "全部已提交", "待批改", "已发布"]) {
+    assert.notEqual(notStarted.label, removed);
+    assert.notEqual(inProgress.label, removed);
+    assert.notEqual(completed.label, removed);
+  }
 });
 
-test("status computation is untouched while cards and detail headers share one tone helper", () => {
-  // Business labels keep the exact existing progress logic.
-  assert.deepEqual(
-    getWritingAssignmentProgress({
-      assignedCount: 3,
-      lifecycleStatus: "active",
-      publishedCount: 0,
-      submittedCount: 0
-    }),
-    { label: "进行中", progress: "ongoing" }
+test("the shared progress contract is untouched while both ends use one badge helper", () => {
+  assert.equal(assignmentGroupStatusLabel("not_started"), "未完成");
+  assert.equal(assignmentGroupStatusLabel("in_progress"), "进行中");
+  assert.equal(assignmentGroupStatusLabel("completed"), "已完成");
+  assert.equal(assignmentGroupStatusLabel("withdrawn"), "已撤回");
+  assert.equal(assignmentGroupStatusBadgeClass("not_started"), "bg-amber-50 text-amber-700");
+  assert.equal(assignmentGroupStatusBadgeClass("in_progress"), "bg-student-primary-soft text-student-primary");
+  assert.equal(assignmentGroupStatusBadgeClass("completed"), "bg-emerald-50 text-emerald-700");
+  assert.equal(assignmentGroupProgressText(0, 3), "0 / 3 已完成");
+  assert.equal(assignmentGroupProgressText(3, 3), "3 / 3 已完成");
+
+  // WE / AD complete only through a published review; read-only items through
+  // their own result inside the Assignment window.
+  assert.equal(
+    isTeacherAssignmentStudentCompleted({ itemType: "email", hasResult: false, publishedReview: false }),
+    false
   );
-  assert.deepEqual(
-    getWritingAssignmentProgress({
-      assignedCount: 3,
-      lifecycleStatus: "active",
-      publishedCount: 0,
-      submittedCount: 1
-    }),
-    { label: "1 人已提交", progress: "partial_submitted" }
+  assert.equal(
+    isTeacherAssignmentStudentCompleted({ itemType: "email", hasResult: true, publishedReview: true }),
+    true
   );
-  assert.deepEqual(
-    getWritingAssignmentProgress({
-      assignedCount: 3,
-      lifecycleStatus: "active",
-      publishedCount: 3,
-      submittedCount: 3
-    }),
-    { label: "已完成", progress: "completed" }
-  );
-  assert.deepEqual(
-    getWritingAssignmentProgress({
-      assignedCount: 3,
-      lifecycleStatus: "withdrawn",
-      publishedCount: 0,
-      submittedCount: 0
-    }),
-    { label: "已撤回", progress: "withdrawn" }
-  );
-  // Group cards keep their existing labels too.
-  assert.deepEqual(
-    getWritingAssignmentCollectionProgress({
-      completedCount: 0,
-      publishedCount: 0,
-      totalCount: 2,
-      withdrawn: false
-    }),
-    { label: "进行中", progress: "ongoing" }
-  );
-  assert.deepEqual(
-    getWritingAssignmentCollectionProgress({
-      completedCount: 1,
-      publishedCount: 0,
-      totalCount: 2,
-      withdrawn: false
-    }),
-    { label: "部分已提交", progress: "partial_submitted" }
-  );
-  assert.deepEqual(
-    getWritingAssignmentCollectionProgress({
-      completedCount: 2,
-      publishedCount: 0,
-      totalCount: 2,
-      withdrawn: false
-    }),
-    { label: "全部已提交", progress: "all_submitted" }
-  );
-  assert.deepEqual(
-    getWritingAssignmentCollectionProgress({
-      completedCount: 2,
-      publishedCount: 2,
-      totalCount: 2,
-      withdrawn: false
-    }),
-    { label: "已完成", progress: "completed" }
+  assert.equal(
+    isTeacherAssignmentStudentCompleted({ itemType: "build_sentence", hasResult: true, publishedReview: false }),
+    true
   );
 
-  // Student card, class card and both detail headers resolve the tone through
-  // the one helper instead of local color chains.
+  // The teacher list / detail and the student UI all resolve the tone through
+  // the one shared presentation component instead of local color chains.
   const list = source(LIST);
-  assert.match(list, /writingAssignmentProgressBadgeClass\(progress\.progress\)/);
-  // The card / detail adapter maps read-only Assignments (BAS / 阅读) onto the
-  // existing 已完成 state instead of inventing a new badge.
-  assert.match(list, /getTeacherAssignmentCollectionProgress\(/);
-  assert.match(list, /getTeacherAssignmentProgress\(/);
-  assert.doesNotMatch(list, /progressClassName/);
-  assert.match(source(DETAIL_BODY), /writingAssignmentProgressBadgeClass\(progress\.progress\)/);
-  assert.match(source(COLLECTION_DETAIL), /getTeacherAssignmentCollectionProgress\(/);
-  assert.equal(typeof getTeacherAssignmentCollectionProgress, "function");
-  assert.deepEqual(
-    getTeacherAssignmentCollectionProgress({
-      completedCount: 2,
-      itemTypes: ["rdl", "rap"],
-      publishedCount: 0,
-      totalCount: 2,
-      withdrawn: false
-    }),
-    { label: "已完成", progress: "completed" }
-  );
-  assert.deepEqual(
-    getTeacherAssignmentProgress({
-      assignedCount: 1,
-      completedCount: 1,
-      itemTypes: ["build_sentence"],
-      lifecycleStatus: "active",
-      publishedCount: 0
-    }),
-    { label: "已完成", progress: "completed" }
-  );
+  assert.match(list, /AssignmentStatusBadge/);
+  assert.match(source(DETAIL_BODY), /AssignmentStatusBadge/);
+  assert.match(source(COLLECTION_DETAIL), /TeacherWritingAssignmentDetailBody/);
+  assert.match(source(STUDENT_UI), /AssignmentStatusBadge/);
+  const shared = source(SHARED);
+  assert.match(shared, /assignmentGroupProgress\(\{ completedCount, lifecycleStatus, totalCount \}\)/);
+  assert.match(shared, /assignmentGroupProgressText\(completedCount, totalCount\)/);
+  assert.equal(typeof assignmentGroupProgress, "function");
 });
 
-test("every teacher Assignment Detail renders the same body and title rules", () => {
+test("every teacher Assignment Detail renders the same shared body and title rules", () => {
   const detail = source(DETAIL);
   const collectionDetail = source(COLLECTION_DETAIL);
   const body = source(DETAIL_BODY);
+  const shared = source(SHARED);
   assert.match(detail, /<TeacherWritingAssignmentDetailBody/);
   assert.match(collectionDetail, /<TeacherWritingAssignmentDetailBody/);
-  // The heading is always the Assignment / Assignment Group title.
+  // The heading is always the Assignment / Assignment Group title, rendered by
+  // the one shared detail header.
   assert.match(detail, /group_title\?\.trim\(\)[\s\S]{0,80}writingAssignmentTitle\(assignment\.question_snapshot\)/);
   assert.match(collectionDetail, /collection\.title\?\.trim\(\)/);
-  assert.match(body, /font-bold text-student-text">\{title\}/);
+  assert.match(body, /<AssignmentDetailHeaderCard/);
+  assert.match(shared, /text-xl font-bold text-student-text">\{title\}/);
   // The detail route resolves the persisted group title like the list does.
   const route = source(DETAIL_ROUTE);
   assert.match(route, /loadWritingAssignmentGroupTitles/);
@@ -247,9 +190,12 @@ test("student completion is one card per student and one row per assignment", ()
   assert.match(body, /collectWritingAssignmentStudentProgress\(assignments\)/);
   assert.match(body, /students\.map\(\(student\)/);
   assert.match(body, /student\.assignments\.map\(/);
-  assert.match(body, /第 \{index \+ 1\} 篇 · \{assignmentItemTypeLabel\(assignment\.task_type\)\}/);
+  assert.match(body, /<AssignmentItemHeading/);
   assert.match(body, /<StudentWritingProgressBadge progress=\{studentProgress\} \/>/);
   assert.match(body, /等待提交/);
+  // The item heading shell keeps the visible 第 N 篇 · 题型 structure.
+  const shared = source(SHARED);
+  assert.match(shared, /第 \$\{index \+ 1\} 篇 · /);
 });
 
 test("question preview and question progress are gone from Assignment Detail only", () => {

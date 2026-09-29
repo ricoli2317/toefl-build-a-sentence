@@ -2,19 +2,20 @@
 
 import Link from "next/link";
 import { CheckCircle2, Clock3, FilePenLine, RefreshCw } from "lucide-react";
+import { TeacherDataError } from "@/components/teacher/TeacherUI";
 import {
-  TeacherCard,
-  TeacherDataError
-} from "@/components/teacher/TeacherUI";
-import { assignmentItemTypeLabel } from "@/lib/assignmentCatalog";
+  ASSIGNMENT_CARD_CLASS,
+  AssignmentDetailHeaderCard,
+  AssignmentItemHeading,
+  AssignmentProgressText,
+  AssignmentStatusBadge
+} from "@/components/assignments/AssignmentPresentation";
 import {
   collectWritingAssignmentStudentProgress,
-  isWritingReviewItemType,
-  writingAssignmentProgressBadgeClass,
   writingAssignmentTaskTypeBadges,
   writingAssignmentTitle,
   type WritingAssignmentDetail,
-  type WritingAssignmentProgress,
+  type WritingAssignmentLifecycleStatus,
   type WritingAssignmentStudentDetail
 } from "@/lib/writingAssignments";
 import { teacherAssignmentItemAction } from "@/lib/teacherAssignmentItems";
@@ -26,6 +27,10 @@ import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/account
  * table row per assignment inside each card. Legacy single assignments (direct
  * or class) and Assignment Groups render through this exact path, so the page
  * structure never depends on question count, student count or class linkage.
+ *
+ * The header keeps only the three shared group states (未完成 / 进行中 /
+ * 已完成) plus `X / Y 已完成`; the per-student item rows below keep the full
+ * teacher-side status detail and actions.
  */
 export function TeacherWritingAssignmentDetailBody({
   actions,
@@ -34,10 +39,8 @@ export function TeacherWritingAssignmentDetailBody({
   createdAt,
   dueAt,
   errorText,
+  lifecycleStatus = "active",
   onRefresh,
-  pendingReviewCount,
-  progress,
-  publishedCount,
   refreshing = false,
   returnTo,
   title,
@@ -50,10 +53,8 @@ export function TeacherWritingAssignmentDetailBody({
   createdAt: string;
   dueAt: string | null;
   errorText?: string;
+  lifecycleStatus?: WritingAssignmentLifecycleStatus;
   onRefresh: () => void;
-  pendingReviewCount: number;
-  progress: { label: string; progress: WritingAssignmentProgress };
-  publishedCount: number;
   refreshing?: boolean;
   returnTo: string;
   /** Assignment / Assignment Group title shown as the main heading. */
@@ -61,46 +62,11 @@ export function TeacherWritingAssignmentDetailBody({
   totalCount: number;
 }) {
   const students = collectWritingAssignmentStudentProgress(assignments);
-  const reviewBased = assignments.some((assignment) =>
-    isWritingReviewItemType(assignment.task_type)
-  );
   return (
     <div className="grid gap-5" aria-busy={refreshing}>
-      <TeacherCard className="p-5">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="flex flex-wrap gap-2">
-              {writingAssignmentTaskTypeBadges(assignments.map((assignment) => assignment.task_type)).map((label) => (
-                <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>
-                  {label}
-                </span>
-              ))}
-              <span className={`rounded-full px-3 py-1 text-xs font-bold ${writingAssignmentProgressBadgeClass(progress.progress)}`}>
-                {progress.label}
-              </span>
-            </div>
-            <h2 className="mt-3 text-xl font-bold text-student-text">{title}</h2>
-            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-sm text-student-muted">
-              {reviewBased ? (
-                <>
-                  <span className="font-semibold text-student-text">
-                    {completedCount} / {totalCount} 已提交
-                  </span>
-                  <span className={pendingReviewCount ? "font-semibold text-amber-700" : ""}>
-                    {pendingReviewCount} 篇待批改
-                  </span>
-                  <span>{publishedCount} 篇已发布</span>
-                </>
-              ) : (
-                <span className="font-semibold text-student-text">
-                  {completedCount} / {totalCount} 已完成
-                </span>
-              )}
-              <span>截止：{dueAt ? formatDate(dueAt) : "无"}</span>
-              <span>布置：{formatDate(createdAt)}</span>
-            </div>
-          </div>
-          <div className="flex flex-wrap justify-end gap-2">
+      <AssignmentDetailHeaderCard
+        actions={
+          <>
             {actions}
             <button
               className="teacher-button-secondary"
@@ -110,30 +76,60 @@ export function TeacherWritingAssignmentDetailBody({
             >
               <RefreshCw aria-hidden="true" size={16} />刷新状态
             </button>
-          </div>
-        </div>
-      </TeacherCard>
+          </>
+        }
+        badges={
+          <>
+            {writingAssignmentTaskTypeBadges(assignments.map((assignment) => assignment.task_type)).map((label) => (
+              <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>
+                {label}
+              </span>
+            ))}
+            <AssignmentStatusBadge
+              completedCount={completedCount}
+              lifecycleStatus={lifecycleStatus}
+              totalCount={totalCount}
+            />
+          </>
+        }
+        meta={
+          <>
+            <AssignmentProgressText
+              className="font-semibold text-student-text"
+              completedCount={completedCount}
+              totalCount={totalCount}
+            />
+            <span>截止：{dueAt ? formatDate(dueAt) : "无"}</span>
+            <span>布置：{formatDate(createdAt)}</span>
+          </>
+        }
+        title={title}
+      />
 
       {errorText ? <TeacherDataError text={errorText} /> : null}
 
       <div className="grid gap-4">
         {students.map((student) => {
-          const submittedCount = student.assignments.filter(
-            ({ progress: studentProgress }) =>
-              Boolean(studentProgress.completed || studentProgress.latest_submitted_attempt_id)
+          const completedStudentItems = student.assignments.filter(
+            ({ progress: studentProgress }) => studentProgress.completed
           ).length;
           return (
-            <TeacherCard className="grid gap-4 p-5" key={student.student_id}>
+            <section
+              className={`${ASSIGNMENT_CARD_CLASS} p-4 sm:p-5`}
+              key={student.student_id}
+            >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
                   <h3 className="font-bold text-student-text">{formatManagedAccountName(student.student_name, student.student_email)}</h3>
                   <p className="mt-1 text-xs text-student-muted">账号：{formatAccountForDisplay(student.student_email) || "—"}</p>
                 </div>
-                <span className="rounded-full bg-student-bg px-3 py-1 text-xs font-bold text-student-muted">
-                  {submittedCount} / {student.assignments.length} 已提交
-                </span>
+                <AssignmentProgressText
+                  className="rounded-full bg-student-bg px-3 py-1 text-xs font-bold text-student-muted"
+                  completedCount={completedStudentItems}
+                  totalCount={student.assignments.length}
+                />
               </div>
-              <div className="overflow-x-auto rounded-xl border border-student-border">
+              <div className="mt-4 overflow-x-auto rounded-xl border border-student-border">
                 <table className="w-full min-w-[720px] border-collapse text-left text-sm">
                   <thead className="bg-student-bg text-student-muted">
                     <tr>
@@ -147,12 +143,11 @@ export function TeacherWritingAssignmentDetailBody({
                     {student.assignments.map(({ assignment, progress: studentProgress }, index) => (
                       <tr key={assignment.assignment_id}>
                         <td className="px-4 py-3">
-                          <span className="block text-xs font-bold text-student-primary">
-                            第 {index + 1} 篇 · {assignmentItemTypeLabel(assignment.task_type)}
-                          </span>
-                          <span className="mt-1 block font-semibold text-student-text">
-                            {assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}
-                          </span>
+                          <AssignmentItemHeading
+                            index={index}
+                            itemType={assignment.task_type}
+                            title={assignment.display_name || writingAssignmentTitle(assignment.question_snapshot)}
+                          />
                         </td>
                         <td className="px-4 py-3 text-student-muted">
                           {assignment.due_at ? formatDate(assignment.due_at) : "无"}
@@ -173,7 +168,7 @@ export function TeacherWritingAssignmentDetailBody({
                   </tbody>
                 </table>
               </div>
-            </TeacherCard>
+            </section>
           );
         })}
       </div>
@@ -192,7 +187,7 @@ function StudentWritingProgressBadge({
   const label = completed
     ? "已完成"
     : submitted
-      ? "已提交"
+      ? "已提交，等待批改"
       : progress.has_attempt
         ? "进行中"
         : progress.status === "overdue"

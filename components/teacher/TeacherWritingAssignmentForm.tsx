@@ -82,6 +82,8 @@ import {
   classAssignmentTitleBase,
   classSubjectsLabel,
   classesForAssignmentSubject,
+  isAutomaticWritingAssignmentTitle,
+  seededAssignmentTitleBase,
   type TeacherClassSummary
 } from "@/lib/teacherClasses";
 
@@ -185,14 +187,19 @@ export function TeacherWritingAssignmentForm({
 
 type WizardSeed = {
   assignmentIdsByKey: Map<string, string>;
+  className: string | null;
   customQuestions: CustomQuestionDraft[];
   dueAt: string;
+  firstStudentName: string | null;
   pickerState: AssignmentPickerState;
   selection: AssignmentCatalogSelection;
   source: WritingAssignmentQuestionSource | null;
+  studentCount: number;
   students: string[];
   subject: AssignmentSubject | null;
   title: string;
+  /** The date the automatic title language uses (the persisted 布置日期). */
+  titleAssignedAt: string | null;
 };
 
 function buildWizardSeed(
@@ -223,12 +230,15 @@ function buildWizardSeed(
     (assignment) => assignment.question_source === "question_bank"
   )?.task_type;
   const defaultPickerState = defaultAssignmentPickerState(subject ?? "writing");
+  const firstAssignment = assignments[0] ?? null;
   return {
     assignmentIdsByKey,
+    className: firstAssignment?.class_name?.trim() || null,
     customQuestions,
     dueAt: assignments.flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
       .sort((left, right) => Date.parse(left) - Date.parse(right))
       .map((value) => formatLocalDateTime(value))[0] ?? "",
+    firstStudentName: firstAssignment?.students[0]?.student_name?.trim() || null,
     pickerState: firstBankItemType
       && assignmentItemSubject(firstBankItemType) === (subject ?? "writing")
       ? selectAssignmentPickerItemType(defaultPickerState, firstBankItemType)
@@ -237,11 +247,13 @@ function buildWizardSeed(
     source: assignments.length > 0
       ? anyBank || !anyCustom ? "question_bank" : "custom"
       : null,
-    students: assignments[0]?.students.map((student) => student.student_id) ?? [],
+    studentCount: firstAssignment?.students.length ?? 0,
+    students: firstAssignment?.students.map((student) => student.student_id) ?? [],
     subject,
     title: groupTitle?.trim()
       || assignments[0]?.display_name?.trim()
-      || (assignments[0] ? writingAssignmentTitle(assignments[0].question_snapshot) : "")
+      || (assignments[0] ? writingAssignmentTitle(assignments[0].question_snapshot) : ""),
+    titleAssignedAt: firstAssignment?.created_at ?? null
   };
 }
 
@@ -331,8 +343,22 @@ function TeacherAssignmentWizard({
     seed.customQuestions[0]?.taskType ?? "email"
   );
   const [assignmentTitle, setAssignmentTitle] = useState(seed.title);
+  // A withdrawn edit keeps regenerating the title only when the persisted title
+  // is one the wizard itself would have generated (automatic titles carry no
+  // marker, so they are recognized from the seed: 学生/班级 + 科目 + 日期 with
+  // the optional (n) sequence). Any other title is the teacher's manual title
+  // and is never overwritten.
   const [assignmentTitleManuallyEdited, setAssignmentTitleManuallyEdited] = useState(
-    () => editing || Boolean(seed.title)
+    () => editing
+      ? !isAutomaticWritingAssignmentTitle({
+          assignedAt: seed.titleAssignedAt,
+          className: seed.className,
+          firstStudentName: seed.firstStudentName,
+          studentCount: seed.studentCount,
+          subject: seed.subject ?? "writing",
+          title: seed.title
+        })
+      : false
   );
   const [studentQuery, setStudentQuery] = useState("");
   const [selectedStudents, setSelectedStudents] = useState<string[]>(
@@ -344,6 +370,13 @@ function TeacherAssignmentWizard({
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const assignmentSubject: AssignmentSubject = subject ?? "writing";
+  // The date the automatic title language uses: the assignment's own 布置日期 on
+  // a withdrawn edit (so student / class / subject changes keep the same date),
+  // today on a fresh create.
+  const assignmentTitleDate = useMemo(
+    () => (editing && seed.titleAssignedAt ? seed.titleAssignedAt : new Date()),
+    [editing, seed.titleAssignedAt]
+  );
   const studentsState = useTeacherCachedData<{ students: StudentOption[] }>(
     teacherAssignmentStudentsCacheKey(assignmentSubject),
     () => teacherApiFetch(
@@ -435,22 +468,37 @@ function TeacherAssignmentWizard({
     .sort((left, right) => left.rank - right.rank || compareStudentSearchMetadata(left.entry, right.entry))
     .map(({ entry }) => entry.student), [studentEntries, studentQuery]);
   const generatedAssignmentTitle = useMemo(() => {
+    // A withdrawn edit keeps the assignment's own 布置日期 in the automatic
+    // title; a fresh create uses today.
+    const titleAssignedAt = assignmentTitleDate;
+    // While the eligible students / classes for the (possibly just switched)
+    // subject are still loading, the seed's own name part keeps the automatic
+    // title stable and lets 写作 → 阅读 update in place.
+    const seedTitleBase = editing
+      ? seededAssignmentTitleBase({
+          assignedAt: seed.titleAssignedAt,
+          className: seed.className,
+          firstStudentName: seed.firstStudentName,
+          studentCount: seed.studentCount,
+          subject: assignmentSubject
+        })
+      : "";
     if (selectionMode === "class") {
       return selectedClass
-        ? classAssignmentTitleBase(selectedClass.name, new Date(), assignmentSubject)
-        : "";
+        ? classAssignmentTitleBase(selectedClass.name, titleAssignedAt, assignmentSubject)
+        : seedTitleBase;
     }
     const firstStudent = (studentsState.data?.students ?? []).find(
       (student) => student.id === selectedStudents[0]
     );
-    if (!firstStudent) return "";
+    if (!firstStudent) return seedTitleBase;
     return defaultWritingAssignmentTitle({
-      assignedAt: new Date(),
+      assignedAt: titleAssignedAt,
       firstStudentName: firstStudent.displayName,
       studentCount: selectedStudents.length,
       subject: assignmentSubject
     });
-  }, [selectionMode, selectedClass, selectedStudents, studentsState.data, assignmentSubject]);
+  }, [assignmentSubject, assignmentTitleDate, editing, seed.className, seed.firstStudentName, seed.studentCount, seed.titleAssignedAt, selectionMode, selectedClass, selectedStudents, studentsState.data]);
   useEffect(() => {
     if (assignmentTitleManuallyEdited) return;
     setAssignmentTitle(generatedAssignmentTitle);
@@ -458,15 +506,17 @@ function TeacherAssignmentWizard({
   // Live candidate only: the cached teacher list (already loaded for the
   // 作业管理 page) tells us which base titles exist, without any new request.
   // The RPC still resolves the final number authoritatively at creation time.
+  // The group being edited never counts against itself, so an unchanged
+  // automatic title stays exactly its own base instead of gaining a new (n).
   const cachedListEntry = cache.getEntry(TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY);
   const existingGroupTitles = cachedListEntry?.status === "success"
     || cachedListEntry?.status === "refreshing"
     ? ((cachedListEntry.data as { assignments?: WritingAssignmentSummary[] }).assignments ?? [])
-      .flatMap((assignment) =>
-        assignment.group_id && assignment.group_title?.trim()
-          ? [assignment.group_title]
-          : []
-      )
+      .flatMap((assignment) => {
+        if (!assignment.group_id || !assignment.group_title?.trim()) return [];
+        if (initialGroupId && assignment.group_id === initialGroupId) return [];
+        return [assignment.group_title];
+      })
     : [];
   const candidateAssignmentTitle = assignmentTitleManuallyEdited
     ? assignmentTitle
@@ -475,26 +525,37 @@ function TeacherAssignmentWizard({
     () => Array.from(selection.values()),
     [selection]
   );
-  // Create mode keeps the historical single-source rule (a 写作 Assignment is
-  // either 题库 or 自定义). A withdrawn edit must never silently drop persisted
-  // items, so everything still held in the wizard is submitted together.
+  // One Assignment Group is single-subject, so everything outside the current
+  // subject is never submitted (and is soft-deleted by the RPC when the group
+  // switched subjects). Create mode keeps the historical single-source rule.
+  const subjectBankEntries = useMemo(
+    () => selectedBankEntries.filter(
+      (entry) => assignmentItemSubject(entry.item_type) === assignmentSubject
+    ),
+    [assignmentSubject, selectedBankEntries]
+  );
+  const subjectCustomQuestions = useMemo(
+    () => assignmentSubject === "writing"
+      ? customQuestions.filter((draft) => isWritingReviewItemType(draft.taskType))
+      : [],
+    [assignmentSubject, customQuestions]
+  );
   const submitBankEntries = useMemo(
     () => (editing || assignmentSubject === "reading" || source === "question_bank")
-      ? selectedBankEntries
+      ? subjectBankEntries
       : [],
-    [assignmentSubject, editing, selectedBankEntries, source]
+    [assignmentSubject, editing, source, subjectBankEntries]
   );
   const submitCustomQuestions = useMemo(
     () => (editing || (assignmentSubject === "writing" && source === "custom"))
-      ? customQuestions
+      ? subjectCustomQuestions
       : [],
-    [assignmentSubject, customQuestions, editing, source]
+    [assignmentSubject, editing, source, subjectCustomQuestions]
   );
   const activeCustomQuestions = useMemo(
     () => assignmentSubject === "writing" && source === "custom" ? customQuestions : [],
     [customQuestions, source, assignmentSubject]
-  );
-  const previewItems = useMemo(() => {
+  );  const previewItems = useMemo(() => {
     const bankItems = submitBankEntries.map((entry) => ({
       key: assignmentCatalogEntryKey(entry),
       label: entry.title
@@ -552,11 +613,21 @@ function TeacherAssignmentWizard({
 
   function chooseSubject(next: AssignmentSubject) {
     if (subject === next) return;
-    // One Assignment Group is single-subject: switching the subject starts a
-    // clean picker (tab, filters and cross-type selection) for the new subject.
+    // One Assignment Group is single-subject. Switching the subject of a
+    // withdrawn group re-targets the whole group, so an existing selection must
+    // be cleared first — never after the fact. Cancel keeps the subject, the
+    // selection, the filters and the whole wizard state exactly as they were.
+    const hasItems = selection.size > 0 || customQuestions.length > 0;
+    if (hasItems) {
+      const message = subject === "writing"
+        ? "已选择写作题目，切换到阅读会清空已选题目。是否切换？"
+        : "已选择阅读题目，切换到写作会清空已选题目。是否切换？";
+      if (!window.confirm(message)) return;
+    }
     setSubject(next);
     setSource(next === "reading" ? "question_bank" : null);
     setSelection(new Map());
+    setCustomQuestions([]);
     setPickerState(defaultAssignmentPickerState(next));
     setSubmitError("");
   }
@@ -628,7 +699,7 @@ function TeacherAssignmentWizard({
     );
     const nextTitle = firstStudent
       ? defaultWritingAssignmentTitle({
-          assignedAt: new Date(),
+          assignedAt: assignmentTitleDate,
           firstStudentName: firstStudent.displayName,
           studentCount: nextStudents.length,
           subject: assignmentSubject
@@ -654,7 +725,7 @@ function TeacherAssignmentWizard({
     setSelectedClassId(next);
     const classEntry = subjectClasses.find((entry) => entry.class_id === next);
     const nextTitle = classEntry
-      ? classAssignmentTitleBase(classEntry.name, new Date(), assignmentSubject)
+      ? classAssignmentTitleBase(classEntry.name, assignmentTitleDate, assignmentSubject)
       : "";
     setCustomQuestions((current) => current.map((draft) => draft.titleManuallyEdited
       ? draft
@@ -717,9 +788,12 @@ function TeacherAssignmentWizard({
       return setSubmitError(error instanceof Error ? error.message : "请完整填写每道题目。");
     }
 
-    // Automatic titles submit the base title; the RPC resolves the final
-    // sequence and the form never patches the title after creation.
-    const title = assignmentTitle.trim() || generatedAssignmentTitle;
+    // Automatic titles submit the base title on create (the RPC resolves the
+    // final sequence); a withdrawn edit already shows the resolved candidate
+    // and persists exactly it. A manual title is always submitted verbatim.
+    const title = assignmentTitleManuallyEdited
+      ? assignmentTitle.trim()
+      : (editing ? candidateAssignmentTitle.trim() : assignmentTitle.trim() || generatedAssignmentTitle);
     if (!title) return setSubmitError("请填写作业标题。");
 
     setSubmitting(true);

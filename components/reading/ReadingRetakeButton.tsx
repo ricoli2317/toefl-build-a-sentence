@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { isReadingAttemptSummary } from "@/lib/reading/attempts";
+import { withStudentReturnTo } from "@/lib/studentNavigation";
 import {
   studentReadingCatalogCacheKey,
   useStudentDataCache
@@ -13,11 +14,14 @@ import {
 export function ReadingRetakeButton({
   attemptId,
   compact = false,
-  label
+  label,
+  returnTo
 }: {
   attemptId: string;
   compact?: boolean;
   label?: string;
+  /** Assignment-origin safe return path for the new practice run. */
+  returnTo?: string | string[] | null;
 }) {
   const router = useRouter();
   const { invalidate } = useStudentDataCache();
@@ -44,7 +48,10 @@ export function ReadingRetakeButton({
         throw new Error(payload.error ?? "暂时无法开始重新练习。");
       }
       invalidate(studentReadingCatalogCacheKey(payload.attempt.taskType));
-      router.push(`/student/reading/practice/${encodeURIComponent(payload.attempt.logicalItemId)}`);
+      router.push(withStudentReturnTo(
+        `/student/reading/practice/${encodeURIComponent(payload.attempt.logicalItemId)}`,
+        returnTo
+      ));
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "暂时无法开始重新练习。");
       setLoading(false);

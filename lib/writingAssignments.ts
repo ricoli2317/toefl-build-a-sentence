@@ -492,13 +492,23 @@ export type WritingAssignmentDetail = Omit<
   catalog_item_id?: string;
 };
 
-export type WritingAssignmentProgress =
-  | "ongoing"
-  | "submitted"
-  | "partial_submitted"
-  | "all_submitted"
-  | "completed"
-  | "withdrawn";
+/**
+ * The one group-level Assignment status shared by the teacher and the student
+ * UI. A group is only ever 未完成 / 进行中 / 已完成, decided by the exact
+ * completed / total counts; `withdrawn` stays a lifecycle badge of the same
+ * shape, never a group progress state.
+ */
+export type AssignmentGroupStatus = "not_started" | "in_progress" | "completed";
+export type AssignmentGroupBadgeState = AssignmentGroupStatus | "withdrawn";
+export type AssignmentGroupProgress = {
+  completedCount: number;
+  totalCount: number;
+  status: AssignmentGroupStatus;
+  badge: AssignmentGroupBadgeState;
+  label: string;
+  badgeClass: string;
+  progressText: string;
+};
 
 export const CUSTOM_EMAIL_CLOSING_INSTRUCTION =
   "Write as much as you can and in complete sentences.";
@@ -738,46 +748,63 @@ export function writingAssignmentStatusLabel(status: WritingAssignmentStudentSta
         : "未完成";
 }
 
-export function getWritingAssignmentProgress(input: {
-  assignedCount: number;
-  lifecycleStatus: WritingAssignmentLifecycleStatus;
-  publishedCount: number;
-  submittedCount: number;
-}): { label: string; progress: WritingAssignmentProgress } {
-  if (input.lifecycleStatus === "withdrawn") {
-    return { label: "已撤回", progress: "withdrawn" };
-  }
-  if (input.assignedCount > 0 && input.publishedCount >= input.assignedCount) {
-    return { label: "已完成", progress: "completed" };
-  }
-  if (input.assignedCount === 1 && input.submittedCount >= 1) {
-    return { label: "已提交", progress: "submitted" };
-  }
-  if (input.assignedCount > 1 && input.submittedCount >= input.assignedCount) {
-    return { label: "全部已提交", progress: "all_submitted" };
-  }
-  if (input.submittedCount > 0) {
-    return {
-      label: `${input.submittedCount} 人已提交`,
-      progress: "partial_submitted"
-    };
-  }
-  return { label: "进行中", progress: "ongoing" };
+/**
+ * The one shared Assignment group progress model for both ends:
+ *
+ *   completedCount = 0                  -> 未完成
+ *   0 < completedCount < totalCount     -> 进行中
+ *   completedCount = totalCount         -> 已完成
+ *
+ * A withdrawn group keeps its lifecycle badge instead of a progress state.
+ * The progress text is always `X / Y 已完成`; the removed group labels
+ * (已提交 / 部分已提交 / 部分已完成 / 待批改 / 已发布) never come back.
+ */
+export function assignmentGroupProgress(input: {
+  completedCount: number;
+  totalCount: number;
+  lifecycleStatus?: WritingAssignmentLifecycleStatus;
+}): AssignmentGroupProgress {
+  const completedCount = Math.max(0, Math.trunc(input.completedCount));
+  const totalCount = Math.max(0, Math.trunc(input.totalCount));
+  const withdrawn = input.lifecycleStatus === "withdrawn";
+  const status: AssignmentGroupStatus = completedCount < 1
+    ? "not_started"
+    : completedCount >= totalCount
+      ? "completed"
+      : "in_progress";
+  const badge: AssignmentGroupBadgeState = withdrawn ? "withdrawn" : status;
+  return {
+    badge,
+    badgeClass: assignmentGroupStatusBadgeClass(badge),
+    completedCount,
+    label: assignmentGroupStatusLabel(badge),
+    progressText: assignmentGroupProgressText(completedCount, totalCount),
+    status,
+    totalCount
+  };
 }
 
-/**
- * The one shared Assignment status tone for the teacher cards, the class cards
- * and both Assignment Detail headers. The palette is the historical
- * assignment-progress mapping: ongoing = primary, submitted / partially
- * submitted = amber, completed = emerald, withdrawn = slate.
- */
-export function writingAssignmentProgressBadgeClass(
-  progress: WritingAssignmentProgress
-) {
-  if (progress === "completed") return "bg-emerald-50 text-emerald-700";
-  if (progress === "withdrawn") return "bg-slate-100 text-slate-600";
-  if (progress === "ongoing") return "bg-student-primary-soft text-student-primary";
+export function assignmentGroupStatusLabel(status: AssignmentGroupBadgeState) {
+  return status === "completed"
+    ? "已完成"
+    : status === "in_progress"
+      ? "进行中"
+      : status === "withdrawn"
+        ? "已撤回"
+        : "未完成";
+}
+
+/** 未完成 keeps the historical 部分已提交 amber; 进行中 keeps the primary tone. */
+export function assignmentGroupStatusBadgeClass(status: AssignmentGroupBadgeState) {
+  if (status === "completed") return "bg-emerald-50 text-emerald-700";
+  if (status === "withdrawn") return "bg-slate-100 text-slate-600";
+  if (status === "in_progress") return "bg-student-primary-soft text-student-primary";
   return "bg-amber-50 text-amber-700";
+}
+
+/** The one shared progress text: `X / Y 已完成`, on both ends. */
+export function assignmentGroupProgressText(completedCount: number, totalCount: number) {
+  return `${Math.max(0, Math.trunc(completedCount))} / ${Math.max(0, Math.trunc(totalCount))} 已完成`;
 }
 
 /**
@@ -790,67 +817,22 @@ export function isWritingReviewItemType(itemType: AssignmentItemType) {
 }
 
 /**
- * One shared progress adapter for the existing card / detail status UI.
+ * One shared completion rule per Assignment item, used by every teacher
+ * aggregate (list card, collection card, detail header):
  *
- * Writing assignments keep the historical submitted + published counts. A
- * read-only Assignment (BAS / Reading) has no publish step, so its completed
- * count maps onto the existing 已完成 state instead of inventing a new badge.
+ *   WE / AD            -> completed only once the review is published
+ *   BAS / Reading      -> completed by the student's own practice result
+ *
+ * A submitted-but-unpublished WE / AD item never counts as completed.
  */
-export function getTeacherAssignmentProgress(input: {
-  itemTypes: ReadonlyArray<AssignmentItemType>;
-  assignedCount: number;
-  completedCount: number;
-  publishedCount: number;
-  lifecycleStatus: WritingAssignmentLifecycleStatus;
+export function isTeacherAssignmentStudentCompleted(input: {
+  itemType: AssignmentItemType;
+  publishedReview: boolean;
+  hasResult: boolean;
 }) {
-  const reviewBased = input.itemTypes.some(isWritingReviewItemType);
-  return getWritingAssignmentProgress({
-    assignedCount: input.assignedCount,
-    lifecycleStatus: input.lifecycleStatus,
-    publishedCount: reviewBased ? input.publishedCount : input.completedCount,
-    submittedCount: input.completedCount
-  });
-}
-
-/**
- * Assignment Group progress keeps its exact historical labels (已完成 /
- * 全部已提交 / 部分已提交 / 进行中 / 已撤回) so the collection card and the
- * collection detail header can never drift apart; only the tone comes from the
- * shared badge mapping above.
- */
-export function getWritingAssignmentCollectionProgress(input: {
-  completedCount: number;
-  publishedCount: number;
-  totalCount: number;
-  withdrawn: boolean;
-}): { label: string; progress: WritingAssignmentProgress } {
-  if (input.withdrawn) return { label: "已撤回", progress: "withdrawn" };
-  if (input.publishedCount >= input.totalCount) {
-    return { label: "已完成", progress: "completed" };
-  }
-  if (input.completedCount >= input.totalCount) {
-    return { label: "全部已提交", progress: "all_submitted" };
-  }
-  if (input.completedCount > 0) {
-    return { label: "部分已提交", progress: "partial_submitted" };
-  }
-  return { label: "进行中", progress: "ongoing" };
-}
-
-export function getTeacherAssignmentCollectionProgress(input: {
-  itemTypes: ReadonlyArray<AssignmentItemType>;
-  completedCount: number;
-  publishedCount: number;
-  totalCount: number;
-  withdrawn: boolean;
-}) {
-  const reviewBased = input.itemTypes.some(isWritingReviewItemType);
-  return getWritingAssignmentCollectionProgress({
-    completedCount: input.completedCount,
-    publishedCount: reviewBased ? input.publishedCount : input.completedCount,
-    totalCount: input.totalCount,
-    withdrawn: input.withdrawn
-  });
+  return isWritingReviewItemType(input.itemType)
+    ? input.publishedReview
+    : input.hasResult;
 }
 
 export function writingAssignmentWithdrawBlockedMessage(input: {
@@ -981,19 +963,21 @@ export function studentAssignmentItemProgress(
   };
 }
 
+/**
+ * The group-level student status: exactly 未完成 / 进行中 / 已完成, derived from
+ * the same completed / total contract the teacher side uses. A single-item
+ * Assignment is a group of one and follows the same rule.
+ */
 export function studentAssignmentGroupDisplayStatus(
   assignments: ReadonlyArray<StudentAssignmentDisplayStatusInput>
-): StudentWritingAssignmentDisplayStatus {
-  const rank: Record<StudentWritingAssignmentDisplayStatus, number> = {
-    overdue: 0,
-    not_started: 1,
-    in_progress: 2,
-    submitted: 3,
-    completed: 4
-  };
-  return assignments
-    .map((assignment) => getStudentWritingAssignmentDisplayStatus(assignment))
-    .sort((left, right) => rank[left] - rank[right])[0] ?? "not_started";
+): AssignmentGroupStatus {
+  const completedCount = assignments.filter(
+    (assignment) => getStudentWritingAssignmentDisplayStatus(assignment) === "completed"
+  ).length;
+  return assignmentGroupProgress({
+    completedCount,
+    totalCount: assignments.length
+  }).status;
 }
 
 export function studentWritingAssignmentDisplayStatusLabel(
@@ -1008,6 +992,35 @@ export function studentWritingAssignmentDisplayStatusLabel(
         : status === "completed"
           ? "已完成"
           : "已逾期";
+}
+
+/**
+ * Item-level (never group-level) student status text. WE / AD keep the extra
+ * "等待批改" hint until the review is published; BAS / Reading have no review
+ * stage and stay plain 已提交 / 已完成.
+ */
+export function studentAssignmentItemStatusLabel(
+  status: StudentWritingAssignmentDisplayStatus,
+  taskType: AssignmentItemType
+) {
+  if (status === "submitted" && isWritingReviewItemType(taskType)) {
+    return "已提交，等待批改";
+  }
+  return studentWritingAssignmentDisplayStatusLabel(status);
+}
+
+/** The group-level progress of one card / detail header (both ends). */
+export function studentAssignmentGroupProgress(
+  assignments: ReadonlyArray<StudentWritingAssignmentSummary>
+) {
+  const progress = studentAssignmentItemProgress(assignments);
+  return {
+    ...progress,
+    group: assignmentGroupProgress({
+      completedCount: progress.completedCount,
+      totalCount: progress.totalCount
+    })
+  };
 }
 
 export function groupStudentWritingAssignments(

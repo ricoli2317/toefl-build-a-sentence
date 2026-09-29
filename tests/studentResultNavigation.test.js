@@ -114,8 +114,10 @@ test("submit and history routes wire the explicit context into shared Result UIs
   const readingResultPage = read("app/student/reading/results/[attemptId]/page.tsx");
   const fullSetResultPage = read("app/student/reading/full-sets/[fullSetId]/result/[attemptId]/page.tsx");
 
-  assert.match(readingPractice, /router\.replace\(`\/student\/reading\/results\/\$\{encodeURIComponent\(result\.attempt\.attemptId\)\}`\)/);
-  assert.match(fullSetRunner, /actionHref=\{`\$\{STUDENT_ROUTES\.readingFullSets\}/);
+  assert.match(readingPractice, /router\.replace\(withStudentReturnTo\(/);
+  assert.match(readingPractice, /\/student\/reading\/results\/\$\{encodeURIComponent\(result\.attempt\.attemptId\)\}/);
+  assert.match(fullSetRunner, /actionHref=\{withStudentReturnTo\(/);
+  assert.match(fullSetRunner, /\$\{STUDENT_ROUTES\.readingFullSets\}/);
   assert.match(writingPractice, /router\.replace\([\s\S]*WRITING_TASK_CONFIG\[taskType\]\.submissionHref/);
   assert.match(unifiedHistory, /readingResultHref\(attemptId, "practice-history"\)/);
   assert.match(unifiedHistory, /readingFullSetResultHref\([\s\S]*"practice-history"/);

@@ -12,6 +12,23 @@ import type { TeacherAssignmentItemResult } from "./writingAssignments.ts";
  * attempt / set identity that result has. This module never scores, never
  * copies an attempt and never creates an Assignment-specific attempt or
  * result: it only reads the existing practice tables.
+ *
+ * Time boundary (correctness):
+ *
+ *   Only attempts that were formally completed at or after the Assignment
+ *   became effective for the student count. The authoritative Assignment
+ *   timestamp is `writing_assignment_students.assigned_at` (the per-recipient
+ *   membership time, which the Assignment RPCs set when the item is placed or
+ *   re-placed); never `attempt.created_at`. A student who already practiced
+ *   the same item before a later Assignment never inherits that completion,
+ *   and two Assignments of the same item each only see attempts inside their
+ *   own window.
+ *
+ * Performance:
+ *
+ *   Everything stays batched: one query per attempt table for the whole
+ *   visible list, then the per-Assignment time boundary is applied in memory.
+ *   There is deliberately no per-Assignment attempt query.
  */
 
 export type AssignmentResultLookupItem = {
@@ -21,11 +38,26 @@ export type AssignmentResultLookupItem = {
   itemId: string;
   /** BAS only: the raw question set the existing 套题记录 route is keyed by. */
   sourceSetId: string | null;
+  /**
+   * The effective time of the Assignment for this item / student
+   * (`writing_assignment_students.assigned_at`). Attempts completed before it
+   * are ignored. Callers must always hand over a value: production data has no
+   * membership without `assigned_at` (audited 0 rows), and every caller falls
+   * back to the item's own `created_at` — never to "count every historical
+   * attempt". `null` only exists for explicit compatibility callers/tests.
+   */
+  boundaryAt?: string | null;
+  /**
+   * Optional single-student scope. When present only this student is looked
+   * up, which lets callers carry one boundary per (assignment, student) pair.
+   * When absent the shared `studentIds` list is used.
+   */
+  studentId?: string | null;
 };
 
 export type AssignmentStudentResult = {
   available_result: TeacherAssignmentItemResult | null;
-  /** Any draft / in-progress row, so withdraw rules can see "开始作答". */
+  /** Any draft / in-progress row after the Assignment time, for 开始作答. */
   started: boolean;
 };
 
@@ -40,6 +72,28 @@ export function assignmentStudentResult(map: AssignmentStudentResultMap, assignm
     ?? { available_result: null, started: false };
 }
 
+type AssignmentResultScope = {
+  assignmentId: string;
+  itemType: AssignmentItemType;
+  itemId: string;
+  sourceSetId: string | null;
+  studentId: string;
+  boundaryAt: string | null;
+};
+
+/** One row of any read-only practice table, normalized for the shared rules. */
+type ResultAttemptRow = {
+  attemptId: string;
+  itemId: string;
+  studentId: string;
+  /** Formal completion time (submitted_at / completed_at). */
+  completedAt: string | null;
+  /** Row creation time; only used to decide "already started" for drafts. */
+  startedAt: string | null;
+  /** True when the row represents a formally completed attempt. */
+  completed: boolean;
+};
+
 export async function loadAssignmentStudentResults(input: {
   db: SupabaseClient;
   items: ReadonlyArray<AssignmentResultLookupItem>;
@@ -49,121 +103,112 @@ export async function loadAssignmentStudentResults(input: {
   const studentIds = Array.from(new Set(input.studentIds));
   if (studentIds.length === 0) return results;
 
-  const readingItems = input.items.filter(
-    (item) => item.itemType === "ctw" || item.itemType === "rdl" || item.itemType === "rap"
+  const scopes: AssignmentResultScope[] = [];
+  for (const item of input.items) {
+    const scopeStudentIds = item.studentId ? [item.studentId] : studentIds;
+    for (const studentId of scopeStudentIds) {
+      scopes.push({
+        assignmentId: item.assignmentId,
+        boundaryAt: item.boundaryAt ?? null,
+        itemId: item.itemId,
+        itemType: item.itemType,
+        sourceSetId: item.sourceSetId,
+        studentId
+      });
+    }
+  }
+  if (scopes.length === 0) return results;
+
+  const readingItems = scopes.filter(
+    (scope) => scope.itemType === "ctw" || scope.itemType === "rdl" || scope.itemType === "rap"
   );
-  const fullSetItems = input.items.filter((item) => item.itemType === "full_set");
-  const basItems = input.items.filter(
-    (item) => item.itemType === "build_sentence" && Boolean(item.sourceSetId)
+  const fullSetItems = scopes.filter((scope) => scope.itemType === "full_set");
+  const basItems = scopes.filter(
+    (scope) => scope.itemType === "build_sentence" && Boolean(scope.sourceSetId)
   );
 
   const [readingRows, fullSetRows, basRows] = await Promise.all([
-    readReadingAttemptRows(input.db, readingItems.map((item) => item.itemId), studentIds),
-    readFullSetAttemptRows(input.db, fullSetItems.map((item) => item.itemId), studentIds),
+    readReadingAttemptRows(input.db, unique(readingItems.map((item) => item.itemId)), unique(readingItems.map((item) => item.studentId))),
+    readFullSetAttemptRows(input.db, unique(fullSetItems.map((item) => item.itemId)), unique(fullSetItems.map((item) => item.studentId))),
     readBuildSentenceAttemptRows(
       input.db,
-      basItems.map((item) => item.sourceSetId!).filter(Boolean),
-      studentIds
+      unique(basItems.map((item) => item.sourceSetId!).filter(Boolean)),
+      unique(basItems.map((item) => item.studentId))
     )
   ]);
 
-  const latestReadingAttempt = new Map<string, { attemptId: string; status: string; submittedAt: string | null }>();
-  for (const row of readingRows) {
-    const key = `${row.logical_item_id}:${row.student_id}`;
-    const current = latestReadingAttempt.get(key);
-    if (
-      !current
-      || isLaterResultRow(
-        { completed_at: row.submitted_at, id: String(row.attempt_id) },
-        { completed_at: current.submittedAt, id: current.attemptId }
-      )
-    ) {
-      latestReadingAttempt.set(key, {
-        attemptId: String(row.attempt_id),
-        status: row.status,
-        submittedAt: row.submitted_at
-      });
-    }
-  }
-  for (const item of readingItems) {
-    for (const studentId of studentIds) {
-      const attempt = latestReadingAttempt.get(`${item.itemId}:${studentId}`);
-      if (!attempt) continue;
-      setResult(results, item.assignmentId, studentId, {
-        available_result: attempt.status === "submitted"
-          ? { completed_at: attempt.submittedAt, id: attempt.attemptId, kind: "reading_attempt" }
-          : null,
-        started: true
-      });
-    }
-  }
-
-  const latestFullSetAttempt = new Map<string, { attemptId: string; status: string; completedAt: string | null }>();
-  for (const row of fullSetRows) {
-    const key = `${row.full_set_id}:${row.student_id}`;
-    const current = latestFullSetAttempt.get(key);
-    if (
-      !current
-      || isLaterResultRow(
-        { completed_at: row.completed_at, id: String(row.attempt_id) },
-        { completed_at: current.completedAt, id: current.attemptId }
-      )
-    ) {
-      latestFullSetAttempt.set(key, {
-        attemptId: String(row.attempt_id),
-        status: row.status,
-        completedAt: row.completed_at
-      });
-    }
-  }
-  for (const item of fullSetItems) {
-    for (const studentId of studentIds) {
-      const attempt = latestFullSetAttempt.get(`${item.itemId}:${studentId}`);
-      if (!attempt) continue;
-      setResult(results, item.assignmentId, studentId, {
-        available_result: attempt.status === "completed"
-          ? { completed_at: attempt.completedAt, id: attempt.attemptId, kind: "reading_full_set" }
-          : null,
-        started: true
-      });
-    }
-  }
-
-  const basAttemptedSets = new Map<string, { attemptId: string | null; submittedAt: string | null }>();
-  for (const row of basRows) {
-    const key = `${String(row.set_id)}:${row.student_id}`;
-    const current = basAttemptedSets.get(key);
-    if (
-      !current
-      || (row.submitted_at && (!current.submittedAt || row.submitted_at > current.submittedAt))
-    ) {
-      basAttemptedSets.set(key, {
-        attemptId: String(row.attempt_id),
-        submittedAt: row.submitted_at
-      });
-    }
-  }
-  for (const item of basItems) {
-    for (const studentId of studentIds) {
-      const key = `${item.sourceSetId}:${studentId}`;
-      const attempted = basAttemptedSets.get(key);
-      if (!attempted) continue;
-      setResult(results, item.assignmentId, studentId, {
-        // The existing teacher 套题记录 route is keyed by the raw set id, not the
-        // attempt id; the set page then lists the student's own attempts. The
-        // student result route is keyed by the latest submitted attempt id.
-        available_result: {
-          attempt_id: attempted.attemptId,
-          completed_at: attempted.submittedAt,
-          id: item.sourceSetId!,
-          kind: "bas_set"
-        },
-        started: true
-      });
-    }
-  }
+  applyScopes(results, readingItems, readingRows, "reading_attempt");
+  applyScopes(results, fullSetItems, fullSetRows, "reading_full_set");
+  applyScopes(results, basItems, basRows, "bas_set");
 
   return results;
+}
+
+/**
+ * The one shared per-scope rule: only rows inside the Assignment window count,
+ * the newest completed row inside the window is the result identity, and any
+ * row inside the window means the student already started.
+ */
+function applyScopes(
+  results: AssignmentStudentResultMap,
+  scopes: ReadonlyArray<AssignmentResultScope>,
+  rows: ReadonlyArray<ResultAttemptRow>,
+  kind: TeacherAssignmentItemResult["kind"]
+) {
+  const rowsByKey = new Map<string, ResultAttemptRow[]>();
+  for (const row of rows) {
+    const key = `${row.itemId}:${row.studentId}`;
+    rowsByKey.set(key, [...(rowsByKey.get(key) ?? []), row]);
+  }
+  for (const scope of scopes) {
+    const key = `${scope.itemId}:${scope.studentId}`;
+    const candidates = (rowsByKey.get(key) ?? []).filter((row) =>
+      isInsideAssignmentWindow(row, scope.boundaryAt)
+    );
+    if (candidates.length === 0) continue;
+    const latest = candidates.reduce((current, row) =>
+      isLaterResultRow(
+        { completed_at: row.completedAt, id: row.attemptId },
+        { completed_at: current.completedAt, id: current.attemptId }
+      )
+        ? row
+        : current
+    );
+    const availableResult = latest.completed
+      ? kind === "bas_set"
+        ? {
+            // The existing teacher 套题记录 route is keyed by the raw set id,
+            // not the attempt id; the set page then lists the student's own
+            // attempts. The student result route is keyed by the latest
+            // submitted attempt id.
+            attempt_id: latest.attemptId,
+            completed_at: latest.completedAt,
+            id: scope.sourceSetId!,
+            kind
+          }
+        : { completed_at: latest.completedAt, id: latest.attemptId, kind }
+      : null;
+    setResult(results, scope.assignmentId, scope.studentId, {
+      available_result: availableResult,
+      started: true
+    });
+  }
+}
+
+/**
+ * A row counts for the Assignment when it was formally completed inside the
+ * window, or (draft / in-progress) when it was started inside the window. The
+ * completion time is `submitted_at` / `completed_at`; `created_at` is only
+ * ever used for an unfinished row so a pre-Assignment draft can never mark a
+ * new Assignment as 进行中.
+ */
+function isInsideAssignmentWindow(row: ResultAttemptRow, boundaryAt: string | null) {
+  if (!boundaryAt) return true;
+  const boundary = Date.parse(boundaryAt);
+  if (Number.isNaN(boundary)) return true;
+  const time = Date.parse((row.completed ? row.completedAt : row.startedAt) ?? "");
+  if (Number.isNaN(time)) return false;
+  return time >= boundary;
 }
 
 function setResult(
@@ -201,6 +246,7 @@ type ReadingAttemptRow = {
   logical_item_id: string;
   status: string;
   submitted_at: string | null;
+  created_at: string | null;
 };
 
 async function readReadingAttemptRows(
@@ -208,20 +254,30 @@ async function readReadingAttemptRows(
   itemIds: string[],
   studentIds: string[]
 ) {
-  const rows: ReadingAttemptRow[] = [];
+  const rows: ResultAttemptRow[] = [];
+  if (itemIds.length === 0 || studentIds.length === 0) return rows;
   for (const itemBatch of chunk(itemIds)) {
     for (const studentBatch of chunk(studentIds)) {
       const result = await readAllSupabaseRows<ReadingAttemptRow>((from, to) =>
         db
           .from("reading_attempts")
-          .select("attempt_id,student_id,logical_item_id,status,submitted_at")
+          .select("attempt_id,student_id,logical_item_id,status,submitted_at,created_at")
           .in("logical_item_id", itemBatch)
           .in("student_id", studentBatch)
           .order("attempt_id", { ascending: true })
           .range(from, to)
       );
       if (result.error) throw result.error;
-      rows.push(...(result.data ?? []));
+      for (const row of result.data ?? []) {
+        rows.push({
+          attemptId: String(row.attempt_id),
+          completed: row.status === "submitted",
+          completedAt: row.submitted_at,
+          itemId: row.logical_item_id,
+          startedAt: row.created_at,
+          studentId: row.student_id
+        });
+      }
     }
   }
   return rows;
@@ -233,6 +289,7 @@ type FullSetAttemptRow = {
   full_set_id: string;
   status: string;
   completed_at: string | null;
+  created_at: string | null;
 };
 
 async function readFullSetAttemptRows(
@@ -240,20 +297,30 @@ async function readFullSetAttemptRows(
   fullSetIds: string[],
   studentIds: string[]
 ) {
-  const rows: FullSetAttemptRow[] = [];
+  const rows: ResultAttemptRow[] = [];
+  if (fullSetIds.length === 0 || studentIds.length === 0) return rows;
   for (const itemBatch of chunk(fullSetIds)) {
     for (const studentBatch of chunk(studentIds)) {
       const result = await readAllSupabaseRows<FullSetAttemptRow>((from, to) =>
         db
           .from("reading_full_set_attempts")
-          .select("attempt_id,student_id,full_set_id,status,completed_at")
+          .select("attempt_id,student_id,full_set_id,status,completed_at,created_at")
           .in("full_set_id", itemBatch)
           .in("student_id", studentBatch)
           .order("attempt_id", { ascending: true })
           .range(from, to)
       );
       if (result.error) throw result.error;
-      rows.push(...(result.data ?? []));
+      for (const row of result.data ?? []) {
+        rows.push({
+          attemptId: String(row.attempt_id),
+          completed: row.status === "completed",
+          completedAt: row.completed_at,
+          itemId: row.full_set_id,
+          startedAt: row.created_at,
+          studentId: row.student_id
+        });
+      }
     }
   }
   return rows;
@@ -264,6 +331,7 @@ type BuildSentenceAttemptRow = {
   student_id: string;
   set_id: string;
   submitted_at: string | null;
+  created_at: string | null;
 };
 
 async function readBuildSentenceAttemptRows(
@@ -271,23 +339,37 @@ async function readBuildSentenceAttemptRows(
   setIds: string[],
   studentIds: string[]
 ) {
-  const rows: BuildSentenceAttemptRow[] = [];
+  const rows: ResultAttemptRow[] = [];
+  if (setIds.length === 0 || studentIds.length === 0) return rows;
   for (const itemBatch of chunk(setIds)) {
     for (const studentBatch of chunk(studentIds)) {
       const result = await readAllSupabaseRows<BuildSentenceAttemptRow>((from, to) =>
         db
           .from("attempts")
-          .select("attempt_id,student_id,set_id,submitted_at")
+          .select("attempt_id,student_id,set_id,submitted_at,created_at")
           .in("set_id", itemBatch)
           .in("student_id", studentBatch)
           .order("attempt_id", { ascending: true })
           .range(from, to)
       );
       if (result.error) throw result.error;
-      rows.push(...(result.data ?? []));
+      for (const row of result.data ?? []) {
+        rows.push({
+          attemptId: String(row.attempt_id),
+          completed: Boolean(row.submitted_at),
+          completedAt: row.submitted_at,
+          itemId: row.set_id,
+          startedAt: row.created_at,
+          studentId: row.student_id
+        });
+      }
     }
   }
   return rows;
+}
+
+function unique(values: ReadonlyArray<string>) {
+  return Array.from(new Set(values));
 }
 
 function chunk<T>(values: T[], size = 100) {
