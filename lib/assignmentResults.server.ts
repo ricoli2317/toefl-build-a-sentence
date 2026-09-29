@@ -161,7 +161,13 @@ function applyScopes(
     rowsByKey.set(key, [...(rowsByKey.get(key) ?? []), row]);
   }
   for (const scope of scopes) {
-    const key = `${scope.itemId}:${scope.studentId}`;
+    // BAS attempt rows are keyed by their raw source set id. Assignment rows
+    // store the stable practice item id in `itemId`, so the located set must
+    // always be matched through `sourceSetId` — otherwise a duplicated logical
+    // item id could never line up with the student's actual 套题 attempts.
+    const matchItemId = kind === "bas_set" ? scope.sourceSetId : scope.itemId;
+    if (!matchItemId) continue;
+    const key = `${matchItemId}:${scope.studentId}`;
     const candidates = (rowsByKey.get(key) ?? []).filter((row) =>
       isInsideAssignmentWindow(row, scope.boundaryAt)
     );

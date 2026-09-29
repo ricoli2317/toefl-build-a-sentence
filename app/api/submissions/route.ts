@@ -3,6 +3,10 @@ import { createClient } from "@supabase/supabase-js";
 import { bearerToken, isUserRole, roleCanAccess } from "@/lib/auth";
 import { normalizeChunkForCompare, splitTextItems } from "@/lib/questionText";
 import {
+  loadBuildSentenceHistoricalPracticeDisplayResolver,
+  logHistoricalPracticeDisplayWarnings
+} from "@/lib/historicalPracticeDisplay";
+import {
   createStudentPerformanceTrace,
   type StudentPerformanceTrace
 } from "@/lib/studentPerformance.server";
@@ -189,6 +193,25 @@ export async function POST(request: Request) {
       });
     });
 
+    // The attempt title is always the current logical 套题NNN display name for
+    // official practice. The stored `attempts.set_title` snapshot (or a caller
+    // supplied label for virtual Grammar / Wrongbook sets) is only the
+    // resolver's fallback for data without a logical item, never the visible
+    // title by itself. This keeps the submit hot path and every cold result /
+    // history read on the exact same title source.
+    const setId = String(body.setId);
+    const displayResolver = await loadBuildSentenceHistoricalPracticeDisplayResolver(
+      db,
+      [setId],
+      timing
+    );
+    const historicalDisplay = displayResolver.resolveBuildSentence({
+      fallbackDisplayName:
+        body.setTitle?.trim() || questionRows[0]?.set_title?.trim() || setId,
+      rawSetId: setId
+    });
+    logHistoricalPracticeDisplayWarnings([historicalDisplay]);
+
     const summary = timing.measureSync("processing", "calculate_submission_summary", () => {
       const correctCount = results.filter((item) => item.isCorrect).length;
       const totalQuestions = questionRows.length;
@@ -200,7 +223,7 @@ export async function POST(request: Request) {
           Number.isFinite(body.timeSpentSeconds) && body.timeSpentSeconds
             ? Math.max(0, Math.round(body.timeSpentSeconds))
             : 0,
-        setTitle: body.setTitle ?? questionRows[0]?.set_title ?? body.setId,
+        setTitle: historicalDisplay.displayName,
         submittedAt: new Date().toISOString()
       };
     });

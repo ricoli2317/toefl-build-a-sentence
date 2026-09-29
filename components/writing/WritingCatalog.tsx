@@ -181,7 +181,7 @@ function WritingSetCards({
         icon: STUDENT_PRACTICE_ICONS[taskType],
         questionCount: 1,
         setId: set.set_id,
-        setTitle: set.display_name ?? set.set_title
+        setTitle: set.display_name
       }))}
     />
   );

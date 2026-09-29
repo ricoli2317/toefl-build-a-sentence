@@ -13,6 +13,7 @@ import {
   buildCustomWritingQuestionSnapshot,
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
+  isAssignmentDisplayNameType,
   isLaterWritingAssignmentSubmission,
   isTeacherAssignmentStudentCompleted,
   isWritingReviewItemType,
@@ -67,13 +68,14 @@ export async function GET(
           .order("student_id", { ascending: true })
           .range(from, to)
       ),
-      reviewBased
+      isAssignmentDisplayNameType(assignment.task_type)
         ? loadWritingAssignmentDisplayNames(auth.supabase, [{
             assignmentId: String(assignment.assignment_id),
             fallbackDisplayName: snapshotTitle,
-            questionId: assignment.question_id,
+            rawQuestionId: assignment.question_id ?? "",
             questionSource: assignment.question_source,
-            taskType: assignment.task_type as "email" | "academic_discussion"
+            sourceSetId: assignmentSnapshotSourceSetId(assignment.question_snapshot),
+            taskType: assignment.task_type as "email" | "academic_discussion" | "build_sentence"
           }])
         : Promise.resolve(new Map<string, string>()),
       // The detail heading is the Assignment title, never the question title,

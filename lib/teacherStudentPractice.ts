@@ -361,7 +361,7 @@ export function buildTeacherStudentWritingPractice(input: {
         ? groupId === WRONGBOOK_TODAY_GROUP_ID
           ? "今日错题"
           : "历史错题"
-        : input.basTitles?.get(setId)?.trim() || attempt.set_title?.trim() || setId,
+        : input.basTitles?.get(setId)?.trim() || setId,
       submittedAt,
       durationSeconds: nonNegativeInteger(attempt.time_spent_seconds),
       metric: {

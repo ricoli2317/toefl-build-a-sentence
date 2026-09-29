@@ -194,7 +194,9 @@ export function studentWritingAssignmentTitle(
 /**
  * Per-question title used inside assignment detail, practice, submission and
  * review pages. The Assignment Group title never replaces the question's own
- * number and subtitle there.
+ * number and subtitle there, and the historical snapshot is never rendered in
+ * place of a current logical title: rows without a resolved display name show
+ * the neutral unassigned label instead.
  */
 export function writingAssignmentQuestionDisplayTitle(
   assignment: Pick<
@@ -204,7 +206,6 @@ export function writingAssignmentQuestionDisplayTitle(
 ) {
   return assignment.display_name?.trim()
     || assignment.title?.trim()
-    || assignment.question_snapshot?.set_title
     || "未命名作业";
 }
 
@@ -814,6 +815,20 @@ export function assignmentGroupProgressText(completedCount: number, totalCount: 
  */
 export function isWritingReviewItemType(itemType: AssignmentItemType) {
   return itemType === "email" || itemType === "academic_discussion";
+}
+
+/**
+ * Item types whose Assignment display title is resolved from the current
+ * logical question / practice item instead of the stored snapshot: WE / AD
+ * resolve their question-bank items by raw question id, BAS by its raw source
+ * set. Reading / Full Set keep their own persisted catalog titles.
+ */
+export function isAssignmentDisplayNameType(itemType: AssignmentItemType) {
+  return (
+    itemType === "email"
+    || itemType === "academic_discussion"
+    || itemType === "build_sentence"
+  );
 }
 
 /**

@@ -69,7 +69,12 @@ type ReviewPayload = {
     submitted_at: string | null;
   };
   question: WritingQuestion;
-  display_name?: string;
+  /**
+   * The resolver-produced display title (题目NNN + 小标题). Always present in
+   * the published-review payload; the historical question set_title is never
+   * rendered.
+   */
+  display_name: string;
   question_source?: "question_bank" | "custom";
   review: StudentPublishedWritingReview;
   error?: string;
@@ -80,7 +85,8 @@ type ReviewSummary = {
   task_type: WritingTaskType;
   set_id: string;
   set_title: string;
-  display_name?: string;
+  /** Resolver-produced 题目NNN + 小标题; the only title the list renders. */
+  display_name: string;
   year_month: string;
   submitted_at: string | null;
   published_at: string;
@@ -204,7 +210,7 @@ export function StudentWritingReviewResult({
             <div className="min-w-0">
               <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <h1 className="truncate text-base font-bold sm:text-lg">
-                  {taskLabel} · {state.data.display_name ?? question.set_title}
+                  {taskLabel} · {state.data.display_name}
                 </h1>
                 <span className="student-chip !py-1">已发布</span>
               </div>
@@ -337,7 +343,7 @@ export function StudentWritingReviewList() {
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-student-primary">{WRITING_TASK_CONFIG[review.task_type].label}</p>
-                  <h2 className="mt-1 truncate font-bold text-student-text">{review.display_name ?? review.set_title}</h2>
+                  <h2 className="mt-1 truncate font-bold text-student-text">{review.display_name}</h2>
                   <p className="mt-1 text-xs text-student-muted">发布于 {formatDateTime(review.published_at)}</p>
                 </div>
               </div>

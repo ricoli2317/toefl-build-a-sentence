@@ -17,6 +17,7 @@ import type { WritingQuestion } from "@/lib/writing";
 import {
   calculateWritingAssignmentStudentStatus,
   earliestWritingAssignmentSubmission,
+  isAssignmentDisplayNameType,
   isLaterWritingAssignmentSubmission,
   isTeacherAssignmentStudentCompleted,
   isWritingReviewItemType,
@@ -114,13 +115,14 @@ export async function GET(
       loadWritingAssignmentDisplayNames(
         auth.supabase,
         assignments
-          .filter((assignment) => isWritingReviewItemType(assignment.task_type))
+          .filter((assignment) => isAssignmentDisplayNameType(assignment.task_type))
           .map((assignment) => ({
             assignmentId: assignment.assignment_id,
             fallbackDisplayName: writingAssignmentTitle(assignment.question_snapshot),
-            questionId: assignment.question_id,
             questionSource: assignment.question_source,
-            taskType: assignment.task_type as "email" | "academic_discussion"
+            rawQuestionId: assignment.question_id ?? "",
+            sourceSetId: assignmentSnapshotSourceSetId(assignment.question_snapshot),
+            taskType: assignment.task_type as "email" | "academic_discussion" | "build_sentence"
           }))
       ),
       loadWritingAssignmentGroupTitles(auth.supabase, [params.batchId]),

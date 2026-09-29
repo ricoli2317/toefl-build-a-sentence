@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowLeft,
   Clock3,
-  ListFilter,
   Target,
   Trophy,
   type LucideIcon
@@ -28,7 +27,6 @@ import {
   isGrammarPracticeSetId,
   type StudentResultSource
 } from "@/lib/studentNavigation";
-import { shouldShowCorrectAnswer } from "@/lib/resultDisplayPolicy";
 import {
   EMPTY_RESULT_PEER_COMPARISON,
   type ResultPeerComparison
@@ -146,39 +144,27 @@ export function PracticeResult({
         crumbs={navigation.crumbs}
       />}
       payload={peerComparison ? { ...payload, peer_comparison: peerComparison } : payload}
-      questionView="overview"
     />
   );
 }
 
 export function PracticeResultView({
-  answerLabel = "你的答案",
-  correctAnswerVisibility = "policy",
   initialQuestionId,
   navigation,
-  payload,
-  questionView = "detail",
-  showQuestionTime = false
+  payload
 }: {
-  answerLabel?: string;
-  correctAnswerVisibility?: "always" | "policy";
   initialQuestionId?: string;
   navigation?: React.ReactNode;
   payload: ResultPayload;
-  /**
-   * `overview` is the BAS student result: the attempt summary plus one status
-   * chip per question, where every chip opens that question's readonly BAS
-   * practice UI built from this attempt's submitted data. `detail` keeps the
-   * per-question answer cards used by the teacher views.
-   */
-  questionView?: "detail" | "overview";
-  showQuestionTime?: boolean;
 }) {
-  const [showIncorrectOnly, setShowIncorrectOnly] = useState(false);
-  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
+  const [activeQuestionId, setActiveQuestionId] = useState<string | null>(() =>
+    initialQuestionId
+    && payload.answers.some((answer) => answer.question_id === initialQuestionId)
+      ? initialQuestionId
+      : null
+  );
   const { answers, attempt } = payload;
   const peerComparison = payload.peer_comparison ?? EMPTY_RESULT_PEER_COMPARISON;
-  const visibleAnswers = showIncorrectOnly ? answers.filter((answer) => !answer.is_correct) : answers;
   const activeAnswerIndex = activeQuestionId
     ? answers.findIndex((answer) => answer.question_id === activeQuestionId)
     : -1;
@@ -196,7 +182,6 @@ export function PracticeResultView({
       : null;
 
   useEffect(() => {
-    if (questionView !== "overview") return;
     const hash = window.location.hash;
     if (!hash.startsWith("#question-")) return;
     let questionId = hash.slice("#question-".length);
@@ -208,23 +193,21 @@ export function PracticeResultView({
     if (answers.some((answer) => answer.question_id === questionId)) {
       setActiveQuestionId(questionId);
     }
-  }, [answers, questionView]);
+  }, [answers]);
 
   useEffect(() => {
-    const questionId = initialQuestionId
-      ?? (questionView === "overview" ? activeQuestionId : null);
+    const questionId = initialQuestionId ?? activeQuestionId;
     if (!questionId) return;
     const frame = window.requestAnimationFrame(() => {
       document.getElementById(`question-${questionId}`)?.scrollIntoView({
         behavior: "smooth",
-        block: questionView === "overview" ? "start" : "center"
+        block: "start"
       });
     });
     return () => window.cancelAnimationFrame(frame);
-  }, [activeQuestionId, initialQuestionId, questionView]);
+  }, [activeQuestionId, initialQuestionId]);
 
-  if (questionView === "overview") {
-    return (
+  return (
       <div className="space-y-6">
         {navigation}
         <ResultSummary attempt={attempt} peerComparison={peerComparison} />
@@ -344,51 +327,6 @@ export function PracticeResultView({
         </section>
       </div>
     );
-  }
-
-  return (
-    <div className="space-y-6">
-      {navigation}
-
-      <ResultSummary attempt={attempt} peerComparison={peerComparison} />
-
-      <section className="student-card">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-xl font-bold text-student-text">答题情况</h2>
-          <button
-            aria-pressed={showIncorrectOnly}
-            className={`inline-flex min-h-10 items-center justify-center gap-2 rounded-[10px] border px-3.5 py-2 text-sm font-semibold text-student-primary transition ${
-              showIncorrectOnly
-                ? "border-student-primary bg-student-primary-soft"
-                : "border-student-primary-border bg-white text-student-primary hover:border-student-primary"
-            }`}
-            onClick={() => setShowIncorrectOnly((value) => !value)}
-            type="button"
-          >
-            <ListFilter aria-hidden="true" size={17} strokeWidth={1.9} />
-            只看错题
-          </button>
-        </div>
-        <div className="mt-4 grid gap-3">
-          {visibleAnswers.map((answer) => (
-            <ResultQuestionCard
-              answerLabel={answerLabel}
-              answer={answer}
-              correctAnswerVisibility={correctAnswerVisibility}
-              key={answer.attempt_answer_id}
-              setId={attempt.set_id}
-              showQuestionTime={showQuestionTime}
-            />
-          ))}
-          {visibleAnswers.length === 0 && showIncorrectOnly ? (
-            <p className="student-empty">
-              没有错题。
-            </p>
-          ) : null}
-        </div>
-      </section>
-    </div>
-  );
 }
 
 function ResultSummary({
@@ -465,77 +403,6 @@ export function PracticeResultSummary({
         </p>
       ) : null}
     </section>
-  );
-}
-
-function ResultQuestionCard({
-  answerLabel,
-  answer,
-  correctAnswerVisibility,
-  setId,
-  showQuestionTime
-}: {
-  answerLabel: string;
-  answer: ResultAnswer;
-  correctAnswerVisibility: "always" | "policy";
-  setId: string;
-  showQuestionTime: boolean;
-}) {
-  const showCorrectAnswer = correctAnswerVisibility === "always" || shouldShowCorrectAnswer({ isCorrect: answer.is_correct, setId });
-
-  return (
-    <article
-      className={`rounded-xl border p-4 ${resultAnswerToneClassName(answer.is_correct)}`}
-      id={`question-${answer.question_id}`}
-    >
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className={answer.is_correct ? "text-sm font-semibold text-student-primary" : "text-sm font-semibold text-student-error"}>
-            第 {answer.question_order} 题
-          </p>
-          <h3 className="mt-1 font-bold leading-6 text-student-text">{answer.prompt}</h3>
-        </div>
-        <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-          {showQuestionTime && answer.question_time_seconds !== null ? (
-            <span className="rounded-full border border-student-border bg-white px-3 py-1 text-xs font-semibold text-student-muted">
-              用时 {formatDuration(answer.question_time_seconds)}
-            </span>
-          ) : null}
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-semibold text-white ${
-              answer.is_correct ? "bg-student-primary" : "bg-student-error"
-            }`}
-          >
-            {answer.is_correct ? "正确" : "错误"}
-          </span>
-        </div>
-      </div>
-      <dl
-        className={`mt-4 grid gap-4 text-sm ${
-          showCorrectAnswer ? "md:grid-cols-2 md:gap-0" : ""
-        }`}
-      >
-        <div className={showCorrectAnswer ? "md:pr-5" : ""}>
-          <dt className="font-semibold text-student-muted">{answerLabel}</dt>
-          <dd className="mt-1 leading-6 text-student-text">
-            {buildSentenceDisplay(answer.sentence_template, answer.submitted_order_text) ||
-              "未作答"}
-          </dd>
-        </div>
-        {showCorrectAnswer ? (
-          <div className="md:border-l md:border-student-border md:pl-5">
-            <dt className="font-semibold text-student-muted">正确答案</dt>
-            <dd className="mt-1 leading-6 text-student-text">
-              {buildSentenceDisplay(
-                answer.sentence_template,
-                answer.correct_order_text,
-                answer.final_sentence
-              )}
-            </dd>
-          </div>
-        ) : null}
-      </dl>
-    </article>
   );
 }
 

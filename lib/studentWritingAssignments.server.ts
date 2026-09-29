@@ -14,6 +14,7 @@ import {
   calculateWritingAssignmentStudentStatus,
   compareStudentWritingAssignments,
   earliestWritingAssignmentSubmission,
+  isAssignmentDisplayNameType,
   isWritingReviewItemType,
   type StudentWritingAssignmentSummary,
   type WritingAssignmentLifecycleStatus,
@@ -122,6 +123,12 @@ export async function loadStudentAssignmentDetails(input: {
   const reviewRows = rows.filter(({ assignment }) =>
     isWritingReviewItemType(assignment.task_type)
   );
+  // Every item type with a logical Writing title (WE / AD banks + BAS sets)
+  // resolves its Assignment display name from the current question / item;
+  // reading / full-set rows keep their own persisted catalog titles.
+  const displayRows = rows.filter(({ assignment }) =>
+    isAssignmentDisplayNameType(assignment.task_type)
+  );
   const db = createServiceSupabase();
   const [attemptResult, displayNames, groupTitles, studentResultMap] = await Promise.all([
     reviewRows.length > 0
@@ -146,12 +153,13 @@ export async function loadStudentAssignmentDetails(input: {
       : Promise.resolve({ data: [] as AttemptRow[], error: null }),
     loadWritingAssignmentDisplayNames(
       db,
-      reviewRows.map(({ assignment }) => ({
+      displayRows.map(({ assignment }) => ({
         assignmentId: assignment.assignment_id,
         fallbackDisplayName: assignment.title?.trim() || "未命名作业",
-        questionId: resolvedAssignmentItemId(assignment),
+        rawQuestionId: resolvedAssignmentItemId(assignment),
         questionSource: assignment.question_source,
-        taskType: assignment.task_type as "email" | "academic_discussion"
+        sourceSetId: assignment.snapshot_source_set_id,
+        taskType: assignment.task_type as "email" | "academic_discussion" | "build_sentence"
       })),
       input.timing
     ),

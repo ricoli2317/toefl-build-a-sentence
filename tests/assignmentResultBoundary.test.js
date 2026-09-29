@@ -335,8 +335,48 @@ test("one batched query per attempt table regardless of assignment count", async
   assert.equal(calls.length, 1);
 });
 
-test("every caller hands the locator a non-null boundary (assigned_at, else created_at)", () => {
-  const fs = require("node:fs");
+test("a BAS Assignment stores the practice item id but locates the raw set attempts", async () => {
+  // Production shape: writing_assignments.question_id is the stable practice
+  // item uuid while the attempt rows carry the raw source set id.
+  const PRACTICE_ITEM_ID = "435ff273-f538-42d1-94d6-8d90e9b0a211";
+  const db = dbWith({
+    bas: [
+      {
+        attempt_id: "bas-production",
+        created_at: "2026-09-28T10:00:00Z",
+        set_id: BAS_SET,
+        student_id: "student-1",
+        submitted_at: "2026-09-28T10:30:00Z"
+      }
+    ]
+  });
+  const results = await loadAssignmentStudentResults({
+    db,
+    items: [{
+      assignmentId: "bas-production-assignment",
+      itemId: PRACTICE_ITEM_ID,
+      itemType: "build_sentence",
+      boundaryAt: "2026-09-27T00:00:00Z",
+      sourceSetId: BAS_SET,
+      studentId: "student-1"
+    }],
+    studentIds: ["student-1"]
+  });
+  assert.deepEqual(
+    assignmentStudentResult(results, "bas-production-assignment", "student-1"),
+    {
+      available_result: {
+        attempt_id: "bas-production",
+        completed_at: "2026-09-28T10:30:00Z",
+        id: BAS_SET,
+        kind: "bas_set"
+      },
+      started: true
+    }
+  );
+});
+
+test("every caller hands the locator a non-null boundary (assigned_at, else created_at)", () => {  const fs = require("node:fs");
   const path = require("node:path");
   const root = path.resolve(__dirname, "..");
   const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), "utf8");

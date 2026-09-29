@@ -121,7 +121,7 @@ test("student assignment grouping keeps standalone work and collapses each multi
   assert.equal(entries[2].kind, "assignment");
 });
 
-test("student assignment titles prefer current bank display and fall back to snapshots", () => {
+test("student assignment titles use the current bank display and never fall back to the historical snapshot", () => {
   const question_snapshot = { set_title: "8.8A old raw title" };
   assert.equal(
     studentWritingAssignmentTitle({
@@ -130,13 +130,15 @@ test("student assignment titles prefer current bank display and fall back to sna
     }),
     "题目023 Community Theater Rentals"
   );
+  // A legacy payload without a resolved display name must not surface the
+  // historical snapshot set_title as a title again.
   assert.equal(
     studentWritingAssignmentTitle({ question_snapshot }),
-    "8.8A old raw title"
+    "未命名作业"
   );
   assert.equal(
     studentWritingAssignmentTitle({ display_name: "", question_snapshot }),
-    "8.8A old raw title"
+    "未命名作业"
   );
 });
 

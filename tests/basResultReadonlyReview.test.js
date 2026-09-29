@@ -89,9 +89,9 @@ test("historical text that no longer matches the canonical options is shown as s
   assert.deepEqual(state.unusedChunks.map((chunk) => chunk.id), ["bas-q6-1"]);
 });
 
-test("BAS result overview opens each question in a readonly drag-state view built from this attempt", () => {
+test("BAS result opens each question in a readonly drag-state view built from this attempt", () => {
   const resultUi = read("components/PracticeResult.tsx");
-  assert.match(resultUi, /questionView="overview"/);
+  assert.doesNotMatch(resultUi, /questionView/);
   assert.match(resultUi, /buildBasReviewQuestionState\(/);
   assert.match(resultUi, /<QuestionDisplay[\s\S]{0,400}readOnly/);
   assert.match(resultUi, /data-testid="practice-result-question-chips"/);
@@ -99,6 +99,9 @@ test("BAS result overview opens each question in a readonly drag-state view buil
   assert.match(resultUi, /data-answer-state=\{answer\.is_correct \? "correct" : "incorrect"\}/);
   assert.match(resultUi, /window\.location\.hash/);
   assert.match(resultUi, /#question-/);
+  // The teacher entry passes the answer it was opened for; the shared state
+  // initializer must activate that question instead of waiting for a chip click.
+  assert.match(resultUi, /useState<string \| null>\(\(\) =>[\s\S]{0,200}initialQuestionId/);
 });
 
 test("readonly question header keeps the per-question time from the attempt payload", () => {
@@ -108,16 +111,13 @@ test("readonly question header keeps the per-question time from the attempt payl
   assert.match(resultUi, /用时 \{formatDuration\(activeQuestionTimeSeconds\)\}/);
 });
 
-test("the BAS result overview keeps only summary and per-question status chips", () => {
+test("the BAS result keeps only summary and per-question status chips", () => {
   const resultUi = read("components/PracticeResult.tsx");
-  const overviewBranch = resultUi.slice(
-    resultUi.indexOf('if (questionView === "overview")'),
-    resultUi.indexOf('  return (\n    <div className="space-y-6">')
-  );
-  assert.ok(overviewBranch.length > 0);
-  assert.match(overviewBranch, /ResultSummary/);
-  assert.match(overviewBranch, /practice-result-question-chips/);
-  assert.doesNotMatch(overviewBranch, /ResultQuestionCard|只看错题|answerLabel/);
+  assert.match(resultUi, /ResultSummary/);
+  assert.match(resultUi, /practice-result-question-chips/);
+  // The old per-question answer-card view is gone for every entry (student and
+  // teacher): exactly one result body remains in the shared component.
+  assert.doesNotMatch(resultUi, /ResultQuestionCard|只看错题|answerLabel|答题情况/);
 });
 
 test("readonly correct answer reuses the teacher question-bank card", () => {
@@ -147,8 +147,12 @@ test("active practice never receives or renders correct-answer fields", () => {
   assert.doesNotMatch(sessionUi, /correct_order_text|final_sentence|正确答案/);
 });
 
-test("teacher BAS question detail keeps the per-question answer cards by default", () => {
+test("teacher BAS attempt reuses the exact same result and readonly UI as the student", () => {
   const teacher = read("components/TeacherDashboard.tsx");
-  assert.match(teacher, /<PracticeResultView[\s\S]{0,240}correctAnswerVisibility="always"/);
-  assert.doesNotMatch(teacher, /questionView=/);
+  assert.match(teacher, /<PracticeResultView[\s\S]{0,240}initialQuestionId=/);
+  assert.match(teacher, /<PracticeResultView[\s\S]{0,240}payload=\{payload\}/);
+  // No second BAS detail UI: the old per-question answer-card mode and label
+  // are gone from the teacher entry.
+  assert.doesNotMatch(teacher, /correctAnswerVisibility="always"/);
+  assert.doesNotMatch(teacher, /ResultQuestionCard|只看错题/);
 });

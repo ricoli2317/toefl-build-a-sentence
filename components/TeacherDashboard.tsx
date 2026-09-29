@@ -488,12 +488,9 @@ function TeacherStudentQuestionDetailContent({
 
   return (
     <PracticeResultView
-      answerLabel="学生答案"
-      correctAnswerVisibility="always"
       initialQuestionId={initialAnswer?.questionId}
       navigation={<TeacherBreadcrumbs crumbs={crumbs} />}
       payload={payload}
-      showQuestionTime
     />
   );
 }
@@ -900,17 +897,6 @@ function SetTableSkeleton() {
         </tr>
       ))}
     </tbody>
-  );
-}
-
-function AttemptHistorySkeleton() {
-  return (
-    <div className="grid gap-5">
-      <div className="flex justify-end">
-        <div className="rounded-[10px] border border-student-primary-border bg-white px-3 py-2 text-sm font-semibold text-student-primary">只看错题</div>
-      </div>
-      {Array.from({ length: 3 }, (_, index) => <TeacherSkeleton className="h-28 w-full rounded-2xl" key={index} />)}
-    </div>
   );
 }
 

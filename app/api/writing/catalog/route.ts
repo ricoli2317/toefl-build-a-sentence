@@ -155,8 +155,7 @@ export async function GET(request: Request) {
           question_id: String(question.question_id),
           set_id: String(question.set_id),
           set_title: question.set_title,
-          display_name:
-            historicalDisplays.get(question.question_id)?.displayName ?? question.set_title,
+          display_name: historicalDisplays.get(question.question_id)!.displayName,
           year_month: question.year_month,
           status: draft
             ? ("draft" as const)

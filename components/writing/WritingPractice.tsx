@@ -83,7 +83,13 @@ type PracticePayload = {
   assignment_available?: boolean;
   attempt?: WritingAttempt;
   question?: WritingQuestion;
-  display_name?: string;
+  /**
+   * The resolver-produced display title (题目NNN + 小标题 / custom assignment
+   * title). Every attempt API response carries it; it is the only title the
+   * practice header renders — the historical question set_title is never a
+   * fallback.
+   */
+  display_name: string;
   has_published_review?: boolean;
   question_source?: "question_bank" | "custom";
   error?: string;
@@ -344,7 +350,7 @@ function WritingPracticeSession({
   assignmentAvailable: boolean;
   assignmentQuestionSource?: "question_bank" | "custom";
   attempt: WritingAttempt;
-  displayName?: string;
+  displayName: string;
   readOnly: boolean;
   reviewPublished: boolean;
   question: WritingQuestion;
@@ -679,7 +685,7 @@ function WritingPracticeSession({
         onExit={requestExit}
         readOnly={readOnly}
         remainingSeconds={remainingSeconds}
-        setTitle={displayName ?? question.set_title}
+        setTitle={displayName}
       />
       <main className="mx-auto flex min-h-[calc(100dvh-76px)] w-full max-w-[1920px] flex-col px-4 py-3 sm:px-6 lg:h-[calc(100dvh-76px)] lg:min-h-0 lg:overflow-hidden lg:px-8">
         <div className="grid min-h-0 grid-cols-1 gap-4 lg:h-full lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:overflow-hidden">

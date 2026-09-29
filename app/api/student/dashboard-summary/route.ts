@@ -4,6 +4,7 @@ import { loadCachedPublicPracticeCatalog } from "@/lib/practiceCatalogCache.serv
 import { loadLogicalPracticeStudentAttempts } from "@/lib/practiceLogicalCatalog";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import { loadWritingHistoricalPracticeDisplayResolver } from "@/lib/historicalPracticeDisplay";
 import {
   buildStudentDashboardSummary,
   latestDashboardDraft,
@@ -83,10 +84,10 @@ export async function GET(request: Request) {
       .map((attempt) => attempt.attempt_id);
 
     const [emailTitle, discussionTitle, publishedResult] = await Promise.all([
-      loadDraftTitle(db, "email_questions", emailDraft?.question_id ?? null, timing),
+      loadDraftTitle(db, "email", emailDraft?.question_id ?? null, timing),
       loadDraftTitle(
         db,
-        "academic_discussion_questions",
+        "academic_discussion",
         discussionDraft?.question_id ?? null,
         timing
       ),
@@ -131,16 +132,29 @@ export async function GET(request: Request) {
   }
 }
 
+/**
+ * The dashboard draft label always uses the current logical 题目NNN + 小标题
+ * for question-bank drafts; the historical question set_title is only the
+ * resolver's last-resort fallback for rows without a logical item.
+ */
 async function loadDraftTitle(
   db: ReturnType<typeof createServiceSupabase>,
-  table: "email_questions" | "academic_discussion_questions",
+  taskType: "email" | "academic_discussion",
   questionId: string | null,
   timing: ReturnType<typeof createStudentPerformanceTrace>
 ) {
   if (!questionId) return undefined;
+  const table = taskType === "email" ? "email_questions" : "academic_discussion_questions";
   const result = await timing.measure("database", `${table}_latest_draft_title`, () =>
     db.from(table).select("set_title").eq("question_id", questionId).maybeSingle()
   );
   if (result.error) throw new Error(result.error.message);
-  return result.data?.set_title?.trim() || questionId;
+  const fallbackTitle = result.data?.set_title?.trim() || questionId;
+  const resolver = await loadWritingHistoricalPracticeDisplayResolver(db, taskType, [questionId], timing);
+  return resolver.resolveWritingAttempt({
+    assignmentId: null,
+    fallbackDisplayName: fallbackTitle,
+    rawQuestionId: questionId,
+    taskType
+  }).displayName;
 }

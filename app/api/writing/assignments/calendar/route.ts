@@ -3,7 +3,7 @@ import {
   assignmentDateKey,
   assignmentMonthRange,
   isAssignmentMonthKey,
-  isWritingReviewItemType,
+  isAssignmentDisplayNameType,
   type StudentWritingAssignmentCalendarItem,
   type WritingAssignmentQuestionSource
 } from "@/lib/writingAssignments";
@@ -22,6 +22,7 @@ type CalendarAssignmentRow = {
   task_type: AssignmentItemType;
   question_source: WritingAssignmentQuestionSource;
   question_id: string | null;
+  source_set_id: string | null;
   title: string | null;
 };
 
@@ -52,6 +53,7 @@ export async function GET(request: Request) {
               task_type,
               question_source,
               question_id:question_snapshot->>question_id,
+              source_set_id:question_snapshot->>source_set_id,
               title:question_snapshot->>set_title
             )
           `)
@@ -82,19 +84,21 @@ export async function GET(request: Request) {
         if (!assignment || !date || !fallbackDisplayName) return [];
         return [{ assignment, date, fallbackDisplayName }];
       });
-    // Only the WE / AD review types have a question-bank display name; every
-    // read-only type (BAS / Reading) shows its persisted snapshot title.
-    const reviewEntries = entries.filter(({ assignment }) =>
-      isWritingReviewItemType(assignment.task_type)
+    // WE / AD bank items and BAS sets always resolve their display name from
+    // the current logical question / item; every other read-only type keeps
+    // its persisted snapshot title.
+    const displayEntries = entries.filter(({ assignment }) =>
+      isAssignmentDisplayNameType(assignment.task_type)
     );
     const displayNames = await loadWritingAssignmentDisplayNames(
       createServiceSupabase(),
-      reviewEntries.map(({ assignment, fallbackDisplayName }) => ({
+      displayEntries.map(({ assignment, fallbackDisplayName }) => ({
         assignmentId: String(assignment.assignment_id),
         fallbackDisplayName,
-        questionId: assignment.question_id,
+        rawQuestionId: assignment.question_id ?? "",
         questionSource: assignment.question_source,
-        taskType: assignment.task_type as "email" | "academic_discussion"
+        sourceSetId: assignment.source_set_id,
+        taskType: assignment.task_type as "email" | "academic_discussion" | "build_sentence"
       })),
       timing
     );

@@ -13,8 +13,16 @@ export type SubmittedWritingAttemptSummary = {
 export type WritingSubmissionQuestionSummary = {
   question_id: string;
   set_title: string;
-  display_name?: string;
   year_month: string;
+};
+
+/**
+ * The submissions API always attaches the resolver-produced 题目NNN + 小标题
+ * before the payload reaches the UI; the historical set_title is data only and
+ * is never rendered as a fallback.
+ */
+export type WritingSubmissionQuestionPayload = WritingSubmissionQuestionSummary & {
+  display_name: string;
 };
 
 type SubmittedAttemptRow = Omit<SubmittedWritingAttemptSummary, "has_published_review">;

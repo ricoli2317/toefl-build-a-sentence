@@ -156,15 +156,16 @@ test("inactive item remains historically resolvable for teacher review", () => {
   assert.equal(display.isActive, false);
 });
 
-test("orphan free-practice review falls back with a structured warning", () => {
+test("orphan free-practice review shows a neutral title with a structured warning", () => {
   const display = freeDisplay(
     namingResolver(),
     "academic_discussion",
     "orphan-ad",
     "Legacy AD Raw Title"
   );
-  assert.equal(display.displayName, "Legacy AD Raw Title");
+  assert.equal(display.displayName, "未命名题目");
   assert.equal(display.resolution, "fallback");
+  assert.doesNotMatch(JSON.stringify(display), /Legacy AD Raw Title/);
   assert.equal(display.warning.code, "HISTORICAL_SOURCE_NOT_MAPPED");
   assert.equal(display.warning.rawQuestionId, "orphan-ad");
 });

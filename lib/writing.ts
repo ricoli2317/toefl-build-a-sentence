@@ -95,7 +95,11 @@ export type WritingCatalogSet = {
   question_id: string;
   set_id: string;
   set_title: string;
-  display_name?: string;
+  /**
+   * The resolver-produced 题目NNN + 小标题 display title. The catalog API
+   * always fills it; the historical set_title is data only.
+   */
+  display_name: string;
   year_month: string;
   status: "not_started" | WritingAttemptStatus;
   draft_attempt_id: string | null;

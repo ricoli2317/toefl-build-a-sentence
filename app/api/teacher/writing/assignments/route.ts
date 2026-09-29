@@ -12,6 +12,7 @@ import {
 import {
   isLaterWritingAssignmentSubmission,
   isTeacherAssignmentStudentCompleted,
+  isAssignmentDisplayNameType,
   isWritingReviewItemType,
   type WritingAssignmentRecipient,
   type WritingAssignmentSummary
@@ -93,12 +94,13 @@ export async function GET(request: Request) {
       loadWritingAssignmentDisplayNames(
         auth.supabase,
         assignments
-          .filter((assignment) => isWritingReviewItemType(assignment.task_type))
+          .filter((assignment) => isAssignmentDisplayNameType(assignment.task_type))
           .map((assignment) => ({
             assignmentId: assignment.assignment_id,
-            taskType: assignment.task_type as "email" | "academic_discussion",
+            taskType: assignment.task_type as "email" | "academic_discussion" | "build_sentence",
             questionSource: assignment.question_source,
-            questionId: assignment.question_id,
+            rawQuestionId: assignment.question_id ?? "",
+            sourceSetId: assignment.source_set_id,
             fallbackDisplayName: assignmentSnapshotTitle(assignment)
           }))
       ),

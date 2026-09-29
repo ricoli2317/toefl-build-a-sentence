@@ -64,20 +64,29 @@ export type HistoricalWritingDisplayInput = {
   taskType: "email" | "academic_discussion";
 };
 
+/**
+ * One Assignment row's logical display name input. WE / AD resolve by raw
+ * question id; BAS resolves by its raw source set id. The stored Assignment
+ * snapshot title is only the caller's last-resort fallback for rows without a
+ * logical item (custom content / unmapped history), never the display source.
+ */
+export type WritingAssignmentDisplayInput = {
+  assignmentId: string;
+  assignmentDisplayName?: string | null;
+  fallbackDisplayName: string;
+  questionSource?: "question_bank" | "custom" | null;
+  rawQuestionId: string;
+  taskType: "email" | "academic_discussion" | "build_sentence";
+  /** BAS only: the raw question set the logical practice item maps from. */
+  sourceSetId?: string | null;
+};
+
 export type HistoricalPracticeDisplayResolver = {
   resolveBuildSentence(input: {
     fallbackDisplayName: string;
     rawSetId: string;
   }): HistoricalPracticeDisplay;
   resolveWritingAttempt(input: HistoricalWritingDisplayInput): HistoricalPracticeDisplay;
-};
-
-export type WritingAssignmentDisplayInput = {
-  assignmentId: string;
-  taskType: "email" | "academic_discussion";
-  questionSource: "question_bank" | "custom";
-  questionId: string | null;
-  fallbackDisplayName: string;
 };
 
 export function createHistoricalPracticeDisplayResolver(input: {
@@ -143,10 +152,10 @@ export function createHistoricalPracticeDisplayResolver(input: {
       const auxiliary = resolveWritingLogical(writingInput);
       return {
         ...auxiliary,
-        displayName:
-          auxiliary.resolution === "logical"
-            ? auxiliary.displayName
-            : assignmentDisplayName,
+        // A question-bank Assignment always displays the current logical title.
+        // When the mapping cannot be resolved this keeps the resolver's
+        // neutral fallback — never the persisted Assignment snapshot title.
+        displayName: auxiliary.displayName,
         logicalDisplayName:
           auxiliary.resolution === "logical" ? auxiliary.displayName : null,
         resolution: "assignment",
@@ -375,22 +384,43 @@ export async function loadWritingHistoricalPracticeDisplayResolver(
     : buildResolver();
 }
 
+/**
+ * Assignment row display names for the three logical Writing item types.
+ *
+ *   WE / AD (question_bank) -> current logical 题目NNN + 小标题 by raw question id
+ *   BAS      (question_bank) -> current logical 套题NNN by raw source set id
+ *   custom / reading / unmapped -> the caller's fallback (persisted snapshot)
+ *
+ * The persisted Assignment snapshot never overrides a resolvable logical item,
+ * and this is the single resolution point every teacher/student Assignment
+ * surface shares.
+ */
 export async function loadWritingAssignmentDisplayNames(
   supabase: SupabaseClient,
   assignments: WritingAssignmentDisplayInput[],
   timing?: StudentPerformanceTrace
 ): Promise<Map<string, string>> {
   const displayNames = new Map<string, string>();
-  const bankAssignments: Array<WritingAssignmentDisplayInput & { questionId: string }> = [];
+  const bankAssignments: Array<WritingAssignmentDisplayInput & { rawQuestionId: string }> = [];
+  const basAssignments: Array<WritingAssignmentDisplayInput & { sourceSetId: string }> = [];
   for (const assignment of assignments) {
-    const rawQuestionId = assignment.questionId?.trim() ?? "";
+    const rawQuestionId = assignment.rawQuestionId?.trim() ?? "";
+    if (assignment.taskType === "build_sentence") {
+      const sourceSetId = assignment.sourceSetId?.trim() ?? "";
+      if (assignment.questionSource !== "custom" && sourceSetId) {
+        basAssignments.push({ ...assignment, sourceSetId });
+      } else {
+        displayNames.set(assignment.assignmentId, assignment.fallbackDisplayName);
+      }
+      continue;
+    }
     if (assignment.questionSource === "question_bank" && rawQuestionId) {
-      bankAssignments.push({ ...assignment, questionId: rawQuestionId });
+      bankAssignments.push({ ...assignment, rawQuestionId });
     } else {
       displayNames.set(assignment.assignmentId, assignment.fallbackDisplayName);
     }
   }
-  if (bankAssignments.length === 0) return displayNames;
+  if (bankAssignments.length === 0 && basAssignments.length === 0) return displayNames;
 
   const resolvers = new Map<"email" | "academic_discussion", HistoricalPracticeDisplayResolver>();
   await Promise.all(
@@ -398,7 +428,7 @@ export async function loadWritingAssignmentDisplayNames(
       const rawQuestionIds = distinct(
         bankAssignments
           .filter((assignment) => assignment.taskType === taskType)
-          .map((assignment) => assignment.questionId)
+          .map((assignment) => assignment.rawQuestionId)
       );
       if (rawQuestionIds.length === 0) return;
       resolvers.set(
@@ -415,7 +445,7 @@ export async function loadWritingAssignmentDisplayNames(
 
   const resolvedDisplays: HistoricalPracticeDisplay[] = [];
   for (const assignment of bankAssignments) {
-    const resolver = resolvers.get(assignment.taskType);
+    const resolver = resolvers.get(assignment.taskType as "email" | "academic_discussion");
     if (!resolver) {
       displayNames.set(assignment.assignmentId, assignment.fallbackDisplayName);
       continue;
@@ -425,12 +455,29 @@ export async function loadWritingAssignmentDisplayNames(
       assignmentDisplayName: assignment.fallbackDisplayName,
       fallbackDisplayName: assignment.fallbackDisplayName,
       questionSource: assignment.questionSource,
-      rawQuestionId: assignment.questionId,
-      taskType: assignment.taskType
+      rawQuestionId: assignment.rawQuestionId,
+      taskType: assignment.taskType as "email" | "academic_discussion"
     });
     resolvedDisplays.push(display);
     displayNames.set(assignment.assignmentId, display.displayName);
   }
+
+  if (basAssignments.length > 0) {
+    const basResolver = await loadBuildSentenceHistoricalPracticeDisplayResolver(
+      supabase,
+      distinct(basAssignments.map((assignment) => assignment.sourceSetId)),
+      timing
+    );
+    for (const assignment of basAssignments) {
+      const display = basResolver.resolveBuildSentence({
+        fallbackDisplayName: assignment.fallbackDisplayName,
+        rawSetId: assignment.sourceSetId
+      });
+      resolvedDisplays.push(display);
+      displayNames.set(assignment.assignmentId, display.displayName);
+    }
+  }
+
   logHistoricalPracticeDisplayWarnings(resolvedDisplays);
   return displayNames;
 }
@@ -509,6 +556,19 @@ export function enrichBuildSentenceHistoricalAttempts<
   }));
 }
 
+/**
+ * Neutral title for an official BAS / WE / AD row whose logical item cannot be
+ * resolved (missing mapping, ambiguous mapping, missing item or missing display
+ * number). Historical raw titles (`set_title`, source labels, date labels) stay
+ * background provenance data and must never become a user-visible fallback
+ * again; the structured warning keeps the raw identity for debugging.
+ */
+function neutralLogicalFallback(
+  taskType: "build_sentence" | "email" | "academic_discussion"
+) {
+  return taskType === "build_sentence" ? "未编号套题" : "未命名题目";
+}
+
 function fallbackWithWarning(
   input: {
     fallbackDisplayName: string;
@@ -525,7 +585,7 @@ function fallbackWithWarning(
     rawQuestionId: input.rawQuestionId
   };
   return fallbackDisplay({
-    displayName: input.fallbackDisplayName,
+    displayName: neutralLogicalFallback(input.taskType),
     rawQuestionId: input.rawQuestionId,
     rawSetId: input.rawSetId,
     resolution: "fallback",

@@ -192,15 +192,17 @@ test("inactive historical item remains resolvable", () => {
   assert.equal(display.resolution, "logical");
 });
 
-test("orphan history falls back to raw name with a structured warning", () => {
+test("orphan history shows a neutral title with a structured warning instead of the raw historical title", () => {
   const display = resolver().resolveWritingAttempt({
     assignmentId: null,
     fallbackDisplayName: "orphan raw title",
     rawQuestionId: "orphan-question",
     taskType: "academic_discussion"
   });
-  assert.equal(display.displayName, "orphan raw title");
+  assert.equal(display.displayName, "未命名题目");
   assert.equal(display.resolution, "fallback");
+  assert.doesNotMatch(JSON.stringify(display), /orphan raw title/);
+  // The raw identity stays in the structured warning for debugging only.
   assert.deepEqual(display.warning, {
     code: "HISTORICAL_SOURCE_NOT_MAPPED",
     taskType: "academic_discussion",
@@ -209,6 +211,178 @@ test("orphan history falls back to raw name with a structured warning", () => {
     itemId: null,
     message: "Historical raw source has no practice_item_sources mapping."
   });
+});
+
+test("official BAS / WE / AD resolver failures return neutral titles, never the raw historical title", () => {
+  const historicalResolver = resolver();
+  const bas = historicalResolver.resolveBuildSentence({
+    fallbackDisplayName: "9.15 - 3",
+    rawSetId: "202609-0915-3"
+  });
+  assert.equal(bas.displayName, "未编号套题");
+  assert.equal(bas.resolution, "fallback");
+  assert.equal(bas.warning.code, "HISTORICAL_SOURCE_NOT_MAPPED");
+  assert.doesNotMatch(JSON.stringify(bas), /9\.15 - 3/);
+
+  const email = historicalResolver.resolveWritingAttempt({
+    assignmentId: null,
+    fallbackDisplayName: "1.21-1",
+    rawQuestionId: "EMAIL-2099-UNKNOWN",
+    taskType: "email"
+  });
+  assert.equal(email.displayName, "未命名题目");
+  assert.equal(email.resolution, "fallback");
+  assert.doesNotMatch(JSON.stringify(email), /1\.21-1/);
+
+  const discussion = historicalResolver.resolveWritingAttempt({
+    assignmentId: null,
+    fallbackDisplayName: "8.26B",
+    rawQuestionId: "AD-2099-UNKNOWN",
+    taskType: "academic_discussion"
+  });
+  assert.equal(discussion.displayName, "未命名题目");
+  assert.equal(discussion.resolution, "fallback");
+  assert.doesNotMatch(JSON.stringify(discussion), /8\.26B/);
+});
+
+test("ambiguous / missing-item / missing-number official mappings also stay neutral", () => {
+  const ambiguous = createHistoricalPracticeDisplayResolver({
+    items: [
+      item("email-item-a", "email", "021", "A"),
+      item("email-item-b", "email", "022", "B")
+    ],
+    sources: [
+      source("email-a1", "email-item-a", "email", "email-ambiguous"),
+      source("email-a2", "email-item-b", "email", "email-ambiguous")
+    ]
+  }).resolveWritingAttempt({
+    assignmentId: null,
+    fallbackDisplayName: "1.21-1",
+    rawQuestionId: "email-ambiguous",
+    taskType: "email"
+  });
+  assert.equal(ambiguous.displayName, "未命名题目");
+  assert.equal(ambiguous.warning.code, "AMBIGUOUS_HISTORICAL_SOURCE");
+  assert.doesNotMatch(JSON.stringify(ambiguous), /1\.21-1/);
+
+  const missingItem = createHistoricalPracticeDisplayResolver({
+    items: [],
+    sources: [source("email-b1", "email-item", "email", "email-missing-item")]
+  }).resolveWritingAttempt({
+    assignmentId: null,
+    fallbackDisplayName: "1.21-1",
+    rawQuestionId: "email-missing-item",
+    taskType: "email"
+  });
+  assert.equal(missingItem.displayName, "未命名题目");
+  assert.equal(missingItem.warning.code, "HISTORICAL_ITEM_MISSING");
+  assert.doesNotMatch(JSON.stringify(missingItem), /1\.21-1/);
+
+  const missingNumber = createHistoricalPracticeDisplayResolver({
+    items: [item("email-item", "email", "", "Request for Schedule Change")],
+    sources: [source("email-c1", "email-item", "email", "email-missing-number")]
+  }).resolveWritingAttempt({
+    assignmentId: null,
+    fallbackDisplayName: "1.21-1",
+    rawQuestionId: "email-missing-number",
+    taskType: "email"
+  });
+  assert.equal(missingNumber.displayName, "未命名题目");
+  assert.equal(missingNumber.warning.code, "HISTORICAL_DISPLAY_NUMBER_MISSING");
+  assert.doesNotMatch(JSON.stringify(missingNumber), /1\.21-1/);
+});
+
+test("an official Assignment mapping failure shows the neutral fallback instead of the snapshot title", () => {
+  const display = resolver().resolveWritingAttempt({
+    assignmentId: "assignment-orphan",
+    assignmentDisplayName: "5.23",
+    fallbackDisplayName: "5.23",
+    questionSource: "question_bank",
+    rawQuestionId: "EMAIL-2099-UNKNOWN",
+    taskType: "email"
+  });
+  assert.equal(display.displayName, "未命名题目");
+  assert.equal(display.resolution, "assignment");
+  assert.equal(display.logicalDisplayName, null);
+  assert.equal(display.warning.code, "HISTORICAL_SOURCE_NOT_MAPPED");
+  assert.doesNotMatch(JSON.stringify(display), /5\.23/);
+});
+
+test("an official BAS Assignment mapping failure shows 未编号套题 instead of the snapshot title", async () => {
+  const calls = [];
+  const supabase = fakeSupabase({ practice_item_sources: [] }, calls);
+  const originalWarn = console.warn;
+  console.warn = () => {};
+  try {
+    const displayNames = await loadWritingAssignmentDisplayNames(supabase, [{
+      assignmentId: "bas-orphan",
+      fallbackDisplayName: "9.15 - 3",
+      rawQuestionId: "435ff273-f538-42d1-94d6-8d90e9b0a211",
+      questionSource: "question_bank",
+      sourceSetId: "202609-0915-3",
+      taskType: "build_sentence"
+    }]);
+    assert.equal(displayNames.get("bas-orphan"), "未编号套题");
+    assert.doesNotMatch(JSON.stringify([...displayNames.values()]), /9\.15 - 3/);
+  } finally {
+    console.warn = originalWarn;
+  }
+  assert.deepEqual(calls, ["practice_item_sources"]);
+});
+
+test("custom Assignment titles and the persisted snapshot fields stay untouched", async () => {
+  const historicalResolver = resolver();
+  const snapshot = {
+    set_title: "5.23",
+    source_labels: "5.23A|5.23B",
+    source_set_id: "202609-0915-3"
+  };
+  const snapshotBefore = structuredClone(snapshot);
+  const custom = historicalResolver.resolveWritingAttempt({
+    assignmentId: "assignment-custom",
+    assignmentDisplayName: snapshot.set_title,
+    fallbackDisplayName: "raw custom fallback",
+    questionSource: "custom",
+    rawQuestionId: "custom:assignment-custom",
+    taskType: "email"
+  });
+  assert.equal(custom.displayName, "5.23");
+  assert.equal(custom.resolution, "assignment");
+  assert.doesNotMatch(JSON.stringify(custom), /raw custom fallback/);
+  assert.deepEqual(snapshot, snapshotBefore);
+
+  // The resolver never mutates the loaded rows either.
+  const items = [item("email-item", "email", "021", "Request for Schedule Change")];
+  const sources = [source("email-a", "email-item", "email", "email-a")];
+  const itemsBefore = structuredClone(items);
+  const sourcesBefore = structuredClone(sources);
+  const created = createHistoricalPracticeDisplayResolver({ items, sources });
+  created.resolveWritingAttempt({
+    assignmentId: null,
+    fallbackDisplayName: "1.21-1",
+    rawQuestionId: "email-a",
+    taskType: "email"
+  });
+  created.resolveBuildSentence({ fallbackDisplayName: "9.15 - 3", rawSetId: "202609-0915-3" });
+  assert.deepEqual(items, itemsBefore);
+  assert.deepEqual(sources, sourcesBefore);
+
+  // The Assignment display-name loader keeps custom titles and still hands the
+  // raw snapshot fields back to its callers unchanged.
+  const calls = [];
+  const supabase = fakeSupabase({ practice_item_sources: [] }, calls);
+  const customInput = {
+    assignmentId: "custom-email",
+    fallbackDisplayName: "5.23",
+    rawQuestionId: "custom:custom-email",
+    questionSource: "custom",
+    taskType: "email"
+  };
+  const customInputBefore = structuredClone(customInput);
+  const displayNames = await loadWritingAssignmentDisplayNames(supabase, [customInput]);
+  assert.equal(displayNames.get("custom-email"), "5.23");
+  assert.deepEqual(customInput, customInputBefore);
+  assert.deepEqual(calls, []);
 });
 
 test("BAS and writing history sorting remains actual attempt/submission time", () => {
@@ -240,12 +414,14 @@ test("history React keys and URLs keep attempt_id rather than display_number", (
   assert.match(basUi, /attemptId/);
 });
 
-test("Dashboard and student review list consume logical display_name without replacing raw set_title", () => {
+test("Dashboard and student review UI render only the resolved display_name, never the historical set_title", () => {
   const dashboard = fs.readFileSync(path.join(projectRoot, "components/student/StudentDashboard.tsx"), "utf8");
   const reviewUi = fs.readFileSync(path.join(projectRoot, "components/student/StudentWritingReview.tsx"), "utf8");
+  const reviewListUi = reviewUi;
   const reviewRoute = fs.readFileSync(path.join(projectRoot, "app/api/writing/reviews/route.ts"), "utf8");
   assert.match(dashboard, /draft\.displayName/);
-  assert.match(reviewUi, /review\.display_name \?\? review\.set_title/);
+  assert.match(reviewListUi, /review\.display_name\}/);
+  assert.doesNotMatch(reviewUi, /display_name \?\? [a-zA-Z.]*set_title/);
   assert.match(reviewRoute, /set_title: setTitle/);
   assert.match(reviewRoute, /display_name: display\.displayName/);
   assert.match(reviewRoute, /assignmentDisplayName: setTitle/);
@@ -314,42 +490,74 @@ test("assignment display names resolve bank titles, keep custom titles, and fall
       {
         assignmentId: "bank-email",
         fallbackDisplayName: "8.8A old raw title",
-        questionId: "email-a",
+        rawQuestionId: "email-a",
         questionSource: "question_bank",
         taskType: "email"
       },
       {
         assignmentId: "custom-email",
         fallbackDisplayName: "Teacher Custom Prompt",
-        questionId: "custom:custom-email",
+        rawQuestionId: "custom:custom-email",
         questionSource: "custom",
         taskType: "email"
       },
       {
         assignmentId: "orphan-ad",
         fallbackDisplayName: "Legacy AD Raw Title",
-        questionId: "orphan-ad-raw",
+        rawQuestionId: "orphan-ad-raw",
         questionSource: "question_bank",
         taskType: "academic_discussion"
       }
     ]);
     assert.equal(displayNames.get("bank-email"), "题目021 Request for Schedule Change");
     assert.equal(displayNames.get("custom-email"), "Teacher Custom Prompt");
-    assert.equal(displayNames.get("orphan-ad"), "Legacy AD Raw Title");
+    // An unmapped official row must never surface the stored snapshot / raw
+    // historical title; the neutral fallback replaces it.
+    assert.equal(displayNames.get("orphan-ad"), "未命名题目");
+    assert.doesNotMatch(
+      JSON.stringify([...displayNames.values()]),
+      /Legacy AD Raw Title|8.8A old raw title/
+    );
   } finally {
     console.warn = originalWarn;
   }
   assert.deepEqual(calls, ["practice_item_sources", "practice_item_sources"]);
 });
 
-test("custom-only assignment display loads no practice item mapping table", async () => {
+test("BAS assignment display names resolve the current 套题NNN by source set id", async () => {
   const calls = [];
+  const basItem = item("bas-item", "build_sentence", "143");
+  const supabase = fakeSupabase({
+    practice_item_sources: [
+      itemWithSource(basItem, {
+        source_id: "bas-source",
+        item_id: basItem.item_id,
+        task_type: "build_sentence",
+        source_set_id: "202609-0915-3",
+        source_question_id: null
+      })
+    ],
+    practice_items: [basItem]
+  }, calls);
+  const displayNames = await loadWritingAssignmentDisplayNames(supabase, [{
+    assignmentId: "bas-assignment",
+    fallbackDisplayName: "9.15 - 3",
+    rawQuestionId: "item-uuid",
+    questionSource: "question_bank",
+    sourceSetId: "202609-0915-3",
+    taskType: "build_sentence"
+  }]);
+  assert.equal(displayNames.get("bas-assignment"), "套题143");
+  assert.deepEqual(calls, ["practice_item_sources", "practice_items"]);
+});
+
+test("custom-only assignment display loads no practice item mapping table", async () => {  const calls = [];
   const supabase = fakeSupabase({ practice_item_sources: [] }, calls);
   const displayNames = await loadWritingAssignmentDisplayNames(supabase, [
     {
       assignmentId: "custom-only",
       fallbackDisplayName: "Teacher Custom Prompt",
-      questionId: "custom:custom-only",
+      rawQuestionId: "custom:custom-only",
       questionSource: "custom",
       taskType: "email"
     }

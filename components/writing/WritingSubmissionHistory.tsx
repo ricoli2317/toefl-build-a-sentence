@@ -26,7 +26,7 @@ import {
 } from "@/lib/writing";
 import type {
   SubmittedWritingAttemptSummary,
-  WritingSubmissionQuestionSummary
+  WritingSubmissionQuestionPayload
 } from "@/lib/writingSubmissionHistory";
 import {
   PracticeSubmissionHistoryHeader,
@@ -39,7 +39,7 @@ import {
 
 type SubmissionHistoryPayload = {
   attempts: SubmittedWritingAttemptSummary[];
-  question: WritingSubmissionQuestionSummary;
+  question: WritingSubmissionQuestionPayload;
   error?: string;
 };
 
@@ -68,7 +68,7 @@ export function WritingSubmissionHistory({
   const config = WRITING_TASK_CONFIG[taskType];
   const listHref = config.listHref;
   const historyHref = writingSubmissionHistoryHref(taskType, questionId);
-  const questionDisplayName = question.display_name ?? question.set_title;
+  const questionDisplayName = question.display_name;
 
   return (
     <div className="grid gap-5">

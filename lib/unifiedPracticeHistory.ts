@@ -295,7 +295,7 @@ function buildBasRecords(
       submittedAt,
       taskLabel: UNIFIED_HISTORY_TASK_LABELS.build_sentence,
       taskType: "build_sentence" as const,
-      title: titles.get(setId)?.trim() || attempt.set_title?.trim() || setId
+      title: titles.get(setId)?.trim() || setId
     }];
   });
 }
