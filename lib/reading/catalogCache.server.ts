@@ -1,5 +1,6 @@
 import { unstable_cache } from "next/cache";
 import { catalogCacheTag, loadCatalogRevision } from "@/lib/catalogRevision.server";
+import { logCatalogCacheRebuild } from "@/lib/catalogCacheDiagnostics.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
@@ -48,6 +49,13 @@ function createReadingCatalogLoader(taskType: ReadingModule) {
   return unstable_cache(
     async (revision: number): Promise<ReadingCatalogPublicPayload> => {
       void revision;
+      // Diagnostics only: this callback runs on an actual rebuild, never on a
+      // cache hit, so the log stays silent for cached responses.
+      logCatalogCacheRebuild({
+        cacheKind: "reading_catalog",
+        taskType,
+        revision
+      });
       return loadPublicReadingCatalog(taskType);
     },
     ["public-reading-catalog", String(READING_CATALOG_CACHE_VERSION), taskType],
@@ -62,6 +70,12 @@ function createReadingSearchIndexLoader(taskType: ReadingModule) {
   return unstable_cache(
     async (revision: number): Promise<ReadingCatalogSearchIndexPayload> => {
       void revision;
+      // Diagnostics only: fires on an actual search-index rebuild.
+      logCatalogCacheRebuild({
+        cacheKind: "reading_search_index",
+        taskType,
+        revision
+      });
       return loadPublicReadingCatalogSearchIndex(taskType);
     },
     ["public-reading-catalog-search-index", String(READING_CATALOG_CACHE_VERSION), taskType],
@@ -76,6 +90,12 @@ function createReadingFullSetCatalogLoader() {
   return unstable_cache(
     async (revision: number): Promise<ReadingFullSetPublicCatalogItem[]> => {
       void revision;
+      // Diagnostics only: fires on an actual Full Set catalog rebuild.
+      logCatalogCacheRebuild({
+        cacheKind: "reading_full_set_catalog",
+        taskType: "full_set",
+        revision
+      });
       return buildReadingFullSetPublicCatalog(await loadReadingFullSetDefinitions(createServiceSupabase()));
     },
     ["public-reading-full-set-catalog", String(READING_CATALOG_CACHE_VERSION)],

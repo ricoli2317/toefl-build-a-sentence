@@ -1,5 +1,6 @@
 import { revalidateTag, unstable_cache } from "next/cache";
 import { catalogCacheTag, loadCatalogRevision } from "@/lib/catalogRevision.server";
+import { logCatalogCacheRebuild } from "@/lib/catalogCacheDiagnostics.server";
 import {
   loadPublicLogicalPracticeCatalog,
   type PublicLogicalPracticeCatalogData
@@ -38,6 +39,13 @@ function createCatalogLoader(taskType: PracticeTaskType) {
   return unstable_cache(
     async (revision: number): Promise<PublicLogicalPracticeCatalogData> => {
       void revision;
+      // Diagnostics only: this callback runs on an actual rebuild, never on a
+      // cache hit, so the log stays silent for cached responses.
+      logCatalogCacheRebuild({
+        cacheKind: "practice_catalog",
+        taskType,
+        revision
+      });
       return loadPublicLogicalPracticeCatalog({
         supabase: createServiceSupabase(),
         taskType
@@ -55,6 +63,12 @@ function createSearchIndexLoader(taskType: PracticeTaskType) {
   return unstable_cache(
     async (revision: number): Promise<LogicalPracticeCatalogSearchIndex> => {
       void revision;
+      // Diagnostics only: fires on an actual search-index rebuild.
+      logCatalogCacheRebuild({
+        cacheKind: "practice_search_index",
+        taskType,
+        revision
+      });
       return loadPublicLogicalPracticeCatalogSearchIndex({
         supabase: createServiceSupabase(),
         taskType
