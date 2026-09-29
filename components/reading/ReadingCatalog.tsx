@@ -13,6 +13,7 @@ import {
   useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
+import { useIdleCatalogSearchIndex } from "@/components/shared/useIdleCatalogSearchIndex";
 import {
   StudentEmptyState,
   StudentErrorState,
@@ -65,13 +66,15 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
     cacheKey,
     (session) => loadReadingCatalog(taskType, session)
   );
-  // Every Reading product renders the lightweight catalog first, then pulls the
-  // search index in the background and merges it back by logical_item_id.
-  const searchIndexState = useStudentCachedData<ReadingCatalogSearchIndexPayload>(
-    searchIndexKey,
-    (session) => loadReadingCatalogSearchIndex(taskType, session),
-    { enabled: Boolean(state.data) }
-  );
+  // Every Reading product renders the lightweight catalog first; the search
+  // index is prefetched once the browser is idle, or immediately when the
+  // student starts searching.
+  const searchIndexState = useIdleCatalogSearchIndex<ReadingCatalogSearchIndexPayload>({
+    cacheKey: searchIndexKey,
+    load: (session) => loadReadingCatalogSearchIndex(taskType, session),
+    mainCatalogReady: Boolean(state.data),
+    immediate: normalizeCatalogSearchText(controls.query).length > 0
+  });
   useEffect(() => {
     setPage(1);
     setControls(defaultControls());

@@ -3,112 +3,124 @@ const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
 const {
-  buildLogicalPracticeCatalogSearchIndex,
-  toLightweightLogicalPracticeCatalog
+  buildLogicalPracticeCatalog
 } = require("../lib/practiceLogicalCatalog.ts");
+const {
+  createPracticePublicUniverse
+} = require("../lib/practicePublicUniverse.ts");
 
 const ROOT = path.resolve(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 
-function sampleItem(overrides = {}) {
-  return {
-    item_id: "item-1",
-    task_type: "email",
-    display_number: "001",
-    display_title: "A topic",
-    catalog_category: "学术校园",
-    search_text: "unique body text for searching",
-    first_seen_date: "2026-01-01",
-    latest_seen_date: "2026-02-01",
-    occurrence_dates: ["2026-02-01", "2026-01-01"],
-    occurrence_date_counts: [{ date: "2026-02-01", count: 1 }],
-    occurrence_count: 2,
-    canonical: {
-      source_id: "source-1",
-      source_set_id: null,
-      source_question_id: "question-1"
-    },
-    question_count: 1,
-    student_state: {
-      status: "completed",
-      resume_attempt_id: null,
-      latest_attempt_id: "attempt-1",
-      latest_completed_attempt_id: "attempt-1",
-      can_start: false,
-      can_resume: false,
-      can_retake: true,
-      can_view_result: true
-    },
-    actions: {
-      start: null,
-      resume: null,
-      view_result: { attempt_id: "attempt-1", source_set_id: null, source_question_id: "question-1" },
-      retake: { source_set_id: null, source_question_id: "question-1" }
-    },
-    ...overrides
+function fixture() {
+  const snapshot = {
+    items: [
+      {
+        item_id: "email-item-1",
+        task_type: "email",
+        display_number: "001",
+        display_title: "A topic",
+        first_seen_date: "2026-01-01",
+        is_active: true
+      }
+    ],
+    sources: [
+      {
+        source_id: "source-1",
+        item_id: "email-item-1",
+        task_type: "email",
+        source_set_id: null,
+        source_question_id: "question-1",
+        is_canonical: true
+      }
+    ],
+    questionMaps: [],
+    buildSentenceQuestions: [],
+    emailQuestions: [{ question_id: "question-1" }],
+    academicDiscussionQuestions: []
   };
+  const occurrences = [{ source_id: "source-1", occurred_on: "2026-01-01" }];
+  return { snapshot, occurrences };
 }
 
-test("lightweight catalog drops search_text only and keeps every directory field", () => {
-  const catalog = {
-    items: [
-      sampleItem(),
-      sampleItem({ item_id: "item-2", display_number: "002", search_text: "second body" })
-    ],
-    pagination: { page: 1, page_size: 10, total_items: 2, total_pages: 1 }
-  };
-  const lightweight = toLightweightLogicalPracticeCatalog(catalog);
+test("lightweight catalog builds directory fields without any search text", () => {
+  const { snapshot, occurrences } = fixture();
+  const catalog = buildLogicalPracticeCatalog({
+    universe: createPracticePublicUniverse(snapshot),
+    occurrences,
+    taskType: "email",
+    page: 1
+  });
 
-  assert.equal(lightweight.items.length, catalog.items.length);
-  assert.deepEqual(lightweight.pagination, catalog.pagination);
-  for (const [index, item] of lightweight.items.entries()) {
-    const original = catalog.items[index];
-    assert.equal("search_text" in item, false);
-    for (const key of Object.keys(original)) {
-      if (key === "search_text") continue;
-      assert.deepEqual(item[key], original[key], `${original.item_id}.${key}`);
-    }
+  assert.equal(catalog.items.length, 1);
+  const item = catalog.items[0];
+  assert.equal("search_text" in item, false);
+  for (const key of [
+    "item_id",
+    "task_type",
+    "display_number",
+    "display_title",
+    "catalog_category",
+    "first_seen_date",
+    "latest_seen_date",
+    "occurrence_dates",
+    "occurrence_date_counts",
+    "occurrence_count",
+    "canonical",
+    "question_count"
+  ]) {
+    assert.ok(key in item, `${key} must stay in the lightweight catalog`);
   }
 });
 
-test("search index maps item_id to the cached catalog search_text", () => {
-  const catalog = {
-    items: [
-      { item_id: "a", search_text: "alpha text" },
-      { item_id: "b", search_text: "" }
-    ]
-  };
-  const entries = buildLogicalPracticeCatalogSearchIndex(catalog);
-  assert.deepEqual(entries, [
-    { item_id: "a", search_text: "alpha text" },
-    { item_id: "b", search_text: "" }
-  ]);
-  const ids = entries.map((entry) => entry.item_id);
-  assert.equal(new Set(ids).size, ids.length, "no duplicate item ids");
+test("the student lightweight catalog loader never opts into search text", () => {
+  const catalog = read("lib/practiceLogicalCatalog.ts");
+  assert.match(catalog, /includeSearchText\?: boolean/);
+  assert.match(catalog, /includeSearchText \? \{ search_text: item\.catalogSearchText \} : \{\}/);
+  const loader = catalog.match(/export async function loadPublicLogicalPracticeCatalog[\s\S]*?\n\}/)?.[0] ?? "";
+  assert.ok(loader.length > 0);
+  assert.doesNotMatch(loader, /includeSearchText/);
+  assert.doesNotMatch(loader, /loadPracticeCatalogSearchMetadata/);
 });
 
-test("search-index route reuses the cached catalog instead of scanning raw content", () => {
+test("the search index has its own loader that is never imported by the catalog builder", () => {
+  const indexLoader = read("lib/practiceCatalogSearchIndex.server.ts");
+  const catalog = read("lib/practiceLogicalCatalog.ts");
+  assert.match(indexLoader, /loadPracticeCatalogSearchMetadata/);
+  assert.match(indexLoader, /item_id: item\.itemId/);
+  assert.match(indexLoader, /search_text: item\.catalogSearchText/);
+  assert.doesNotMatch(catalog, /practiceCatalogSearchIndex/);
+});
+
+test("search-index route reuses the dedicated search index cache", () => {
   const route = read("app/api/practice-catalog/search-index/route.ts");
-  assert.match(route, /loadCachedPublicPracticeCatalog\(taskType\)/);
-  assert.match(route, /buildLogicalPracticeCatalogSearchIndex/);
+  const cache = read("lib/practiceCatalogCache.server.ts");
+  assert.match(route, /loadCachedPublicPracticeCatalogSearchIndex\(taskType\)/);
   assert.match(route, /isLogicalPracticeTaskType/);
   assert.match(route, /requireUserWithRole\(bearerToken\(request\), "student"\)/);
   assert.match(route, /"Cache-Control": "no-store"/);
   assert.doesNotMatch(route, /\.from\(/);
-  assert.doesNotMatch(route, /questions|email_questions|academic_discussion_questions/);
+  assert.doesNotMatch(route, /loadCachedPublicPracticeCatalog\(taskType\)/);
+  assert.match(cache, /searchIndexLoaders/);
+  assert.match(cache, /loadPublicLogicalPracticeCatalogSearchIndex/);
 });
 
-test("practice-catalog API strips search_text before responding", () => {
+test("practice-catalog API returns the merged catalog without stripping content", () => {
   const route = read("app/api/practice-catalog/route.ts");
-  assert.match(route, /toLightweightLogicalPracticeCatalog\(catalog\)/);
+  assert.match(route, /getLogicalPracticeItems/);
   assert.match(route, /loadCachedPublicPracticeCatalog\(taskType\)/);
+  assert.doesNotMatch(route, /toLightweightLogicalPracticeCatalog/);
+  assert.doesNotMatch(route, /search_text/);
 });
 
-test("writing catalog client loads the lightweight catalog first and merges the index by item_id", () => {
+test("catalog client prefetches the search index only after the first screen", () => {
   const catalog = read("components/LogicalPracticeCatalog.tsx");
+  const hook = read("components/shared/useIdleCatalogSearchIndex.ts");
   const lib = read("lib/practiceLogicalCatalogSearchIndex.ts");
-  assert.match(catalog, /studentLogicalCatalogSearchIndexCacheKey\(taskType\)/);
-  assert.match(catalog, /enabled: Boolean\(state\.data\)/);
+  assert.match(catalog, /useIdleCatalogSearchIndex/);
+  assert.match(catalog, /cacheKey: searchIndexKey/);
+  assert.match(catalog, /mainCatalogReady: Boolean\(state\.data\)/);
+  assert.match(catalog, /immediate: normalizeCatalogSearchText\(controls\.query\)\.length > 0/);
   assert.match(catalog, /logicalPracticeCatalogSearchTextMap\(searchIndex\)/);
   assert.match(catalog, /searchTextByItemId\.get\(item\.item_id\)/);
   assert.match(catalog, /searchIndexBlocked = searchIndexRequired && !searchIndex/);
@@ -116,6 +128,12 @@ test("writing catalog client loads the lightweight catalog first and merges the 
   assert.match(catalog, /搜索数据加载失败/);
   assert.match(catalog, /onClick=\{onRetrySearchIndex\}/);
   assert.match(catalog, /重新加载搜索数据/);
+  assert.match(hook, /requestIdleCallback/);
+  assert.match(hook, /timeout: idleTimeoutMs/);
+  assert.match(hook, /window\.setTimeout\(enable, fallbackDelayMs\)/);
+  assert.match(hook, /enabled: mainCatalogReady && \(idleEnabled \|\| immediate\)/);
+  assert.match(hook, /useStudentCachedData/);
+  assert.doesNotMatch(hook, /fetch\(/);
   assert.match(lib, /\/api\/practice-catalog\/search-index\?taskType=/);
   assert.doesNotMatch(lib, /localStorage|indexedDB|sessionStorage/);
 });

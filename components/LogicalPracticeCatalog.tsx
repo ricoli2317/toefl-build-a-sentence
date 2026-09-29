@@ -16,6 +16,7 @@ import {
   useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
+import { useIdleCatalogSearchIndex } from "@/components/shared/useIdleCatalogSearchIndex";
 import {
   StudentEmptyState,
   StudentErrorState,
@@ -74,13 +75,14 @@ export function LogicalPracticeCatalog({
     cacheKey,
     (session) => loadLogicalPracticeCatalog(taskType, session)
   );
-  // The lightweight catalog renders first, then the per-task search index is
-  // pulled in the background and merged back by item_id, exactly like Reading.
-  const searchIndexState = useStudentCachedData<LogicalPracticeCatalogSearchIndexPayload>(
-    searchIndexKey,
-    (session) => loadLogicalPracticeCatalogSearchIndex(taskType, session),
-    { enabled: Boolean(state.data) }
-  );
+  // The lightweight catalog renders first; the search index is prefetched once
+  // the browser is idle, or immediately when the student starts searching.
+  const searchIndexState = useIdleCatalogSearchIndex<LogicalPracticeCatalogSearchIndexPayload>({
+    cacheKey: searchIndexKey,
+    load: (session) => loadLogicalPracticeCatalogSearchIndex(taskType, session),
+    mainCatalogReady: Boolean(state.data),
+    immediate: normalizeCatalogSearchText(controls.query).length > 0
+  });
   useEffect(() => setCurrentPage(page), [page, taskType]);
   useEffect(() => {
     const timeout = window.setTimeout(() => setDebouncedQuery(controls.query), 200);

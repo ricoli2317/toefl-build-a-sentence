@@ -347,7 +347,6 @@ test("contract contains canonical metadata and no Step 13 student status fields"
     "display_number",
     "display_title",
     "catalog_category",
-    "search_text",
     "first_seen_date",
     "latest_seen_date",
     "occurrence_dates",
@@ -361,7 +360,7 @@ test("contract contains canonical metadata and no Step 13 student status fields"
     "source_set_id",
     "source_question_id"
   ]);
-  for (const forbidden of ["status", "completed", "draft", "attempt_count", "score"] ) {
+  for (const forbidden of ["status", "completed", "draft", "attempt_count", "score", "search_text"]) {
     assert.equal(forbidden in item, false);
   }
 });

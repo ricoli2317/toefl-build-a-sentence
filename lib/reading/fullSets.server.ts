@@ -2,11 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "../supabasePagination.ts";
 import {
   buildReadingFullSetCatalog,
-  buildReadingFullSetCatalogStates,
   buildReadingFullSets,
   findValidReadingFullSet,
   type ReadingFullSet,
-  type ReadingFullSetCatalogAttemptRow,
   type ReadingFullSetCatalogItem,
   type ReadingFullSetOccurrenceInput
 } from "./fullSets.ts";
@@ -24,15 +22,6 @@ type ReadingFullSetOccurrenceRow = {
   reading_logical_items:
     | { module: string; scored_item_count: number }
     | Array<{ module: string; scored_item_count: number }>;
-};
-
-export const READING_FULL_SET_CATALOG_PAGE_SIZE = 10;
-
-export type ReadingFullSetCatalogPage = {
-  fullSets: ReadingFullSetCatalogItem[];
-  limit: typeof READING_FULL_SET_CATALOG_PAGE_SIZE;
-  page: number;
-  total: number;
 };
 
 /**
@@ -53,54 +42,21 @@ export async function loadReadingFullSetPickerCatalog(
   ));
 }
 
-/**
- * Validates the complete catalog before applying pagination. The M1-question-1
- * rows are only candidates: incomplete or otherwise invalid Full Sets can also
- * have one, so paginating those rows would create short/empty pages and inflate
- * the total. Student attempt state is still loaded only for the requested page.
- */
-export async function loadReadingFullSetCatalogPage(
-  db: SupabaseClient,
-  input: { page: number; studentId: string }
-): Promise<ReadingFullSetCatalogPage> {
-  const from = (input.page - 1) * READING_FULL_SET_CATALOG_PAGE_SIZE;
+/** Validated Full Set definitions in the exact canonical order used by the catalog. */
+export async function loadReadingFullSetDefinitions(
+  db: SupabaseClient
+): Promise<ReadingFullSet[]> {
   const occurrenceResult = await loadReadingFullSetOccurrenceRows(db);
   if (occurrenceResult.error) {
     throw new Error(`read Reading Full Set catalog: ${occurrenceResult.error.message}`);
   }
-  const catalog = buildReadingFullSetCatalog(buildReadingFullSets(
+  return buildReadingFullSets(
     (occurrenceResult.data ?? []).map(readingFullSetOccurrenceInput)
-  ));
-  const pageCatalog = catalog.slice(from, from + READING_FULL_SET_CATALOG_PAGE_SIZE);
-  const fullSetIds = pageCatalog.map((fullSet) => fullSet.fullSetId);
-  let attempts: ReadingFullSetCatalogAttemptRow[] = [];
-  if (fullSetIds.length > 0) {
-    const attemptsResult = await db.from("reading_full_set_attempts")
-      .select("attempt_id,full_set_id,status,completed_at,created_at")
-      .eq("student_id", input.studentId)
-      .in("full_set_id", fullSetIds);
-    if (attemptsResult.error) {
-      throw new Error(`read Reading Full Set catalog attempts: ${attemptsResult.error.message}`);
-    }
-    attempts = (attemptsResult.data ?? []) as ReadingFullSetCatalogAttemptRow[];
-  }
-  const stateByFullSet = buildReadingFullSetCatalogStates(attempts);
-
-  return {
-    fullSets: pageCatalog.map((fullSet) => ({
-      ...fullSet,
-      studentState: stateByFullSet.get(fullSet.fullSetId) ?? fullSet.studentState
-    })),
-    limit: READING_FULL_SET_CATALOG_PAGE_SIZE,
-    page: input.page,
-    total: catalog.length
-  };
+  );
 }
 
 export async function loadReadingFullSets(db: SupabaseClient) {
-  const result = await loadReadingFullSetOccurrenceRows(db);
-  if (result.error) throw new Error(`read Reading Full Set occurrences: ${result.error.message}`);
-  return buildReadingFullSets((result.data ?? []).map(readingFullSetOccurrenceInput));
+  return loadReadingFullSetDefinitions(db);
 }
 
 /** Runtime attempt paths should resolve only the requested date, not rebuild the catalog. */

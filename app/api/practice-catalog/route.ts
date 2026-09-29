@@ -1,8 +1,7 @@
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import {
   getLogicalPracticeItems,
-  isLogicalPracticeTaskType,
-  toLightweightLogicalPracticeCatalog
+  isLogicalPracticeTaskType
 } from "@/lib/practiceLogicalCatalog";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
@@ -28,6 +27,9 @@ export async function GET(request: Request) {
       return respond({ error: auth.error ?? "Unauthorized" }, { status: 401 });
     }
 
+    // One request: cached public lightweight catalog + sparse student state,
+    // merged server-side. The payload has no search text; the separate search
+    // index is prefetched by the client after the first screen renders.
     const catalog = await getLogicalPracticeItems({
       supabase: createServiceSupabase(),
       studentId: auth.userId,
@@ -35,9 +37,7 @@ export async function GET(request: Request) {
       timing,
       loadPublicCatalog: () => loadCachedPublicPracticeCatalog(taskType)
     });
-    // Strip search_text before it reaches the client; the search index is
-    // served by /api/practice-catalog/search-index from the same cached catalog.
-    return respond(toLightweightLogicalPracticeCatalog(catalog));
+    return respond(catalog);
   } catch (error) {
     console.error("[practice-catalog] logical_list_failed", error);
     return respond({ error: "Could not load the logical practice catalog." }, { status: 500 });

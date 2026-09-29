@@ -51,17 +51,24 @@ test("Full Set data produces ten-item, gap-free catalog pages", () => {
   );
 });
 
-test("Full Set API validates before pagination and counts only usable sets", () => {
+test("Full Set API returns the complete validated catalog; the browser slices pages", () => {
   const route = read("app/api/reading/full-sets/route.ts");
   const server = read("lib/reading/fullSets.server.ts");
-  assert.match(route, /searchParams\.get\("page"\)/);
-  assert.match(route, /searchParams\.get\("limit"\)/);
-  assert.match(route, /limit !== 10/);
-  assert.match(server, /READING_FULL_SET_CATALOG_PAGE_SIZE = 10/);
+  const cache = read("lib/reading/catalogCache.server.ts");
+  const ui = read("components/reading/ReadingFullSetCatalog.tsx");
+  assert.doesNotMatch(route, /searchParams\.get\("page"\)|searchParams\.get\("limit"\)/);
+  assert.doesNotMatch(route, /loadReadingFullSetCatalogPage/);
+  assert.match(route, /loadCachedPublicReadingFullSetCatalog\(\)/);
+  assert.match(route, /loadStudentPracticeItemStates\(db, \{ studentId: auth\.userId, taskType: "full_set" \}\)/);
+  assert.match(route, /attachReadingFullSetStudentStates\(publicCatalog, stateResult\.rows\)/);
   assert.match(server, /buildReadingFullSetCatalog\(buildReadingFullSets\(/);
-  assert.match(server, /catalog\.slice\(from, from \+ READING_FULL_SET_CATALOG_PAGE_SIZE\)/);
-  assert.match(server, /total: catalog\.length/);
-  assert.match(server, /\.in\("full_set_id", fullSetIds\)/);
+  assert.match(server, /loadReadingFullSetDefinitions/);
+  assert.match(cache, /reading-full-set-catalog/);
+  assert.match(cache, /cacheKind: "lightweight_catalog"/);
+  assert.match(ui, /const PAGE_SIZE = 10/);
+  assert.match(ui, /state\.data\.fullSets\.slice\(/);
+  assert.match(ui, /reading:full-sets:catalog:v2/);
+  assert.doesNotMatch(ui, /refreshOnMount/);
   assert.doesNotMatch(server, /count: "exact"|catalog anchors/);
   assert.doesNotMatch(route, /loadReadingFullSets|readAllSupabaseRows/);
 });

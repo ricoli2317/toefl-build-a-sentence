@@ -26,20 +26,25 @@ const PAGE_SIZE = 10;
 
 type ReadingFullSetCatalogPayload = {
   fullSets: ReadingFullSetCatalogItem[];
-  limit: number;
-  page: number;
   total: number;
 };
 
 export function ReadingFullSetCatalog() {
   const cache = useStudentDataCache();
   const [page, setPage] = useState(1);
-  const cacheKey = readingFullSetCatalogPageCacheKey(page);
+  const cacheKey = readingFullSetCatalogCacheKey();
+  // The API returns the complete lightweight Full Set catalog; filtering and
+  // the 10-item paging happen locally, exactly like the other catalogs.
   const state = useStudentCachedData<ReadingFullSetCatalogPayload>(
     cacheKey,
-    (session) => loadReadingFullSetCatalog(page, session)
+    (session) => loadReadingFullSetCatalog(session)
   );
-  const totalPages = Math.ceil((state.data?.total ?? 0) / PAGE_SIZE);
+  const totalItems = state.data?.total ?? state.data?.fullSets.length ?? 0;
+  const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+  const visiblePage = Math.min(page, Math.max(totalPages, 1));
+  const items = state.data
+    ? state.data.fullSets.slice((visiblePage - 1) * PAGE_SIZE, visiblePage * PAGE_SIZE)
+    : [];
 
   return (
     <div className="grid gap-5">
@@ -63,22 +68,22 @@ export function ReadingFullSetCatalog() {
           </button>
         </div>
       ) : null}
-      {!state.loading && state.data?.fullSets.length === 0 ? (
+      {!state.loading && state.data && totalItems === 0 ? (
         <StudentEmptyState text="暂无可用套题" />
       ) : null}
-      {!state.loading && state.data?.fullSets.length ? (
+      {!state.loading && items.length > 0 ? (
         <PracticeSetCatalogList
           renderActions={(set) => (
             <ReadingFullSetActions
-              fullSet={state.data!.fullSets.find((item) => item.fullSetId === set.setId)!}
+              fullSet={items.find((item) => item.fullSetId === set.setId)!}
             />
           )}
           renderStatus={(set) => (
             <ReadingCatalogStatusBadge
-              status={state.data!.fullSets.find((item) => item.fullSetId === set.setId)!.studentState.status}
+              status={items.find((item) => item.fullSetId === set.setId)!.studentState.status}
             />
           )}
-          sets={state.data.fullSets.map((fullSet) => ({
+          sets={items.map((fullSet) => ({
             icon: STUDENT_PRACTICE_ICONS.full_set,
             setId: fullSet.fullSetId,
             setTitle: fullSet.title,
@@ -86,11 +91,11 @@ export function ReadingFullSetCatalog() {
           }))}
         />
       ) : null}
-      {!state.loading && state.data ? (
+      {!state.loading && state.data && totalItems > 0 ? (
         <ReadingCatalogPagination
           onChange={setPage}
-          page={page}
-          totalItems={state.data.total}
+          page={visiblePage}
+          totalItems={totalItems}
           totalPages={totalPages}
         />
       ) : null}
@@ -141,12 +146,12 @@ function ReadingFullSetCatalogSkeleton() {
   );
 }
 
-export function readingFullSetCatalogPageCacheKey(page: number) {
-  return `reading:full-sets:catalog:page:${page}:limit:${PAGE_SIZE}`;
+export function readingFullSetCatalogCacheKey() {
+  return `reading:full-sets:catalog:v2:limit:${PAGE_SIZE}`;
 }
 
-async function loadReadingFullSetCatalog(page: number, session: StudentCacheSession) {
-  const response = await fetch(`/api/reading/full-sets?page=${page}&limit=${PAGE_SIZE}`, {
+async function loadReadingFullSetCatalog(session: StudentCacheSession) {
+  const response = await fetch("/api/reading/full-sets", {
     cache: "no-store",
     headers: { Authorization: `Bearer ${session.accessToken}` }
   });
@@ -157,8 +162,6 @@ async function loadReadingFullSetCatalog(page: number, session: StudentCacheSess
     !response.ok
     || payload.error
     || !Array.isArray(payload.fullSets)
-    || payload.page !== page
-    || payload.limit !== PAGE_SIZE
     || !Number.isSafeInteger(payload.total)
   ) {
     throw new Error(payload.error ?? "套题加载失败，请重试。");

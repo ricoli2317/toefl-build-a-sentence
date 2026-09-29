@@ -11,7 +11,10 @@ test("student catalog cache keys and server cache are versioned after schema cha
   const serverCache = read("lib/practiceCatalogCache.server.ts");
   assert.match(clientCache, /logical-practice-catalog.*:v3:/s);
   assert.match(clientCache, /reading:catalog.*:v2:/s);
-  assert.match(serverCache, /CACHE_VERSION = 3/);
+  assert.match(serverCache, /PRACTICE_CATALOG_CACHE_VERSION = 4/);
+  assert.match(serverCache, /loadCatalogRevision/);
+  assert.match(serverCache, /cacheKind: "lightweight_catalog"/);
+  assert.match(serverCache, /cacheKind: "search_index"/);
 });
 
 test("student catalog renderers tolerate old occurrence and discovery field names", () => {

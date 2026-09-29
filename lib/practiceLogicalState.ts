@@ -2,6 +2,7 @@ import { isLaterOfficialAttempt, normalizeSetId } from "./studentSetStatus.ts";
 import { isVirtualPracticeSetId } from "./studentNavigation.ts";
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import type { FormalPracticeItemSource } from "./practicePublicUniverse.ts";
+import type { StudentPracticeItemStateRow } from "./studentPracticeItemState.ts";
 import { compareWritingSubmittedAttempts } from "./writingSubmissionHistory.ts";
 
 export type LogicalPracticeStudentStatus = "unstarted" | "in_progress" | "completed";
@@ -73,8 +74,7 @@ export function attachLogicalPracticeStudentState<TItem extends LogicalStateItem
 }): Array<TItem & {
   student_state: LogicalPracticeStudentState;
   actions: LogicalPracticeActions;
-}> {
-  const itemsById = new Map(input.items.map((item) => [item.item_id, item]));
+}> {  const itemsById = new Map(input.items.map((item) => [item.item_id, item]));
   const sourceBySetId = new Map<string, FormalPracticeItemSource>();
   const sourceByQuestionId = new Map<string, FormalPracticeItemSource>();
 
@@ -118,6 +118,100 @@ export function attachLogicalPracticeStudentState<TItem extends LogicalStateItem
         )
       : buildWritingState(item, writingAttemptsByItem.get(item.item_id) ?? []);
     return { ...item, ...stateAndActions };
+  });
+}
+
+/**
+ * Directory merge for the sparse state table: items without a state row stay
+ * `unstarted` and never receive a database record.
+ */
+export function attachLogicalPracticeStudentStateFromRows<TItem extends LogicalStateItem>(input: {
+  items: TItem[];
+  states: StudentPracticeItemStateRow[];
+}): Array<TItem & {
+  student_state: LogicalPracticeStudentState;
+  actions: LogicalPracticeActions;
+}> {
+  const stateByItemId = new Map<string, StudentPracticeItemStateRow>();
+  for (const state of input.states) {
+    // Only the free-practice logical task types belong to this catalog merge.
+    if (state.task_type !== "build_sentence"
+      && state.task_type !== "email"
+      && state.task_type !== "academic_discussion") {
+      continue;
+    }
+    stateByItemId.set(state.item_id, state);
+  }
+
+  return input.items.map((item) => {
+    const state = stateByItemId.get(item.item_id) ?? null;
+    if (state && state.task_type !== item.task_type) {
+      return { ...item, ...buildUnstartedState(item) };
+    }
+    const stateAndActions = item.task_type === "build_sentence"
+      ? buildBuildSentenceStateFromRow(item, state)
+      : buildWritingStateFromRow(item, state);
+    return { ...item, ...stateAndActions };
+  });
+}
+
+function buildUnstartedState(item: LogicalStateItem) {
+  return buildStateAndActions({
+    item,
+    status: "unstarted",
+    resume: null,
+    latest: null,
+    latestCompleted: null,
+    rawTarget: null
+  });
+}
+
+function buildBuildSentenceStateFromRow(
+  item: LogicalStateItem,
+  state: StudentPracticeItemStateRow | null
+) {
+  // BAS attempts are write-once completed records; there is no persisted draft.
+  const latestAttemptId = state?.latest_completed_attempt_id ?? state?.latest_attempt_id ?? null;
+  const status: LogicalPracticeStudentStatus = latestAttemptId ? "completed" : "unstarted";
+  return buildStateAndActions({
+    item,
+    status,
+    resume: null,
+    latest: latestAttemptId ? { attempt_id: latestAttemptId } : null,
+    latestCompleted: latestAttemptId ? { attempt_id: latestAttemptId } : null,
+    rawTarget: latestAttemptId
+      ? { source_set_id: item.canonical.source_set_id, source_question_id: null }
+      : null
+  });
+}
+
+function buildWritingStateFromRow(
+  item: LogicalStateItem,
+  state: StudentPracticeItemStateRow | null
+) {
+  const status: LogicalPracticeStudentStatus = state?.status === "in_progress" || state?.status === "completed"
+    ? state.status
+    : "unstarted";
+  const resumeAttemptId = status === "in_progress" ? state?.resume_attempt_id ?? null : null;
+  const latestCompletedAttemptId = status === "unstarted"
+    ? null
+    : state?.latest_completed_attempt_id ?? null;
+  return buildStateAndActions({
+    item,
+    status,
+    resume: resumeAttemptId
+      ? {
+          attempt_id: resumeAttemptId,
+          question_id: state?.resume_source_question_id ?? item.canonical.source_question_id ?? ""
+        }
+      : null,
+    latest: state?.latest_attempt_id ? { attempt_id: state.latest_attempt_id } : null,
+    latestCompleted: latestCompletedAttemptId
+      ? { attempt_id: latestCompletedAttemptId }
+      : null,
+    rawTarget: latestCompletedAttemptId
+      ? { source_set_id: null, source_question_id: item.canonical.source_question_id }
+      : null
   });
 }
 

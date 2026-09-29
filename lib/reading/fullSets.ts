@@ -1,5 +1,6 @@
 import { compareReadingSourceLabels } from "./grouping.ts";
 import type { ReadingModule, ReadingTestModule } from "./types.ts";
+import type { StudentPracticeItemStateRow } from "../studentPracticeItemState.ts";
 
 export const READING_FULL_SET_MODULE_1_PATTERN_1_SECONDS = 1230;
 export const READING_FULL_SET_MODULE_1_PATTERN_2_SECONDS = 1110;
@@ -86,6 +87,11 @@ export type ReadingFullSetCatalogStudentState = {
   hasCompleted: boolean;
   status: "unstarted" | "in_progress" | "completed";
 };
+
+export type ReadingFullSetPublicCatalogItem = Omit<
+  ReadingFullSetCatalogItem,
+  "studentState"
+>;
 
 export type ReadingFullSetCatalogAttemptRow = {
   attempt_id: string;
@@ -189,8 +195,56 @@ export function buildReadingFullSetCatalog(
     }));
 }
 
-export function buildReadingFullSetCatalogStates(attempts: ReadingFullSetCatalogAttemptRow[]) {
-  const byFullSet = new Map<string, ReadingFullSetCatalogAttemptRow[]>();
+/**
+ * Public cached form: identical validation and ordering, no student state.
+ */
+export function buildReadingFullSetPublicCatalog(
+  fullSets: ReadingFullSet[]
+): ReadingFullSetPublicCatalogItem[] {
+  return buildReadingFullSetCatalog(fullSets).map(({ studentState: _studentState, ...item }) => item);
+}
+
+/**
+ * Sparse state merge for the public Full Set catalog. A missing state row means
+ * the student never started that Full Set.
+ */
+export function attachReadingFullSetStudentStates(
+  items: ReadingFullSetPublicCatalogItem[],
+  states: StudentPracticeItemStateRow[]
+): ReadingFullSetCatalogItem[] {
+  const stateByFullSetId = new Map<string, StudentPracticeItemStateRow>();
+  for (const state of states) {
+    if (state.task_type !== "full_set") continue;
+    stateByFullSetId.set(state.item_id, state);
+  }
+  return items.map((item) => ({
+    ...item,
+    studentState: readingFullSetStudentState(
+      stateByFullSetId.get(item.fullSetId) ?? null
+    )
+  }));
+}
+
+function readingFullSetStudentState(
+  state: StudentPracticeItemStateRow | null
+): ReadingFullSetCatalogStudentState {
+  const activeAttemptId = state?.status === "in_progress"
+    ? state?.resume_attempt_id ?? null
+    : null;
+  const latestCompletedAttemptId = state?.latest_completed_attempt_id ?? null;
+  return {
+    activeAttemptId,
+    latestCompletedAttemptId,
+    hasCompleted: Boolean(latestCompletedAttemptId),
+    status: activeAttemptId
+      ? "in_progress"
+      : latestCompletedAttemptId
+        ? "completed"
+        : "unstarted"
+  };
+}
+
+export function buildReadingFullSetCatalogStates(attempts: ReadingFullSetCatalogAttemptRow[]) {  const byFullSet = new Map<string, ReadingFullSetCatalogAttemptRow[]>();
   for (const attempt of attempts) {
     byFullSet.set(attempt.full_set_id, [...(byFullSet.get(attempt.full_set_id) ?? []), attempt]);
   }

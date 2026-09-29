@@ -133,9 +133,20 @@ test("public catalog data is cached and invalidated after both import mutation p
 test("catalog public data and student state load in parallel with fewer database stages", () => {
   const catalog = read("lib/practiceLogicalCatalog.ts");
   const universe = read("lib/practicePublicUniverse.ts");
-  assert.match(catalog, /Promise\.all\(\[[\s\S]*publicCatalogPromise[\s\S]*loadLogicalPracticeStudentAttempts/);
+  assert.match(
+    catalog,
+    /Promise\.all\(\[[\s\S]*publicCatalogPromise[\s\S]*loadStudentPracticeItemStates/
+  );
+  assert.match(catalog, /attachLogicalPracticeStudentStateFromRows/);
+  // The legacy attempt scan may only run when the sparse state table is
+  // unavailable during the migration rollout.
+  const fallbackIndex = catalog.indexOf("Transitional fallback while the state migration is rolling out");
+  const attemptsIndex = catalog.indexOf("loadLogicalPracticeStudentAttempts({");
+  assert.ok(fallbackIndex > 0 && attemptsIndex > fallbackIndex);
   assert.match(universe, /Promise\.all\(\[[\s\S]*practice_items[\s\S]*practice_item_sources/);
   assert.match(universe, /\.eq\("task_type", taskType\)/);
+  assert.match(universe, /loadPracticeCatalogCategoryMetadata/);
+  assert.match(universe, /loadPracticeCatalogSearchMetadata/);
 });
 
 test("student home uses one summary request instead of the five legacy detail requests", () => {

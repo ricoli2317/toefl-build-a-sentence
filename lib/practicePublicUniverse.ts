@@ -54,7 +54,7 @@ type PracticeItemOccurrenceRow = {
   occurred_on: string;
 };
 
-type PracticeCatalogMetadata = {
+export type PracticeCatalogMetadata = {
   category: string | null;
   searchText: string;
 };
@@ -351,7 +351,7 @@ export function createPracticePublicUniverse(
   };
 }
 
-function createPracticeCatalogDirectory(
+export function createPracticeCatalogDirectory(
   items: PracticeItemRow[],
   sources: PracticeItemSourceRow[],
   metadataBySourceId = new Map<string, PracticeCatalogMetadata>()
@@ -647,14 +647,24 @@ export async function loadPracticePublicUniverseForTaskType(
   return universe;
 }
 
-export async function loadPracticeCatalogDirectory(
+export type PracticeCatalogDirectoryData = {
+  items: PracticeItemRow[];
+  sources: PracticeItemSourceRow[];
+  formalSourceIds: string[];
+  canonicalSources: PracticeItemSourceRow[];
+  /** Directory without any content metadata; callers add category/search text. */
+  directory: PracticeCatalogDirectory;
+};
+
+/**
+ * Identity-only directory read shared by the lightweight catalog, the search
+ * index, and the legacy directory loader. This query never touches content.
+ */
+export async function loadPracticeCatalogDirectoryData(
   supabase: SupabaseClient,
   taskType: PracticeTaskType,
   timing?: StudentPerformanceTrace
-): Promise<{
-  directory: PracticeCatalogDirectory;
-  occurrences: PracticeItemOccurrenceRow[];
-}> {
+): Promise<PracticeCatalogDirectoryData> {
   const [itemResult, sourceResult] = await Promise.all([
     measureDatabase(timing, "practice_items", () =>
       readAllSupabaseRows<PracticeItemRow>((from, to) =>
@@ -707,31 +717,176 @@ export async function loadPracticeCatalogDirectory(
     sources.filter(isFormalSource).map((source) => source.source_id)
   );
   const canonicalSources = sources.filter((source) => source.is_canonical && isFormalSource(source));
+  const buildDirectory = () => createPracticeCatalogDirectory(items, sources);
+  const directory = timing
+    ? timing.measureSync("processing", "build_practice_catalog_directory", buildDirectory)
+    : buildDirectory();
+  return { items, sources, formalSourceIds, canonicalSources, directory };
+}
+
+/** Occurrence dates/source mapping for one task type, scoped to formal sources. */
+export async function loadPracticeCatalogOccurrences(
+  supabase: SupabaseClient,
+  formalSourceIds: string[],
+  timing?: StudentPerformanceTrace
+): Promise<PracticeItemOccurrenceRow[]> {
+  return measureDatabase(timing, "practice_item_occurrences", () =>
+    readRowsInBatches<PracticeItemOccurrenceRow>(
+      formalSourceIds,
+      (batch, rangeFrom, rangeTo) =>
+        supabase
+          .from("practice_item_occurrences")
+          .select("occurrence_id,source_id,occurred_on")
+          .in("source_id", batch)
+          .order("source_id", { ascending: true })
+          .order("occurred_on", { ascending: false })
+          .range(rangeFrom, rangeTo) as unknown as PromiseLike<{
+          data: PracticeItemOccurrenceRow[] | null;
+          error: { message: string } | null;
+        }>,
+      "practice_item_occurrences"
+    )
+  );
+}
+
+export async function loadPracticeCatalogDirectory(
+  supabase: SupabaseClient,
+  taskType: PracticeTaskType,
+  timing?: StudentPerformanceTrace
+): Promise<{
+  directory: PracticeCatalogDirectory;
+  occurrences: PracticeItemOccurrenceRow[];
+}> {
+  const data = await loadPracticeCatalogDirectoryData(supabase, taskType, timing);
   const [occurrences, metadataBySourceId] = await Promise.all([
-    measureDatabase(timing, "practice_item_occurrences", () =>
-      readRowsInBatches<PracticeItemOccurrenceRow>(
-        formalSourceIds,
-        (batch, rangeFrom, rangeTo) =>
-          supabase
-            .from("practice_item_occurrences")
-            .select("occurrence_id,source_id,occurred_on")
-            .in("source_id", batch)
-            .order("source_id", { ascending: true })
-            .order("occurred_on", { ascending: false })
-            .range(rangeFrom, rangeTo) as unknown as PromiseLike<{
-            data: PracticeItemOccurrenceRow[] | null;
-            error: { message: string } | null;
-          }>,
-        "practice_item_occurrences"
-      )
-    ),
-    loadPracticeCatalogMetadata(supabase, taskType, canonicalSources, timing)
+    loadPracticeCatalogOccurrences(supabase, data.formalSourceIds, timing),
+    loadPracticeCatalogMetadata(supabase, taskType, data.canonicalSources, timing)
   ]);
-  const buildDirectory = () => createPracticeCatalogDirectory(items, sources, metadataBySourceId);
+  const buildDirectory = () =>
+    createPracticeCatalogDirectory(data.items, data.sources, metadataBySourceId);
   const directory = timing
     ? timing.measureSync("processing", "build_practice_catalog_directory", buildDirectory)
     : buildDirectory();
   return { directory, occurrences };
+}
+
+/**
+ * Lightweight directory metadata: only the fields the directory UI itself
+ * filters on. `catalogSearchText` is intentionally not loaded here; the search
+ * index has its own loader/cache.
+ */
+export async function loadPracticeCatalogCategoryMetadata(
+  supabase: SupabaseClient,
+  taskType: PracticeTaskType,
+  canonicalSources: PracticeItemSourceRow[],
+  timing?: StudentPerformanceTrace
+): Promise<Map<string, PracticeCatalogMetadata>> {
+  const metadata = new Map<string, PracticeCatalogMetadata>();
+  if (taskType === "build_sentence") return metadata;
+
+  const sourceByQuestionId = new Map(canonicalSources.flatMap((source) =>
+    source.source_question_id ? [[source.source_question_id, source] as const] : []
+  ));
+  const table = taskType === "email" ? "email_questions" : "academic_discussion_questions";
+  const rows = await measureDatabase(timing, `${table}_catalog_category`, () =>
+    readRowsInBatches<Record<string, unknown>>(
+      Array.from(sourceByQuestionId.keys()),
+      (batch, from, to) => supabase
+        .from(table)
+        .select("question_id,catalog_category")
+        .in("question_id", batch)
+        .order("question_id", { ascending: true })
+        .range(from, to) as unknown as PromiseLike<{ data: Record<string, unknown>[] | null; error: { message: string } | null }>,
+      table
+    )
+  );
+  for (const row of rows) {
+    const source = sourceByQuestionId.get(String(row.question_id));
+    if (!source) continue;
+    metadata.set(source.source_id, {
+      category: nullableText(row.catalog_category),
+      searchText: ""
+    });
+  }
+  return metadata;
+}
+
+/**
+ * Searchable content only. This loader exists for the search-index cache and is
+ * never used to build the directory payload.
+ */
+export async function loadPracticeCatalogSearchMetadata(
+  supabase: SupabaseClient,
+  taskType: PracticeTaskType,
+  canonicalSources: PracticeItemSourceRow[],
+  timing?: StudentPerformanceTrace
+): Promise<Map<string, PracticeCatalogMetadata>> {
+  const metadata = new Map<string, PracticeCatalogMetadata>();
+  if (taskType === "build_sentence") {
+    const sourceBySetId = new Map(canonicalSources.flatMap((source) =>
+      source.source_set_id ? [[source.source_set_id, source] as const] : []
+    ));
+    const rows = await measureDatabase(timing, "questions_catalog_search", () =>
+      readRowsInBatches<Record<string, unknown>>(
+        Array.from(sourceBySetId.keys()),
+        (batch, from, to) => supabase
+          .from("questions")
+          .select("set_id,question_order,prompt,sentence_template,options_text,correct_order_text,distractors_text,final_sentence")
+          .in("set_id", batch)
+          .order("set_id", { ascending: true })
+          .order("question_order", { ascending: true })
+          .range(from, to) as unknown as PromiseLike<{ data: Record<string, unknown>[] | null; error: { message: string } | null }>,
+        "questions"
+      )
+    );
+    const rowsBySet = groupBy(rows, (row) => String(row.set_id));
+    sourceBySetId.forEach((source, setId) => {
+      metadata.set(source.source_id, {
+        category: null,
+        searchText: uniqueText((rowsBySet.get(setId) ?? []).flatMap((row) => [
+          row.prompt,
+          row.sentence_template,
+          row.options_text,
+          row.correct_order_text,
+          row.distractors_text,
+          row.final_sentence
+        ]))
+      });
+    });
+    return metadata;
+  }
+
+  const sourceByQuestionId = new Map(canonicalSources.flatMap((source) =>
+    source.source_question_id ? [[source.source_question_id, source] as const] : []
+  ));
+  const table = taskType === "email" ? "email_questions" : "academic_discussion_questions";
+  const columns = taskType === "email"
+    ? "question_id,scenario,task_instruction,requirement_1,requirement_2,requirement_3,closing_instruction,recipient,subject"
+    : "question_id,professor_name,professor_prompt,student_1_name,student_1_response,student_2_name,student_2_response";
+  const rows = await measureDatabase(timing, `${table}_catalog_search`, () =>
+    readRowsInBatches<Record<string, unknown>>(
+      Array.from(sourceByQuestionId.keys()),
+      (batch, from, to) => supabase
+        .from(table)
+        .select(columns)
+        .in("question_id", batch)
+        .order("question_id", { ascending: true })
+        .range(from, to) as unknown as PromiseLike<{ data: Record<string, unknown>[] | null; error: { message: string } | null }>,
+      table
+    )
+  );
+  for (const row of rows) {
+    const source = sourceByQuestionId.get(String(row.question_id));
+    if (!source) continue;
+    const searchValues = taskType === "email"
+      ? [row.scenario, row.task_instruction, row.requirement_1, row.requirement_2, row.requirement_3, row.closing_instruction, row.recipient, row.subject]
+      : [row.professor_prompt, row.student_1_response, row.student_2_response, row.professor_name, row.student_1_name, row.student_2_name];
+    metadata.set(source.source_id, {
+      category: null,
+      searchText: uniqueText(searchValues)
+    });
+  }
+  return metadata;
 }
 
 async function loadPracticeCatalogMetadata(

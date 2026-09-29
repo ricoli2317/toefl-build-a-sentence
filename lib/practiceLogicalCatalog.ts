@@ -2,18 +2,24 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { compareDisplayNumbers } from "./practiceImporter/numbering.ts";
 import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import {
+  createPracticeCatalogDirectory,
+  loadPracticeCatalogCategoryMetadata,
   loadPracticeCatalogDirectory,
+  loadPracticeCatalogDirectoryData,
+  loadPracticeCatalogOccurrences,
   loadPracticePublicUniverse,
   type FormalPracticeItemSource,
   type PracticeCatalogDirectory
 } from "./practicePublicUniverse.ts";
 import {
   attachLogicalPracticeStudentState,
+  attachLogicalPracticeStudentStateFromRows,
   type BuildSentenceLogicalAttemptRow,
   type LogicalPracticeActions,
   type LogicalPracticeStudentState,
   type WritingLogicalAttemptRow
 } from "./practiceLogicalState.ts";
+import { loadStudentPracticeItemStates } from "./studentPracticeItemState.server.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import type { StudentPerformanceTrace } from "./studentPerformance.server.ts";
 import { countOccurrenceDates, type OccurrenceDateCount } from "./catalogOccurrenceDates.ts";
@@ -26,7 +32,11 @@ export type LogicalPracticeListItem = {
   display_number: string;
   display_title: string | null;
   catalog_category: string | null;
-  search_text: string;
+  /**
+   * Teacher-only searchable content. The student lightweight catalog never
+   * builds this field; only the teacher question bank opts in.
+   */
+  search_text?: string;
   first_seen_date: string;
   latest_seen_date: string;
   occurrence_dates: string[];
@@ -62,49 +72,15 @@ export type LogicalPracticeCatalogWithStudentState = {
   pagination: LogicalPracticePagination;
 };
 
-// The first-screen payload never carries search_text; the search index is a
-// separate request that is merged back on the client by item_id.
-export type LogicalPracticeCatalogItemLightweight = Omit<
-  LogicalPracticeCatalogItemWithStudentState,
-  "search_text"
->;
+// The lightweight catalog never carries content. The search index is a
+// separate request served by /api/practice-catalog/search-index and merged
+// back on the client by item_id.
+export type LogicalPracticeCatalogItemLightweight = LogicalPracticeCatalogItemWithStudentState;
 
 export type LogicalPracticeCatalogLightweight = {
   items: LogicalPracticeCatalogItemLightweight[];
   pagination: LogicalPracticePagination;
 };
-
-export type LogicalPracticeCatalogSearchIndexEntry = {
-  item_id: string;
-  search_text: string;
-};
-
-export type LogicalPracticeCatalogSearchIndex = {
-  taskType: PracticeTaskType;
-  items: LogicalPracticeCatalogSearchIndexEntry[];
-};
-
-export function toLightweightLogicalPracticeCatalog(
-  catalog: LogicalPracticeCatalogWithStudentState
-): LogicalPracticeCatalogLightweight {
-  return {
-    pagination: catalog.pagination,
-    items: catalog.items.map((item) => {
-      const lightweightItem = { ...item };
-      delete (lightweightItem as { search_text?: string }).search_text;
-      return lightweightItem;
-    })
-  };
-}
-
-export function buildLogicalPracticeCatalogSearchIndex(
-  catalog: Pick<LogicalPracticeCatalog, "items">
-): LogicalPracticeCatalogSearchIndexEntry[] {
-  return catalog.items.map((item) => ({
-    item_id: item.item_id,
-    search_text: item.search_text
-  }));
-}
 
 export type PublicLogicalPracticeCatalogData = {
   catalog: LogicalPracticeCatalog;
@@ -135,6 +111,8 @@ export function buildLogicalPracticeCatalog(input: {
   taskType: PracticeTaskType;
   page: number;
   paginate?: boolean;
+  /** Teacher question bank only: attach full searchable content text. */
+  includeSearchText?: boolean;
 }): LogicalPracticeCatalog {
   if (!Number.isSafeInteger(input.page) || input.page < 1) {
     throw new Error("Logical practice catalog page must be a positive integer.");
@@ -162,7 +140,7 @@ export function buildLogicalPracticeCatalog(input: {
         display_number: item.displayNumber,
         display_title: item.displayTitle,
         catalog_category: item.catalogCategory,
-        search_text: item.catalogSearchText,
+        ...(input.includeSearchText ? { search_text: item.catalogSearchText } : {}),
         first_seen_date: item.firstSeenDate,
         latest_seen_date: occurrenceDates[0] ?? item.firstSeenDate,
         occurrence_dates: occurrenceDates,
@@ -210,30 +188,50 @@ export async function getLogicalPracticeItems(input: {
   const publicCatalogPromise = input.timing
     ? input.timing.measure("cache", "public_practice_catalog", loadPublic)
     : loadPublic();
-  const [publicCatalog, attemptRows] = await Promise.all([
+  // Sparse state read first: one indexed query for `student_id + task_type`,
+  // with no full attempt-history scan.
+  const [publicCatalog, stateResult] = await Promise.all([
     publicCatalogPromise,
-    loadLogicalPracticeStudentAttempts({
-      supabase: input.supabase,
+    loadStudentPracticeItemStates(input.supabase, {
       studentId: input.studentId,
       taskType: input.taskType,
       timing: input.timing
     })
   ]);
   const { catalog, sources } = publicCatalog;
-  const buildResult = () => {
-    const items = attachLogicalPracticeStudentState({
+
+  if (stateResult.available) {
+    const buildResult = () => ({
+      ...catalog,
+      items: attachLogicalPracticeStudentStateFromRows({
+        items: catalog.items,
+        states: stateResult.rows
+      })
+    });
+    return input.timing
+      ? input.timing.measureSync("processing", "merge_student_catalog_state", buildResult)
+      : buildResult();
+  }
+
+  // Transitional fallback while the state migration is rolling out: rebuild
+  // the same state from the student's attempt history exactly as before.
+  const attemptRows = await loadLogicalPracticeStudentAttempts({
+    supabase: input.supabase,
+    studentId: input.studentId,
+    taskType: input.taskType,
+    timing: input.timing
+  });
+  const buildLegacyResult = () => ({
+    ...catalog,
+    items: attachLogicalPracticeStudentState({
       items: catalog.items,
       sources,
       ...attemptRows
-    });
-    return {
-      ...catalog,
-      items
-    };
-  };
+    })
+  });
   return input.timing
-    ? input.timing.measureSync("processing", "attach_student_catalog_state", buildResult)
-    : buildResult();
+    ? input.timing.measureSync("processing", "attach_student_catalog_state", buildLegacyResult)
+    : buildLegacyResult();
 }
 
 export async function loadPublicLogicalPracticeCatalog(input: {
@@ -241,11 +239,21 @@ export async function loadPublicLogicalPracticeCatalog(input: {
   taskType: PracticeTaskType;
   timing?: StudentPerformanceTrace;
 }): Promise<PublicLogicalPracticeCatalogData> {
-  const { directory, occurrences } = await loadPracticeCatalogDirectory(
+  const data = await loadPracticeCatalogDirectoryData(
     input.supabase,
     input.taskType,
     input.timing
   );
+  const [occurrences, categoryBySourceId] = await Promise.all([
+    loadPracticeCatalogOccurrences(input.supabase, data.formalSourceIds, input.timing),
+    loadPracticeCatalogCategoryMetadata(
+      input.supabase,
+      input.taskType,
+      data.canonicalSources,
+      input.timing
+    )
+  ]);
+  const directory = createPracticeCatalogDirectory(data.items, data.sources, categoryBySourceId);
   const buildCatalog = () =>
     buildLogicalPracticeCatalog({
       universe: directory,
@@ -307,7 +315,8 @@ async function loadLogicalPracticeCatalog(input: {
       universe,
       occurrences: occurrenceResult.data ?? [],
       taskType: input.taskType,
-      page: input.page
+      page: input.page,
+      includeSearchText: true
     });
   return {
     catalog: input.timing
@@ -335,7 +344,8 @@ async function loadLogicalPracticeCatalogDirectory(input: {
       occurrences,
       taskType: input.taskType,
       page: input.page,
-      paginate: false
+      paginate: false,
+      includeSearchText: true
     });
   return {
     catalog: input.timing

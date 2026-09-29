@@ -1,9 +1,6 @@
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
-import { loadCachedPublicPracticeCatalog } from "@/lib/practiceCatalogCache.server";
-import {
-  buildLogicalPracticeCatalogSearchIndex,
-  isLogicalPracticeTaskType
-} from "@/lib/practiceLogicalCatalog";
+import { loadCachedPublicPracticeCatalogSearchIndex } from "@/lib/practiceCatalogCache.server";
+import { isLogicalPracticeTaskType } from "@/lib/practiceLogicalCatalog";
 import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
@@ -21,13 +18,10 @@ export async function GET(request: Request) {
       return json({ error: auth.error ?? "Unauthorized" }, { status: 401 });
     }
 
-    // Reuse the cached public catalog instead of rebuilding question text; the
-    // lightweight catalog route strips the same search_text from this payload.
-    const publicCatalog = await loadCachedPublicPracticeCatalog(taskType);
-    return json({
-      taskType,
-      items: buildLogicalPracticeCatalogSearchIndex(publicCatalog.catalog)
-    });
+    // Independent loader/cache/revision from the lightweight catalog: only this
+    // route reads prompt / template / option / response text fields.
+    const searchIndex = await loadCachedPublicPracticeCatalogSearchIndex(taskType);
+    return json(searchIndex);
   } catch (error) {
     console.error("[practice-catalog] search_index_failed", error);
     return json({ error: "Could not load the logical practice search index." }, { status: 500 });
