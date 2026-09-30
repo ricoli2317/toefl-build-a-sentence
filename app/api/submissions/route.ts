@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken, isUserRole, roleCanAccess } from "@/lib/auth";
 import { normalizeChunkForCompare, splitTextItems } from "@/lib/questionText";
+import { isOfficialPracticeSetId } from "@/lib/practiceHistory";
+import { basWrongQuestionEvents } from "@/lib/wrongQuestionBank";
+import { applyStudentWrongQuestionEvents } from "@/lib/wrongQuestionBank.server";
+import { wrongQuestionBusinessDate } from "@/lib/wrongQuestionBusinessDate";
 import {
   loadBuildSentenceHistoricalPracticeDisplayResolver,
   logHistoricalPracticeDisplayWarnings
@@ -291,6 +295,34 @@ export async function POST(request: Request) {
 
       return fail(`Failed to save attempt answers: ${answerError.message}.${cleanupMessage}`);
     }
+
+    // Incremental wrong-question bank update. The attempt itself stays
+    // authoritative: a failure here must never turn a saved practice into an
+    // error response (and invite a duplicate submission).
+    await timing.measure("database", "wrong_question_bank_events", async () => {
+      try {
+        const realSetIds = new Set(questionRows.map((row) => String(row.set_id).trim()));
+        await applyStudentWrongQuestionEvents(
+          db,
+          user.id,
+          wrongQuestionBusinessDate(),
+          basWrongQuestionEvents({
+            answers: results.map((result) => ({
+              finalSentence: result.question.final_sentence,
+              isCorrect: result.isCorrect,
+              questionId: String(result.questionId)
+            })),
+            official: isOfficialPracticeSetId(setId, realSetIds),
+            setId
+          })
+        );
+      } catch (bankError) {
+        console.error("BAS wrong-question bank update failed", {
+          attemptId: attempt.attempt_id,
+          message: bankError instanceof Error ? bankError.message : String(bankError)
+        });
+      }
+    });
 
     const payload = timing.measureSync("processing", "build_submission_response", () => ({
         attemptId: attempt.attempt_id,

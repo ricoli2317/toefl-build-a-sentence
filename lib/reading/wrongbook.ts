@@ -15,6 +15,24 @@ export type ReadingWrongbookAttemptSummary = ReadingAttemptSummary & {
   targets: ReadingWrongbookTarget[];
 };
 
+/**
+ * Lightweight practice item used by the bank-driven correction flows (today /
+ * history sessions and formal-result entry corrections). It carries identity
+ * only; content is loaded per item.
+ */
+export type ReadingWrongbookPracticeItem = {
+  logicalItemId: string;
+  targets: ReadingWrongbookTarget[];
+  taskType: ReadingModule;
+  title: string;
+};
+
+export type ReadingWrongbookPracticeResponse = {
+  attempt: ReadingWrongbookAttemptSummary;
+  item?: ReadingWrongbookPracticeItem;
+  preservedAnswers?: ReadingWrongbookPreservedAnswer[];
+};
+
 export type ReadingWrongbookQueuePayload = {
   items: ReadingWrongbookQueueItem[];
   scope: ReadingWrongbookScope;

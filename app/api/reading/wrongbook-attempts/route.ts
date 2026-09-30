@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { isReadingModule } from "@/lib/reading/catalog";
 import {
   readingAttemptError,
@@ -7,8 +8,11 @@ import {
 import {
   isReadingFullSetWrongbookAttemptSummary,
   isReadingWrongbookAttemptSummary,
-  isReadingWrongbookScope
+  isReadingWrongbookScope,
+  type ReadingWrongbookPracticeItem
 } from "@/lib/reading/wrongbook";
+import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import { loadWrongQuestionPracticeSession } from "@/lib/wrongQuestionBank.server";
 import {
   loadReadingFullSetPreservedAnswers,
   loadReadingFullSetWrongbookBootstrapQueue,
@@ -23,8 +27,10 @@ import { loadFullSetWrongbookRdlAssets } from "@/lib/reading/fullSetWrongbookRdl
 import {
   loadReadingWrongbookPreservedAnswers,
   loadReadingWrongbookQueue,
+  loadReadingWrongbookTitles,
   toReadingWrongbookPreservedAnswers
 } from "@/lib/reading/wrongbook.server";
+import type { ReadingModule } from "@/lib/reading/types";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   sameReadingFullSetWrongbookTarget,
@@ -109,12 +115,13 @@ export async function POST(request: Request) {
   }
   const userId = auth.userId;
   const body = await request.json().catch(() => ({})) as Record<string, unknown>;
+  const bankRequest = parseBankRequest(body);
   const params = new URLSearchParams();
   for (const key of ["itemId", "scope", "sourceAttemptId", "taskType", "todayEnd", "todayStart"] as const) {
     if (typeof body[key] === "string") params.set(key, body[key]);
   }
-  const parsed = parseQueueRequest(params, true);
-  if (!parsed || (parsed.taskType === "full_set" ? !parsed.sourceAttemptId : !parsed.itemId)) {
+  const parsed = bankRequest ? null : parseQueueRequest(params, true);
+  if (!bankRequest && (!parsed || (parsed.taskType === "full_set" ? !parsed.sourceAttemptId : !parsed.itemId))) {
     return readingAttemptJson({ error: "无效的错题订正请求。" }, { status: 400 });
   }
   const service = () => {
@@ -126,6 +133,41 @@ export async function POST(request: Request) {
     : auth.client;
 
   try {
+    if (bankRequest) {
+      const resolved = await resolveBankCorrectionTargets(service(), userId, bankRequest);
+      if (!resolved) {
+        return readingAttemptJson({ error: "本次练习没有需要订正的错题。" }, { status: 409 });
+      }
+      const { item, scope } = resolved;
+      const { data, error } = await profileSupabaseQuery(
+        { query: "reading_get_or_create_attempt", dependsOn: ["correction auth"] },
+        () => mutationClient.rpc("get_or_create_reading_wrongbook_attempt", {
+          p_logical_item_id: item.logicalItemId,
+          p_scope: scope,
+          p_targets: item.targets
+        })
+      );
+      if (error) return readingAttemptError(error, "暂时无法进入错题订正，请稍后重试。");
+      if (!isReadingWrongbookAttemptSummary(data) || data.logicalItemId !== item.logicalItemId) {
+        return readingAttemptJson({ error: "错题订正记录返回了无效数据。" }, { status: 500 });
+      }
+      const preservedAnswers = data.taskType === "ctw"
+        ? toReadingWrongbookPreservedAnswers(await loadReadingWrongbookPreservedAnswers({
+            before: data.startedAt,
+            db: service(),
+            logicalItemId: data.logicalItemId,
+            studentId: userId,
+            targets: data.targets
+          }))
+        : [];
+      return readingAttemptJson(
+        { attempt: data, item, preservedAnswers },
+        { status: data.created ? 201 : 200 }
+      );
+    }
+    if (!parsed) {
+      return readingAttemptJson({ error: "无效的错题订正请求。" }, { status: 400 });
+    }
     if (parsed.taskType === "full_set") {
       const sourceAttemptId = parsed.sourceAttemptId!;
       const firstPracticeLoad: {
@@ -382,4 +424,170 @@ function parseQueueRequest(params: URLSearchParams, requireItem = false) {
     || todayEnd - todayStart > 26 * 60 * 60 * 1000
   ) return null;
   return { itemId, scope, sourceAttemptId, taskType, todayEnd, todayStart };
+}
+
+type BankCorrectionRequest =
+  | { itemId: string; kind: "session"; sessionId: string }
+  | { kind: "entry"; sourceAttemptId: string; taskType: ReadingModule };
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const READING_ITEM_PATTERN = /^reading-(ctw|rdl|rap)-[a-f0-9]{24}$/;
+
+/**
+ * The bank-driven correction flows (today / history practice sessions and
+ * formal-result entry corrections) derive their targets server-side from the
+ * frozen session manifest or the source attempt. Client-supplied targets are
+ * never trusted for these flows.
+ */
+function parseBankRequest(body: Record<string, unknown>): BankCorrectionRequest | null {
+  const sessionId = typeof body.sessionId === "string" ? body.sessionId.trim() : "";
+  if (sessionId) {
+    const itemId = typeof body.itemId === "string" ? body.itemId.trim() : "";
+    if (!UUID_PATTERN.test(sessionId) || !READING_ITEM_PATTERN.test(itemId)) return null;
+    return { itemId, kind: "session", sessionId };
+  }
+  if (body.mode === "entry") {
+    const sourceAttemptId = typeof body.sourceAttemptId === "string"
+      ? body.sourceAttemptId.trim()
+      : "";
+    const taskType = typeof body.taskType === "string" && isReadingModule(body.taskType)
+      ? body.taskType
+      : null;
+    if (!UUID_PATTERN.test(sourceAttemptId) || !taskType) return null;
+    return { kind: "entry", sourceAttemptId, taskType };
+  }
+  return null;
+}
+
+async function resolveBankCorrectionTargets(
+  db: SupabaseClient,
+  userId: string,
+  request: BankCorrectionRequest
+): Promise<{ item: ReadingWrongbookPracticeItem; scope: "history" | "today" } | null> {
+  if (request.kind === "session") {
+    const session = await loadWrongQuestionPracticeSession(db, userId, request.sessionId);
+    if (!session || session.taskType === "bas" || !session.groups) return null;
+    const group = session.groups.find((candidate) => candidate.logicalItemId === request.itemId);
+    if (!group || group.targets.length === 0) return null;
+    return {
+      item: {
+        logicalItemId: group.logicalItemId,
+        targets: group.targets.map((target) => ({
+          questionId: target.questionId,
+          slotId: target.slotId
+        })),
+        taskType: session.taskType,
+        title: group.title
+      },
+      scope: session.mode === "history" ? "history" : "today"
+    };
+  }
+  return resolveEntryCorrectionTargets(db, userId, request);
+}
+
+/**
+ * Entry-level correction for one submitted attempt. A formal attempt clears
+ * pending state (scope "today"); a history-practice attempt never touches
+ * pending state (scope "history").
+ */
+async function resolveEntryCorrectionTargets(
+  db: SupabaseClient,
+  userId: string,
+  request: { sourceAttemptId: string; taskType: ReadingModule }
+): Promise<{ item: ReadingWrongbookPracticeItem; scope: "history" | "today" } | null> {
+  const formalResult = await db
+    .from("reading_attempts")
+    .select("attempt_id,logical_item_id,task_type,status")
+    .eq("attempt_id", request.sourceAttemptId)
+    .eq("student_id", userId)
+    .maybeSingle();
+  if (formalResult.error) throw new Error(formalResult.error.message);
+  if (
+    formalResult.data
+    && formalResult.data.status === "submitted"
+    && formalResult.data.task_type === request.taskType
+  ) {
+    const logicalItemId = String(formalResult.data.logical_item_id);
+    const targets = await readWrongAnswerTargets(db, "reading_attempt_answers", request.sourceAttemptId);
+    if (targets.length === 0) return null;
+    return {
+      item: {
+        logicalItemId,
+        targets,
+        taskType: request.taskType,
+        title: await loadReadingItemTitle(db, logicalItemId, request.taskType)
+      },
+      scope: "today"
+    };
+  }
+
+  const correctionResult = await db
+    .from("reading_wrongbook_attempts")
+    .select("attempt_id,logical_item_id,task_type,scope,status")
+    .eq("attempt_id", request.sourceAttemptId)
+    .eq("student_id", userId)
+    .neq("task_type", "full_set")
+    .maybeSingle();
+  if (correctionResult.error) throw new Error(correctionResult.error.message);
+  if (
+    !correctionResult.data
+    || correctionResult.data.status !== "submitted"
+    || !correctionResult.data.logical_item_id
+    || correctionResult.data.task_type !== request.taskType
+  ) {
+    return null;
+  }
+  const logicalItemId = String(correctionResult.data.logical_item_id);
+  const targets = await readWrongAnswerTargets(
+    db,
+    "reading_wrongbook_attempt_answers",
+    request.sourceAttemptId
+  );
+  if (targets.length === 0) return null;
+  return {
+    item: {
+      logicalItemId,
+      targets,
+      taskType: request.taskType,
+      title: await loadReadingItemTitle(db, logicalItemId, request.taskType)
+    },
+    scope: correctionResult.data.scope === "history" ? "history" : "today"
+  };
+}
+
+async function readWrongAnswerTargets(
+  db: SupabaseClient,
+  table: "reading_attempt_answers" | "reading_wrongbook_attempt_answers",
+  attemptId: string
+) {
+  const result = await readAllSupabaseRows<{ question_id: string; slot_id: string | null }>(
+    (from, to) => db.from(table)
+      .select("question_id,slot_id")
+      .eq("attempt_id", attemptId)
+      .eq("is_correct", false)
+      .order("question_id", { ascending: true })
+      .order("slot_id", { ascending: true })
+      .range(from, to)
+  );
+  if (result.error) throw new Error(result.error.message);
+  const seen = new Set<string>();
+  const targets: Array<{ questionId: string; slotId: string | null }> = [];
+  for (const row of result.data ?? []) {
+    const questionId = String(row.question_id);
+    const slotId = row.slot_id ? String(row.slot_id) : null;
+    const key = `${questionId}:${slotId ?? ""}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    targets.push({ questionId, slotId });
+  }
+  return targets;
+}
+
+async function loadReadingItemTitle(
+  db: SupabaseClient,
+  logicalItemId: string,
+  taskType: ReadingModule
+) {
+  const titles = await loadReadingWrongbookTitles(db, [logicalItemId]);
+  return titles.get(logicalItemId)?.trim() || logicalItemId || taskType;
 }

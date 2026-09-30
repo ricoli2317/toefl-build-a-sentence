@@ -1889,7 +1889,9 @@ export function ReadingFullSetRunner({
       }
       const current = runnerRef.current;
       if (current) applyRunner({ ...current, attempt: result.attempt, occurrences: [] });
-      if (result.attempt.status === "completed" && studentIdRef.current) {
+      // Every accepted module submission can add pending wrong questions; the
+      // wrongbook summary refreshes on its next mount.
+      if (studentIdRef.current) {
         invalidateStudentWrongbook(studentIdRef.current);
       }
     } catch (submitError) {

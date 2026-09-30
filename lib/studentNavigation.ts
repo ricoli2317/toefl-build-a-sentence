@@ -68,9 +68,24 @@ export function getReadingResultNavigation(
   source?: ReadingResultSource,
   returnTo?: string | string[]
 ): { backHref: string; crumbs: StudentBreadcrumbItem[] } {
-  const safeReturnTo = safeStudentReturnTo(returnTo);
-  if (safeReturnTo) return assignmentResultNavigation(safeReturnTo);
   const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
+  const safeReturnTo = safeStudentReturnTo(returnTo);
+  if (safeReturnTo) {
+    if (
+      safeReturnTo.startsWith(STUDENT_ROUTES.wrongQuestions)
+      || safeReturnTo.startsWith("/student/reading/wrongbook-results/")
+    ) {
+      return {
+        backHref: safeReturnTo,
+        crumbs: [
+          rootCrumb,
+          { label: STUDENT_UI_TEXT.wrongQuestions, href: STUDENT_ROUTES.wrongQuestions },
+          { label: STUDENT_UI_TEXT.result }
+        ]
+      };
+    }
+    return assignmentResultNavigation(safeReturnTo);
+  }
   if (source === "practice-history") {
     return {
       backHref: STUDENT_ROUTES.practiceHistory,
@@ -257,13 +272,26 @@ export function getStudentResultNavigation(
   backHref: string;
   crumbs: StudentBreadcrumbItem[];
 } {
-  const safeReturnTo = safeStudentReturnTo(options?.returnTo);
-  if (safeReturnTo) return assignmentResultNavigation(safeReturnTo);
   const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
   const wrongQuestionsCrumb = {
     label: STUDENT_UI_TEXT.wrongQuestions,
     href: STUDENT_ROUTES.wrongQuestions
   };
+  const safeReturnTo = safeStudentReturnTo(options?.returnTo);
+  if (safeReturnTo) {
+    // Wrong-question origins (result / read-only review / history practice
+    // result) keep their own crumbs while still returning to that exact page.
+    if (
+      safeReturnTo.startsWith(STUDENT_ROUTES.wrongQuestions)
+      || safeReturnTo.startsWith("/student/reading/wrongbook-results/")
+    ) {
+      return {
+        backHref: safeReturnTo,
+        crumbs: [rootCrumb, wrongQuestionsCrumb, { label: STUDENT_UI_TEXT.result }]
+      };
+    }
+    return assignmentResultNavigation(safeReturnTo);
+  }
 
   if (isWrongQuestionsSetId(setId)) {
     return {

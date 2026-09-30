@@ -19,6 +19,7 @@ import {
 } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { ReadingCorrectionAnswerValue } from "@/components/reading/ReadingCorrectionAnswerValue";
+import { ReadingCorrectionEntryButton } from "@/components/reading/ReadingCorrectionEntryButton";
 import { ReadingFullSetQuestionNavigator } from "@/components/reading/ReadingFullSetQuestionNavigator";
 import { ReadingReviewStatusLine } from "@/components/reading/ReadingReviewStatusLine";
 import {
@@ -374,6 +375,12 @@ export function ReadingSubmittedReview({
   return (
     <ReadingPracticeShell
       attempt={review.attempt}
+      headerAction={review.reviewItems.some((item) => !item.isAnswered || !item.isCorrect) ? (
+        <ReadingCorrectionEntryButton
+          attemptId={attemptId}
+          taskType={review.attempt.taskType}
+        />
+      ) : undefined}
       initialAnswers={review.answers}
       initialQuestionIndex={initialQuestionIndex}
       initialReviewIndex={initialQuestionIndex}
@@ -567,12 +574,15 @@ export function ReadingFullSetReviewShell({
 
 export function ReadingPracticeShell({
   attempt: initialAttempt,
+  elapsedOffsetSeconds = 0,
+  headerAction,
   initialAnswers = {},
   initialQuestionIndex = 0,
   initialReviewIndex = 0,
   mode = "active",
   onBack,
   practice,
+  progressLabelResolver,
   resultReturnTo,
   reviewItems = [],
   reviewDisclosures = {},
@@ -580,12 +590,22 @@ export function ReadingPracticeShell({
   wrongbook
 }: {
   attempt: ReadingAttemptSummary;
+  /** Session-cumulative elapsed time display for multi-source practice. */
+  elapsedOffsetSeconds?: number;
+  /** Optional review-header action (entry correction). */
+  headerAction?: ReactNode;
   initialAnswers?: ReadingAnswerState;
   initialQuestionIndex?: number;
   initialReviewIndex?: number;
   mode?: ReadingPracticeMode;
   onBack: () => void;
   practice: StudentReadingPracticePayload;
+  /** Global 1/N numbering for multi-source wrong-question practice. */
+  progressLabelResolver?: (
+    currentIndex: number,
+    workspaceCount: number,
+    scoringPointCount: number
+  ) => string;
   /** Assignment-origin safe return path forwarded to the result page. */
   resultReturnTo?: string | null;
   reviewItems?: SubmittedReadingReviewItem[];
@@ -593,6 +613,8 @@ export function ReadingPracticeShell({
   reviewTitle?: string;
   wrongbook?: {
     onSubmitted: (attempt: ReadingAttemptSummary) => void;
+    /** Multi-group wrong-question session progress tracking. */
+    sessionId?: string;
     targets: ReadingWrongbookTarget[];
   };
 }) {
@@ -648,9 +670,15 @@ export function ReadingPracticeShell({
   }, [attempt.attemptId, attempt.status, readOnly, resultReturnTo, router]);
 
   const currentQuestion = practice.questions[navigation.currentIndex] ?? practice.questions[0];
-  const progressLabel = practice.item.module === "ctw"
-    ? `Questions 1–${navigation.scoringPointCount} / ${navigation.scoringPointCount}`
-    : `Question ${navigation.currentIndex + 1} / ${navigation.workspaceCount}`;
+  const progressLabel = progressLabelResolver
+    ? progressLabelResolver(
+        navigation.currentIndex,
+        navigation.workspaceCount,
+        navigation.scoringPointCount
+      )
+    : practice.item.module === "ctw"
+      ? `Questions 1–${navigation.scoringPointCount} / ${navigation.scoringPointCount}`
+      : `Question ${navigation.currentIndex + 1} / ${navigation.workspaceCount}`;
   const captureCurrentQuestionTime = useCallback(() => {
     const questionId = activeQuestionIdRef.current;
     const elapsed = Math.max(0, Math.round((Date.now() - questionStartedAtRef.current) / 1000));
@@ -700,6 +728,7 @@ export function ReadingPracticeShell({
           body: JSON.stringify({
             logicalItemId: practice.item.itemId,
             elapsedSeconds,
+            ...(wrongbook?.sessionId ? { sessionId: wrongbook.sessionId } : {}),
             answers: wrongbook
               ? selectReadingWrongbookSubmissionAnswers(
                   buildReadingSubmissionAnswers(practice, answers, questionTimes),
@@ -742,6 +771,7 @@ export function ReadingPracticeShell({
     return (
       <ReadingReadonlyReviewShell
         answers={answers}
+        headerAction={headerAction}
         initialReviewIndex={initialReviewIndex}
         lookupEnabled={lookupEnabled}
         onBack={onBack}
@@ -760,7 +790,7 @@ export function ReadingPracticeShell({
   return (
     <div className={`reading-theme ${readOnly ? "min-h-[100dvh]" : "h-[100dvh] overflow-hidden"} bg-[#fbfbfe] text-student-text`} style={readingShellStyle}>
       <ReadingPracticeHeader
-        elapsedSeconds={elapsedSeconds}
+        elapsedSeconds={elapsedSeconds + elapsedOffsetSeconds}
         onBack={onBack}
         progressLabel={progressLabel}
         showElapsed={!readOnly}
@@ -844,6 +874,7 @@ export function ReadingPracticePendingShell({
 
 export function ReadingPracticeHeader({
   elapsedSeconds,
+  headerAction,
   onBack,
   onReview,
   productName,
@@ -858,6 +889,8 @@ export function ReadingPracticeHeader({
   title
 }: {
   elapsedSeconds: number;
+  /** Optional page-level action (e.g. entry correction) shown before the timer. */
+  headerAction?: ReactNode;
   onBack?: () => void;
   onReview?: () => void;
   productName?: string;
@@ -886,6 +919,7 @@ export function ReadingPracticeHeader({
         </p>
       </div>
       <div className="flex items-center justify-self-end gap-2 sm:gap-3">
+        {headerAction}
         {onReview ? (
           <button
             aria-pressed={reviewActive}
@@ -2661,6 +2695,7 @@ export function ReadingPracticeMessage({
 export function ReadingReadonlyReviewShell({
   answerKeyOnly = false,
   answers = {},
+  headerAction,
   initialReviewIndex = 0,
   lookupEnabled,
   onBack,
@@ -2672,6 +2707,8 @@ export function ReadingReadonlyReviewShell({
 }: {
   answerKeyOnly?: boolean;
   answers?: ReadingAnswerState;
+  /** Optional header action (entry correction) forwarded to the shared header. */
+  headerAction?: ReactNode;
   initialReviewIndex?: number;
   lookupEnabled: boolean;
   onBack?: () => void;
@@ -2733,6 +2770,7 @@ export function ReadingReadonlyReviewShell({
     <div className="reading-theme min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
+        headerAction={standalone ? undefined : headerAction}
         onBack={standalone ? undefined : onBack}
         progressLabel={progressLabel}
         showElapsed={false}

@@ -93,7 +93,10 @@ test("catalog and sidebar icon shapes share the canonical practice icon map", ()
   assert.match(icons, /academic_discussion: MessageCircleMore/);
   assert.match(icons, /full_set: Library/);
   assert.match(shell, /icon: STUDENT_PRACTICE_ICONS\.full_set/);
-  assert.match(wrongbook, /full_set: STUDENT_PRACTICE_ICONS\.full_set/);
+  assert.match(wrongbook, /bas: STUDENT_PRACTICE_ICONS\.build_sentence/);
+  assert.match(wrongbook, /ctw: STUDENT_PRACTICE_ICONS\.ctw/);
+  assert.match(wrongbook, /rdl: STUDENT_PRACTICE_ICONS\.rdl/);
+  assert.match(wrongbook, /rap: STUDENT_PRACTICE_ICONS\.rap/);
   assert.match(reading, /icon: STUDENT_PRACTICE_ICONS\[item\.taskType\]/);
   assert.match(fullSet, /icon: STUDENT_PRACTICE_ICONS\.full_set/);
   assert.match(logical, /icon: STUDENT_PRACTICE_ICONS\[item\.task_type\]/);

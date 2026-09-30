@@ -152,7 +152,7 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
     /^\/student\/reading\/full-sets\/[^/]+\/attempt\/[^/]+/.test(pathname) ||
     /^\/student\/reading\/full-sets\/[^/]+\/result\/[^/]+\/questions\/[^/]+/.test(pathname) ||
     /^\/student\/reading\/(?:results|wrongbook-results)\/[^/]+\/questions\/[^/]+/.test(pathname) ||
-    /^\/student\/wrong-questions\/(?:today|history)\/reading\/practice/.test(pathname) ||
+    /^\/student\/wrong-questions\/(?:today|history|entry)\/reading\/practice/.test(pathname) ||
     /^\/student\/assignments\/(?!day(?:\/|$)|batches(?:\/|$))[^/]+/.test(pathname) ||
     pathname.startsWith("/student/writing-reviews/");
 

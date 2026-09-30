@@ -1,19 +1,19 @@
-import { ReadingWrongbookResult } from "@/components/reading/ReadingWrongbookResult";
+import { ReadingWrongbookSessionResult } from "@/components/reading/ReadingWrongbookSessionResult";
 import { StudentPage } from "@/components/student/StudentUI";
 import { safeStudentReturnTo } from "@/lib/studentNavigation";
 
-export default function ReadingWrongbookResultPage({
+export default function WrongQuestionSessionResultPage({
   params,
   searchParams
 }: {
-  params: { attemptId: string };
+  params: { sessionId: string };
   searchParams: { returnTo?: string | string[] };
 }) {
   return (
-    <StudentPage title="查看订正结果">
-      <ReadingWrongbookResult
-        attemptId={params.attemptId}
+    <StudentPage title="错题练习结果">
+      <ReadingWrongbookSessionResult
         returnTo={safeStudentReturnTo(searchParams.returnTo)}
+        sessionId={params.sessionId}
       />
     </StudentPage>
   );

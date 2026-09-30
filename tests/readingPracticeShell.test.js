@@ -318,7 +318,7 @@ test("only Reading question routes bypass the standard Student shell chrome", ()
   const studentShell = fs.readFileSync(path.join(__dirname, "../components/student/StudentShell.tsx"), "utf8");
   assert.match(studentShell, /reading\\\/full-sets\\\/\[\^\/\]\+\\\/result/);
   assert.match(studentShell, /reading\\\/\(\?:results\|wrongbook-results\)/);
-  assert.match(studentShell, /wrong-questions\\\/\(\?:today\|history\)\\\/reading\\\/practice/);
+  assert.match(studentShell, /wrong-questions\\\/\(\?:today\|history\|entry\)\\\/reading\\\/practice/);
   assert.doesNotMatch(studentShell, /pathname\.startsWith\("\/student\/reading\/results\/"\)/);
 });
 

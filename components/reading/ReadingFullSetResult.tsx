@@ -24,6 +24,7 @@ import {
   type ReadingResultSource
 } from "@/lib/studentNavigation";
 import { ReadingFullSetQuestionNavigator } from "./ReadingFullSetQuestionNavigator";
+import { ReadingFullSetCorrectionEntryButton } from "./ReadingCorrectionEntryButton";
 import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
 
 export function ReadingFullSetResult({
@@ -77,7 +78,12 @@ export function ReadingFullSetResult({
             <h2 className="text-xl font-bold text-student-text">作答详情</h2>
             <p className="mt-1 text-sm text-student-muted">提交于 {formatDateTime(result.attempt.completedAt)}</p>
           </div>
-          <ReadingFullSetRetakeButton fullSetId={fullSetId} />
+          <div className="flex flex-wrap items-center gap-2">
+            <ReadingFullSetRetakeButton fullSetId={fullSetId} />
+            {result.answers.some((answer) => !answer.isCorrect) ? (
+              <ReadingFullSetCorrectionEntryButton attemptId={attemptId} />
+            ) : null}
+          </div>
         </div>
         <div className="mt-6">
           <ReadingFullSetQuestionNavigator items={reviewItems} />

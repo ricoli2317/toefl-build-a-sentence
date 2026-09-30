@@ -120,7 +120,9 @@ test("invalid answer IDs and duplicate stable IDs fail before persistence", () =
 test("ownership and logical-item binding are checked on the locked attempt row", () => {
   assert.match(migration, /attempt\.student_id = v_user_id[\s\S]*attempt\.logical_item_id = p_logical_item_id[\s\S]*for update/);
   assert.match(migration, /auth\.uid\(\)/);
-  assert.doesNotMatch(submitRoute, /studentId|userId/);
+  // Scoring stays bound to the locked attempt: the route may only forward the
+  // caller's own id to the auxiliary wrong-question bank update.
+  assert.doesNotMatch(submitRoute, /p_student_id|p_user_id|student_id:/);
 });
 
 test("submit is one atomic database function and repeated submits return the official result", () => {

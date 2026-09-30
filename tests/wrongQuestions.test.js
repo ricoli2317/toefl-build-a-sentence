@@ -171,34 +171,35 @@ test("wrong-question overview reuses BAS dedupe/correction and aggregates all fo
   ]);
 });
 
-test("wrong-question home keeps BAS analysis behind the BAS tab and exposes only requested labels", () => {
+test("wrong-question home is a lightweight summary surface with no history scan", () => {
   const ui = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
   const route = fs.readFileSync(path.join(projectRoot, "app/api/wrong-questions/route.ts"), "utf8");
 
-  assert.match(ui, /activeTab === "build_sentence"[\s\S]*<BasCorrectionActions \/>/);
-  assert.doesNotMatch(ui, /<BasGrammarAnalysis/);
-  assert.match(ui, /今日错题订正/);
-  assert.match(ui, /历史错题订正/);
-  assert.match(ui, /group\.pendingCount > 0 && group\.correctionHref/);
-  assert.match(ui, /const groups = state\.data\?\.groups\.filter/);
-  assert.match(ui, /<WrongQuestionGroupList groups=\{groups\} \/>/);
-  assert.match(ui, /ReadingCorrectionActions taskType=\{activeTab\}/);
-  assert.match(ui, /readingCorrectionHref\("today", taskType\)/);
-  assert.match(ui, /readingCorrectionHref\("history", taskType\)/);
-  assert.match(ui, /去订正/);
-  assert.match(ui, /查看错题/);
-  assert.match(ui, /useState<WrongQuestionTaskType \| "all">\("all"\)/);
+  // Home: one summary request plus one history-count request per opened modal.
+  assert.match(ui, /\/api\/wrong-questions\?view=summary/);
+  assert.match(ui, /view: "history-count"/);
+  assert.match(ui, /wrongQuestionAmountOptions/);
+  assert.match(ui, /WRONG_QUESTION_HISTORY_AMOUNTS/);
+  assert.match(ui, /道错题待订正/);
+  assert.match(ui, /今日错题已全部订正/);
+  assert.match(ui, /个题型已完成今日错题/);
+  assert.match(ui, /今日错题/);
+  assert.match(ui, /历史错题/);
+  assert.match(ui, /WRONG_QUESTION_BANK_TASK_TYPES/);
+  assert.match(ui, /bas: STUDENT_PRACTICE_ICONS\.build_sentence/);
   assert.match(ui, /ctw: STUDENT_PRACTICE_ICONS\.ctw/);
-  for (const label of ["待订正", "已订正", "本日新增", "总错题"]) assert.match(ui, new RegExp(label));
-  assert.doesNotMatch(ui, /待复习|近7天|复习完成/);
-  assert.match(route, /\.from\("attempts"\)/);
-  assert.match(route, /\.from\("attempt_answers"\)/);
-  assert.match(route, /loadReadingWrongbookData\(db, studentId\)/);
-  assert.match(route, /loadReadingFullSetWrongbookOverviewData\(db, studentId\)/);
-  assert.match(route, /\.eq\("is_correct", false\)/);
-  assert.match(route, /"question_id,set_id,question_order,final_sentence,grammar_tags_text"/);
-  assert.doesNotMatch(route, /searchParams\.get\("questionId"\)/);
-  assert.doesNotMatch(route, /selectedIds = selectedIds\.filter\(\(questionId\) => questionId === requestedQuestionId\)/);
+  assert.match(ui, /rdl: STUDENT_PRACTICE_ICONS\.rdl/);
+  assert.match(ui, /rap: STUDENT_PRACTICE_ICONS\.rap/);
+  assert.doesNotMatch(ui, /view=overview/);
+  assert.doesNotMatch(ui, /attempt_answers|reading_attempts|reading_wrongbook_attempts|full_set|loadReadingWrongbookData/);
+  assert.doesNotMatch(ui, /练习全部历史错题|浏览全部历史错题/);
+
+  // Route: the summary path is the incremental bank only.
+  assert.match(route, /view === "summary"[\s\S]*loadWrongQuestionPendingCounts\(auth\.db, auth\.userId, practiceDate\)/);
+  assert.match(route, /view === "history-count"[\s\S]*loadWrongQuestionHistoryCount\(auth\.db, auth\.userId, taskType\)/);
+  assert.doesNotMatch(route, /loadReadingWrongbookData|loadReadingFullSetWrongbookOverviewData|buildWrongQuestionsOverview/);
+  assert.doesNotMatch(route, /view === "overview"/);
+  assert.doesNotMatch(route, /readAllSupabaseRows<[\s\S]{0,80}>\(\(from, to\) => db\s*\.from\("attempts"\)[\s\S]{0,120}\.eq\("student_id"/);
 });
 
 test("corrected Reading cards reopen the exact historical correction result", () => {
@@ -578,10 +579,11 @@ test("Reading homepage CTW rank keeps the exact historical tie-breakers with one
 test("wrongbook orchestration removes BAS and preserved-answer sibling waterfalls", () => {
   const route = fs.readFileSync(path.join(projectRoot, "app/api/wrong-questions/route.ts"), "utf8");
   const reading = fs.readFileSync(path.join(projectRoot, "lib/reading/wrongbook.server.ts"), "utf8");
-  assert.match(route, /const questionPromise =[\s\S]*const candidateAnswerPromise =/);
-  assert.match(route, /dependsOn: \["bas_correction_answers_lookup"\]/);
-  assert.doesNotMatch(route, /dependsOn: \["bas_correction_answers_lookup", "bas_question_metadata_lookup"\]/);
-  assert.match(route, /const wrongAnswerResult = await wrongAnswerPromise;[\s\S]*const questionPromise =[\s\S]*Promise\.all\(\[[\s\S]*displayResolverPromise,[\s\S]*questionPromise/);
+  // The home summary path no longer materializes BAS / Reading / Full Set
+  // history, so the old waterfall-avoidance structure is gone entirely.
+  assert.doesNotMatch(route, /bas_correction_answers_lookup|bas_candidate_attempts_lookup|wrongbook_overview/);
+  assert.doesNotMatch(route, /loadReadingWrongbookData|loadReadingFullSetWrongbook/);
+  assert.match(route, /loadWrongQuestionPendingCounts/);
   assert.match(reading, /const \[ordinaryAttemptsResult, priorCorrectionResult\] = await Promise\.all\(\[/);
   assert.match(reading, /const \[ordinaryAnswers, correctionAnswers\] = await Promise\.all\(\[/);
   assert.match(reading, /\.lte\("submitted_at", input\.before\)/);
@@ -609,8 +611,12 @@ test("Reading correction routes reuse the three existing renderers and persist i
   const submitRoute = fs.readFileSync(path.join(projectRoot, "app/api/reading/wrongbook-attempts/[attemptId]/submit/route.ts"), "utf8");
   const migration = fs.readFileSync(path.join(projectRoot, "supabase/reading_wrongbook_corrections.sql"), "utf8");
 
-  assert.match(home, /taskType: "ctw" \| "rdl" \| "rap"/);
-  assert.match(home, /data-testid=\{`\$\{taskType\}-wrong-question-correction`\}/);
+  assert.match(home, /WRONG_QUESTION_BANK_TASK_TYPES/);
+  assert.match(home, /wrongQuestionAmountOptions/);
+  const bank = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookBankPractice.tsx"), "utf8");
+  assert.match(bank, /ReadingPracticeShell/);
+  assert.match(bank, /selectReadingWrongbookPractice/);
+  assert.match(bank, /sessionId/);
   assert.match(runtime, /ReadingPracticeShell/);
   assert.match(runtime, /selectReadingWrongbookPractice/);
   assert.doesNotMatch(runtime, /full-sets|\/student\/reading\/\$\{taskType\}/);
@@ -867,17 +873,19 @@ test("RDL and RAP correction reviews keep wrong choices orange and use the Readi
 
 test("Reading homepage item links keep the complete correction lifecycle and reachable Submit", () => {
   const home = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
-  const runtime = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookPractice.tsx"), "utf8");
+  const bank = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookBankPractice.tsx"), "utf8");
   const shell = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingPractice.tsx"), "utf8");
   const fullSetReview = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingWrongbookReview.tsx"), "utf8");
   const todayPage = fs.readFileSync(path.join(projectRoot, "app/student/wrong-questions/today/reading/practice/page.tsx"), "utf8");
   const historyPage = fs.readFileSync(path.join(projectRoot, "app/student/wrong-questions/history/reading/practice/page.tsx"), "utf8");
 
-  assert.match(home, /group\.correctionHref/);
-  assert.match(runtime, /if \(itemId\) params\.set\("itemId", itemId\)/);
-  assert.match(runtime, /body: JSON\.stringify\(\{[\s\S]*itemId: input\.logicalItemId,[\s\S]*scope: input\.scope,[\s\S]*taskType: input\.taskType/);
-  assert.match(runtime, /<ReadingPracticeShell[\s\S]*wrongbook=\{\{/);
-  assert.doesNotMatch(runtime, /document\.(body|documentElement)\.style\.overflow/);
+  assert.match(home, /taskType/);
+  assert.match(bank, /body: JSON\.stringify\(\{ itemId, sessionId \}\)/);
+  assert.match(bank, /<ReadingPracticeShell[\s\S]*wrongbook=\{\{/);
+  assert.match(bank, /loadPractice\(next\.logicalItemId, session\)/);
+  assert.match(bank, /progressLabelResolver/);
+  assert.match(bank, /elapsedOffsetSeconds/);
+  assert.doesNotMatch(bank, /document\.(body|documentElement)\.style\.overflow/);
   assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);
   assert.match(shell, /<ReadingQuestionViewport[\s\S]*onSubmit=\{submit\}/);
   assert.match(shell, /aria-label=\{label\}/);
@@ -885,8 +893,10 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
   assert.doesNotMatch(shell, /Submit Module/);
   assert.match(shell, /readingQuestionNavigationTargets\(reviewNavigationKeys, reviewIndex\)/);
   assert.match(fullSetReview, /readingQuestionNavigationTargets\([\s\S]*candidate\.occurrenceId[\s\S]*candidate\.questionId/);
-  assert.match(todayPage, /itemId=\{searchParams\.itemId\}/);
-  assert.match(historyPage, /itemId=\{searchParams\.itemId\}/);
+  assert.match(todayPage, /ReadingWrongbookBankPractice/);
+  assert.match(todayPage, /mode="today"/);
+  assert.match(historyPage, /ReadingWrongbookBankPractice/);
+  assert.match(historyPage, /mode="history"/);
 });
 
 test("CTW correction summaries rebuild the complete word and mark every missing letter", () => {
@@ -1087,24 +1097,33 @@ test("BAS correction routes use explicit isolated scopes and freeze the loaded q
   const home = fs.readFileSync(path.join(projectRoot, "components/WrongQuestionsHome.tsx"), "utf8");
   const route = fs.readFileSync(path.join(projectRoot, "app/api/wrong-questions/route.ts"), "utf8");
   const session = fs.readFileSync(path.join(projectRoot, "components/PracticeSession.tsx"), "utf8");
+  const sessionsRoute = fs.readFileSync(path.join(projectRoot, "app/api/wrong-questions/sessions/route.ts"), "utf8");
 
   assert.match(historyPage, /scope !== "entry" && scope !== "history"/);
-  assert.match(historyPage, /scope === "entry" && !searchParams\.groupId/);
-  assert.match(historyPage, /groupId=\{searchParams\.groupId\}[\s\S]*scope=\{scope\}/);
-  assert.match(todayPage, /<WrongQuestionsPractice scope="today" \/>/);
+  assert.match(historyPage, /scope === "entry" && !attemptId/);
+  assert.match(historyPage, /attemptId=\{attemptId\}[\s\S]*scope=\{scope\}/);
+  assert.match(historyPage, /sessionId=\{sessionId\}/);
+  assert.match(historyPage, /safeStudentReturnTo\(searchParams\.returnTo\)/);
+  assert.match(todayPage, /scope="today"/);
+  assert.match(todayPage, /safeStudentReturnTo\(searchParams\.returnTo\)/);
   assert.doesNotMatch(`${historyPage}\n${todayPage}\n${practice}`, /questionId\??:/);
-  assert.match(home, /today\/practice\?scope=today/);
-  assert.match(home, /history\/practice\?scope=history&mode=all/);
+  assert.match(home, /today\/practice\?/);
   assert.match(practice, /scope: "entry" \| "history" \| "today"/);
-  assert.match(practice, /if \(scope === "today"\) return `wrongbook-today-/);
-  assert.match(practice, /return `wrongbook-all-/);
-  assert.match(practice, /if \(scope === "entry" && groupId\) params\.set\("groupId", groupId\)/);
-  assert.match(route, /scope !== "entry" && scope !== "today" && scope !== "history"/);
-  assert.match(route, /if \(scope === "entry" && !groupId\)/);
-  assert.match(route, /buildBasWrongbookEntryQuestionIds/);
+  assert.match(practice, /if \(scope === "today"\) return new URLSearchParams\(\{ scope: "today" \}\)/);
+  assert.match(practice, /new URLSearchParams\(\{ attemptId, scope: "entry" \}\)/);
+  assert.match(practice, /`wrongbook-today-\$\{stamp\.slice\(0, 8\)\}`/);
+  assert.match(practice, /`wrongbook-random-\$\{stamp\}`/);
+  assert.match(route, /if \(scope === "entry"\)[\s\S]*attemptId/);
+  assert.match(route, /loadPendingBasQuestionIds/);
+  assert.match(route, /loadBasQuestionsByIds/);
+  assert.match(sessionsRoute, /createWrongQuestionPracticeSession/);
+  assert.match(sessionsRoute, /loadWrongQuestionPracticeSession/);
   assert.match(practice, /setQuestionSnapshot\(\{ key: sessionKey, questions: \[\.\.\.questions\] \}\)/);
   assert.match(practice, /questionSnapshot\?\.key === sessionKey[\s\S]*questionSnapshot\.questions/);
   assert.match(practice, /initialQuestions=\{sessionQuestions\}/);
+  assert.match(practice, /stopwatch=\{historySession\}/);
+  assert.match(practice, /url\.searchParams\.set\("session", createdSessionId\)/);
+  assert.match(session, /stopwatch\?: boolean/);
   assert.match(session, /const questions = useMemo\([\s\S]*initialQuestions \?\? cachedQuestions \?\? \[\]/);
   assert.match(session, /const isLastQuestion = currentIndex === questions\.length - 1/);
   assert.match(session, /if \(isLastQuestion\) \{[\s\S]*await submitAll\(savedAnswers\)[\s\S]*return;[\s\S]*setCurrentIndex\(\(index\) => index \+ 1\)/);

@@ -56,6 +56,7 @@ export function PracticeSession({
   returnTo,
   setId,
   setTitle,
+  stopwatch = false,
   submitAnsweredOnly = false,
   timed = true,
   totalSeconds = DEFAULT_TIME_SECONDS
@@ -67,6 +68,8 @@ export function PracticeSession({
   returnTo?: string | null;
   setId: string;
   setTitle?: string;
+  /** Positive elapsed-time display for untimed wrong-question practice. */
+  stopwatch?: boolean;
   submitAnsweredOnly?: boolean;
   timed?: boolean;
   totalSeconds?: number;
@@ -96,6 +99,7 @@ export function PracticeSession({
   const [startedAt] = useState(() => Date.now());
   const [questionStartedAt, setQuestionStartedAt] = useState(() => Date.now());
   const [remainingSeconds, setRemainingSeconds] = useState(totalSeconds);
+  const [elapsedDisplaySeconds, setElapsedDisplaySeconds] = useState(0);
   const [visitedQuestionIds, setVisitedQuestionIds] = useState<Set<string>>(() => new Set());
 
   const currentQuestion = questions[currentIndex];
@@ -252,6 +256,17 @@ export function PracticeSession({
 
     return () => window.clearInterval(timer);
   }, [loading, questions.length, result, submitting, timed]);
+
+  // Positive timer for untimed wrong-question practice (history practice).
+  useEffect(() => {
+    if (!stopwatch || timed || loading || result || submitting || questions.length === 0) return;
+    const update = () => setElapsedDisplaySeconds(
+      Math.max(0, Math.round((Date.now() - startedAt) / 1000))
+    );
+    update();
+    const timer = window.setInterval(update, 1000);
+    return () => window.clearInterval(timer);
+  }, [loading, questions.length, result, startedAt, stopwatch, submitting, timed]);
 
   useEffect(() => {
     if (!timed || remainingSeconds !== 0 || loading || result || submitting || questions.length === 0) {
@@ -445,6 +460,13 @@ export function PracticeSession({
           <div className="rounded-xl border border-student-primary-border bg-student-primary-soft px-4 py-2 text-right">
             <p className="text-xs font-semibold uppercase text-student-muted">Time left</p>
             <p className="font-mono text-xl font-bold">{formatTime(remainingSeconds)}</p>
+          </div>
+        ) : stopwatch ? (
+          <div className="rounded-xl border border-student-primary-border bg-student-primary-soft px-4 py-2 text-right">
+            <p className="text-xs font-semibold uppercase text-student-muted">Time</p>
+            <p className="font-mono text-xl font-bold" data-testid="practice-elapsed-time">
+              {formatTime(elapsedDisplaySeconds)}
+            </p>
           </div>
         ) : null}
       </div>

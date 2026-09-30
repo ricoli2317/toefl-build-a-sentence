@@ -19,6 +19,7 @@ import {
   readingShellStyle,
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
+import { ReadingCorrectionEntryButton } from "./ReadingCorrectionEntryButton";
 import { ReadingReviewStatusLine } from "./ReadingReviewStatusLine";
 
 type Payload = Partial<SubmittedReadingReviewPayload> & {
@@ -124,6 +125,9 @@ export function ReadingWrongbookReview({
   return (
     <ReadingPracticeShell
       attempt={review.attempt}
+      headerAction={review.reviewItems.some((item) => !item.isAnswered || !item.isCorrect) ? (
+        <ReadingCorrectionEntryButton attemptId={attemptId} taskType={review.attempt.taskType} />
+      ) : undefined}
       initialAnswers={review.answers}
       initialQuestionIndex={initialQuestionIndex}
       initialReviewIndex={initialQuestionIndex}

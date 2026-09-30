@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   ArrowLeft,
   Clock3,
@@ -144,18 +145,51 @@ export function PracticeResult({
         crumbs={navigation.crumbs}
       />}
       payload={peerComparison ? { ...payload, peer_comparison: peerComparison } : payload}
+      showCorrection
     />
+  );
+}
+
+/**
+ * Entry-level correction for this attempt only. The button uses data the result
+ * page already has (wrong answer chips), adds no first-screen request, and
+ * carries the current result URL as `returnTo` so finishing the correction
+ * returns to this exact result view.
+ */
+function CorrectionEntryButton({ attemptId }: { attemptId: string }) {
+  const router = useRouter();
+  return (
+    <button
+      className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-[10px] border border-student-error-border bg-white px-3.5 py-1.5 text-sm font-semibold text-student-error transition hover:border-student-error hover:bg-student-error-soft"
+      data-testid="wrong-question-correction-entry"
+      onClick={() => {
+        const returnTo = typeof window === "undefined"
+          ? `/student/results/${encodeURIComponent(attemptId)}`
+          : `${window.location.pathname}${window.location.search}`;
+        router.push(`/student/wrong-questions/history/practice?${new URLSearchParams({
+          attemptId,
+          returnTo,
+          scope: "entry"
+        }).toString()}`);
+      }}
+      type="button"
+    >
+      错题订正
+    </button>
   );
 }
 
 export function PracticeResultView({
   initialQuestionId,
   navigation,
-  payload
+  payload,
+  showCorrection = false
 }: {
   initialQuestionId?: string;
   navigation?: React.ReactNode;
   payload: ResultPayload;
+  /** Student-only entry correction link; teacher views never show it. */
+  showCorrection?: boolean;
 }) {
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(() =>
     initialQuestionId
@@ -212,11 +246,16 @@ export function PracticeResultView({
         {navigation}
         <ResultSummary attempt={attempt} peerComparison={peerComparison} />
         <section className="student-card" data-testid="practice-result-detail">
-          <div>
-            <h2 className="text-xl font-bold text-student-text">作答详情</h2>
-            <p className="mt-1 text-sm text-student-muted">
-              提交于 {formatSubmittedAt(attempt.submitted_at)}
-            </p>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-bold text-student-text">作答详情</h2>
+              <p className="mt-1 text-sm text-student-muted">
+                提交于 {formatSubmittedAt(attempt.submitted_at)}
+              </p>
+            </div>
+            {showCorrection && answers.some((answer) => !answer.is_correct) ? (
+              <CorrectionEntryButton attemptId={attempt.attempt_id} />
+            ) : null}
           </div>
           <div
             className="mt-4 flex flex-wrap justify-center gap-3"
@@ -539,9 +578,10 @@ function roundDuration(value: number) {
 }
 
 function formatResultSetTitle(setId: string, setTitle: string) {
-  if (setId.startsWith("wrongbook-today-")) return "今日错题";
-  if (setId.startsWith("wrongbook-random-")) return "历史错题合集 · 随机计时练习";
-  if (setId.startsWith("wrongbook-all-")) return "历史错题合集 · 全部练习";
+  if (setId.startsWith("wrongbook-today-")) return "今日错题订正";
+  if (setId.startsWith("wrongbook-random-") || setId.startsWith("wrongbook-all-")) {
+    return "历史错题练习";
+  }
   if (isGrammarPracticeSetId(setId)) {
     const separatorIndex = setTitle.indexOf(" · ");
     const grammarTag = separatorIndex >= 0 ? setTitle.slice(separatorIndex + 3).trim() : "";

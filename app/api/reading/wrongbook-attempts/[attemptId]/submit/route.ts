@@ -6,6 +6,10 @@ import {
 } from "@/lib/reading/attemptServer";
 import { isReadingWrongbookAttemptSummary } from "@/lib/reading/wrongbook";
 import { isReadingFullSetWrongbookAttemptSummary } from "@/lib/reading/wrongbook";
+import { applyReadingCorrectionAttemptEvents } from "@/lib/reading/wrongQuestionEvents.server";
+import { createServiceSupabase } from "@/lib/supabase/server";
+import { wrongQuestionBusinessDate } from "@/lib/wrongQuestionBusinessDate";
+import { recordWrongQuestionSessionGroupProgress } from "@/lib/wrongQuestionBank.server";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +27,7 @@ export async function POST(
     answers?: unknown;
     elapsedSeconds?: unknown;
     logicalItemId?: unknown;
+    sessionId?: unknown;
     sourceAttemptId?: unknown;
     sourceFullSetId?: unknown;
     taskType?: unknown;
@@ -52,7 +57,9 @@ export async function POST(
     if (!isReadingFullSetWrongbookAttemptSummary(data) || data.status !== "submitted") {
       return readingAttemptJson({ error: "错题订正结果返回了无效数据。" }, { status: 500 });
     }
-    return readingAttemptJson({ attempt: data });
+    // Full Set corrections resolve pending state for their canonical Reading
+    // questions (occurrence ignored), so both scopes clear.
+    await applyCorrectionEvents(params.attemptId, auth.userId, true);    return readingAttemptJson({ attempt: data });
   }
   if (typeof body.logicalItemId !== "string") {
     return readingAttemptJson({ error: "无效的错题订正提交。" }, { status: 400 });
@@ -68,7 +75,58 @@ export async function POST(
   if (!isReadingWrongbookAttemptSummary(data) || data.status !== "submitted") {
     return readingAttemptJson({ error: "错题订正结果返回了无效数据。" }, { status: 500 });
   }
+  // Today practice clears pending; history practice never changes pending.
+  await applyCorrectionEvents(params.attemptId, auth.userId, data.scope === "today");
+  if (typeof body.sessionId === "string" && body.sessionId.trim() && auth.userId) {
+    try {
+      await recordWrongQuestionSessionGroupProgress({
+        db: createServiceSupabase(),
+        group: {
+          logicalItemId: data.logicalItemId,
+          targets: data.targets.map((target) => ({
+            questionId: target.questionId,
+            slotId: target.slotId
+          })),
+          title: ""
+        },
+        progress: {
+          attemptId: data.attemptId,
+          correctPoints: data.correctPoints,
+          submittedAt: data.submittedAt ?? new Date().toISOString(),
+          totalPoints: data.totalPoints
+        },
+        sessionId: body.sessionId.trim(),
+        studentId: auth.userId
+      });
+    } catch (progressError) {
+      console.error("Wrong-question session progress update failed", {
+        attemptId: params.attemptId,
+        message: progressError instanceof Error ? progressError.message : String(progressError)
+      });
+    }
+  }
   return readingAttemptJson({ attempt: data });
+}
+
+async function applyCorrectionEvents(
+  attemptId: string,
+  userId: string | null,
+  appliesToPending: boolean
+) {
+  if (!userId) return;
+  try {
+    await applyReadingCorrectionAttemptEvents(createServiceSupabase(), {
+      appliesToPending,
+      attemptId,
+      practiceDate: wrongQuestionBusinessDate(),
+      studentId: userId
+    });
+  } catch (bankError) {
+    console.error("Reading wrong-question correction update failed", {
+      attemptId,
+      message: bankError instanceof Error ? bankError.message : String(bankError)
+    });
+  }
 }
 
 function isUuid(value: string) {

@@ -149,14 +149,16 @@ test("BAS / WE / AD practice and history payloads keep raw ids for identity only
   );
 });
 
-test("the wrong-questions overview group titles resolve through the same BAS resolver", () => {
+test("wrongbook surfaces never render raw stored set titles", () => {
   const route = read("app/api/wrong-questions/route.ts");
-  assert.match(route, /wrongbook_overview_bas_display/);
-  assert.match(route, /displayResolver\.resolveBuildSentence\(/);
-  assert.match(route, /title: display\.displayName/);
-  // The raw stored set_title must only be the resolver's fallback input.
-  assert.doesNotMatch(
-    route.slice(route.indexOf("function loadBasWrongbookOverviewData")),
-    /title: attempt\?\.set_title/
-  );
+  const home = read("components/WrongQuestionsHome.tsx");
+  // The lightweight home shows task types only; it never renders a raw stored
+  // set / question title, so the old overview resolver wiring is gone.
+  assert.doesNotMatch(route, /title: attempt\?\.set_title/);
+  assert.doesNotMatch(route, /wrongbook_overview_bas_display/);
+  assert.doesNotMatch(home, /set_title/);
+  // Official BAS titles still resolve through the one shared logical resolver.
+  const submissions = read("app/api/submissions/route.ts");
+  assert.match(submissions, /displayResolver\.resolveBuildSentence\(/);
+  assert.match(submissions, /setTitle: historicalDisplay\.displayName/);
 });

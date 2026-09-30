@@ -114,12 +114,15 @@ test("case 7: reading RPC actor gates follow the same Admin student mode for Tea
 });
 
 test("case 7: Student-area APIs use the shared roleCanAccess student mode", async () => {
+  const sharedStudentGuard = await read("../lib/studentRequest.server.ts");
+  assert.match(sharedStudentGuard, /roleCanAccess\(profile\.role, "student"\)/);
+
   for (const route of STUDENT_AREA_ROUTES) {
     const source = await read(route);
     assert.doesNotMatch(source, /\["student", "admin"\]/, `${route} must not hardcode the Admin array`);
     assert.match(
       source,
-      /roleCanAccess\((?:studentProfile|profile)\.role, "student"\)/,
+      /roleCanAccess\((?:studentProfile|profile)\.role, "student"\)|requireStudentApiAuth/,
       `${route} must reuse the shared student-area check`
     );
   }

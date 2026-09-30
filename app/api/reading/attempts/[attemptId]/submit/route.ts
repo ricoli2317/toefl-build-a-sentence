@@ -4,6 +4,9 @@ import {
   readingAttemptJson,
   requireReadingAttemptStudent
 } from "@/lib/reading/attemptServer";
+import { applyReadingAttemptWrongEvents } from "@/lib/reading/wrongQuestionEvents.server";
+import { createServiceSupabase } from "@/lib/supabase/server";
+import { wrongQuestionBusinessDate } from "@/lib/wrongQuestionBusinessDate";
 
 export const dynamic = "force-dynamic";
 
@@ -63,6 +66,24 @@ export async function POST(
   }
   if (!isReadingAttemptSummary(data) || data.status !== "submitted") {
     return readingAttemptJson({ error: "阅读提交结果返回了无效数据。" }, { status: 500 });
+  }
+  if (auth.userId) {
+    try {
+      await applyReadingAttemptWrongEvents(createServiceSupabase(), {
+        attemptId: params.attemptId,
+        logicalItemId,
+        practiceDate: wrongQuestionBusinessDate(),
+        studentId: auth.userId,
+        taskType: data.taskType
+      });
+    } catch (bankError) {
+      // The submitted attempt is authoritative; the auxiliary bank update must
+      // not fail the submission.
+      console.error("Reading wrong-question bank update failed", {
+        attemptId: params.attemptId,
+        message: bankError instanceof Error ? bankError.message : String(bankError)
+      });
+    }
   }
   return readingAttemptJson({ attempt: data });
 }

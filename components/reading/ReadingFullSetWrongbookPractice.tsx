@@ -33,7 +33,7 @@ import {
   type ReadingFullSetWrongbookQueueItem,
   type ReadingFullSetWrongbookTarget
 } from "@/lib/wrongQuestions";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import {
   logStudentPerformance,
@@ -65,14 +65,17 @@ type LoadedOccurrence = {
 type Step = ReturnType<typeof buildReadingFullSetWrongbookProgress>["screens"][number];
 
 export function ReadingFullSetWrongbookPractice({
+  returnTo,
   scope,
   sourceAttemptId
 }: {
+  returnTo?: string | null;
   scope: ReadingWrongbookScope;
   sourceAttemptId: string;
 }) {
   const router = useRouter();
   const studentDataCache = useStudentDataCache();
+  const backHref = returnTo?.trim() || STUDENT_ROUTES.wrongQuestions;
   const [todayRange] = useState(localDayRange);
   const bootstrapKey = studentWrongQuestionsCacheKey(
     `full-set-correction:${scope}:${sourceAttemptId}:${todayRange.start}`
@@ -368,7 +371,10 @@ export function ReadingFullSetWrongbookPractice({
         throw new Error(payload.error ?? "错题订正提交失败，请稍后重试。");
       }
       invalidateStudentWrongbook(session.user.id);
-      router.replace(`/student/reading/wrongbook-results/${encodeURIComponent(attempt.attemptId)}`);
+      router.replace(withStudentReturnTo(
+        `/student/reading/wrongbook-results/${encodeURIComponent(attempt.attemptId)}`,
+        returnTo
+      ));
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "错题订正提交失败，请稍后重试。");
     } finally {
@@ -377,14 +383,14 @@ export function ReadingFullSetWrongbookPractice({
   }
 
   if ((error || loadError) && !current) {
-    return <Message description={error || loadError} onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)} />;
+    return <Message description={error || loadError} onBack={() => router.push(backHref)} />;
   }
   if (!attempt || !current || !currentQuestion) return <Message description="正在加载错题和原题练习界面..." />;
   return (
     <div className="reading-theme h-[100dvh] overflow-hidden bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={elapsedSeconds}
-        onBack={() => router.push(STUDENT_ROUTES.wrongQuestions)}
+        onBack={() => router.push(backHref)}
         progressLabel={`Module ${current.targets[0]?.moduleNumber} · ${readingFullSetWrongbookProgressLabel(step, progress.wrongQuestionCount)}`}
         title={`错题订正 · ${item?.title}`}
       />

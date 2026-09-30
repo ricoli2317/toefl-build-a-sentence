@@ -6,9 +6,11 @@ import {
   requireReadingFullSetStudent
 } from "@/lib/reading/fullSetAttemptServer";
 import { isReadingFullSetAttemptSummary } from "@/lib/reading/fullSetAttempts";
+import { applyFullSetModuleWrongEvents } from "@/lib/reading/wrongQuestionEvents.server";
 import { loadReadingFullSetFinalSnapshot } from "@/lib/reading/fullSetReviewServer";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import { wrongQuestionBusinessDate } from "@/lib/wrongQuestionBusinessDate";
 
 export const dynamic = "force-dynamic";
 
@@ -94,6 +96,22 @@ export async function POST(
     ));
   }
 
+  // Incremental wrong-question bank update for this module's wrong answers.
+  // The module submission is already committed; a bank failure must not turn it
+  // into an error response.
+  if (auth.userId) {
+    try {
+      await timing.measure("database", "wrong_question_bank_events", () =>
+        applyFullSetModuleEvents(submitted.attempt.attemptId, moduleNo!, auth.userId!)
+      );
+    } catch (bankError) {
+      console.error("Full Set wrong-question bank update failed", {
+        attemptId: submitted.attempt.attemptId,
+        message: bankError instanceof Error ? bankError.message : String(bankError)
+      });
+    }
+  }
+
   let finalSnapshot = null;
   if (submitted.attempt.status === "completed" && submitted.attempt.completedAt) {
     try {
@@ -146,4 +164,25 @@ function isMissingSubmitBarrierRpc(error: { code?: string; message?: string } | 
     error.code === "PGRST202"
     || error.message?.includes("submit_reading_full_set_module_v2")
   ));
+}
+
+async function applyFullSetModuleEvents(
+  attemptId: string,
+  moduleNo: 1 | 2,
+  studentId: string
+) {
+  const service = createServiceSupabase();
+  const { data, error } = await service
+    .from("reading_full_set_module_attempts")
+    .select("module_attempt_id")
+    .eq("attempt_id", attemptId)
+    .eq("module_number", moduleNo)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data?.module_attempt_id) return;
+  await applyFullSetModuleWrongEvents(service, {
+    moduleAttemptId: String(data.module_attempt_id),
+    practiceDate: wrongQuestionBusinessDate(),
+    studentId
+  });
 }

@@ -34,6 +34,7 @@ import {
   type ReadingResultSource
 } from "@/lib/studentNavigation";
 import { ReadingRetakeButton } from "./ReadingRetakeButton";
+import { ReadingCorrectionEntryButton } from "./ReadingCorrectionEntryButton";
 import { ReadingQuestionStatusChips } from "./ReadingQuestionStatusChips";
 
 export function ReadingResult({
@@ -103,6 +104,7 @@ export function ReadingResult({
         returnTo={returnTo}
         source={source}
         submittedAt={attempt.submittedAt}
+        taskType={attempt.taskType}
       />
     </div>
   );
@@ -114,13 +116,16 @@ function ReadingDetailCard({
   returnTo,
   source,
   submittedAt,
+  taskType,
 }: {
   answers: ReadingResultAnswer[];
   attemptId: string;
   returnTo?: string | string[];
   source?: ReadingResultSource;
   submittedAt: string;
+  taskType: ReadingResultPayload["attempt"]["taskType"];
 }) {
+  const hasWrongAnswers = answers.some((answer) => !answer.isAnswered || !answer.isCorrect);
   return (
     <section className="student-card" data-testid="reading-result-detail">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -128,7 +133,12 @@ function ReadingDetailCard({
           <h2 className="text-xl font-bold text-student-text">作答详情</h2>
           <p className="mt-1 text-sm text-student-muted">提交于 {formatDateTime(submittedAt)}</p>
         </div>
-        <ReadingRetakeButton attemptId={attemptId} returnTo={returnTo} />
+        <div className="flex flex-wrap items-center gap-2">
+          <ReadingRetakeButton attemptId={attemptId} returnTo={returnTo} />
+          {hasWrongAnswers ? (
+            <ReadingCorrectionEntryButton attemptId={attemptId} taskType={taskType} />
+          ) : null}
+        </div>
       </div>
       <ReadingQuestionStatusChips
         answers={answers}

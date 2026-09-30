@@ -296,6 +296,20 @@ export function toReadingWrongbookPreservedAnswers(
   }));
 }
 
+/**
+ * Display titles for wrong-question practice manifests / entry corrections.
+ * Only called when a practice session is actually prepared, never on the
+ * wrongbook home.
+ */
+export async function loadReadingWrongbookTitles(
+  db: SupabaseClient,
+  itemIds: string[]
+): Promise<Map<string, string>> {
+  const itemResult = await readItems(db, itemIds);
+  if (itemResult.error) throw new Error(itemResult.error.message);
+  return buildReadingTitles(itemResult.data ?? []);
+}
+
 function normalizeAttempt(attempt: ReadingAttemptRow): ReadingWrongQuestionAttempt {
   return {
     attemptId: String(attempt.attempt_id),

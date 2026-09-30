@@ -11,9 +11,16 @@ import type {
   ReadingCorrectionResultPayload
 } from "@/lib/reading/correctionResult";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { ReadingCorrectionEntryButton } from "./ReadingCorrectionEntryButton";
 import { ReadingQuestionStatusChips } from "./ReadingQuestionStatusChips";
 
-export function ReadingWrongbookResult({ attemptId }: { attemptId: string }) {
+export function ReadingWrongbookResult({
+  attemptId,
+  returnTo
+}: {
+  attemptId: string;
+  returnTo?: string | null;
+}) {
   const state = useStudentCachedData<ReadingCorrectionResultPayload>(
     studentReadingResultCacheKey(`wrongbook:${attemptId}`),
     (session) => loadResult(attemptId, session)
@@ -23,11 +30,12 @@ export function ReadingWrongbookResult({ attemptId }: { attemptId: string }) {
 
   const { answers, attempt } = state.data;
   const questionHrefBase = `/student/reading/wrongbook-results/${encodeURIComponent(attemptId)}`;
+  const backHref = returnTo?.trim() || STUDENT_ROUTES.wrongQuestions;
   return (
     <div className="student-result-overview-layout">
       <div className="student-result-overview-navigation">
         <StudentNavigation
-          backHref={STUDENT_ROUTES.wrongQuestions}
+          backHref={backHref}
           crumbs={[
             { label: "学生首页", href: STUDENT_ROUTES.home },
             { label: "错题集", href: STUDENT_ROUTES.wrongQuestions },
@@ -44,9 +52,15 @@ export function ReadingWrongbookResult({ attemptId }: { attemptId: string }) {
         totalPoints={attempt.totalPoints}
       />
       <section className="student-card" data-testid="reading-wrongbook-result-detail">
-        <div>
-          <h2 className="text-xl font-bold text-student-text">作答详情</h2>
-          <p className="mt-1 text-sm text-student-muted">提交于 {formatDateTime(attempt.submittedAt)}</p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-student-text">作答详情</h2>
+            <p className="mt-1 text-sm text-student-muted">提交于 {formatDateTime(attempt.submittedAt)}</p>
+          </div>
+          {String(attempt.taskType) !== "full_set"
+            && answers.some((answer) => !answer.isAnswered || !answer.isCorrect) ? (
+            <ReadingCorrectionEntryButton attemptId={attemptId} taskType={attempt.taskType} />
+          ) : null}
         </div>
         <ReadingQuestionStatusChips
           answers={answers}
