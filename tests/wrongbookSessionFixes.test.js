@@ -4,13 +4,15 @@ const path = require("node:path");
 const test = require("node:test");
 
 const {
+  nextWrongQuestionHistoryAmount,
   readingWrongAnswerEvents
 } = require("../lib/wrongQuestionBank.ts");
 const {
   buildReadingResultPayload
 } = require("../lib/reading/history.ts");
 const {
-  buildSubmittedReadingAnswerState
+  buildSubmittedReadingAnswerState,
+  buildSubmittedReadingReviewItems
 } = require("../lib/reading/review.ts");
 const {
   buildReadingWrongbookInitialAnswers,
@@ -498,30 +500,38 @@ function crumbLabels(navigation) {
   return navigation.crumbs.map((crumb) => crumb.label);
 }
 
-test("7. a RAP result origin shows the RAP practice chain, never the wrong-question bank", () => {
+test("7. a single-item practice result origin returns to the task catalog", () => {
   const navigation = getReadingCorrectionResultNavigation(
     "/student/reading/results/11111111-1111-4111-8111-111111111111",
     "rap"
   );
-  assert.equal(navigation.backHref, "/student/reading/results/11111111-1111-4111-8111-111111111111");
+  assert.equal(navigation.backHref, "/student/reading/rap");
   assert.deepEqual(crumbLabels(navigation), [
-    "学生首页", "Read an Academic Passage", "查看结果", "订正结果"
+    "学生首页", "Read an Academic Passage", "订正结果"
   ]);
   assert.equal(navigation.crumbs[1].href, "/student/reading/rap");
-  assert.equal(navigation.crumbs[2].href, "/student/reading/results/11111111-1111-4111-8111-111111111111");
-  assert.equal(navigation.crumbs[3].href, undefined);
+  assert.equal(navigation.crumbs[2].href, undefined);
   assert.equal(navigation.crumbs.some((crumb) => crumb.label === "错题集"), false);
 });
 
-test("7. a practice-history Reading result origin keeps the history chain", () => {
+test("7. a single-item practice read-only review origin returns to the task catalog", () => {
+  const origin = "/student/reading/results/11111111-1111-4111-8111-111111111111/questions/3";
+  const navigation = getReadingCorrectionResultNavigation(origin, "rdl");
+  assert.equal(navigation.backHref, "/student/reading/rdl");
+  assert.deepEqual(crumbLabels(navigation), [
+    "学生首页", "Read in Daily Life", "订正结果"
+  ]);
+  assert.equal(navigation.crumbs.some((crumb) => crumb.label === "错题集"), false);
+});
+
+test("7. a practice-history Reading result origin also returns to the task catalog", () => {
   const origin = "/student/reading/results/22222222-2222-4222-8222-222222222222?source=practice-history";
   const navigation = getReadingCorrectionResultNavigation(origin, "ctw");
-  assert.equal(navigation.backHref, origin);
+  assert.equal(navigation.backHref, "/student/reading/ctw");
   assert.deepEqual(crumbLabels(navigation), [
-    "学生首页", "练习历史", "查看结果", "订正结果"
+    "学生首页", "Complete the Words", "订正结果"
   ]);
-  assert.equal(navigation.crumbs[1].href, "/student/practice-history");
-  assert.equal(navigation.crumbs[2].href, origin);
+  assert.equal(navigation.crumbs[1].href, "/student/reading/ctw");
 });
 
 test("7. a Full Set result origin keeps the Full Set chain", () => {
@@ -554,11 +564,12 @@ test("7. nested returnTo chains are decoded and validated level by level", () =>
     root
   );
   const navigation = getReadingCorrectionResultNavigation(review, "rap");
-  assert.equal(navigation.backHref, review);
+  // The chain still resolves through the nested review link to the practice
+  // surface, so the correction result returns to the task catalog.
+  assert.equal(navigation.backHref, "/student/reading/rap");
   assert.deepEqual(crumbLabels(navigation), [
-    "学生首页", "练习历史", "查看结果", "订正结果"
+    "学生首页", "Read an Academic Passage", "订正结果"
   ]);
-  assert.equal(navigation.crumbs[2].href, root);
   // The refinement survives a real URL round trip (refresh-safe).
   const parsed = new URL(review, "https://tps.local");
   assert.equal(safeStudentReturnTo(parsed.searchParams.get("returnTo")), root);
@@ -602,6 +613,13 @@ test("7. ordinary Reading and BAS results also derive their parent chain from re
     "学生首页", "套题练习", "查看结果", "练习结果"
   ]);
   assert.equal(basNavigation.backHref, "/student/results/99999999-9999-4999-8999-999999999999");
+
+  // A BAS entry correction (virtual wrongbook set) returns to the BAS catalog.
+  const basCorrection = getStudentResultNavigation("wrongbook-random-20260930-120000", {
+    returnTo: "/student/results/99999999-9999-4999-8999-999999999999"
+  });
+  assert.deepEqual(crumbLabels(basCorrection), ["学生首页", "套题练习", "练习结果"]);
+  assert.equal(basCorrection.backHref, "/student/practice-sets");
 
   // Assignment origins keep the 我的作业 chain unchanged.
   const assignmentNavigation = getStudentResultNavigation("202608-0818-1", {
@@ -698,10 +716,110 @@ test("9. context-filled untargeted slots reuse the shared paragraph renderer as 
 });
 
 // ---------------------------------------------------------------------------
-// 10. The drawn set is frozen and never redrawn when resuming a session
+// 10. The review keeps exactly the session's question numbers
 // ---------------------------------------------------------------------------
 
-test("8. session-switch state is local-only: no session creation or redraw on navigation", () => {
+test("10. the correction review lists exactly the attempt targets, never the material's other slots", () => {
+  const practice = {
+    item: { itemId: "reading-ctw-item", module: "ctw", questionCount: 1, scoringPointCount: 4, title: "CTW" },
+    questions: [{
+      questionId: "ctw-q",
+      questionType: "ctw",
+      slots: [
+        { slotId: "slot-01", slotOrder: 1, prefix: "", missingLength: 5, displayText: "_____" },
+        { slotId: "slot-02", slotOrder: 2, prefix: "", missingLength: 3, displayText: "___" },
+        { slotId: "slot-03", slotOrder: 3, prefix: "", missingLength: 4, displayText: "____" },
+        { slotId: "slot-04", slotOrder: 4, prefix: "", missingLength: 2, displayText: "__" }
+      ]
+    }]
+  };
+  const correctionRows = [
+    {
+      answer_kind: "ctw_slot",
+      attempt_answer_id: "attempt-answer-03",
+      is_correct: false,
+      question_id: "ctw-q",
+      question_time_seconds: 6,
+      slot_id: "slot-03",
+      student_answer: null
+    },
+    {
+      answer_kind: "ctw_slot",
+      attempt_answer_id: "attempt-answer-01",
+      is_correct: true,
+      question_id: "ctw-q",
+      question_time_seconds: 2,
+      slot_id: "slot-01",
+      student_answer: "first"
+    }
+  ];
+  const reviewItems = buildSubmittedReadingReviewItems(practice, correctionRows);
+  // Exactly the two drawn targets, in slot order — never slots 02/04.
+  assert.deepEqual(reviewItems.map((item) => item.slotId), ["slot-01", "slot-03"]);
+  assert.deepEqual(reviewItems.map((item) => item.order), [1, 3]);
+
+  // Preserved rows still fill the rendered paragraph as read-only context; the
+  // route simply never turns them into question numbers.
+  const answers = buildSubmittedReadingAnswerState(
+    practice,
+    [
+      ...correctionRows,
+      {
+        answer_kind: "ctw_slot",
+        attempt_answer_id: "preserved-02",
+        is_correct: true,
+        question_id: "ctw-q",
+        slot_id: "slot-02",
+        student_answer: "two"
+      }
+    ],
+    { tolerateMissingCtwSlots: true }
+  );
+  assert.deepEqual(answers["ctw-q"].slots["slot-02"], ["t", "w", "o"]);
+
+  const route = read("app/api/reading/wrongbook-attempts/[attemptId]/review/route.ts");
+  assert.match(route, /const reviewItems = buildSubmittedReadingReviewItems\(practice, correctionRows\)/);
+  assert.match(route, /const rows = \[\.\.\.correctionRows, \.\.\.preservedAnswers\]/);
+});
+
+// ---------------------------------------------------------------------------
+// 11. The drawn set is frozen and never redrawn when resuming a session
+// ---------------------------------------------------------------------------
+
+test("11. a chooser entry always creates a fresh session; only the pinned id resumes", () => {
+  const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
+  // A per-mount entry nonce keeps the chooser key unique, so a previously
+  // cached (stale) session manifest can never be rendered first.
+  assert.match(bank, /const \[entryNonce\] = useState\(\(\) =>/);
+  assert.match(bank, /else params\.set\("entry", entryNonce\)/);
+  // Refreshing / going back resumes only through the pinned `sessionId` key.
+  assert.match(bank, /if \(activeSessionId\) params\.set\("sessionId", activeSessionId\)/);
+  assert.match(bank, /url\.searchParams\.set\("session", serverSessionId\)/);
+
+  // The BAS history practice shares the same rule.
+  const basPractice = read("components/WrongQuestions.tsx");
+  assert.match(basPractice, /const \[entryNonce\] = useState\(\(\) =>/);
+  assert.match(basPractice, /activeSessionId \? \{ sessionId: activeSessionId \} : \{ entry: entryNonce \}/);
+});
+
+test("11. a retake asks for the smallest valid 5 / 10 / 15 / 20 amount", () => {
+  assert.equal(nextWrongQuestionHistoryAmount(8), 10);
+  assert.equal(nextWrongQuestionHistoryAmount(1), 5);
+  assert.equal(nextWrongQuestionHistoryAmount(5), 5);
+  assert.equal(nextWrongQuestionHistoryAmount(10), 10);
+  assert.equal(nextWrongQuestionHistoryAmount(15), 15);
+  assert.equal(nextWrongQuestionHistoryAmount(16), 20);
+  assert.equal(nextWrongQuestionHistoryAmount(20), 20);
+
+  const result = read("components/reading/ReadingWrongbookSessionResult.tsx");
+  assert.match(result, /amount: String\(nextWrongQuestionHistoryAmount\(session\.amount\)\)/);
+});
+
+// ---------------------------------------------------------------------------
+// 12. Session switching stays local (no new session / redraw on navigation)
+// ---------------------------------------------------------------------------
+
+test("12. session-switch state is local-only: no session creation or redraw on navigation", () => {
   const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
   const navigationBlock = bank.slice(
     bank.indexOf("const handlePreviousSource"),

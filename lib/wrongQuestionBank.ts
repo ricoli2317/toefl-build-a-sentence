@@ -158,6 +158,19 @@ export function wrongQuestionPracticeCount(amount: number, historyCount: number)
   return Math.max(0, Math.min(Math.floor(amount), Math.floor(historyCount)));
 }
 
+/**
+ * The stored session amount is the effective practice size (`min(asked, pool)`),
+ * which can be any number up to 20. Chooser entry points only accept
+ * 5 / 10 / 15 / 20, so a retake asks for the smallest valid amount that still
+ * covers the stored size (the server draws `min(amount, pool)` again, so the
+ * new session is never larger than the pool).
+ */
+export function nextWrongQuestionHistoryAmount(storedAmount: number) {
+  const size = Math.max(0, Math.floor(storedAmount));
+  return WRONG_QUESTION_HISTORY_AMOUNTS.find((amount) => amount >= size)
+    ?? WRONG_QUESTION_HISTORY_AMOUNTS[WRONG_QUESTION_HISTORY_AMOUNTS.length - 1];
+}
+
 export function isWrongQuestionBankTaskType(value: unknown): value is WrongQuestionBankTaskType {
   return typeof value === "string"
     && (WRONG_QUESTION_BANK_TASK_TYPES as readonly string[]).includes(value);

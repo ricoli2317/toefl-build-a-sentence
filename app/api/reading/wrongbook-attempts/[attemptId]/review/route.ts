@@ -112,9 +112,14 @@ export async function GET(
   if (answerResult.error) return serverError("correction answers", answerResult.error);
 
   const practice = selectReadingWrongbookPractice(fullPractice, targets);
-  const rows = [...(answerResult.data ?? []), ...preservedAnswers] as ReviewRow[];
+  const correctionRows = (answerResult.data ?? []) as ReviewRow[];
+  const rows = [...correctionRows, ...preservedAnswers] as ReviewRow[];
   try {
-    const reviewItems = buildSubmittedReadingReviewItems(practice, rows);
+    // Navigation items are exactly this attempt's scoring points (the drawn /
+    // entry targets). Preserved rows only fill the rendered paragraph as
+    // read-only context and must never become extra question numbers, so the
+    // review keeps the same 1..N count as the result page.
+    const reviewItems = buildSubmittedReadingReviewItems(practice, correctionRows);
     return readingAttemptJson({
       answers: buildSubmittedReadingAnswerState(practice, rows, {
         // A correction attempt only covers the drawn targets; CTW slots

@@ -17,6 +17,7 @@ import {
   readingWrongbookSessionShapeCacheKey,
   type ReadingWrongbookSessionGroupResult
 } from "@/lib/reading/wrongbookSession";
+import { nextWrongQuestionHistoryAmount } from "@/lib/wrongQuestionBank";
 import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
 import type { WrongQuestionPracticeSession } from "@/lib/wrongQuestionBank";
 import { ReadingResultDetailCard } from "./ReadingResult";
@@ -158,7 +159,7 @@ export function ReadingWrongbookSessionResult({
   const title = session.mode === "today" ? "今日错题订正" : "历史错题练习";
   const retakeHref = session.mode === "history" && session.amount
     ? `/student/wrong-questions/history/reading/practice?${new URLSearchParams({
-        amount: String(session.amount),
+        amount: String(nextWrongQuestionHistoryAmount(session.amount)),
         mode: "history",
         returnTo: selfPath,
         taskType: session.taskType

@@ -233,7 +233,10 @@ function resolveEntryCorrectionOrigin(safeReturnTo: string, depth = 0): EntryCor
   if (pathname.startsWith(STUDENT_ROUTES.wrongQuestions)) {
     return { href: safeReturnTo, kind: "wrong-questions" };
   }
-  if (/^\/student\/reading\/results\/[^/]+\/?$/.test(pathname)) {
+  // Single-item practice surfaces: the result page and its read-only review
+  // (result chips link to `.../questions/{index}`). Both are the "单项练习"
+  // origin for an entry correction.
+  if (/^\/student\/reading\/results\/[^/]+(?:\/questions\/[^/]+)?\/?$/.test(pathname)) {
     return { href: safeReturnTo, kind: "reading-result" };
   }
   if (/^\/student\/reading\/full-sets\/[^/]+\/result\/[^/]+\/?$/.test(pathname)) {
@@ -298,7 +301,34 @@ export function getReadingCorrectionResultNavigation(
     };
   }
   const origin = resolveEntryCorrectionOrigin(safeReturnTo);
-  if (origin.kind === "reading-result" || origin.kind === "full-set-result") {
+  if (origin.kind === "reading-result") {
+    // A correction started from a single-item practice — its result page or its
+    // read-only review — returns to the task-type catalog after finishing, and
+    // its breadcrumb shows that same practice chain instead of 错题集.
+    const destination = taskType && taskType !== "full_set"
+      ? READING_RESULT_DESTINATIONS[taskType]
+      : null;
+    if (destination) {
+      return {
+        backHref: destination.href,
+        crumbs: [
+          rootCrumb,
+          { label: destination.label, href: destination.href },
+          { label: "订正结果" }
+        ]
+      };
+    }
+    return {
+      backHref: safeReturnTo,
+      crumbs: [
+        rootCrumb,
+        correctionOriginChainCrumb(origin, taskType),
+        { label: "查看结果", href: origin.href },
+        { label: "订正结果" }
+      ]
+    };
+  }
+  if (origin.kind === "full-set-result") {
     return {
       backHref: safeReturnTo,
       crumbs: [
@@ -430,8 +460,21 @@ export function getStudentResultNavigation(
         crumbs: [rootCrumb, wrongQuestionsCrumb, { label: STUDENT_UI_TEXT.result }]
       };
     }
-    // A previous BAS practice result (entry correction / retake) keeps the BAS
-    // practice chain instead of pretending to come from the Assignment list.
+    // A BAS entry correction starts from a single-item practice result page;
+    // after it is finished the correction result returns to the BAS catalog.
+    // Normal BAS results (retakes) keep returning to their own origin.
+    if (isWrongQuestionsSetId(setId)) {
+      return {
+        backHref: STUDENT_ROUTES.buildASentence,
+        crumbs: [
+          rootCrumb,
+          { label: STUDENT_UI_TEXT.practiceSets, href: STUDENT_ROUTES.buildASentence },
+          { label: STUDENT_UI_TEXT.result }
+        ]
+      };
+    }
+    // A previous BAS practice result (retake) keeps the BAS practice chain
+    // instead of pretending to come from the Assignment list.
     const origin = resolveEntryCorrectionOrigin(safeReturnTo);
     if (origin.kind === "reading-result" || origin.kind === "full-set-result") {
       return {

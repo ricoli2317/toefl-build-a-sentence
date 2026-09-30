@@ -102,14 +102,26 @@ export function ReadingWrongbookBankPractice({
   const backHref = returnTo?.trim() || STUDENT_ROUTES.wrongQuestions;
   const [pinnedSessionId, setPinnedSessionId] = useState("");
   const activeSessionId = isEntry ? "" : sessionId ?? pinnedSessionId;
+  /**
+   * A chooser entry (no frozen session id in the URL) must always create a
+   * brand-new session. The cache keeps the manifest of the previous session
+   * under the chooser key and only marks it stale after submits, so reusing
+   * that key would render the old session first and then replace it with the
+   * fresh one — wrong-group flashes, stray auto-advances and old result pages.
+   * A per-mount nonce makes each entry its own key; resume still happens
+   * through the pinned `sessionId` key (refresh / back).
+   */
+  const [entryNonce] = useState(() =>
+    `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`);
 
   const manifestQuery = useMemo(() => {
     if (isEntry) return `entry:${taskType}:${entryAttemptId ?? ""}`;
     const params = new URLSearchParams({ mode, taskType });
     if (mode === "history" && amount) params.set("amount", String(amount));
     if (activeSessionId) params.set("sessionId", activeSessionId);
+    else params.set("entry", entryNonce);
     return params.toString();
-  }, [activeSessionId, amount, entryAttemptId, isEntry, mode, taskType]);
+  }, [activeSessionId, amount, entryAttemptId, entryNonce, isEntry, mode, taskType]);
 
   const manifestState = useStudentCachedData<EntryUnit | SessionPayload>(
     studentWrongQuestionsCacheKey(`reading-bank:${mode}:${manifestQuery}`),

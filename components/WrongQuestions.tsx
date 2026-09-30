@@ -62,14 +62,23 @@ export function WrongQuestionsPractice({
   // the same frozen draw, so an invalidation can only resume (never redraw).
   const [pinnedSessionId, setPinnedSessionId] = useState("");
   const activeSessionId = historySession ? (sessionId ?? pinnedSessionId) : "";
+  /**
+   * A chooser entry must always create a brand-new session: the cached manifest
+   * of a previous session is only marked stale (data kept) after submits, so
+   * reusing the chooser key would render the old draw first and replace it with
+   * the fresh one. A per-mount nonce gives every entry its own key; refresh /
+   * back still resume through the pinned `sessionId` key.
+   */
+  const [entryNonce] = useState(() =>
+    `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`);
   const sessionQuery = useMemo(() => historySession
     ? new URLSearchParams({
         amount: mode === "random" && amount ? String(amount) : "",
         mode: "history",
         taskType: "bas",
-        ...(activeSessionId ? { sessionId: activeSessionId } : {})
+        ...(activeSessionId ? { sessionId: activeSessionId } : { entry: entryNonce })
       }).toString()
-    : null, [activeSessionId, amount, historySession, mode]);
+    : null, [activeSessionId, amount, entryNonce, historySession, mode]);
   const directQuery = useMemo(() => {
     if (scope === "today") return new URLSearchParams({ scope: "today" }).toString();
     if (scope === "entry" && attemptId) {
