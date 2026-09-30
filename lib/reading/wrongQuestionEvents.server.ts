@@ -89,13 +89,13 @@ export async function applyReadingCorrectionAttemptEvents(
     .filter((value): value is string => Boolean(value)));
   const events: WrongQuestionBankEvent[] = [];
   for (const answer of answers) {
-    const module = answer.logicalItemId ? moduleByItem.get(answer.logicalItemId) : null;
-    if (!module) continue;
+    const moduleType = answer.logicalItemId ? moduleByItem.get(answer.logicalItemId) : null;
+    if (!moduleType) continue;
     events.push(...readingCorrectionEvents({
       answers: [answer],
       appliesToPending: input.appliesToPending,
       logicalItemId: answer.logicalItemId!,
-      taskType: module
+      taskType: moduleType
     }));
   }
   await applyStudentWrongQuestionEvents(db, input.studentId, input.practiceDate, events);
@@ -123,12 +123,12 @@ export async function applyFullSetModuleWrongEvents(
   const events: WrongQuestionBankEvent[] = [];
   for (const answer of answers) {
     if (answer.is_correct !== false || !answer.logical_item_id) continue;
-    const module = moduleByItem.get(answer.logical_item_id);
-    if (!module) continue;
+    const moduleType = moduleByItem.get(answer.logical_item_id);
+    if (!moduleType) continue;
     events.push(...readingWrongAnswerEvents({
       answers: [{ isCorrect: false, questionId: answer.question_id, slotId: answer.slot_id }],
       logicalItemId: answer.logical_item_id,
-      taskType: module
+      taskType: moduleType
     }));
   }
   await applyStudentWrongQuestionEvents(db, input.studentId, input.practiceDate, events);
