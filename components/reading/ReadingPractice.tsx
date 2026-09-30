@@ -102,6 +102,8 @@ import {
 } from "@/lib/reading/correctionResult";
 import {
   findReadingFullSetReviewIndex,
+  type ReadingFullSetReviewItem,
+  type ReadingFullSetReviewOccurrence,
   type ReadingFullSetReviewPayload
 } from "@/lib/reading/fullSetReview";
 import { readingFullSetSessionImagePreloadCache } from "@/lib/reading/fullSetOccurrenceCache.client";
@@ -444,16 +446,44 @@ async function loadReadingFullSetReview(
   return result as ReadingFullSetReviewPayload;
 }
 
+export type ReadingReviewShellItem = ReadingFullSetReviewItem & {
+  answerId?: string;
+  order?: number;
+};
+
+type ReadingReviewShellOccurrence = ReadingFullSetReviewOccurrence & {
+  /** Session review: the source's correction attempt id. */
+  attemptId?: string;
+  /** Session review: the source still has wrong / unanswered scoring points. */
+  hasWrong?: boolean;
+};
+
+type ReadingReviewShellPayload = {
+  attempt: { attemptId: string; title: string };
+  disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
+  occurrences: ReadingReviewShellOccurrence[];
+  reviewItems: ReadingReviewShellItem[];
+};
+
 export function ReadingFullSetReviewShell({
+  correctionReturnTo,
   initialSourceAnswerIndex,
   onBack,
   payload,
-  source
+  source,
+  variant = "full_set"
 }: {
+  /** Session review: where the per-source entry correction returns to. */
+  correctionReturnTo?: string | null;
   initialSourceAnswerIndex: number;
   onBack: () => void;
-  payload: ReadingFullSetReviewPayload;
+  payload: ReadingReviewShellPayload;
   source?: ReadingResultSource;
+  /**
+   * "session" reuses the same multi-source review shell for a wrong-question
+   * session: global 1..N numbering and the shared reading review status bar.
+   */
+  variant?: "full_set" | "session";
 }) {
   const [activeIndex, setActiveIndex] = useState(() =>
     findReadingFullSetReviewIndex(payload.reviewItems, initialSourceAnswerIndex)
@@ -506,7 +536,11 @@ export function ReadingFullSetReviewShell({
   );
 
   if (!currentItem || !currentOccurrence || !currentQuestion) {
-    return <ReadingPracticeMessage description="套题作答内容不完整。" onLeave={onBack} title="无法打开套题作答" />;
+    return <ReadingPracticeMessage
+      description={variant === "session" ? "作答内容不完整。" : "套题作答内容不完整。"}
+      onLeave={onBack}
+      title={variant === "session" ? "无法打开作答" : "无法打开套题作答"}
+    />;
   }
 
   const activeSlotReview = currentItem.slotReviews.find(
@@ -519,12 +553,25 @@ export function ReadingFullSetReviewShell({
   const disclosure = selectedReviewItem
     ? payload.disclosures[selectedReviewItem.answerId]
     : undefined;
-  const progressLabel = `Module ${currentItem.moduleNumber} · Question ${currentItem.orderStart} / ${currentItem.moduleNumber === 1 ? 35 : 15}`;
+  const progressLabel = variant === "session"
+    ? `第 ${currentItem.order ?? currentItem.orderStart} / ${payload.reviewItems.length} 题`
+    : `Module ${currentItem.moduleNumber} · Question ${currentItem.orderStart} / ${currentItem.moduleNumber === 1 ? 35 : 15}`;
+  const correctionAttemptId = currentOccurrence.attemptId;
+  const headerAction = variant === "session" && correctionAttemptId && currentOccurrence.hasWrong
+    ? (
+      <ReadingCorrectionEntryButton
+        attemptId={correctionAttemptId}
+        returnTo={correctionReturnTo}
+        taskType={currentItem.taskType}
+      />
+    )
+    : undefined;
 
   return (
     <div className="reading-theme min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
+        headerAction={headerAction}
         onBack={onBack}
         progressLabel={progressLabel}
         showElapsed={false}
@@ -534,14 +581,28 @@ export function ReadingFullSetReviewShell({
         className="mx-auto min-h-[calc(100dvh-var(--reading-header-height))]"
         style={readingTwoColumnScaleStyle}
       >
-        <div className="mx-auto mb-3 max-w-[1600em]">
-          <ReadingFullSetQuestionNavigator
+        {variant === "session" ? (
+          <ReadingReviewStatusBar
             currentIndex={activeIndex}
-            items={payload.reviewItems}
+            items={payload.reviewItems.map((item, index) => ({
+              answerId: item.answerId ?? `${item.key}:${index}`,
+              order: item.order ?? item.orderStart,
+              isAnswered: item.isAnswered,
+              isCorrect: item.isCorrect,
+              questionTimeSeconds: item.questionTimeSeconds
+            }))}
             onSelect={selectReviewItem}
-            showCurrentStatus
           />
-        </div>
+        ) : (
+          <div className="mx-auto mb-3 max-w-[1600em]">
+            <ReadingFullSetQuestionNavigator
+              currentIndex={activeIndex}
+              items={payload.reviewItems}
+              onSelect={selectReviewItem}
+              showCurrentStatus
+            />
+          </div>
+        )}
         <ReadingQuestionViewport
           canGoNext={questionNavigationTargets.nextIndex !== null}
           canGoPrevious={questionNavigationTargets.previousIndex !== null}
@@ -572,6 +633,24 @@ export function ReadingFullSetReviewShell({
   );
 }
 
+export type ReadingPracticeSessionControl = {
+  /** Controlled answer state for the active source of a multi-source session. */
+  answers: ReadingAnswerState;
+  /** End-of-workspace button: Next while more sources remain, Submit on the final one. */
+  completionLabel: "Next" | "Submit";
+  /** Session-cumulative elapsed seconds; the shell stops running its own timer. */
+  elapsedSeconds: number;
+  navigationDisabled?: boolean;
+  onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
+  onCompleteWorkspace: (questionTimes: Record<string, number>) => void;
+  /** The next source is still loading: keep the shell and show a local pending state. */
+  pending?: boolean;
+  submitError: string;
+  submitting: boolean;
+  /** Wrong scoring points of the active source (CTW editable slots). */
+  targets: ReadingWrongbookTarget[];
+};
+
 export function ReadingPracticeShell({
   attempt: initialAttempt,
   elapsedOffsetSeconds = 0,
@@ -587,6 +666,7 @@ export function ReadingPracticeShell({
   reviewItems = [],
   reviewDisclosures = {},
   reviewTitle,
+  session,
   wrongbook
 }: {
   attempt: ReadingAttemptSummary;
@@ -611,6 +691,8 @@ export function ReadingPracticeShell({
   reviewItems?: SubmittedReadingReviewItem[];
   reviewDisclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
   reviewTitle?: string;
+  /** Multi-source session mode: controlled answers / timer / completion. */
+  session?: ReadingPracticeSessionControl;
   wrongbook?: {
     onSubmitted: (attempt: ReadingAttemptSummary) => void;
     /** Multi-group wrong-question session progress tracking. */
@@ -625,12 +707,13 @@ export function ReadingPracticeShell({
   const [elapsedSeconds, setElapsedSeconds] = useState(initialAttempt.elapsedSeconds);
   const readOnly = mode === "submitted_review";
   const lookupEnabled = readingLookupEnabled(mode, practice.item.module);
-  const wrongbookTargets = wrongbook?.targets;
+  const wrongbookTargets = session ? session.targets : wrongbook?.targets;
   const editableSlotIds = useMemo(
     () => wrongbookTargets ? readingWrongbookEditableSlotIds(wrongbookTargets) : undefined,
     [wrongbookTargets]
   );
-  const [answers, setAnswers] = useState<ReadingAnswerState>(initialAnswers);
+  const [localAnswers, setLocalAnswers] = useState<ReadingAnswerState>(initialAnswers);
+  const answers = session ? session.answers : localAnswers;
   const [submitError, setSubmitError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [navigation, setNavigation] = useState<ReadingNavigationState>(() => {
@@ -644,6 +727,7 @@ export function ReadingPracticeShell({
       currentIndex: Math.max(0, Math.min(created.workspaceCount - 1, initialQuestionIndex))
     };
   });
+  const [navigationItemId, setNavigationItemId] = useState(practice.item.itemId);
   const questionTimesRef = useRef<Record<string, number>>({});
   const activeQuestionIdRef = useRef(practice.questions[navigation.currentIndex]?.questionId ?? "");
   const questionStartedAtRef = useRef(Date.now());
@@ -655,19 +739,37 @@ export function ReadingPracticeShell({
   }, [initialAttempt.elapsedSeconds]);
 
   useEffect(() => {
-    if (readOnly || attempt.status === "submitted") return;
+    if (readOnly || session || attempt.status === "submitted") return;
     updateElapsed();
     const timer = window.setInterval(updateElapsed, 250);
     return () => window.clearInterval(timer);
-  }, [attempt.status, readOnly, updateElapsed]);
+  }, [attempt.status, readOnly, session, updateElapsed]);
 
   useEffect(() => {
-    if (readOnly || attempt.status !== "submitted") return;
+    if (readOnly || session || attempt.status !== "submitted") return;
     router.replace(withStudentReturnTo(
       `/student/reading/results/${encodeURIComponent(attempt.attemptId)}`,
       resultReturnTo
     ));
-  }, [attempt.attemptId, attempt.status, readOnly, resultReturnTo, router]);
+  }, [attempt.attemptId, attempt.status, readOnly, resultReturnTo, router, session]);
+
+  // Multi-source sessions swap the practice payload in place; the workspace
+  // navigation restarts for the new source while the shell (header / timer /
+  // progress) stays mounted.
+  useEffect(() => {
+    const itemId = practice.item.itemId;
+    if (itemId === navigationItemId) return;
+    const created = createReadingNavigation(
+      practice.item.module,
+      practice.item.questionCount,
+      practice.item.scoringPointCount
+    );
+    setNavigationItemId(itemId);
+    setNavigation(created);
+    questionTimesRef.current = {};
+    activeQuestionIdRef.current = practice.questions[0]?.questionId ?? "";
+    questionStartedAtRef.current = Date.now();
+  }, [navigationItemId, practice]);
 
   const currentQuestion = practice.questions[navigation.currentIndex] ?? practice.questions[0];
   const progressLabel = progressLabelResolver
@@ -702,8 +804,12 @@ export function ReadingPracticeShell({
   };
   const updateAnswer = useCallback((questionId: string, answer: ReadingAnswer) => {
     if (readOnly) return;
-    setAnswers((current) => setReadingAnswer(current, questionId, answer));
-  }, [readOnly]);
+    if (session) {
+      session.onAnswerChange(questionId, answer);
+      return;
+    }
+    setLocalAnswers((current) => setReadingAnswer(current, questionId, answer));
+  }, [readOnly, session]);
 
   const submit = useCallback(async () => {
     if (readOnly || submitting || attempt.status === "submitted") return;
@@ -767,6 +873,14 @@ export function ReadingPracticeShell({
     }
   }, [answers, attempt, captureCurrentQuestionTime, elapsedSeconds, invalidate, practice, readOnly, resultReturnTo, router, submitting, wrongbook]);
 
+  // Session mode owns the submit (the parent records per-source progress and
+  // decides whether to advance or finish); the shell only captures the answer
+  // times of the current workspace.
+  const completeWorkspace = useCallback(() => {
+    if (!session) return;
+    session.onCompleteWorkspace(captureCurrentQuestionTime());
+  }, [captureCurrentQuestionTime, session]);
+
   if (readOnly) {
     return (
       <ReadingReadonlyReviewShell
@@ -790,7 +904,7 @@ export function ReadingPracticeShell({
   return (
     <div className={`reading-theme ${readOnly ? "min-h-[100dvh]" : "h-[100dvh] overflow-hidden"} bg-[#fbfbfe] text-student-text`} style={readingShellStyle}>
       <ReadingPracticeHeader
-        elapsedSeconds={elapsedSeconds + elapsedOffsetSeconds}
+        elapsedSeconds={session ? session.elapsedSeconds : elapsedSeconds + elapsedOffsetSeconds}
         onBack={onBack}
         progressLabel={progressLabel}
         showElapsed={!readOnly}
@@ -804,22 +918,34 @@ export function ReadingPracticeShell({
           canGoNext={navigation.currentIndex < navigation.workspaceCount - 1}
           canGoPrevious={navigation.currentIndex > 0}
           module={practice.item.module}
+          navigationDisabled={Boolean(session?.pending)}
           onNext={() => move(1)}
           onPrevious={() => move(-1)}
-          onSubmit={submit}
+          onSubmit={session ? completeWorkspace : submit}
           readOnly={readOnly}
-          submitError={submitError}
-          submitting={submitting}
+          submitError={session ? session.submitError : submitError}
+          submitLabel={session?.completionLabel}
+          submitting={session ? session.submitting : submitting}
         >
-          <ReadingWorkspaceRouter
-            answers={answers}
-            currentQuestion={currentQuestion}
-            editableSlotIds={editableSlotIds}
-            lookupEnabled={lookupEnabled}
-            onAnswerChange={updateAnswer}
-            practice={practice}
-            readOnly={readOnly}
-          />
+          {session?.pending ? (
+            <div
+              className="flex h-full min-h-[240px] items-center justify-center rounded-xl border border-dashed border-student-border bg-student-bg/60 text-sm font-semibold text-student-muted"
+              data-testid="reading-session-workspace-pending"
+            >
+              正在加载下一篇材料...
+            </div>
+          ) : (
+            <ReadingWorkspaceRouter
+              answers={answers}
+              currentQuestion={currentQuestion}
+              editableSlotIds={editableSlotIds}
+              key={practice.item.itemId}
+              lookupEnabled={lookupEnabled}
+              onAnswerChange={updateAnswer}
+              practice={practice}
+              readOnly={readOnly}
+            />
+          )}
         </ReadingQuestionViewport>
       </main>
     </div>
@@ -1554,7 +1680,13 @@ function ReadingReviewStatusBar({
   onSelect
 }: {
   currentIndex: number;
-  items: SubmittedReadingReviewItem[];
+  items: Array<{
+    answerId: string;
+    order: number;
+    isAnswered: boolean;
+    isCorrect: boolean;
+    questionTimeSeconds: number | null;
+  }>;
   onSelect: (index: number) => void;
 }) {
   const current = items[currentIndex];
@@ -2537,6 +2669,7 @@ export function ReadingQuestionViewport({
   readOnly,
   submitError = "",
   submitDisabled = false,
+  submitLabel = "Submit",
   submitting = false
 }: {
   canGoNext?: boolean;
@@ -2550,6 +2683,8 @@ export function ReadingQuestionViewport({
   readOnly: boolean;
   submitError?: string;
   submitDisabled?: boolean;
+  /** End-of-workspace action: Next while a multi-source session continues. */
+  submitLabel?: "Next" | "Submit";
   submitting?: boolean;
 }) {
   return (
@@ -2573,6 +2708,7 @@ export function ReadingQuestionViewport({
         readOnly={readOnly}
         submitError={submitError}
         submitDisabled={submitDisabled}
+        submitLabel={submitLabel}
         submitting={submitting}
       />
     </div>
@@ -2589,6 +2725,7 @@ function ReadingQuestionNavigation({
   readOnly,
   submitError,
   submitDisabled,
+  submitLabel,
   submitting,
 }: {
   canGoNext: boolean;
@@ -2600,6 +2737,7 @@ function ReadingQuestionNavigation({
   readOnly: boolean;
   submitError: string;
   submitDisabled: boolean;
+  submitLabel: "Next" | "Submit";
   submitting: boolean;
 }) {
   const previousDisabled = !canGoPrevious || navigationDisabled;
@@ -2619,7 +2757,7 @@ function ReadingQuestionNavigation({
           <ReadingNavigationButton
             direction="next"
             disabled={submitDisabled || submitting || navigationDisabled}
-            label="Submit"
+            label={submitLabel}
             onClick={onSubmit}
           />
         )}

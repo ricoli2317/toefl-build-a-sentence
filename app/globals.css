@@ -343,12 +343,18 @@ select {
 
   .student-button-primary,
   .student-button-secondary,
-  .student-button-error {
+  .student-button-error,
+  .student-button-correction {
     @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-[10px] px-4 py-2 text-sm font-semibold transition disabled:pointer-events-none disabled:opacity-50;
   }
 
   .student-button-primary {
     @apply bg-student-primary text-white hover:bg-student-primary-hover;
+  }
+
+  /* Outline correction tone; geometry is shared with the Retake buttons above. */
+  .student-button-correction {
+    @apply border border-student-error-border bg-white text-student-error hover:border-student-error hover:bg-student-error-soft;
   }
 
   .student-button-secondary {

@@ -247,7 +247,7 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.doesNotMatch(viewportSource, /absolute inset-0|z-20|mx-\[52em\]/);
   assert.match(viewportSource, /label="Previous"/);
   assert.match(viewportSource, /label="Next"/);
-  assert.match(viewportSource, /col-start-2 row-start-2[\s\S]*sm:col-start-3 sm:row-start-1[\s\S]*label="Submit"/);
+  assert.match(viewportSource, /col-start-2 row-start-2[\s\S]*sm:col-start-3 sm:row-start-1[\s\S]*label=\{submitLabel\}/);
   assert.match(viewportSource, /h-\[68px\] w-\[64px\][\s\S]*sm:h-\[92px\] sm:w-\[72px\]/);
   assert.match(viewportSource, /h-11 w-11[\s\S]*sm:h-\[60px\] sm:w-\[60px\]/);
   assert.match(viewportSource, /size=\{32\}/);

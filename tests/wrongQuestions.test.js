@@ -884,12 +884,14 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
   assert.match(bank, /<ReadingPracticeShell[\s\S]*wrongbook=\{\{/);
   assert.match(bank, /loadPractice\(next\.logicalItemId, session\)/);
   assert.match(bank, /progressLabelResolver/);
-  assert.match(bank, /elapsedOffsetSeconds/);
+  assert.match(bank, /readingWrongbookSessionProgressLabel/);
+  assert.match(bank, /elapsedSeconds: sessionElapsed/);
   assert.doesNotMatch(bank, /document\.(body|documentElement)\.style\.overflow/);
   assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);
-  assert.match(shell, /<ReadingQuestionViewport[\s\S]*onSubmit=\{submit\}/);
+  assert.match(shell, /<ReadingQuestionViewport[\s\S]*onSubmit=\{session \? completeWorkspace : submit\}/);
   assert.match(shell, /aria-label=\{label\}/);
-  assert.match(shell, /\{canGoNext \|\| readOnly \? \([\s\S]*label="Submit"/);
+  assert.match(shell, /submitLabel = "Submit"/);
+  assert.match(shell, /label=\{submitLabel\}/);
   assert.doesNotMatch(shell, /Submit Module/);
   assert.match(shell, /readingQuestionNavigationTargets\(reviewNavigationKeys, reviewIndex\)/);
   assert.match(fullSetReview, /readingQuestionNavigationTargets\([\s\S]*candidate\.occurrenceId[\s\S]*candidate\.questionId/);

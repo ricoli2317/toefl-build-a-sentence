@@ -177,15 +177,23 @@ export function selectReadingWrongbookPractice(
   };
 }
 
+/**
+ * The correction RPC requires one submission row per target. Unanswered
+ * targets are sent as an empty string, which the database stores as NULL
+ * (`nullif(student_answer, '')`) and scores as incorrect; sending JSON null
+ * instead would make the SQL comparison itself NULL and reject the submit.
+ */
 export function selectReadingWrongbookSubmissionAnswers(
   answers: ReadingSubmittedAnswer[],
   targets: ReadingWrongbookTarget[]
 ) {
   const targetKeys = new Set(targets.map(readingWrongbookTargetKey));
-  return answers.filter((answer) => targetKeys.has(readingWrongbookTargetKey({
-    questionId: answer.questionId,
-    slotId: answer.slotId ?? null
-  })));
+  return answers
+    .filter((answer) => targetKeys.has(readingWrongbookTargetKey({
+      questionId: answer.questionId,
+      slotId: answer.slotId ?? null
+    })))
+    .map((answer) => ({ ...answer, studentAnswer: answer.studentAnswer ?? "" }));
 }
 
 export function readingWrongbookEditableSlotIds(targets: ReadingWrongbookTarget[]) {

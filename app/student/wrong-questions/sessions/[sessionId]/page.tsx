@@ -10,7 +10,7 @@ export default function WrongQuestionSessionResultPage({
   searchParams: { returnTo?: string | string[] };
 }) {
   return (
-    <StudentPage title="错题练习结果">
+    <StudentPage title="查看阅读结果">
       <ReadingWrongbookSessionResult
         returnTo={safeStudentReturnTo(searchParams.returnTo)}
         sessionId={params.sessionId}

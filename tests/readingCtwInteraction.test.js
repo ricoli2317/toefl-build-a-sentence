@@ -213,7 +213,7 @@ test("CTW workspace keeps one raised line per missing letter and one persistent 
   assert.match(source, /text-left text-\[19em\] leading-\[1\.6842105263\]/);
   assert.doesNotMatch(source, /Type the missing letters in the passage\.|1 个完整练习|个填写位置/);
   assert.match(source, /focusPosition\(firstCtwPosition/);
-  assert.match(source, /<ReadingQuestionViewport[\s\S]*onSubmit=\{submit\}/);
+  assert.match(source, /<ReadingQuestionViewport[\s\S]*onSubmit=\{session \? completeWorkspace : submit\}/);
   assert.doesNotMatch(source, /rawText\.(match|replace)|querySelector|setTimeout/);
 });
 

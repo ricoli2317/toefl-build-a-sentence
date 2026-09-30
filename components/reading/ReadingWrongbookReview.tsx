@@ -19,6 +19,7 @@ import {
   readingShellStyle,
   readingTwoColumnScaleStyle
 } from "./ReadingPractice";
+import { withStudentReturnTo } from "@/lib/studentNavigation";
 import { ReadingCorrectionEntryButton } from "./ReadingCorrectionEntryButton";
 import { ReadingReviewStatusLine } from "./ReadingReviewStatusLine";
 
@@ -57,15 +58,20 @@ type StandardReview = SubmittedReadingReviewPayload & {
 
 export function ReadingWrongbookReview({
   attemptId,
-  initialQuestionIndex
+  initialQuestionIndex,
+  returnTo
 }: {
   attemptId: string;
   initialQuestionIndex: number;
+  returnTo?: string | null;
 }) {
   const router = useRouter();
   const [review, setReview] = useState<StandardReview | FullSetReview | null>(null);
   const [error, setError] = useState("");
-  const resultHref = `/student/reading/wrongbook-results/${encodeURIComponent(attemptId)}`;
+  const resultHref = withStudentReturnTo(
+    `/student/reading/wrongbook-results/${encodeURIComponent(attemptId)}`,
+    returnTo
+  );
 
   useEffect(() => {
     let cancelled = false;

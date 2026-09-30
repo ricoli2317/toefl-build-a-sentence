@@ -92,7 +92,7 @@ test("submitted review reuses ReadingPractice shell while suppressing every answ
   assert.doesNotMatch(reviewLoader, /reviewDisclosureLabel|ReadingAnswerDisclosure/);
   assert.match(reviewLoader, /\/review`/);
   assert.doesNotMatch(reviewLoader, /method: "(POST|PUT|PATCH|DELETE)"/);
-  assert.match(practiceUi, /if \(readOnly\) return;[\s\S]*setAnswers/);
+  assert.match(practiceUi, /if \(readOnly\) return;[\s\S]*setLocalAnswers/);
   assert.match(practiceUi, /disabled=\{readOnly\}/);
   assert.match(practiceUi, /onClick=\{readOnly \? undefined/);
   assert.match(practiceUi, /\{canGoNext \|\| readOnly \? \(/);

@@ -13,18 +13,31 @@ import {
   ReadingPracticeShell
 } from "@/components/reading/ReadingPractice";
 import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
+import { createBrowserSupabase } from "@/lib/supabase/client";
+import { buildReadingSubmissionAnswers } from "@/lib/reading/attempts";
 import type { ReadingAttemptSummary } from "@/lib/reading/attempts";
+import {
+  setReadingAnswer,
+  type ReadingAnswer,
+  type ReadingAnswerState
+} from "@/lib/reading/practiceState";
 import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
 import type { ReadingModule } from "@/lib/reading/types";
+import {
+  readingWrongbookSessionGroupStarts,
+  readingWrongbookSessionProgressLabel
+} from "@/lib/reading/wrongbookSession";
 import type { WrongQuestionPracticeSession } from "@/lib/wrongQuestionBank";
 import {
   buildReadingWrongbookInitialAnswers,
   isReadingWrongbookAttemptSummary,
   selectReadingWrongbookPractice,
+  selectReadingWrongbookSubmissionAnswers,
   type ReadingWrongbookAttemptSummary,
   type ReadingWrongbookPracticeItem,
   type ReadingWrongbookPreservedAnswer
 } from "@/lib/reading/wrongbook";
+import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 
 type SessionPayload = { error?: string; session?: WrongQuestionPracticeSession };
 type AttemptPayload = {
@@ -39,6 +52,19 @@ type EntryUnit = {
   item: ReadingWrongbookPracticeItem;
   preservedAnswers: ReadingWrongbookPreservedAnswer[];
 };
+type GroupReady = {
+  attempt: ReadingWrongbookAttemptSummary;
+  initialAnswers: ReadingAnswerState;
+  item: ReadingWrongbookPracticeItem;
+  practice: StudentReadingPracticePayload;
+};
+
+/**
+ * In-flight session creations keyed by the creation query. A cache
+ * invalidation (submit / rerender) must never fire a second POST: the frozen
+ * draw is pinned into React state + URL and every later read resumes it.
+ */
+const readingSessionCreations = new Map<string, Promise<SessionPayload>>();
 
 /**
  * Bank-driven Reading wrong-question practice:
@@ -46,9 +72,11 @@ type EntryUnit = {
  *   * history - a frozen random session from the history bank
  *   * entry   - the wrong targets of one source attempt
  *
- * Only the current source is mounted; the next source is prefetched in the
- * background (content payload + at most one RDL image), and the session-level
- * timer keeps accumulating answerable time across sources.
+ * History / today sessions are one continuous practice: the session shell
+ * (header, title, timer, global numbering) stays mounted while only the
+ * current source workspace is swapped. The current source is prefetched; a
+ * source that is still loading shows a local pending state instead of tearing
+ * the shell down.
  */
 export function ReadingWrongbookBankPractice({
   amount,
@@ -69,13 +97,16 @@ export function ReadingWrongbookBankPractice({
   const cache = useStudentDataCache();
   const isEntry = mode === "entry";
   const backHref = returnTo?.trim() || STUDENT_ROUTES.wrongQuestions;
+  const [pinnedSessionId, setPinnedSessionId] = useState("");
+  const activeSessionId = isEntry ? "" : sessionId ?? pinnedSessionId;
+
   const manifestQuery = useMemo(() => {
     if (isEntry) return `entry:${taskType}:${entryAttemptId ?? ""}`;
     const params = new URLSearchParams({ mode, taskType });
     if (mode === "history" && amount) params.set("amount", String(amount));
-    if (sessionId) params.set("sessionId", sessionId);
+    if (activeSessionId) params.set("sessionId", activeSessionId);
     return params.toString();
-  }, [amount, entryAttemptId, isEntry, mode, sessionId, taskType]);
+  }, [activeSessionId, amount, entryAttemptId, isEntry, mode, taskType]);
 
   const manifestState = useStudentCachedData<EntryUnit | SessionPayload>(
     studentWrongQuestionsCacheKey(`reading-bank:${mode}:${manifestQuery}`),
@@ -87,30 +118,44 @@ export function ReadingWrongbookBankPractice({
 
   const entryUnit = isEntry ? manifestState.data as EntryUnit | null : null;
   const practiceSession = !isEntry ? (manifestState.data as SessionPayload | null)?.session ?? null : null;
-  const serverSessionId = practiceSession?.sessionId ?? "";
-  const groups = practiceSession?.groups ?? [];
+  const serverSessionId = isEntry ? "" : practiceSession?.sessionId ?? "";
+  const groups = useMemo(() => practiceSession?.groups ?? [], [practiceSession]);
   const totalPoints = useMemo(
     () => groups.reduce((sum, group) => sum + group.targets.length, 0),
     [groups]
   );
-  const groupStarts = useMemo(() => {
-    let offset = 0;
-    return groups.map((group) => {
-      const start = offset;
-      offset += group.targets.length;
-      return start;
-    });
-  }, [groups]);
+  const groupStarts = useMemo(() => readingWrongbookSessionGroupStarts(groups), [groups]);
+  const sessionTitle = mode === "today" ? "今日错题订正" : "历史错题练习";
 
-  // The created session is pinned into the URL so refresh / back-navigation
-  // resumes the exact same frozen draw (and never re-randomizes).
+  // The created session is pinned into React state (cache key + loader) and the
+  // URL at the same time, so refresh / back / an invalidation can only resume
+  // the exact same frozen draw.
   useEffect(() => {
-    if (isEntry || sessionId || !serverSessionId || typeof window === "undefined") return;
+    if (isEntry || sessionId || !serverSessionId || pinnedSessionId === serverSessionId) return;
+    if (typeof window === "undefined") return;
+    const pinnedQuery = new URLSearchParams({ mode, taskType });
+    if (mode === "history" && amount) pinnedQuery.set("amount", String(amount));
+    pinnedQuery.set("sessionId", serverSessionId);
+    cache.setData(
+      studentWrongQuestionsCacheKey(`reading-bank:${mode}:${pinnedQuery.toString()}`),
+      manifestState.data
+    );
+    setPinnedSessionId(serverSessionId);
     const url = new URL(window.location.href);
     if (url.searchParams.get("session") === serverSessionId) return;
     url.searchParams.set("session", serverSessionId);
     window.history.replaceState(null, "", url.toString());
-  }, [isEntry, serverSessionId, sessionId]);
+  }, [
+    amount,
+    cache,
+    isEntry,
+    manifestState.data,
+    mode,
+    pinnedSessionId,
+    serverSessionId,
+    sessionId,
+    taskType
+  ]);
 
   const [groupIndex, setGroupIndex] = useState<number | null>(null);
   useEffect(() => {
@@ -148,78 +193,285 @@ export function ReadingWrongbookBankPractice({
     { enabled: Boolean(practiceItemId) }
   );
 
-  const attempt = isEntry ? entryUnit?.attempt ?? null : attemptState.data?.attempt ?? null;
-  const item = isEntry ? entryUnit?.item ?? null : attemptState.data?.item ?? null;
-  const preservedAnswers = useMemo<ReadingWrongbookPreservedAnswer[]>(
-    () => isEntry ? entryUnit?.preservedAnswers ?? [] : attemptState.data?.preservedAnswers ?? [],
-    [attemptState.data?.preservedAnswers, entryUnit?.preservedAnswers, isEntry]
-  );
-  const ready = useMemo(() => {
+  const entryReady = useMemo(() => {
+    if (!isEntry) return null;
     const rawPractice = practiceState.data?.practice;
+    if (!rawPractice || !entryUnit?.item || !entryUnit.attempt || !isReadingWrongbookAttemptSummary(entryUnit.attempt)) {
+      return null;
+    }
+    const practice = selectReadingWrongbookPractice(rawPractice, entryUnit.item.targets);
+    return {
+      attempt: entryUnit.attempt,
+      initialAnswers: buildReadingWrongbookInitialAnswers(practice, entryUnit.preservedAnswers),
+      item: entryUnit.item,
+      practice
+    };
+  }, [entryUnit, isEntry, practiceState.data?.practice]);
+
+  const groupReady = useMemo<GroupReady | null>(() => {
+    if (isEntry || !group) return null;
+    const rawPractice = practiceState.data?.practice;
+    const attempt = attemptState.data?.attempt ?? null;
+    const item = attemptState.data?.item ?? null;
     if (!rawPractice || !item || !attempt || !isReadingWrongbookAttemptSummary(attempt)) return null;
     const practice = selectReadingWrongbookPractice(rawPractice, item.targets);
     return {
       attempt,
-      initialAnswers: buildReadingWrongbookInitialAnswers(practice, preservedAnswers),
+      initialAnswers: buildReadingWrongbookInitialAnswers(
+        practice,
+        attemptState.data?.preservedAnswers ?? []
+      ),
       item,
       practice
     };
-  }, [attempt, item, practiceState.data?.practice, preservedAnswers]);
+  }, [attemptState.data, group, isEntry, practiceState.data?.practice]);
 
-  const [elapsedOffset, setElapsedOffset] = useState(0);
+  // The rendered occurrence survives a source switch: while the next source is
+  // loading the previous workspace data is kept but hidden behind the local
+  // pending state, so the shell never unmounts.
+  const [rendered, setRendered] = useState<{ logicalItemId: string; ready: GroupReady } | null>(null);
+  const [answersByGroup, setAnswersByGroup] = useState<Record<string, ReadingAnswerState>>({});
+  useEffect(() => {
+    if (!groupReady || !group) return;
+    setRendered((current) => {
+      if (
+        current?.logicalItemId === group.logicalItemId
+        && current.ready.practice.item.itemId === groupReady.practice.item.itemId
+      ) {
+        return current;
+      }
+      return { logicalItemId: group.logicalItemId, ready: groupReady };
+    });
+    setAnswersByGroup((map) => map[group.logicalItemId]
+      ? map
+      : { ...map, [group.logicalItemId]: groupReady.initialAnswers });
+  }, [group, groupReady]);
+
+  const pending = !isEntry
+    && groupIndex !== null
+    && (!rendered || rendered.logicalItemId !== group?.logicalItemId);
+
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  // Session-cumulative elapsed time: counts while a source workspace is
+  // answerable, pauses during source loading / submits, and never resets on a
+  // source switch.
+  const [sessionElapsed, setSessionElapsed] = useState(0);
+  const elapsedRef = useRef<{ completed: number; startedAt: number | null }>({
+    completed: 0,
+    startedAt: null
+  });
+  const groupBaseElapsedRef = useRef(0);
+  const currentElapsed = useCallback(
+    () => elapsedRef.current.completed + (elapsedRef.current.startedAt === null
+      ? 0
+      : Math.max(0, Math.round((Date.now() - elapsedRef.current.startedAt) / 1000))),
+    []
+  );
+  const flushElapsed = useCallback(() => {
+    if (elapsedRef.current.startedAt === null) return;
+    elapsedRef.current.completed = currentElapsed();
+    elapsedRef.current.startedAt = null;
+    setSessionElapsed(elapsedRef.current.completed);
+  }, [currentElapsed]);
+
+  useEffect(() => {
+    if (isEntry) return;
+    if (pending || submitting || !rendered) {
+      flushElapsed();
+      return;
+    }
+    if (elapsedRef.current.startedAt === null) {
+      elapsedRef.current.startedAt = Date.now();
+    }
+    setSessionElapsed(currentElapsed());
+    const timer = window.setInterval(() => setSessionElapsed(currentElapsed()), 250);
+    return () => window.clearInterval(timer);
+  }, [currentElapsed, flushElapsed, isEntry, pending, rendered, submitting]);
+
+  const renderedItemId = rendered?.logicalItemId ?? "";
+  useEffect(() => {
+    if (!renderedItemId) return;
+    groupBaseElapsedRef.current = currentElapsed();
+  }, [currentElapsed, renderedItemId]);
+
+  // Prefetch the next source's content (and its correction record) so the
+  // switch is instant whenever possible; only one source is ever mounted.
   const preloadedRef = useRef(new Set<string>());
   useEffect(() => {
-    if (isEntry || !ready || !group || groupIndex === null) return;
+    if (isEntry || !group || groupIndex === null) return;
     const next = groups[groupIndex + 1];
     if (!next) return;
-    const key = studentWrongQuestionsCacheKey(`reading-correction-practice:${next.logicalItemId}`);
-    if (preloadedRef.current.has(key)) return;
-    preloadedRef.current.add(key);
-    void cache.load(key, (session) => loadPractice(next.logicalItemId, session)).then((payload) => {
-      // RDL: one next-material image at most, decoded by the browser cache.
-      const imageUrl = payload?.practice?.material?.imageUrl;
-      if (!imageUrl || typeof window === "undefined") return;
-      const image = new window.Image();
-      image.decoding = "async";
-      image.src = imageUrl;
-    });
-  }, [cache, group, groupIndex, groups, isEntry, ready]);
-
-  const progressLabelResolver = useMemo(() => {
-    if (isEntry || !ready || !group || groupIndex === null) return undefined;
-    const start = groupStarts[groupIndex] ?? 0;
-    return (currentIndex: number) => ready.practice.item.module === "ctw"
-      ? `第 ${start + 1}–${start + group.targets.length} / ${totalPoints} 题`
-      : `第 ${start + currentIndex + 1} / ${totalPoints} 题`;
-  }, [group, groupIndex, groupStarts, isEntry, ready, totalPoints]);
-
-  const handleSubmitted = useCallback((submittedAttempt: ReadingAttemptSummary) => {
-    if (isEntry) {
-      router.replace(withStudentReturnTo(
-        `/student/reading/wrongbook-results/${encodeURIComponent(submittedAttempt.attemptId)}`,
-        returnTo
+    const practiceKey = studentWrongQuestionsCacheKey(`reading-correction-practice:${next.logicalItemId}`);
+    if (!preloadedRef.current.has(practiceKey)) {
+      preloadedRef.current.add(practiceKey);
+      void cache.load(practiceKey, (session) => loadPractice(next.logicalItemId, session))
+        .then((payload) => {
+          // RDL: one next-material image at most, decoded by the browser cache.
+          const imageUrl = payload?.practice?.material?.imageUrl;
+          if (!imageUrl || typeof window === "undefined") return;
+          const image = new window.Image();
+          image.decoding = "async";
+          image.src = imageUrl;
+        });
+    }
+    const attemptKey = studentWrongQuestionsCacheKey(
+      `reading-bank-attempt:${serverSessionId}:${next.logicalItemId}`
+    );
+    if (!preloadedRef.current.has(attemptKey) && serverSessionId) {
+      preloadedRef.current.add(attemptKey);
+      void cache.load(attemptKey, (session) => loadGroupAttempt(
+        serverSessionId,
+        next.logicalItemId,
+        session
       ));
+    }
+  }, [cache, group, groupIndex, groups, isEntry, serverSessionId]);
+
+  const handleEntrySubmitted = useCallback((submittedAttempt: ReadingAttemptSummary) => {
+    router.replace(withStudentReturnTo(
+      `/student/reading/wrongbook-results/${encodeURIComponent(submittedAttempt.attemptId)}`,
+      returnTo
+    ));
+  }, [returnTo, router]);
+
+  const handleAnswerChange = useCallback((questionId: string, answer: ReadingAnswer) => {
+    if (!rendered) return;
+    setAnswersByGroup((map) => ({
+      ...map,
+      [rendered.logicalItemId]: setReadingAnswer(
+        map[rendered.logicalItemId] ?? rendered.ready.initialAnswers,
+        questionId,
+        answer
+      )
+    }));
+  }, [rendered]);
+
+  const completeWorkspace = useCallback(async (questionTimes: Record<string, number>) => {
+    if (isEntry || submitting || !group || !rendered || rendered.logicalItemId !== group.logicalItemId) {
       return;
     }
-    setElapsedOffset((offset) => offset + (submittedAttempt.elapsedSeconds ?? 0));
-    if (groupIndex === null) return;
-    if (groupIndex + 1 < groups.length) {
-      setGroupIndex(groupIndex + 1);
-      return;
-    }
-    if (serverSessionId) {
+    setSubmitting(true);
+    setSubmitError("");
+    const elapsedSeconds = Math.max(0, currentElapsed() - groupBaseElapsedRef.current);
+    try {
+      const supabase = createBrowserSupabase();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("请先登录后再提交阅读练习。");
+      const answers = selectReadingWrongbookSubmissionAnswers(
+        buildReadingSubmissionAnswers(
+          rendered.ready.practice,
+          answersByGroup[rendered.logicalItemId] ?? rendered.ready.initialAnswers,
+          questionTimes
+        ),
+        group.targets
+      );
+      const response = await fetch(
+        `/api/reading/wrongbook-attempts/${encodeURIComponent(rendered.ready.attempt.attemptId)}/submit`,
+        {
+          method: "POST",
+          cache: "no-store",
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            answers,
+            elapsedSeconds,
+            logicalItemId: rendered.ready.practice.item.itemId,
+            sessionId: serverSessionId
+          })
+        }
+      );
+      const payload = await response.json().catch(() => ({})) as AttemptPayload;
+      if (!response.ok || !isReadingWrongbookAttemptSummary(payload.attempt)) {
+        throw new Error(payload.error ?? "阅读答案提交失败，请稍后重试。");
+      }
+      invalidateStudentWrongbook(session.user.id);
+      setSubmitting(false);
+      if (groupIndex !== null && groupIndex + 1 < groups.length) {
+        setGroupIndex(groupIndex + 1);
+        return;
+      }
       router.replace(withStudentReturnTo(
         `/student/wrong-questions/sessions/${encodeURIComponent(serverSessionId)}`,
         returnTo
       ));
-      return;
+    } catch (failure) {
+      setSubmitError(failure instanceof Error ? failure.message : "阅读答案提交失败，请稍后重试。");
+      setSubmitting(false);
     }
-    router.push(backHref);
-  }, [backHref, groupIndex, groups.length, isEntry, returnTo, router, serverSessionId]);
+  }, [
+    answersByGroup,
+    currentElapsed,
+    group,
+    groupIndex,
+    groups.length,
+    isEntry,
+    rendered,
+    returnTo,
+    router,
+    serverSessionId,
+    submitting
+  ]);
 
-  const pendingPreview = practiceState.data?.practice;
+  const progressLabelResolver = useMemo(() => {
+    if (isEntry || !rendered || groupIndex === null) return undefined;
+    const start = groupStarts[groupIndex] ?? 0;
+    return (currentIndex: number) => readingWrongbookSessionProgressLabel({
+      currentIndex,
+      groupStart: start,
+      module: rendered.ready.practice.item.module,
+      targetCount: rendered.ready.item.targets.length,
+      totalPoints
+    });
+  }, [groupIndex, groupStarts, isEntry, rendered, totalPoints]);
+
   const loadError = manifestState.error || attemptState.error || practiceState.error;
-  if (loadError) {
+  const pendingPreview = practiceState.data?.practice;
+
+  if (isEntry) {
+    if (loadError) {
+      return (
+        <BankMessage
+          actionLabel="返回"
+          description={loadError}
+          onAction={() => router.push(backHref)}
+          title="无法进入错题订正"
+        />
+      );
+    }
+    if (!entryReady && pendingPreview && (attemptState.loading || manifestState.loading)) {
+      return (
+        <ReadingPracticePendingShell
+          onBack={() => router.push(backHref)}
+          practice={pendingPreview}
+          reviewTitle="错题订正"
+        />
+      );
+    }
+    if (!entryReady) {
+      return <BankMessage description="正在加载错题和原题练习界面..." title="正在准备错题订正" />;
+    }
+    return (
+      <ReadingPracticeShell
+        attempt={entryReady.attempt}
+        initialAnswers={entryReady.initialAnswers}
+        key={entryReady.item.logicalItemId}
+        onBack={() => router.push(backHref)}
+        practice={entryReady.practice}
+        resultReturnTo={returnTo}
+        reviewTitle="错题订正"
+        wrongbook={{
+          onSubmitted: handleEntrySubmitted,
+          targets: entryReady.item.targets
+        }}
+      />
+    );
+  }
+
+  if (loadError && !rendered) {
     return (
       <BankMessage
         actionLabel="返回"
@@ -229,34 +481,44 @@ export function ReadingWrongbookBankPractice({
       />
     );
   }
-  if (!ready && pendingPreview && (attemptState.loading || manifestState.loading)) {
-    return (
-      <ReadingPracticePendingShell
-        onBack={() => router.push(backHref)}
-        practice={pendingPreview}
-        reviewTitle={mode === "today" ? "错题订正" : "历史错题练习"}
-      />
-    );
-  }
-  if (!ready) {
+  if (!rendered) {
+    if (pendingPreview && (attemptState.loading || manifestState.loading)) {
+      return (
+        <ReadingPracticePendingShell
+          onBack={() => router.push(backHref)}
+          practice={pendingPreview}
+          reviewTitle={sessionTitle}
+        />
+      );
+    }
     return <BankMessage description="正在加载错题和原题练习界面..." title="正在准备错题练习" />;
   }
 
+  const renderedReady = rendered.ready;
+  const answers = answersByGroup[rendered.logicalItemId] ?? renderedReady.initialAnswers;
+  const completionLabel = groupIndex !== null && groupIndex + 1 < groups.length ? "Next" : "Submit";
+
   return (
     <ReadingPracticeShell
-      attempt={ready.attempt}
-      elapsedOffsetSeconds={isEntry ? 0 : elapsedOffset}
-      initialAnswers={ready.initialAnswers}
-      key={ready.item.logicalItemId}
+      attempt={renderedReady.attempt}
       onBack={() => router.push(backHref)}
-      practice={ready.practice}
+      practice={renderedReady.practice}
       progressLabelResolver={progressLabelResolver}
       resultReturnTo={returnTo}
-      reviewTitle={`${mode === "today" ? "错题订正" : "历史错题练习"} · ${ready.item.title}`}
-      wrongbook={{
-        onSubmitted: handleSubmitted,
-        sessionId: serverSessionId || undefined,
-        targets: ready.item.targets
+      reviewTitle={sessionTitle}
+      session={{
+        answers,
+        completionLabel,
+        elapsedSeconds: sessionElapsed,
+        navigationDisabled: pending,
+        onAnswerChange: handleAnswerChange,
+        onCompleteWorkspace: (questionTimes) => {
+          void completeWorkspace(questionTimes);
+        },
+        pending,
+        submitError,
+        submitting,
+        targets: group?.targets ?? []
       }}
     />
   );
@@ -296,24 +558,53 @@ async function loadBankSession(
 ) {
   const params = new URLSearchParams(query);
   const existingSessionId = params.get("sessionId")?.trim() ?? "";
-  const response = existingSessionId
-    ? await fetch(`/api/wrong-questions/sessions/${encodeURIComponent(existingSessionId)}`, {
-        cache: "no-store",
-        headers: { Authorization: `Bearer ${session.accessToken}` }
-      })
-    : await fetch("/api/wrong-questions/sessions", {
-        method: "POST",
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          amount: params.get("amount") ? Number(params.get("amount")) : null,
-          mode,
-          taskType
-        })
-      });
+  if (existingSessionId) {
+    const response = await fetch(
+      `/api/wrong-questions/sessions/${encodeURIComponent(existingSessionId)}`,
+      { cache: "no-store", headers: { Authorization: `Bearer ${session.accessToken}` } }
+    );
+    const payload = await response.json().catch(() => ({})) as SessionPayload;
+    if (!response.ok || payload.error) {
+      throw new Error(payload.error ?? "错题练习加载失败，请稍后重试。");
+    }
+    if (
+      !payload.session
+      || payload.session.taskType !== taskType
+      || !payload.session.groups
+      || payload.session.groups.length === 0
+    ) {
+      throw new Error("错题练习数据无效。");
+    }
+    return payload;
+  }
+  const inFlight = readingSessionCreations.get(query);
+  if (inFlight) return inFlight;
+  const creation = createBankSession(mode, taskType, params, session).finally(() => {
+    readingSessionCreations.delete(query);
+  });
+  readingSessionCreations.set(query, creation);
+  return creation;
+}
+
+async function createBankSession(
+  mode: "entry" | "history" | "today",
+  taskType: ReadingModule,
+  params: URLSearchParams,
+  session: StudentCacheSession
+) {
+  const response = await fetch("/api/wrong-questions/sessions", {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      amount: params.get("amount") ? Number(params.get("amount")) : null,
+      mode,
+      taskType
+    })
+  });
   const payload = await response.json().catch(() => ({})) as SessionPayload;
   if (!response.ok || payload.error) {
     throw new Error(payload.error ?? "错题练习加载失败，请稍后重试。");

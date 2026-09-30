@@ -10,7 +10,7 @@ import { StudentErrorState, StudentLoadingState, StudentNavigation } from "@/com
 import type {
   ReadingCorrectionResultPayload
 } from "@/lib/reading/correctionResult";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
 import { ReadingCorrectionEntryButton } from "./ReadingCorrectionEntryButton";
 import { ReadingQuestionStatusChips } from "./ReadingQuestionStatusChips";
 
@@ -64,6 +64,8 @@ export function ReadingWrongbookResult({
         </div>
         <ReadingQuestionStatusChips
           answers={answers}
+          questionHref={(reviewIndex) =>
+            withStudentReturnTo(`${questionHrefBase}/questions/${reviewIndex}`, returnTo)}
           questionHrefBase={questionHrefBase}
         />
       </section>

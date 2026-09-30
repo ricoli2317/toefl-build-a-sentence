@@ -12,24 +12,28 @@ import type { ReadingModule } from "@/lib/reading/types";
 export function ReadingCorrectionEntryButton({
   attemptId,
   label = "错题订正",
+  returnTo,
   taskType
 }: {
   attemptId: string;
   label?: string;
+  /** Explicit origin page; defaults to the current page URL at click time. */
+  returnTo?: string | null;
   taskType: ReadingModule;
 }) {
   const router = useRouter();
   return (
     <button
-      className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-[10px] border border-student-error-border bg-white px-3.5 py-1.5 text-sm font-semibold text-student-error transition hover:border-student-error hover:bg-student-error-soft"
+      className="student-button-correction"
       data-testid="reading-correction-entry"
       onClick={() => {
-        const returnTo = typeof window === "undefined"
-          ? `/student/reading/results/${encodeURIComponent(attemptId)}`
-          : `${window.location.pathname}${window.location.search}`;
+        const origin = returnTo?.trim()
+          || (typeof window === "undefined"
+            ? `/student/reading/results/${encodeURIComponent(attemptId)}`
+            : `${window.location.pathname}${window.location.search}`);
         router.push(`/student/wrong-questions/entry/reading/practice?${new URLSearchParams({
           attemptId,
-          returnTo,
+          returnTo: origin,
           taskType
         }).toString()}`);
       }}
@@ -48,7 +52,7 @@ export function ReadingFullSetCorrectionEntryButton({ attemptId }: { attemptId: 
   const router = useRouter();
   return (
     <button
-      className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-[10px] border border-student-error-border bg-white px-3.5 py-1.5 text-sm font-semibold text-student-error transition hover:border-student-error hover:bg-student-error-soft"
+      className="student-button-correction"
       data-testid="reading-full-set-correction-entry"
       onClick={() => {
         const returnTo = typeof window === "undefined"

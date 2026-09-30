@@ -127,26 +127,63 @@ function ReadingDetailCard({
 }) {
   const hasWrongAnswers = answers.some((answer) => !answer.isAnswered || !answer.isCorrect);
   return (
-    <section className="student-card" data-testid="reading-result-detail">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-student-text">作答详情</h2>
-          <p className="mt-1 text-sm text-student-muted">提交于 {formatDateTime(submittedAt)}</p>
-        </div>
+    <ReadingResultDetailCard
+      actions={(
         <div className="flex flex-wrap items-center gap-2">
           <ReadingRetakeButton attemptId={attemptId} returnTo={returnTo} />
           {hasWrongAnswers ? (
             <ReadingCorrectionEntryButton attemptId={attemptId} taskType={taskType} />
           ) : null}
         </div>
+      )}
+      answers={answers}
+      questionHref={(reviewIndex) => withStudentReturnTo(withReadingResultSource(
+        `${readingResultHref(attemptId)}/questions/${reviewIndex}`,
+        source
+      ), returnTo)}
+      questionHrefBase={`/student/reading/results/${encodeURIComponent(attemptId)}`}
+      submittedAt={submittedAt}
+    />
+  );
+}
+
+/**
+ * The one visible "作答详情" result card shared by the normal Reading result
+ * and the multi-source history session result: same title, submission line,
+ * actions slot, and question status chips. No per-material sections exist.
+ */
+export function ReadingResultDetailCard({
+  actions,
+  answers,
+  questionHref,
+  questionHrefBase,
+  submittedAt
+}: {
+  actions?: React.ReactNode;
+  answers: Array<{
+    answerId: string;
+    isAnswered: boolean;
+    isCorrect: boolean;
+    order: number;
+    reviewIndex?: number;
+  }>;
+  questionHref?: (reviewIndex: number) => string;
+  questionHrefBase: string;
+  submittedAt: string;
+}) {
+  return (
+    <section className="student-card" data-testid="reading-result-detail">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-bold text-student-text">作答详情</h2>
+          <p className="mt-1 text-sm text-student-muted">提交于 {formatDateTime(submittedAt)}</p>
+        </div>
+        {actions ? <div>{actions}</div> : null}
       </div>
       <ReadingQuestionStatusChips
         answers={answers}
-        questionHref={(reviewIndex) => withStudentReturnTo(withReadingResultSource(
-          `${readingResultHref(attemptId)}/questions/${reviewIndex}`,
-          source
-        ), returnTo)}
-        questionHrefBase={`/student/reading/results/${encodeURIComponent(attemptId)}`}
+        questionHref={questionHref}
+        questionHrefBase={questionHrefBase}
       />
     </section>
   );

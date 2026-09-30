@@ -11,6 +11,7 @@ import {
 import {
   studentWrongQuestionsCacheKey,
   useStudentCachedData,
+  useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
@@ -25,6 +26,13 @@ type WrongQuestionsPayload = {
   questions?: PublicQuestion[];
   session?: WrongQuestionPracticeSession;
 };
+
+/**
+ * In-flight session creations, keyed by the creation query. A cache
+ * invalidation (submit / rerender) must never fire a second POST for the same
+ * practice; the frozen session is pinned into React state + URL instead.
+ */
+const basSessionCreations = new Map<string, Promise<WrongQuestionsPayload>>();
 
 /**
  * BAS wrong-question practice for the three entry flows:
@@ -47,15 +55,21 @@ export function WrongQuestionsPractice({
   scope: "entry" | "history" | "today";
   sessionId?: string;
 }) {
+  const cache = useStudentDataCache();
   const historySession = scope === "history";
+  // The session id lives in React state from the moment of creation, not only
+  // in `window.history`: the cache key, the loader, and the URL always agree on
+  // the same frozen draw, so an invalidation can only resume (never redraw).
+  const [pinnedSessionId, setPinnedSessionId] = useState("");
+  const activeSessionId = historySession ? (sessionId ?? pinnedSessionId) : "";
   const sessionQuery = useMemo(() => historySession
     ? new URLSearchParams({
         amount: mode === "random" && amount ? String(amount) : "",
         mode: "history",
         taskType: "bas",
-        ...(sessionId ? { sessionId } : {})
+        ...(activeSessionId ? { sessionId: activeSessionId } : {})
       }).toString()
-    : null, [amount, historySession, mode, sessionId]);
+    : null, [activeSessionId, amount, historySession, mode]);
   const directQuery = useMemo(() => {
     if (scope === "today") return new URLSearchParams({ scope: "today" }).toString();
     if (scope === "entry" && attemptId) {
@@ -76,7 +90,7 @@ export function WrongQuestionsPractice({
   );
   const activeState = historySession ? sessionState : directState;
   const payload = activeState.data;
-  const questions = payload?.questions ?? [];
+  const questions = useMemo(() => payload?.questions ?? [], [payload]);
   const sessionKey = sessionQuery ?? directQuery ?? "";
   const [questionSnapshot, setQuestionSnapshot] = useState<{
     key: string;
@@ -90,17 +104,33 @@ export function WrongQuestionsPractice({
     ? questionSnapshot.questions
     : null;
 
-  // A freshly created history session is pinned into the URL, so a refresh or
-  // back-navigation resumes the exact same draw instead of re-randomizing.
+  // A freshly created history session is pinned into React state (cache key) and
+  // the URL at the same time, so a refresh or back-navigation resumes the exact
+  // same draw instead of re-randomizing.
   useEffect(() => {
     if (!historySession || sessionId) return;
     const createdSessionId = payload?.session?.sessionId;
-    if (!createdSessionId || typeof window === "undefined") return;
+    if (!createdSessionId || createdSessionId === pinnedSessionId || typeof window === "undefined") {
+      return;
+    }
+    const pinnedQuery = new URLSearchParams({
+      amount: mode === "random" && amount ? String(amount) : "",
+      mode: "history",
+      taskType: "bas",
+      sessionId: createdSessionId
+    }).toString();
+    // Pre-seed the session-scoped cache entry with the resolved payload so the
+    // follow-up render reads the same frozen draw without another request.
+    cache.setData(
+      studentWrongQuestionsCacheKey(`bas-session:${pinnedQuery}`),
+      payload
+    );
+    setPinnedSessionId(createdSessionId);
     const url = new URL(window.location.href);
     if (url.searchParams.get("session") === createdSessionId) return;
     url.searchParams.set("session", createdSessionId);
     window.history.replaceState(null, "", url.toString());
-  }, [historySession, payload?.session?.sessionId, sessionId]);
+  }, [amount, cache, historySession, mode, payload, pinnedSessionId, sessionId]);
 
   const stamp = useMemo(() => formatTimestamp(new Date()), []);
   const correctionMode = payload?.correctionMode ?? "today";
@@ -116,10 +146,12 @@ export function WrongQuestionsPractice({
         : "历史错题订正"
       : "历史错题练习";
 
-  if (activeState.error) {
+  if (activeState.error && !sessionQuestions) {
     return <StudentErrorState text="加载错题练习失败，请稍后重试。" />;
   }
-  if (activeState.loading || !sessionQuestions) {
+  // A cache invalidation after submit must not swap the frozen question set for
+  // a loading shell (or a freshly drawn session); the snapshot wins.
+  if (!sessionQuestions) {
     return <StudentLoadingState text="正在加载练习..." />;
   }
   if (sessionQuestions.length === 0) {
@@ -175,24 +207,41 @@ async function loadWrongQuestions(query: string, session: StudentCacheSession) {
 async function loadBasSession(query: string, session: StudentCacheSession) {
   const params = new URLSearchParams(query);
   const existingSessionId = params.get("sessionId")?.trim() ?? "";
-  const response = existingSessionId
-    ? await fetch(`/api/wrong-questions/sessions/${encodeURIComponent(existingSessionId)}`, {
-        cache: "no-store",
-        headers: { Authorization: `Bearer ${session.accessToken}` }
-      })
-    : await fetch("/api/wrong-questions/sessions", {
-        method: "POST",
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${session.accessToken}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          amount: params.get("amount") ? Number(params.get("amount")) : null,
-          mode: "history",
-          taskType: "bas"
-        })
-      });
+  if (existingSessionId) {
+    const response = await fetch(
+      `/api/wrong-questions/sessions/${encodeURIComponent(existingSessionId)}`,
+      { cache: "no-store", headers: { Authorization: `Bearer ${session.accessToken}` } }
+    );
+    const payload = await response.json().catch(() => ({})) as WrongQuestionsPayload;
+    if (!response.ok || payload.error || !payload.session) {
+      throw new Error(payload.error ?? "无法加载错题练习。");
+    }
+    return payload;
+  }
+  const inFlight = basSessionCreations.get(query);
+  if (inFlight) return inFlight;
+  const creation = createBasSession(query, session).finally(() => {
+    basSessionCreations.delete(query);
+  });
+  basSessionCreations.set(query, creation);
+  return creation;
+}
+
+async function createBasSession(query: string, session: StudentCacheSession) {
+  const params = new URLSearchParams(query);
+  const response = await fetch("/api/wrong-questions/sessions", {
+    method: "POST",
+    cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      amount: params.get("amount") ? Number(params.get("amount")) : null,
+      mode: "history",
+      taskType: "bas"
+    })
+  });
   const payload = await response.json().catch(() => ({})) as WrongQuestionsPayload;
   if (!response.ok || payload.error || !payload.session) {
     throw new Error(payload.error ?? "无法加载错题练习。");

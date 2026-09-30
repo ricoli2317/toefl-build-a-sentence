@@ -160,7 +160,7 @@ function CorrectionEntryButton({ attemptId }: { attemptId: string }) {
   const router = useRouter();
   return (
     <button
-      className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-[10px] border border-student-error-border bg-white px-3.5 py-1.5 text-sm font-semibold text-student-error transition hover:border-student-error hover:bg-student-error-soft"
+      className="student-button-correction"
       data-testid="wrong-question-correction-entry"
       onClick={() => {
         const returnTo = typeof window === "undefined"

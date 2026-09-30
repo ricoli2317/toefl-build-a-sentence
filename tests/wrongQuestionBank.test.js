@@ -255,7 +255,7 @@ test("wrong-question sessions freeze the draw and never bulk-load content", () =
   assert.match(bank, /preloadedRef/);
   assert.match(bank, /loadPractice\(next\.logicalItemId, session\)/);
   assert.match(bank, /progressLabelResolver/);
-  assert.match(bank, /setElapsedOffset/);
+  assert.match(bank, /setSessionElapsed/);
   assert.match(bank, /url\.searchParams\.set\("session", serverSessionId\)/);
 
   const server = read("lib/wrongQuestionBank.server.ts");
