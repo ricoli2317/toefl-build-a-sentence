@@ -6,7 +6,10 @@ import {
 } from "@/lib/reading/review";
 import { loadReadingAnswerDisclosures } from "@/lib/reading/reviewDisclosures.server";
 import { selectReadingWrongbookPractice } from "@/lib/reading/wrongbook";
-import { loadReadingWrongbookPreservedAnswers } from "@/lib/reading/wrongbook.server";
+import {
+  loadReadingCtwContextAnswers,
+  loadReadingWrongbookPreservedAnswers
+} from "@/lib/reading/wrongbook.server";
 import { loadStudentReadingPractice, StudentReadingLoadError } from "@/lib/reading/studentPractice";
 import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
 import { createServiceSupabase } from "@/lib/supabase/server";
@@ -75,20 +78,13 @@ export async function GET(
       return serverError("Full Set correction review", asError(error));
     }
   }
-  let fullPractice: Awaited<ReturnType<typeof loadStudentReadingPractice>>;
-  try {
-    fullPractice = await loadStudentReadingPractice(db, attempt.logical_item_id);
-  } catch (error) {
-    if (error instanceof StudentReadingLoadError) {
-      console.error("Reading correction review content load failed", {
-        attemptId: params.attemptId,
-        detail: error.message
-      });
-    }
-    return readingAttemptJson({ error: "订正作答内容暂时无法显示。" }, { status: 500 });
-  }
-
   const targets = attempt.targets as ReadingWrongbookTarget[];
+  // `lite=1`: the client already holds the practice's material content (and,
+  // for RDL, its verified image/selection assets) from the practice itself, so
+  // the review only needs the answer data. Skipping the content load keeps the
+  // per-source request small — no material queries, no RDL image download —
+  // which is what makes the session review feel instant when switching.
+  const lite = new URL(request.url).searchParams.get("lite") === "1";
   let answerData;
   try {
     answerData = await Promise.all([
@@ -111,9 +107,70 @@ export async function GET(
   const [answerResult, preservedAnswers] = answerData;
   if (answerResult.error) return serverError("correction answers", answerResult.error);
 
-  const practice = selectReadingWrongbookPractice(fullPractice, targets);
   const correctionRows = (answerResult.data ?? []) as ReviewRow[];
   const rows = [...correctionRows, ...preservedAnswers] as ReviewRow[];
+  // The session review renders the whole paragraph, so it can fill untargeted
+  // CTW slots with the same read-only context the history practice shows. The
+  // client asks for it explicitly (`context=1`) and it is only ever answered
+  // for history-scope sessions; target answers are never part of it.
+  const wantsContext = new URL(request.url).searchParams.get("context") === "1";
+  let contextAnswers: Awaited<ReturnType<typeof loadReadingCtwContextAnswers>> = [];
+  if (wantsContext && attempt.task_type === "ctw" && attempt.scope === "history") {
+    try {
+      contextAnswers = await loadReadingCtwContextAnswers({
+        db,
+        logicalItemId: attempt.logical_item_id,
+        targets
+      });
+    } catch (contextError) {
+      console.error("Reading correction review context answers load failed", {
+        attemptId: params.attemptId,
+        message: contextError instanceof Error ? contextError.message : "unknown"
+      });
+    }
+  }
+  const attemptSummary = {
+    attemptId: attempt.attempt_id,
+    logicalItemId: attempt.logical_item_id,
+    taskType: attempt.task_type,
+    status: "submitted",
+    elapsedSeconds: attempt.elapsed_seconds,
+    startedAt: attempt.started_at,
+    submittedAt: attempt.submitted_at,
+    totalPoints: attempt.total_points,
+    correctPoints: attempt.correct_points,
+    incorrectPoints: rows.filter((row) => isTargetRow(row, targets) && answered(row) && !row.is_correct).length,
+    unansweredPoints: rows.filter((row) => isTargetRow(row, targets) && !answered(row)).length
+  };
+  if (lite) {
+    try {
+      return readingAttemptJson({
+        attempt: attemptSummary,
+        contextAnswers,
+        correctionRows,
+        disclosures: await loadReadingAnswerDisclosures(db, rows),
+        lite: true,
+        preservedRows: preservedAnswers
+      });
+    } catch (error) {
+      return serverError("correction review lite", asError(error));
+    }
+  }
+
+  let fullPractice: Awaited<ReturnType<typeof loadStudentReadingPractice>>;
+  try {
+    fullPractice = await loadStudentReadingPractice(db, attempt.logical_item_id);
+  } catch (error) {
+    if (error instanceof StudentReadingLoadError) {
+      console.error("Reading correction review content load failed", {
+        attemptId: params.attemptId,
+        detail: error.message
+      });
+    }
+    return readingAttemptJson({ error: "订正作答内容暂时无法显示。" }, { status: 500 });
+  }
+
+  const practice = selectReadingWrongbookPractice(fullPractice, targets);
   try {
     // Navigation items are exactly this attempt's scoring points (the drawn /
     // entry targets). Preserved rows only fill the rendered paragraph as
@@ -124,21 +181,10 @@ export async function GET(
       answers: buildSubmittedReadingAnswerState(practice, rows, {
         // A correction attempt only covers the drawn targets; CTW slots
         // outside the draw are displayed as unanswered blanks.
-        tolerateMissingCtwSlots: true
+        tolerateMissingCtwSlots: true,
+        contextAnswers
       }),
-      attempt: {
-        attemptId: attempt.attempt_id,
-        logicalItemId: attempt.logical_item_id,
-        taskType: attempt.task_type,
-        status: "submitted",
-        elapsedSeconds: attempt.elapsed_seconds,
-        startedAt: attempt.started_at,
-        submittedAt: attempt.submitted_at,
-        totalPoints: attempt.total_points,
-        correctPoints: attempt.correct_points,
-        incorrectPoints: rows.filter((row) => isTargetRow(row, targets) && answered(row) && !row.is_correct).length,
-        unansweredPoints: rows.filter((row) => isTargetRow(row, targets) && !answered(row)).length
-      },
+      attempt: attemptSummary,
       disclosures: await loadReadingAnswerDisclosures(db, rows),
       practice,
       reviewItems

@@ -1684,14 +1684,20 @@ function CtwReadonlyAnswerZone({
   reviewPresentations: Record<string, ReadingCorrectionAnswerPresentation>;
 }) {
   const orderedSlots = [...question.slots].sort((left, right) => left.slotOrder - right.slotOrder);
-  const entries = orderedSlots.map((slot) => {
-    const reviewItem = reviewItems.find((item) => item.slotId === slot.slotId);
-    return {
-      presentation: reviewItem ? reviewPresentations[reviewItem.answerId] : undefined,
-      reviewItem,
-      slot
-    };
-  });
+  const entries = orderedSlots
+    .map((slot) => {
+      const reviewItem = reviewItems.find((item) => item.slotId === slot.slotId);
+      return {
+        presentation: reviewItem ? reviewPresentations[reviewItem.answerId] : undefined,
+        reviewItem,
+        slot
+      };
+    })
+    // Slots without an answer presentation would render as empty cells that
+    // only push the real words around; only answered/targeted slots belong to
+    // this zone.
+    .filter((entry) => Boolean(entry.presentation));
+  const columnTemplate = `max-content repeat(${Math.max(1, entries.length)}, max-content)`;
 
   return (
     <div
@@ -1700,43 +1706,42 @@ function CtwReadonlyAnswerZone({
       data-testid="ctw-readonly-answer-zone"
     >
       <div
-        className={`${readingAnswerCardClassName} grid h-auto w-full shrink-0 gap-y-[10px]`}
+        className={`${readingAnswerCardClassName} w-full shrink-0`}
         data-testid="ctw-readonly-answer-card"
         style={readingQuestionTextStyle}
       >
-        {answerKeyOnly ? null : (
-          <div
-            className="grid grid-cols-[max-content_minmax(0,1fr)] items-baseline gap-x-[20px]"
-            data-testid="ctw-readonly-student-answer-group"
-          >
-            <span className="whitespace-nowrap font-semibold text-student-text">你的回答</span>
-            <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]">
+        {/* One shared column per slot keeps the student word and the correct
+            word vertically aligned even when their widths differ. */}
+        <div
+          className="grid items-baseline gap-x-[20px] gap-y-[10px]"
+          style={{ gridTemplateColumns: columnTemplate }}
+        >
+          {answerKeyOnly ? null : (
+            <>
+              <span className="whitespace-nowrap font-semibold text-student-text" data-testid="ctw-readonly-answer-label">
+                你的回答
+              </span>
               {entries.map(({ presentation, reviewItem, slot }) => (
                 <span className="whitespace-nowrap" data-slot-order={slot.slotOrder} key={slot.slotId}>
                   <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
                 </span>
               ))}
-            </div>
-          </div>
-        )}
-        <div
-          className="grid grid-cols-[max-content_minmax(0,1fr)] items-baseline gap-x-[20px]"
-          data-testid="ctw-readonly-correct-answer-group"
-        >
-          <span className="whitespace-nowrap font-semibold text-student-text">正确答案</span>
-          <div className="flex min-w-0 flex-wrap gap-x-[20px] gap-y-[10px]">
-            {entries.map(({ presentation, reviewItem, slot }) => (
-              <span
-                className="whitespace-nowrap font-medium text-student-text"
-                data-slot-order={slot.slotOrder}
-                key={slot.slotId}
-              >
-                {presentation ? (
-                  <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
-                ) : null}
-              </span>
-            ))}
-          </div>
+            </>
+          )}
+          <span className="whitespace-nowrap font-semibold text-student-text" data-testid="ctw-readonly-correct-label">
+            正确答案
+          </span>
+          {entries.map(({ presentation, slot }) => (
+            <span
+              className="whitespace-nowrap font-medium text-student-text"
+              data-slot-order={slot.slotOrder}
+              key={slot.slotId}
+            >
+              {presentation ? (
+                <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
+              ) : null}
+            </span>
+          ))}
         </div>
       </div>
     </div>

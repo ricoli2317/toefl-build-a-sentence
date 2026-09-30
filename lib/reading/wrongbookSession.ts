@@ -157,16 +157,28 @@ export type ReadingWrongbookSessionReviewPayload = {
   reviewItems: ReadingWrongbookSessionReviewItem[];
 };
 
+/** Per-item status snapshot the result page hands to the session review. */
+export type ReadingWrongbookSessionReviewItemStatus = {
+  isAnswered: boolean;
+  isCorrect: boolean;
+  questionTimeSeconds: number | null;
+};
+
 /**
  * Global per-source item counts of a session review. RDL / RAP sources keep
  * exactly their drawn targets; a CTW source additionally shows its preserved
  * (previously answered) slots, so its count comes from the result page that
  * already loaded the same rows. `null` means "unknown": the caller then loads
  * every source before rendering instead of inventing positions.
+ *
+ * `items` carries the per-item status the result page already knows, so the
+ * review's question chips can be coloured before their own source requests
+ * return.
  */
 export type ReadingWrongbookSessionReviewShape = {
   logicalItemId: string;
   itemCount: number;
+  items?: ReadingWrongbookSessionReviewItemStatus[];
 };
 
 /**
@@ -184,18 +196,23 @@ export function resolveReadingWrongbookSessionReviewShape(input: {
   groups: WrongQuestionSessionGroup[];
   taskType: ReadingModule;
 }): ReadingWrongbookSessionReviewShape[] | null {
+  const cachedById = new Map(
+    (input.cachedShape ?? []).map((entry) => [entry.logicalItemId, entry])
+  );
   if (input.taskType !== "ctw") {
-    return input.groups.map((group) => ({
-      logicalItemId: group.logicalItemId,
-      itemCount: group.targets.length
-    }));
+    // The drawn count is exact for RDL / RAP; reuse the cached entry (with its
+    // per-item statuses) whenever it agrees with the drawn targets.
+    return input.groups.map((group) => {
+      const cached = cachedById.get(group.logicalItemId);
+      if (cached && cached.itemCount === group.targets.length) return cached;
+      return { logicalItemId: group.logicalItemId, itemCount: group.targets.length };
+    });
   }
   if (!input.cachedShape?.length) return null;
-  const countById = new Map(input.cachedShape.map((entry) => [entry.logicalItemId, entry.itemCount]));
-  const shape = input.groups.map((group) => ({
+  const shape = input.groups.map((group) => cachedById.get(group.logicalItemId) ?? {
     logicalItemId: group.logicalItemId,
-    itemCount: countById.get(group.logicalItemId) ?? -1
-  }));
+    itemCount: -1
+  });
   return shape.every((entry) => entry.itemCount >= 0) ? shape : null;
 }
 
@@ -218,13 +235,14 @@ function placeholderReviewItem(input: {
   href: string;
   logicalItemId: string;
   localIndex: number;
+  status?: ReadingWrongbookSessionReviewItemStatus;
   taskType: ReadingModule;
 }): ReadingWrongbookSessionReviewItem {
   return {
     answerId: `${input.logicalItemId}:placeholder:${input.localIndex}`,
     href: input.href,
-    isAnswered: false,
-    isCorrect: false,
+    isAnswered: input.status?.isAnswered ?? false,
+    isCorrect: input.status?.isCorrect ?? false,
     key: `placeholder:${input.logicalItemId}:${input.localIndex}`,
     moduleNumber: 1,
     occurrenceId: input.logicalItemId,
@@ -233,7 +251,7 @@ function placeholderReviewItem(input: {
     orderStart: input.globalIndex + 1,
     placeholder: true,
     questionId: "",
-    questionTimeSeconds: null,
+    questionTimeSeconds: input.status?.questionTimeSeconds ?? null,
     slotId: null,
     slotReviews: [],
     sourceAnswerIndex: input.globalIndex,
@@ -334,6 +352,7 @@ export function buildReadingWrongbookSessionReviewPayload(input: {
           href: input.reviewHref(globalIndex),
           logicalItemId: shape.logicalItemId,
           localIndex,
+          status: shape.items?.[localIndex],
           taskType: input.taskType
         }));
       }

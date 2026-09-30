@@ -10,6 +10,7 @@ import {
   type StudentCacheSession
 } from "@/components/StudentDataCache";
 import { createBrowserSupabase } from "@/lib/supabase/client";
+import { isReadingAttemptSummary } from "@/lib/reading/attempts";
 import {
   ReadingFullSetReviewShell,
   ReadingPracticeMessage,
@@ -17,7 +18,13 @@ import {
 } from "@/components/reading/ReadingPractice";
 import type { ReadingCorrectionAnswerPresentation } from "@/lib/reading/correctionResult";
 import type { ReadingModule } from "@/lib/reading/types";
-import type { SubmittedReadingReviewPayload } from "@/lib/reading/review";
+import {
+  buildSubmittedReadingAnswerState,
+  buildSubmittedReadingReviewItems,
+  type SubmittedReadingAnswerRow,
+  type SubmittedReadingReviewPayload
+} from "@/lib/reading/review";
+import { selectReadingWrongbookPractice } from "@/lib/reading/wrongbook";
 import {
   buildReadingWrongbookSessionReviewPayload,
   findReadingWrongbookSessionShapeIndex,
@@ -27,12 +34,26 @@ import {
   type ReadingWrongbookSessionReviewShape
 } from "@/lib/reading/wrongbookSession";
 import { withStudentReturnTo } from "@/lib/studentNavigation";
-import type { WrongQuestionPracticeSession } from "@/lib/wrongQuestionBank";
+import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
+import type { WrongQuestionPracticeSession, WrongQuestionSessionGroup } from "@/lib/wrongQuestionBank";
+import type { ReadingWrongbookContextAnswer } from "@/lib/reading/wrongbook";
 
 type SessionPayload = { error?: string; session?: WrongQuestionPracticeSession };
 type ReviewPayload = Partial<SubmittedReadingReviewPayload> & {
   disclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
   error?: string;
+};
+type LiteReviewPayload = {
+  attempt?: unknown;
+  contextAnswers?: ReadingWrongbookContextAnswer[];
+  correctionRows?: SubmittedReadingAnswerRow[];
+  disclosures?: Record<string, ReadingCorrectionAnswerPresentation>;
+  error?: string;
+  lite?: boolean;
+  preservedRows?: SubmittedReadingAnswerRow[];
+};
+type PracticeCacheReader = {
+  getEntry: (key: string) => { status: string; data?: unknown } | undefined;
 };
 
 type GroupReviewState =
@@ -141,7 +162,12 @@ export function ReadingWrongbookSessionReview({
       const reviewKey = studentWrongQuestionsCacheKey(`reading-bank-review:${progress.attemptId}`);
       const payload = await cacheRef.current.load<ReviewPayload>(
         reviewKey,
-        (cacheSession) => loadGroupReview(progress.attemptId, cacheSession)
+        (cacheSession) => loadGroupReview(
+          progress.attemptId,
+          group,
+          cacheSession,
+          cacheRef.current
+        )
       );
       if (!payload) {
         const entry = cacheRef.current.getEntry(reviewKey);
@@ -200,6 +226,32 @@ export function ReadingWrongbookSessionReview({
     }
   }, [initialReviewIndex, loadGroup, session, shape, taskType]);
 
+  // With the lite review (answers only — the material content and RDL assets
+  // come from the practice's own cache) pulling the remaining sources one by
+  // one after the opened one is cheap for every task type, so switching
+  // materials never waits on a fresh request. Sequential by design: no request
+  // bursts, and each source is fetched exactly once per page visit.
+  const backgroundPrefetchRef = useRef("");
+  useEffect(() => {
+    if (!session || !taskType || !shape?.length) return;
+    const runKey = `${sessionId}:${initialReviewIndex}`;
+    if (backgroundPrefetchRef.current === runKey) return;
+    backgroundPrefetchRef.current = runKey;
+    let cancelled = false;
+    void (async () => {
+      const groupIndex = findReadingWrongbookSessionShapeIndex(shape, initialReviewIndex);
+      const order = [
+        ...shape.slice(groupIndex + 1),
+        ...shape.slice(0, groupIndex)
+      ].map((entry) => entry.logicalItemId);
+      for (const logicalItemId of order) {
+        if (cancelled) return;
+        await loadGroup(logicalItemId);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [initialReviewIndex, loadGroup, session, sessionId, shape, taskType]);
+
   // No exact per-source counts (CTW opened without the result page, e.g. a
   // hard refresh): fall back to loading every source before rendering.
   useEffect(() => {
@@ -218,7 +270,12 @@ export function ReadingWrongbookSessionReview({
         const loaded = await Promise.all(sessionGroups.map(async (group) => {
           const progress = session.progress[group.logicalItemId];
           if (!progress) throw new Error("这次练习还没有完成。");
-          const payload = await loadGroupReview(progress.attemptId, cacheSession);
+          const payload = await loadGroupReview(
+            progress.attemptId,
+            group,
+            cacheSession,
+            cacheRef.current
+          );
           return {
             group,
             payload: {
@@ -303,9 +360,84 @@ async function loadSession(sessionId: string, session: StudentCacheSession) {
   return payload;
 }
 
-async function loadGroupReview(attemptId: string, session: StudentCacheSession) {
+/**
+ * Reviews one source. When the practice's material payload is still cached —
+ * the normal flow, since every source was practiced in this same SPA session —
+ * only the answer data is fetched (`lite=1`) and the paragraph / assets come
+ * from that cache, so switching sources never re-downloads material content
+ * (nor RDL images). A missing cache (hard refresh / direct link) or an invalid
+ * lite payload falls back to the full review request.
+ */
+async function loadGroupReview(
+  attemptId: string,
+  group: WrongQuestionSessionGroup,
+  session: StudentCacheSession,
+  cache: PracticeCacheReader
+) {
+  const cachedPractice = readCachedPractice(cache, group.logicalItemId);
+  if (cachedPractice) {
+    try {
+      const response = await fetch(
+        `/api/reading/wrongbook-attempts/${encodeURIComponent(attemptId)}/review?context=1&lite=1`,
+        { cache: "no-store", headers: { Authorization: `Bearer ${session.accessToken}` } }
+      );
+      const payload = await response.json().catch(() => ({})) as LiteReviewPayload;
+      if (
+        !response.ok
+        || payload.error
+        || payload.lite !== true
+        || !isReadingAttemptSummary(payload.attempt)
+        || !Array.isArray(payload.correctionRows)
+        || !Array.isArray(payload.preservedRows)
+        || !payload.disclosures
+      ) {
+        throw new Error(payload.error ?? "订正作答数据无效。");
+      }
+      const practice = selectReadingWrongbookPractice(cachedPractice, group.targets);
+      const correctionRows = payload.correctionRows;
+      return {
+        answers: buildSubmittedReadingAnswerState(
+          practice,
+          [...correctionRows, ...payload.preservedRows],
+          {
+            tolerateMissingCtwSlots: true,
+            contextAnswers: payload.contextAnswers ?? []
+          }
+        ),
+        attempt: payload.attempt,
+        disclosures: payload.disclosures,
+        practice,
+        reviewItems: buildSubmittedReadingReviewItems(practice, correctionRows)
+      } as ReviewPayload;
+    } catch (liteError) {
+      console.warn("Reading session review lite load failed; falling back to the full review", {
+        attemptId,
+        message: liteError instanceof Error ? liteError.message : "unknown"
+      });
+    }
+  }
+  return loadGroupReviewFull(attemptId, session);
+}
+
+function readCachedPractice(
+  cache: PracticeCacheReader,
+  logicalItemId: string
+): StudentReadingPracticePayload | null {
+  const entry = cache.getEntry(
+    studentWrongQuestionsCacheKey(`reading-correction-practice:${logicalItemId}`)
+  );
+  if (!entry || !("data" in entry) || entry.status === "loading" || entry.status === "error") {
+    return null;
+  }
+  const data = entry.data as { practice?: StudentReadingPracticePayload } | null | undefined;
+  return data?.practice ?? null;
+}
+
+async function loadGroupReviewFull(attemptId: string, session: StudentCacheSession) {
+  // `context=1` mirrors the history practice's read-only paragraph context for
+  // untargeted CTW slots; the server only answers it for history sessions.
   const response = await fetch(
-    `/api/reading/wrongbook-attempts/${encodeURIComponent(attemptId)}/review`,
+    `/api/reading/wrongbook-attempts/${encodeURIComponent(attemptId)}/review?context=1`,
     { cache: "no-store", headers: { Authorization: `Bearer ${session.accessToken}` } }
   );
   const payload = await response.json().catch(() => ({})) as ReviewPayload;

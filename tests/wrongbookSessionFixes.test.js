@@ -16,7 +16,8 @@ const {
 } = require("../lib/reading/review.ts");
 const {
   buildReadingWrongbookInitialAnswers,
-  readingWrongbookEditableSlotIds
+  readingWrongbookEditableSlotIds,
+  selectReadingWrongbookPractice
 } = require("../lib/reading/wrongbook.ts");
 const {
   buildReadingWrongbookSessionReviewPayload,
@@ -829,4 +830,186 @@ test("12. session-switch state is local-only: no session creation or redraw on n
   assert.match(bank, /if \(!rendered\) \{[\s\S]*ReadingPracticePendingShell/);
   // One shell stays mounted for the whole session; only its workspace swaps.
   assert.match(bank, /const \[rendered, setRendered\] = useState/);
+});
+
+// ---------------------------------------------------------------------------
+// 13. Session review: paragraph context, instant chip colours, prefetch
+// ---------------------------------------------------------------------------
+
+test("13. the review restores the practice's read-only context for untargeted CTW slots", () => {
+  const practice = {
+    item: { itemId: "reading-ctw-item", module: "ctw", questionCount: 1, scoringPointCount: 4, title: "CTW" },
+    questions: [{
+      questionId: "ctw-q",
+      questionType: "ctw",
+      slots: [
+        { slotId: "slot-01", slotOrder: 1, prefix: "", missingLength: 5, displayText: "_____" },
+        { slotId: "slot-02", slotOrder: 2, prefix: "", missingLength: 3, displayText: "___" },
+        { slotId: "slot-03", slotOrder: 3, prefix: "", missingLength: 4, displayText: "____" }
+      ]
+    }]
+  };
+  const answers = buildSubmittedReadingAnswerState(
+    practice,
+    [
+      {
+        answer_kind: "ctw_slot",
+        attempt_answer_id: "attempt-answer-02",
+        is_correct: false,
+        question_id: "ctw-q",
+        slot_id: "slot-02",
+        student_answer: null
+      },
+      {
+        answer_kind: "ctw_slot",
+        attempt_answer_id: "preserved-01",
+        is_correct: true,
+        question_id: "ctw-q",
+        slot_id: "slot-01",
+        student_answer: "first"
+      }
+    ],
+    {
+      tolerateMissingCtwSlots: true,
+      contextAnswers: [
+        { questionId: "ctw-q", slotId: "slot-01", text: "xxxxx" },
+        { questionId: "ctw-q", slotId: "slot-03", text: "word" }
+      ]
+    }
+  );
+  assert.deepEqual(answers["ctw-q"].slots, {
+    // A real row (here the preserved correct answer) always wins over context.
+    "slot-01": ["f", "i", "r", "s", "t"],
+    "slot-02": ["", "", ""],
+    // The untargeted slot shows the material's correct word as context.
+    "slot-03": ["w", "o", "r", "d"]
+  });
+
+  const route = read("app/api/reading/wrongbook-attempts/[attemptId]/review/route.ts");
+  assert.match(route, /const wantsContext = new URL\(request\.url\)\.searchParams\.get\("context"\) === "1"/);
+  assert.match(route, /wantsContext && attempt\.task_type === "ctw" && attempt\.scope === "history"/);
+  assert.match(route, /tolerateMissingCtwSlots: true,\s*\n\s+contextAnswers/);
+  const sessionReview = read("components/reading/ReadingWrongbookSessionReview.tsx");
+  assert.match(sessionReview, /\/review\?context=1/);
+});
+
+test("13. the result page hands per-item statuses to the review so chips colour immediately", () => {
+  const result = read("components/reading/ReadingWrongbookSessionResult.tsx");
+  assert.match(result, /items: Array\.isArray\(payload\.answers\)/);
+  assert.match(result, /isAnswered: answer\.isAnswered/);
+  assert.match(result, /isCorrect: answer\.isCorrect/);
+
+  // Cached shapes are reused (including their statuses) for every task type
+  // whose cached count agrees with the drawn targets.
+  const cached = [{
+    logicalItemId: "item-a",
+    itemCount: 1,
+    items: [{ isAnswered: true, isCorrect: false, questionTimeSeconds: 5 }]
+  }];
+  assert.deepEqual(resolveReadingWrongbookSessionReviewShape({
+    cachedShape: cached,
+    groups: [{ logicalItemId: "item-a", targets: [{ questionId: "a1", slotId: null }], title: "A" }],
+    taskType: "rdl"
+  }), cached);
+  assert.deepEqual(resolveReadingWrongbookSessionReviewShape({
+    cachedShape: cached,
+    groups: [{ logicalItemId: "item-a", targets: [{ questionId: "a1", slotId: null }, { questionId: "a2", slotId: null }], title: "A" }],
+    taskType: "rdl"
+  }), [{ logicalItemId: "item-a", itemCount: 2 }]);
+
+  // Placeholder items carry the cached per-item status in exact positions.
+  const payload = buildReadingWrongbookSessionReviewPayload({
+    groupReviews: [],
+    reviewHref: (index) => `/student/wrong-questions/sessions/s1/questions/${index}`,
+    sessionId: "s1",
+    shapes: [{
+      logicalItemId: "item-a",
+      itemCount: 2,
+      items: [
+        { isAnswered: true, isCorrect: true, questionTimeSeconds: 4 },
+        { isAnswered: false, isCorrect: false, questionTimeSeconds: null }
+      ]
+    }],
+    taskType: "ctw",
+    title: "历史错题练习"
+  });
+  assert.deepEqual(
+    payload.reviewItems.map((item) => [item.isAnswered, item.isCorrect, item.questionTimeSeconds]),
+    [[true, true, 4], [false, false, null]]
+  );
+});
+
+test("13. the session review reuses the practice's cached material and prefetches every source", () => {
+  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
+  // Lite review: answers only; the paragraph and assets come from the
+  // practice's own cache, so switching never re-downloads material content.
+  assert.match(review, /reading-correction-practice:\$\{logicalItemId\}/);
+  assert.match(review, /review\?context=1&lite=1/);
+  assert.match(review, /selectReadingWrongbookPractice\(cachedPractice, group\.targets\)/);
+  assert.match(review, /reviewItems: buildSubmittedReadingReviewItems\(practice, correctionRows\)/);
+  // A missing cache (refresh / direct link) falls back to the full review.
+  assert.match(review, /return loadGroupReviewFull\(attemptId, session\)/);
+
+  // Every remaining source is prefetched sequentially after the opened one —
+  // for every task type, since the lite request carries no material/assets.
+  assert.match(review, /if \(!session \|\| !taskType \|\| !shape\?\.length\) return;/);
+  assert.match(review, /for \(const logicalItemId of order\) \{\s*\n\s+if \(cancelled\) return;\s*\n\s+await loadGroup\(logicalItemId\);/);
+  assert.match(review, /shape\.slice\(groupIndex \+ 1\),\s*\n\s+\.\.\.shape\.slice\(0, groupIndex\)/);
+  assert.doesNotMatch(review, /taskType === "rdl"/);
+
+  // The server's lite branch returns only the answer data.
+  const route = read("app/api/reading/wrongbook-attempts/[attemptId]/review/route.ts");
+  assert.match(route, /const lite = new URL\(request\.url\)\.searchParams\.get\("lite"\) === "1"/);
+  assert.match(route, /if \(lite\) \{/);
+  assert.match(route, /correctionRows,/);
+  assert.match(route, /preservedRows: preservedAnswers/);
+  assert.match(route, /disclosures: await loadReadingAnswerDisclosures\(db, rows\)/);
+  const liteBlock = route.slice(route.indexOf("if (lite) {"), route.indexOf("let fullPractice"));
+  assert.doesNotMatch(liteBlock, /loadStudentReadingPractice/);
+});
+
+test("13. lite composition rebuilds the same review payload from the cached practice", () => {
+  const fullPractice = {
+    item: { itemId: "reading-ctw-item", module: "ctw", questionCount: 1, scoringPointCount: 3, title: "CTW" },
+    questions: [{
+      questionId: "ctw-q",
+      questionType: "ctw",
+      slots: [
+        { slotId: "slot-01", slotOrder: 1, prefix: "", missingLength: 5, displayText: "_____" },
+        { slotId: "slot-02", slotOrder: 2, prefix: "", missingLength: 3, displayText: "___" },
+        { slotId: "slot-03", slotOrder: 3, prefix: "", missingLength: 4, displayText: "____" }
+      ]
+    }]
+  };
+  const targets = [
+    { questionId: "ctw-q", slotId: "slot-02" },
+    { questionId: "ctw-q", slotId: "slot-03" }
+  ];
+  const correctionRows = [
+    { answer_kind: "ctw_slot", attempt_answer_id: "answer-02", is_correct: false, question_id: "ctw-q", question_time_seconds: 3, slot_id: "slot-02", student_answer: null },
+    { answer_kind: "ctw_slot", attempt_answer_id: "answer-03", is_correct: true, question_id: "ctw-q", question_time_seconds: 2, slot_id: "slot-03", student_answer: "word" }
+  ];
+  const preservedRows = [
+    { answer_kind: "ctw_slot", attempt_answer_id: "preserved-01", is_correct: true, question_id: "ctw-q", slot_id: "slot-01", student_answer: "first" }
+  ];
+  const contextAnswers = [{ questionId: "ctw-q", slotId: "slot-01", text: "xxxxx" }];
+
+  // The client's lite path composes from the practice cache with the very same
+  // helpers the server uses for the full payload.
+  const practice = selectReadingWrongbookPractice(fullPractice, targets);
+  const reviewItems = buildSubmittedReadingReviewItems(practice, correctionRows);
+  const answers = buildSubmittedReadingAnswerState(
+    practice,
+    [...correctionRows, ...preservedRows],
+    { tolerateMissingCtwSlots: true, contextAnswers }
+  );
+
+  // Items stay exactly the drawn targets; the paragraph keeps preserved rows
+  // and the context fill, and target blanks stay empty.
+  assert.deepEqual(reviewItems.map((item) => item.slotId), ["slot-02", "slot-03"]);
+  assert.deepEqual(answers["ctw-q"].slots, {
+    "slot-01": ["f", "i", "r", "s", "t"],
+    "slot-02": ["", "", ""],
+    "slot-03": ["w", "o", "r", "d"]
+  });
 });

@@ -103,15 +103,23 @@ export function ReadingWrongbookSessionResult({
     return () => { cancelled = true; };
   }, [session, sessionId]);
 
-  // The read-only session review reuses these exact per-source item counts to
-  // position every global question before its own source requests return.
+  // The read-only session review reuses these exact per-source item counts and
+  // statuses to position and colour every global question before its own source
+  // requests return.
   useEffect(() => {
     if (results?.status !== "ready") return;
     cacheRef.current.setData(
       studentWrongQuestionsCacheKey(readingWrongbookSessionShapeCacheKey(sessionId)),
       results.groups.map(({ group, payload }) => ({
         logicalItemId: group.logicalItemId,
-        itemCount: Array.isArray(payload.answers) ? payload.answers.length : 0
+        itemCount: Array.isArray(payload.answers) ? payload.answers.length : 0,
+        items: Array.isArray(payload.answers)
+          ? payload.answers.map((answer) => ({
+              isAnswered: answer.isAnswered,
+              isCorrect: answer.isCorrect,
+              questionTimeSeconds: answer.questionTimeSeconds
+            }))
+          : []
       }))
     );
   }, [results, sessionId]);

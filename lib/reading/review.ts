@@ -71,6 +71,12 @@ export function buildSubmittedReadingAnswerState(
      * completeness check.
      */
     tolerateMissingCtwSlots?: boolean;
+    /**
+     * Read-only paragraph context for CTW slots outside the attempt's targets
+     * (the same context the practice renders). Only consulted when the slot has
+     * no answer row at all, so target answers are never overwritten.
+     */
+    contextAnswers?: Array<{ questionId: string; slotId: string | null; text: string }>;
   }
 ): ReadingAnswerState {
   const rowsByQuestion = new Map<string, SubmittedReadingAnswerRow[]>();
@@ -79,6 +85,11 @@ export function buildSubmittedReadingAnswerState(
     current.push(row);
     rowsByQuestion.set(row.question_id, current);
   }
+  const contextBySlot = new Map(
+    (options?.contextAnswers ?? [])
+      .filter((answer) => answer.slotId)
+      .map((answer) => [`${answer.questionId}:${answer.slotId}`, answer.text])
+  );
 
   const answers: ReadingAnswerState = {};
   for (const question of practice.questions) {
@@ -91,7 +102,13 @@ export function buildSubmittedReadingAnswerState(
           if (!options?.tolerateMissingCtwSlots) {
             throw new Error("READING_REVIEW_CTW_ANSWER_MISSING");
           }
-          return [slot.slotId, Array.from({ length: slot.missingLength }, () => "")];
+          const contextCharacters = Array.from(
+            contextBySlot.get(`${question.questionId}:${slot.slotId}`) ?? ""
+          ).slice(0, slot.missingLength);
+          return [slot.slotId, [
+            ...contextCharacters,
+            ...Array.from({ length: Math.max(0, slot.missingLength - contextCharacters.length) }, () => "")
+          ]];
         }
         if (row.answer_kind !== "ctw_slot") throw new Error("READING_REVIEW_CTW_ANSWER_MISSING");
         const characters = Array.from(row.student_answer ?? "").slice(0, slot.missingLength);

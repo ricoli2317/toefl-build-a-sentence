@@ -413,13 +413,18 @@ test("readonly Reading answers use fixed in-viewport zones without restoring the
   assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-zone"/);
   assert.match(ctwAnswerSource, /h-\[132em\] shrink-0 items-center justify-center/);
   assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-card"/);
-  assert.match(ctwAnswerSource, /grid h-auto w-full shrink-0 gap-y-\[10px\]/);
+  assert.match(ctwAnswerSource, /w-full shrink-0/);
   assert.match(source, /items-center \$\{readOnly \? "overflow-hidden" : ""\}/);
   assert.match(source, /const readingAnswerCardClassName = "rounded-xl bg-student-bg px-\[24px\] py-\[16px\] shadow-\[0_4px_16px_rgba\(52,127,220,0\.08\)\]"/);
   assert.match(ctwAnswerSource, /style=\{readingQuestionTextStyle\}/);
-  assert.match(ctwAnswerSource, /data-testid="ctw-readonly-student-answer-group"[\s\S]*data-testid="ctw-readonly-correct-answer-group"/);
-  assert.equal((ctwAnswerSource.match(/grid grid-cols-\[max-content_minmax\(0,1fr\)\] items-baseline gap-x-\[20px\]/g) ?? []).length, 2);
-  assert.equal((ctwAnswerSource.match(/flex min-w-0 flex-wrap gap-x-\[20px\] gap-y-\[10px\]/g) ?? []).length, 2);
+  // One shared column per reviewed slot keeps 你的回答 and 正确答案 aligned even
+  // when the words have different widths; slots without answers are omitted.
+  assert.match(ctwAnswerSource, /const columnTemplate = `max-content repeat\(\$\{Math\.max\(1, entries\.length\)\}, max-content\)`/);
+  assert.match(ctwAnswerSource, /gridTemplateColumns: columnTemplate/);
+  assert.match(ctwAnswerSource, /\.filter\(\(entry\) => Boolean\(entry\.presentation\)\)/);
+  assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-label"[\s\S]*data-testid="ctw-readonly-correct-label"/);
+  assert.doesNotMatch(ctwAnswerSource, /flex min-w-0 flex-wrap gap-x-\[20px\] gap-y-\[10px\]/);
+  assert.doesNotMatch(ctwAnswerSource, /grid h-auto w-full shrink-0 gap-y-\[10px\]/);
   assert.doesNotMatch(ctwAnswerSource, /w-max|grid auto-rows-max/);
   assert.match(ctwAnswerSource, /\[\.\.\.question\.slots\]\.sort\(\(left, right\) => left\.slotOrder - right\.slotOrder\)/);
   assert.match(ctwAnswerSource, /你的回答[\s\S]*正确答案/);
