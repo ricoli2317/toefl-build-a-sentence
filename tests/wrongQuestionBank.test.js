@@ -318,12 +318,16 @@ test("entry corrections carry their origin page as returnTo on every result surf
 
   const readingResult = read("components/reading/ReadingResult.tsx");
   assert.match(readingResult, /ReadingCorrectionEntryButton/);
+  // Entry corrections are only offered from a single-item practice result page
+  // (and its read-only review); correction result / correction review / history
+  // session review surfaces no longer offer an entry button.
   const wrongbookResult = read("components/reading/ReadingWrongbookResult.tsx");
-  assert.match(wrongbookResult, /ReadingCorrectionEntryButton/);
+  assert.doesNotMatch(wrongbookResult, /ReadingCorrectionEntryButton/);
   const wrongbookReview = read("components/reading/ReadingWrongbookReview.tsx");
-  assert.match(wrongbookReview, /ReadingCorrectionEntryButton/);
+  assert.doesNotMatch(wrongbookReview, /ReadingCorrectionEntryButton/);
   const submittedReview = read("components/reading/ReadingPractice.tsx");
   assert.match(submittedReview, /ReadingCorrectionEntryButton/);
+  assert.doesNotMatch(submittedReview, /correctionAttemptId|correctionReturnTo/);
   const fullSetResult = read("components/reading/ReadingFullSetResult.tsx");
   assert.match(fullSetResult, /ReadingFullSetCorrectionEntryButton/);
 });

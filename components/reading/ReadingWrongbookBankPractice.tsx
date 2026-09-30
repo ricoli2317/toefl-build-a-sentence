@@ -34,6 +34,7 @@ import {
   selectReadingWrongbookPractice,
   selectReadingWrongbookSubmissionAnswers,
   type ReadingWrongbookAttemptSummary,
+  type ReadingWrongbookContextAnswer,
   type ReadingWrongbookPracticeItem,
   type ReadingWrongbookPreservedAnswer
 } from "@/lib/reading/wrongbook";
@@ -42,6 +43,7 @@ import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 type SessionPayload = { error?: string; session?: WrongQuestionPracticeSession };
 type AttemptPayload = {
   attempt?: unknown;
+  contextAnswers?: ReadingWrongbookContextAnswer[];
   error?: string;
   item?: ReadingWrongbookPracticeItem;
   preservedAnswers?: ReadingWrongbookPreservedAnswer[];
@@ -49,6 +51,7 @@ type AttemptPayload = {
 type PracticePayload = { error?: string; practice?: StudentReadingPracticePayload };
 type EntryUnit = {
   attempt: ReadingWrongbookAttemptSummary;
+  contextAnswers: ReadingWrongbookContextAnswer[];
   item: ReadingWrongbookPracticeItem;
   preservedAnswers: ReadingWrongbookPreservedAnswer[];
 };
@@ -166,6 +169,26 @@ export function ReadingWrongbookBankPractice({
     setGroupIndex(pendingIndex === -1 ? groups.length - 1 : pendingIndex);
   }, [groupIndex, groups, isEntry, practiceSession]);
 
+  /**
+   * Workspace index the shell opens a freshly switched source at. Forward
+   * progress enters at the first workspace; a backwards Previous enters the
+   * previous source at its last workspace (the point the student left it).
+   */
+  const [sourceEntryIndex, setSourceEntryIndex] = useState(0);
+  const [sourcePendingText, setSourcePendingText] = useState("正在加载下一篇材料...");
+  const hasPreviousSource = !isEntry && groupIndex !== null && groupIndex > 0;
+  const handlePreviousSource = useCallback(() => {
+    if (isEntry || groupIndex === null || groupIndex <= 0) return;
+    const target = groups[groupIndex - 1];
+    if (!target) return;
+    // CTW renders one workspace per material; RDL / RAP re-open at the last
+    // question of the completed source (the only place the forward action
+    // exists). No attempt is created or resubmitted.
+    setSourcePendingText("正在加载上一篇材料...");
+    setSourceEntryIndex(Math.max(0, target.targets.length - 1));
+    setGroupIndex(groupIndex - 1);
+  }, [groupIndex, groups, isEntry]);
+
   // A finished session jumps straight back to its result page.
   useEffect(() => {
     if (isEntry || !serverSessionId || !practiceSession || practiceSession.status !== "completed") {
@@ -202,7 +225,11 @@ export function ReadingWrongbookBankPractice({
     const practice = selectReadingWrongbookPractice(rawPractice, entryUnit.item.targets);
     return {
       attempt: entryUnit.attempt,
-      initialAnswers: buildReadingWrongbookInitialAnswers(practice, entryUnit.preservedAnswers),
+      initialAnswers: buildReadingWrongbookInitialAnswers(
+        practice,
+        entryUnit.preservedAnswers,
+        entryUnit.contextAnswers
+      ),
       item: entryUnit.item,
       practice
     };
@@ -219,7 +246,8 @@ export function ReadingWrongbookBankPractice({
       attempt,
       initialAnswers: buildReadingWrongbookInitialAnswers(
         practice,
-        attemptState.data?.preservedAnswers ?? []
+        attemptState.data?.preservedAnswers ?? [],
+        attemptState.data?.contextAnswers ?? []
       ),
       item,
       practice
@@ -352,6 +380,21 @@ export function ReadingWrongbookBankPractice({
     if (isEntry || submitting || !group || !rendered || rendered.logicalItemId !== group.logicalItemId) {
       return;
     }
+    // A source re-entered through Previous is already submitted: continue the
+    // session without re-submitting or touching the frozen attempt record.
+    if (rendered.ready.attempt.status === "submitted") {
+      setSourceEntryIndex(0);
+      setSourcePendingText("正在加载下一篇材料...");
+      if (groupIndex !== null && groupIndex + 1 < groups.length) {
+        setGroupIndex(groupIndex + 1);
+        return;
+      }
+      router.replace(withStudentReturnTo(
+        `/student/wrong-questions/sessions/${encodeURIComponent(serverSessionId)}`,
+        returnTo
+      ));
+      return;
+    }
     setSubmitting(true);
     setSubmitError("");
     const elapsedSeconds = Math.max(0, currentElapsed() - groupBaseElapsedRef.current);
@@ -391,6 +434,8 @@ export function ReadingWrongbookBankPractice({
       invalidateStudentWrongbook(session.user.id);
       setSubmitting(false);
       if (groupIndex !== null && groupIndex + 1 < groups.length) {
+        setSourceEntryIndex(0);
+        setSourcePendingText("正在加载下一篇材料...");
         setGroupIndex(groupIndex + 1);
         return;
       }
@@ -510,12 +555,16 @@ export function ReadingWrongbookBankPractice({
         answers,
         completionLabel,
         elapsedSeconds: sessionElapsed,
+        hasPreviousSource,
         navigationDisabled: pending,
         onAnswerChange: handleAnswerChange,
         onCompleteWorkspace: (questionTimes) => {
           void completeWorkspace(questionTimes);
         },
+        onPreviousSource: handlePreviousSource,
         pending,
+        pendingText: sourcePendingText,
+        sourceEntryIndex,
         submitError,
         submitting,
         targets: group?.targets ?? []
@@ -640,6 +689,7 @@ async function loadEntryUnit(
   }
   return {
     attempt: payload.attempt,
+    contextAnswers: payload.contextAnswers ?? [],
     item: payload.item,
     preservedAnswers: payload.preservedAnswers ?? []
   };
@@ -665,6 +715,7 @@ async function loadGroupAttempt(
   }
   return {
     attempt: payload.attempt,
+    contextAnswers: payload.contextAnswers ?? [],
     item: payload.item,
     preservedAnswers: payload.preservedAnswers ?? []
   };

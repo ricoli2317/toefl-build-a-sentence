@@ -25,6 +25,7 @@ import {
 } from "@/lib/reading/studentPractice";
 import { loadFullSetWrongbookRdlAssets } from "@/lib/reading/fullSetWrongbookRdlAssets.server";
 import {
+  loadReadingCtwContextAnswers,
   loadReadingWrongbookPreservedAnswers,
   loadReadingWrongbookQueue,
   loadReadingWrongbookTitles,
@@ -160,8 +161,18 @@ export async function POST(request: Request) {
             targets: data.targets
           }))
         : [];
+      // CTW renders the whole paragraph. Only the history *session* practice
+      // draws a partial slot set, so only it shows the material's correct word
+      // as read-only context for untargeted slots (never a target answer).
+      // Today practice and every entry correction keep their original
+      // presentation. A context lookup failure must not block the practice.
+      const contextAnswers = data.taskType === "ctw"
+        && bankRequest.kind === "session"
+        && data.scope === "history"
+        ? await loadCtwContextAnswersSafe(service(), data.logicalItemId, data.targets)
+        : [];
       return readingAttemptJson(
-        { attempt: data, item, preservedAnswers },
+        { attempt: data, item, preservedAnswers, contextAnswers },
         { status: data.created ? 201 : 200 }
       );
     }
@@ -560,11 +571,10 @@ async function readWrongAnswerTargets(
   table: "reading_attempt_answers" | "reading_wrongbook_attempt_answers",
   attemptId: string
 ) {
-  const result = await readAllSupabaseRows<{ question_id: string; slot_id: string | null }>(
+  const result = await readAllSupabaseRows<{ is_correct: boolean | null; question_id: string; slot_id: string | null }>(
     (from, to) => db.from(table)
-      .select("question_id,slot_id")
+      .select("is_correct,question_id,slot_id")
       .eq("attempt_id", attemptId)
-      .eq("is_correct", false)
       .order("question_id", { ascending: true })
       .order("slot_id", { ascending: true })
       .range(from, to)
@@ -573,6 +583,8 @@ async function readWrongAnswerTargets(
   const seen = new Set<string>();
   const targets: Array<{ questionId: string; slotId: string | null }> = [];
   for (const row of result.data ?? []) {
+    // Wrong or unanswered (is_correct not explicitly true) both stay targets.
+    if (row.is_correct === true) continue;
     const questionId = String(row.question_id);
     const slotId = row.slot_id ? String(row.slot_id) : null;
     const key = `${questionId}:${slotId ?? ""}`;
@@ -590,4 +602,24 @@ async function loadReadingItemTitle(
 ) {
   const titles = await loadReadingWrongbookTitles(db, [logicalItemId]);
   return titles.get(logicalItemId)?.trim() || logicalItemId || taskType;
+}
+
+/**
+ * Context answers are a rendering aid for the whole CTW paragraph; a failed
+ * lookup degrades to the old (blank) context instead of blocking the practice.
+ */
+async function loadCtwContextAnswersSafe(
+  db: SupabaseClient,
+  logicalItemId: string,
+  targets: Array<{ questionId: string; slotId: string | null }>
+) {
+  try {
+    return await loadReadingCtwContextAnswers({ db, logicalItemId, targets });
+  } catch (error) {
+    console.error("Reading CTW context answers load failed", {
+      logicalItemId,
+      message: error instanceof Error ? error.message : String(error)
+    });
+    return [];
+  }
 }

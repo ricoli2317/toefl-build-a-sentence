@@ -22,6 +22,7 @@ import {
   isReadingWrongbookAttemptSummary,
   isReadingWrongbookQueuePayload,
   selectReadingWrongbookPractice,
+  type ReadingWrongbookContextAnswer,
   type ReadingWrongbookQueuePayload,
   type ReadingWrongbookPreservedAnswer,
   type ReadingWrongbookScope
@@ -30,6 +31,7 @@ import {
 type PracticeResponse = { error?: string; practice?: StudentReadingPracticePayload };
 type AttemptResponse = {
   attempt?: ReadingAttemptSummary;
+  contextAnswers?: ReadingWrongbookContextAnswer[];
   error?: string;
   item?: ReadingWrongbookQueueItem;
   preservedAnswers?: ReadingWrongbookPreservedAnswer[];
@@ -93,7 +95,7 @@ export function ReadingWrongbookPractice({
   const current = correctionRequest.data?.item ?? queuedItem;
   const ready = useMemo(() => {
     if (!practiceRequest.data || !correctionRequest.data || !current) return null;
-    const { attempt, preservedAnswers } = correctionRequest.data;
+    const { attempt, contextAnswers, preservedAnswers } = correctionRequest.data;
     if (
       attempt.logicalItemId !== logicalItemId
       || attempt.taskType !== taskType
@@ -102,7 +104,11 @@ export function ReadingWrongbookPractice({
     const practice = selectReadingWrongbookPractice(practiceRequest.data, current.targets);
     return {
       attempt,
-      initialAnswers: buildReadingWrongbookInitialAnswers(practice, preservedAnswers),
+      initialAnswers: buildReadingWrongbookInitialAnswers(
+        practice,
+        preservedAnswers,
+        contextAnswers
+      ),
       practice
     };
   }, [correctionRequest.data, current, logicalItemId, practiceRequest.data, taskType]);
@@ -223,6 +229,7 @@ async function loadCorrectionAttempt(input: {
   }
   return {
     attempt: attemptPayload.attempt,
+    contextAnswers: attemptPayload.contextAnswers ?? [],
     item: attemptPayload.item,
     preservedAnswers: attemptPayload.preservedAnswers ?? []
   };

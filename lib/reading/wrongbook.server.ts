@@ -17,7 +17,7 @@ import {
   readingCatalogDisplayNumbers
 } from "./catalog";
 import type { ReadingModule } from "./types";
-import type { ReadingWrongbookPreservedAnswer } from "./wrongbook";
+import type { ReadingWrongbookContextAnswer, ReadingWrongbookPreservedAnswer } from "./wrongbook";
 import { readingWrongbookTargetKey } from "./wrongbook";
 
 type ReadingAttemptRow = {
@@ -294,6 +294,55 @@ export function toReadingWrongbookPreservedAnswers(
     slotId: row.slot_id,
     studentAnswer: row.student_answer!.trim()
   }));
+}
+
+/**
+ * Correct CTW slot text for the material's untargeted slots ("context fill").
+ * Targets are excluded by their canonical identity, so a drawn question can
+ * never receive its answer through this payload; the practice renders the rest
+ * of the paragraph with the material's correct words instead of empty blanks.
+ */
+export async function loadReadingCtwContextAnswers(input: {
+  db: SupabaseClient;
+  logicalItemId: string;
+  targets: Array<{ questionId: string; slotId: string | null }>;
+}): Promise<ReadingWrongbookContextAnswer[]> {
+  const targetKeys = new Set(input.targets.map(readingWrongbookTargetKey));
+  const questionResult = await readAllSupabaseRows<{ question_id: string }>((from, to) =>
+    input.db.from("reading_questions")
+      .select("question_id")
+      .eq("logical_item_id", input.logicalItemId)
+      .eq("question_type", "ctw")
+      .order("question_id", { ascending: true })
+      .range(from, to)
+  );
+  if (questionResult.error) throw new Error(questionResult.error.message);
+  const questionIds = (questionResult.data ?? []).map((row) => String(row.question_id));
+  if (questionIds.length === 0) return [];
+  const slotResults = await mapWithConcurrency(chunk(questionIds, 100), 4, (ids) =>
+    readAllSupabaseRows<{ missing_text: string | null; question_id: string; slot_id: string }>(
+      (from, to) => input.db.from("reading_ctw_slots")
+        .select("question_id,slot_id,missing_text")
+        .in("question_id", ids)
+        .order("question_id", { ascending: true })
+        .order("slot_id", { ascending: true })
+        .range(from, to)
+    )
+  );
+  const error = slotResults.find((result) => result.error)?.error;
+  if (error) throw new Error(error.message);
+  return slotResults
+    .flatMap((result) => result.data ?? [])
+    .map((slot) => ({
+      questionId: String(slot.question_id),
+      slotId: String(slot.slot_id),
+      text: slot.missing_text ? String(slot.missing_text) : ""
+    }))
+    .filter((slot) => Boolean(slot.text))
+    .filter((slot) => !targetKeys.has(readingWrongbookTargetKey({
+      questionId: slot.questionId,
+      slotId: slot.slotId
+    })));
 }
 
 /**

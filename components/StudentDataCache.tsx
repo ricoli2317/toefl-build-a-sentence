@@ -724,6 +724,24 @@ export function useStudentDataCache() {
   return cache;
 }
 
+/**
+ * Read-only view of one cache entry. It never triggers a loader and always
+ * reflects the current entry (consumers re-render on cache updates), so a page
+ * can reuse data another student page already loaded.
+ */
+export function useStudentCachedValue<T>(key: string): T | null {
+  const cache = useContext(StudentDataCacheContext);
+  if (!cache) {
+    throw new Error("Student data cache is unavailable outside the student layout.");
+  }
+  const entry = cache.getEntry(key);
+  if (!entry) return null;
+  if (entry.status === "success" || entry.status === "refreshing" || entry.status === "stale") {
+    return entry.data as T;
+  }
+  return null;
+}
+
 export function useOptionalStudentDataCache() {
   return useContext(StudentDataCacheContext);
 }

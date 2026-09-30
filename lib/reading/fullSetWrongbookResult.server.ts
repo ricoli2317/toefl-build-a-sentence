@@ -121,7 +121,11 @@ export async function loadReadingFullSetWrongbookReviewData(input: {
       student_answer: answer.studentAnswer
     }));
     return {
-      answers: buildSubmittedReadingAnswerState(practice, [...correctionRows, ...preservedRows]),
+      answers: buildSubmittedReadingAnswerState(practice, [...correctionRows, ...preservedRows], {
+        // Full Set corrections cover only the wrong occurrences; CTW slots
+        // outside them stay as unanswered blanks instead of failing the review.
+        tolerateMissingCtwSlots: true
+      }),
       occurrenceId: first.occurrenceId,
       practice
     };

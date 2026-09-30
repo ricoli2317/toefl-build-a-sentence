@@ -116,7 +116,11 @@ export async function GET(
   try {
     const reviewItems = buildSubmittedReadingReviewItems(practice, rows);
     return readingAttemptJson({
-      answers: buildSubmittedReadingAnswerState(practice, rows),
+      answers: buildSubmittedReadingAnswerState(practice, rows, {
+        // A correction attempt only covers the drawn targets; CTW slots
+        // outside the draw are displayed as unanswered blanks.
+        tolerateMissingCtwSlots: true
+      }),
       attempt: {
         attemptId: attempt.attempt_id,
         logicalItemId: attempt.logical_item_id,
@@ -137,7 +141,8 @@ export async function GET(
   } catch (error) {
     console.error("Reading correction review mapping failed", {
       attemptId: params.attemptId,
-      message: error instanceof Error ? error.message : "unknown"
+      message: error instanceof Error ? error.message : "unknown",
+      taskType: attempt.task_type
     });
     return readingAttemptJson({ error: "订正作答数据暂时无法显示。" }, { status: 500 });
   }

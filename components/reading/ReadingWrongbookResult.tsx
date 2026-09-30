@@ -10,8 +10,10 @@ import { StudentErrorState, StudentLoadingState, StudentNavigation } from "@/com
 import type {
   ReadingCorrectionResultPayload
 } from "@/lib/reading/correctionResult";
-import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
-import { ReadingCorrectionEntryButton } from "./ReadingCorrectionEntryButton";
+import {
+  getReadingCorrectionResultNavigation,
+  withStudentReturnTo
+} from "@/lib/studentNavigation";
 import { ReadingQuestionStatusChips } from "./ReadingQuestionStatusChips";
 
 export function ReadingWrongbookResult({
@@ -30,17 +32,13 @@ export function ReadingWrongbookResult({
 
   const { answers, attempt } = state.data;
   const questionHrefBase = `/student/reading/wrongbook-results/${encodeURIComponent(attemptId)}`;
-  const backHref = returnTo?.trim() || STUDENT_ROUTES.wrongQuestions;
+  const navigation = getReadingCorrectionResultNavigation(returnTo, attempt.taskType ?? null);
   return (
     <div className="student-result-overview-layout">
       <div className="student-result-overview-navigation">
         <StudentNavigation
-          backHref={backHref}
-          crumbs={[
-            { label: "学生首页", href: STUDENT_ROUTES.home },
-            { label: "错题集", href: STUDENT_ROUTES.wrongQuestions },
-            { label: "订正结果" }
-          ]}
+          backHref={navigation.backHref}
+          crumbs={navigation.crumbs}
         />
       </div>
       <PracticeResultSummary
@@ -57,10 +55,6 @@ export function ReadingWrongbookResult({
             <h2 className="text-xl font-bold text-student-text">作答详情</h2>
             <p className="mt-1 text-sm text-student-muted">提交于 {formatDateTime(attempt.submittedAt)}</p>
           </div>
-          {String(attempt.taskType) !== "full_set"
-            && answers.some((answer) => !answer.isAnswered || !answer.isCorrect) ? (
-            <ReadingCorrectionEntryButton attemptId={attemptId} taskType={attempt.taskType} />
-          ) : null}
         </div>
         <ReadingQuestionStatusChips
           answers={answers}

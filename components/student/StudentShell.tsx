@@ -153,6 +153,9 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
     /^\/student\/reading\/full-sets\/[^/]+\/result\/[^/]+\/questions\/[^/]+/.test(pathname) ||
     /^\/student\/reading\/(?:results|wrongbook-results)\/[^/]+\/questions\/[^/]+/.test(pathname) ||
     /^\/student\/wrong-questions\/(?:today|history|entry)\/reading\/practice/.test(pathname) ||
+    // Session (history / today) wrong-question read-only review: the same
+    // immersive reading workspace as the practice itself, without the sidebar.
+    /^\/student\/wrong-questions\/sessions\/[^/]+\/questions\/[^/]+/.test(pathname) ||
     /^\/student\/assignments\/(?!day(?:\/|$)|batches(?:\/|$))[^/]+/.test(pathname) ||
     pathname.startsWith("/student/writing-reviews/");
 

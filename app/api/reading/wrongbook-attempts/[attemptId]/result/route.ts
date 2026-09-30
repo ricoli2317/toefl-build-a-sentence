@@ -178,7 +178,11 @@ export async function GET(
       ctwSegments,
       item: itemResult.data as ReadingItemRow,
       questions,
-      slots
+      slots,
+      // A correction attempt only covers the drawn targets of its source; CTW
+      // slots outside the draw stay as neutral blanks instead of failing the
+      // whole result (the session result must stay reachable).
+      tolerateMissingCtwAnswers: true
     });
     return readingAttemptJson({
       ...payload,
@@ -195,7 +199,9 @@ export async function GET(
   } catch (error) {
     console.error("Reading correction result mapping failed", {
       attemptId: params.attemptId,
-      message: error instanceof Error ? error.message : "unknown"
+      message: error instanceof Error ? error.message : "unknown",
+      scope: "buildReadingResultPayload/buildReadingCorrectionResultAnswers",
+      taskType: attempt.task_type
     });
     return readingAttemptJson({ error: "订正结果数据暂时无法显示。" }, { status: 500 });
   }

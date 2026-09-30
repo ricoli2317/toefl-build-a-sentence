@@ -449,6 +449,12 @@ async function loadReadingFullSetReview(
 export type ReadingReviewShellItem = ReadingFullSetReviewItem & {
   answerId?: string;
   order?: number;
+  /**
+   * Session review lazy loading: this scoring point belongs to a source whose
+   * review payload has not arrived yet. The item keeps its exact global
+   * position so numbering and navigation stay stable while the source loads.
+   */
+  placeholder?: boolean;
 };
 
 type ReadingReviewShellOccurrence = ReadingFullSetReviewOccurrence & {
@@ -465,20 +471,25 @@ type ReadingReviewShellPayload = {
   reviewItems: ReadingReviewShellItem[];
 };
 
+export type ReadingReviewSourceStatus = "error" | "loading";
+
 export function ReadingFullSetReviewShell({
-  correctionReturnTo,
   initialSourceAnswerIndex,
   onBack,
+  onRequestItem,
   payload,
   source,
+  sourceStatus,
   variant = "full_set"
 }: {
-  /** Session review: where the per-source entry correction returns to. */
-  correctionReturnTo?: string | null;
   initialSourceAnswerIndex: number;
   onBack: () => void;
+  /** Session review lazy loading: request one item's source on demand. */
+  onRequestItem?: (item: ReadingReviewShellItem, options?: { retry?: boolean }) => void;
   payload: ReadingReviewShellPayload;
   source?: ReadingResultSource;
+  /** Session review lazy loading: per-source loading / error state. */
+  sourceStatus?: Record<string, ReadingReviewSourceStatus | undefined>;
   /**
    * "session" reuses the same multi-source review shell for a wrong-question
    * session: global 1..N numbering and the shared reading review status bar.
@@ -514,13 +525,14 @@ export function ReadingFullSetReviewShell({
     const target = payload.reviewItems[bounded];
     if (!target) return;
     setActiveIndex(bounded);
+    if (target.placeholder) onRequestItem?.(target);
     const targetHref = target.href
       ? withReadingResultSource(target.href, source)
       : undefined;
     if (targetHref && `${window.location.pathname}${window.location.search}` !== targetHref) {
       window.history.pushState({ readingFullSetReviewIndex: bounded }, "", targetHref);
     }
-  }, [payload.reviewItems, source]);
+  }, [onRequestItem, payload.reviewItems, source]);
 
   const currentItem = payload.reviewItems[activeIndex] ?? payload.reviewItems[0];
   const currentOccurrence = currentItem
@@ -535,7 +547,24 @@ export function ReadingFullSetReviewShell({
     activeIndex
   );
 
-  if (!currentItem || !currentOccurrence || !currentQuestion) {
+  // Session review lazy loading: whatever source the current item needs is
+  // requested exactly once (the session page de-duplicates in-flight loads).
+  const currentItemKey = currentItem?.key ?? "";
+  const currentItemPlaceholder = currentItem?.placeholder === true;
+  const currentItemOccurrenceId = currentItem?.occurrenceId ?? "";
+  useEffect(() => {
+    if (!currentItemPlaceholder || !currentItemOccurrenceId) return;
+    const target = payload.reviewItems.find((item) => item.key === currentItemKey);
+    if (target) onRequestItem?.(target);
+  }, [
+    currentItemKey,
+    currentItemOccurrenceId,
+    currentItemPlaceholder,
+    onRequestItem,
+    payload.reviewItems
+  ]);
+
+  if (!currentItem) {
     return <ReadingPracticeMessage
       description={variant === "session" ? "作答内容不完整。" : "套题作答内容不完整。"}
       onLeave={onBack}
@@ -543,6 +572,15 @@ export function ReadingFullSetReviewShell({
     />;
   }
 
+  const sourceMissing = !currentOccurrence || !currentQuestion;
+  if (sourceMissing && !currentItem.placeholder && variant !== "session") {
+    return <ReadingPracticeMessage
+      description="套题作答内容不完整。"
+      onLeave={onBack}
+      title="无法打开套题作答"
+    />;
+  }
+  const currentSourceStatus = sourceStatus?.[currentItem.occurrenceId] ?? null;
   const activeSlotReview = currentItem.slotReviews.find(
     (item) => item.index === currentItem.sourceAnswerIndex
   );
@@ -556,22 +594,11 @@ export function ReadingFullSetReviewShell({
   const progressLabel = variant === "session"
     ? `第 ${currentItem.order ?? currentItem.orderStart} / ${payload.reviewItems.length} 题`
     : `Module ${currentItem.moduleNumber} · Question ${currentItem.orderStart} / ${currentItem.moduleNumber === 1 ? 35 : 15}`;
-  const correctionAttemptId = currentOccurrence.attemptId;
-  const headerAction = variant === "session" && correctionAttemptId && currentOccurrence.hasWrong
-    ? (
-      <ReadingCorrectionEntryButton
-        attemptId={correctionAttemptId}
-        returnTo={correctionReturnTo}
-        taskType={currentItem.taskType}
-      />
-    )
-    : undefined;
 
   return (
     <div className="reading-theme min-h-[100dvh] bg-[#fbfbfe] text-student-text" style={readingShellStyle}>
       <ReadingPracticeHeader
         elapsedSeconds={0}
-        headerAction={headerAction}
         onBack={onBack}
         progressLabel={progressLabel}
         showElapsed={false}
@@ -606,7 +633,7 @@ export function ReadingFullSetReviewShell({
         <ReadingQuestionViewport
           canGoNext={questionNavigationTargets.nextIndex !== null}
           canGoPrevious={questionNavigationTargets.previousIndex !== null}
-          module={currentOccurrence.practice.item.module}
+          module={currentItem.taskType}
           onNext={() => {
             if (questionNavigationTargets.nextIndex !== null) selectReviewItem(questionNavigationTargets.nextIndex);
           }}
@@ -615,18 +642,40 @@ export function ReadingFullSetReviewShell({
           }}
           readOnly
         >
-          <ReadingWorkspaceRouter
-            answers={currentOccurrence.answers}
-            currentQuestion={currentQuestion}
-            lookupEnabled={readingLookupEnabled("submitted_review", currentOccurrence.practice.item.module)}
-            onAnswerChange={() => undefined}
-            practice={currentOccurrence.practice}
-            readOnly
-            reviewPresentation={disclosure}
-            reviewPresentations={payload.disclosures}
-            reviewItems={workspaceReviewItems}
-            selectedReviewItem={selectedReviewItem}
-          />
+          {sourceMissing ? (
+            <div
+              className="flex h-full min-h-[240px] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-student-border bg-student-bg/60 px-6 text-center"
+              data-testid="reading-session-review-source-pending"
+            >
+              <p className="text-sm font-semibold text-student-muted">
+                {currentSourceStatus === "error"
+                  ? "本篇材料的作答暂时无法加载。"
+                  : "正在加载本篇材料的作答..."}
+              </p>
+              {currentSourceStatus === "error" ? (
+                <button
+                  className="student-button-secondary min-h-8 px-3 py-1 text-[13px]"
+                  onClick={() => onRequestItem?.(currentItem, { retry: true })}
+                  type="button"
+                >
+                  重试
+                </button>
+              ) : null}
+            </div>
+          ) : (
+            <ReadingWorkspaceRouter
+              answers={currentOccurrence!.answers}
+              currentQuestion={currentQuestion!}
+              lookupEnabled={readingLookupEnabled("submitted_review", currentOccurrence!.practice.item.module)}
+              onAnswerChange={() => undefined}
+              practice={currentOccurrence!.practice}
+              readOnly
+              reviewPresentation={disclosure}
+              reviewPresentations={payload.disclosures}
+              reviewItems={workspaceReviewItems}
+              selectedReviewItem={selectedReviewItem}
+            />
+          )}
         </ReadingQuestionViewport>
       </main>
     </div>
@@ -640,11 +689,23 @@ export type ReadingPracticeSessionControl = {
   completionLabel: "Next" | "Submit";
   /** Session-cumulative elapsed seconds; the shell stops running its own timer. */
   elapsedSeconds: number;
+  /** The session still has this source's predecessors (Previous crosses sources). */
+  hasPreviousSource?: boolean;
   navigationDisabled?: boolean;
   onAnswerChange: (questionId: string, answer: ReadingAnswer) => void;
   onCompleteWorkspace: (questionTimes: Record<string, number>) => void;
+  /** Previous on the first workspace of this source opens the previous source. */
+  onPreviousSource?: () => void;
   /** The next source is still loading: keep the shell and show a local pending state. */
   pending?: boolean;
+  /** Local pending text while a source switch loads (direction-aware). */
+  pendingText?: string;
+  /**
+   * Workspace index the next source switch opens at: the session sets it to the
+   * last workspace when navigating backwards so a source is re-entered where it
+   * was left, and to 0 for forward progress.
+   */
+  sourceEntryIndex?: number;
   submitError: string;
   submitting: boolean;
   /** Wrong scoring points of the active source (CTW editable slots). */
@@ -706,6 +767,9 @@ export function ReadingPracticeShell({
   const attempt = initialAttempt;
   const [elapsedSeconds, setElapsedSeconds] = useState(initialAttempt.elapsedSeconds);
   const readOnly = mode === "submitted_review";
+  // Session mode re-enters already submitted sources read-only (Previous across
+  // materials); the answers stay visible and no new attempt is ever created.
+  const sourceSubmitted = Boolean(session) && attempt.status === "submitted";
   const lookupEnabled = readingLookupEnabled(mode, practice.item.module);
   const wrongbookTargets = session ? session.targets : wrongbook?.targets;
   const editableSlotIds = useMemo(
@@ -755,7 +819,9 @@ export function ReadingPracticeShell({
 
   // Multi-source sessions swap the practice payload in place; the workspace
   // navigation restarts for the new source while the shell (header / timer /
-  // progress) stays mounted.
+  // progress) stays mounted. A backwards source switch re-opens the previous
+  // source at the workspace index the session asked for (its last question for
+  // a completed source); forward progress always starts at the first one.
   useEffect(() => {
     const itemId = practice.item.itemId;
     if (itemId === navigationItemId) return;
@@ -764,12 +830,16 @@ export function ReadingPracticeShell({
       practice.item.questionCount,
       practice.item.scoringPointCount
     );
+    const entryIndex = Math.max(
+      0,
+      Math.min(created.workspaceCount - 1, session?.sourceEntryIndex ?? 0)
+    );
     setNavigationItemId(itemId);
-    setNavigation(created);
+    setNavigation({ ...created, currentIndex: entryIndex });
     questionTimesRef.current = {};
-    activeQuestionIdRef.current = practice.questions[0]?.questionId ?? "";
+    activeQuestionIdRef.current = practice.questions[entryIndex]?.questionId ?? "";
     questionStartedAtRef.current = Date.now();
-  }, [navigationItemId, practice]);
+  }, [navigationItemId, practice, session?.sourceEntryIndex]);
 
   const currentQuestion = practice.questions[navigation.currentIndex] ?? practice.questions[0];
   const progressLabel = progressLabelResolver
@@ -802,14 +872,29 @@ export function ReadingPracticeShell({
       return next;
     });
   };
+  // Session Previous crosses sources: on the first workspace of a source it
+  // opens the previous source (the session owns that switch), inside a source
+  // it keeps the ordinary previous-question behavior.
+  const goPrevious = () => {
+    if (navigation.currentIndex > 0) {
+      move(-1);
+      return;
+    }
+    if (session?.hasPreviousSource && !session.pending && !session.submitting) {
+      session.onPreviousSource?.();
+    }
+  };
   const updateAnswer = useCallback((questionId: string, answer: ReadingAnswer) => {
     if (readOnly) return;
+    // A completed session source re-entered through Previous is a read-only
+    // replay: edits are never recorded into a submitted attempt.
+    if (sourceSubmitted) return;
     if (session) {
       session.onAnswerChange(questionId, answer);
       return;
     }
     setLocalAnswers((current) => setReadingAnswer(current, questionId, answer));
-  }, [readOnly, session]);
+  }, [readOnly, session, sourceSubmitted]);
 
   const submit = useCallback(async () => {
     if (readOnly || submitting || attempt.status === "submitted") return;
@@ -897,7 +982,7 @@ export function ReadingPracticeShell({
     );
   }
 
-  if (attempt.status === "submitted") {
+  if (!session && attempt.status === "submitted") {
     return <ReadingPracticeMessage description="正在打开已提交的练习结果..." title="正在打开练习结果" />;
   }
 
@@ -916,11 +1001,11 @@ export function ReadingPracticeShell({
       >
         <ReadingQuestionViewport
           canGoNext={navigation.currentIndex < navigation.workspaceCount - 1}
-          canGoPrevious={navigation.currentIndex > 0}
+          canGoPrevious={navigation.currentIndex > 0 || Boolean(session?.hasPreviousSource)}
           module={practice.item.module}
           navigationDisabled={Boolean(session?.pending)}
           onNext={() => move(1)}
-          onPrevious={() => move(-1)}
+          onPrevious={goPrevious}
           onSubmit={session ? completeWorkspace : submit}
           readOnly={readOnly}
           submitError={session ? session.submitError : submitError}
@@ -932,7 +1017,24 @@ export function ReadingPracticeShell({
               className="flex h-full min-h-[240px] items-center justify-center rounded-xl border border-dashed border-student-border bg-student-bg/60 text-sm font-semibold text-student-muted"
               data-testid="reading-session-workspace-pending"
             >
-              正在加载下一篇材料...
+              {session?.pendingText ?? "正在加载下一篇材料..."}
+            </div>
+          ) : sourceSubmitted ? (
+            <div className="flex h-full min-h-0 flex-col gap-2" data-testid="reading-session-workspace-submitted">
+              <p className="shrink-0 rounded-xl border border-student-primary-border bg-student-primary-soft px-4 py-2 text-[13px] font-semibold text-student-primary">
+                本篇材料已提交，当前为只读回看；点击右侧「{session?.completionLabel === "Submit" ? "Submit" : "Next"}」继续。
+              </p>
+              <div className="min-h-0 flex-1">
+                <ReadingWorkspaceRouter
+                  answers={answers}
+                  currentQuestion={currentQuestion}
+                  key={practice.item.itemId}
+                  lookupEnabled={lookupEnabled}
+                  onAnswerChange={updateAnswer}
+                  practice={practice}
+                  readOnly
+                />
+              </div>
             </div>
           ) : (
             <ReadingWorkspaceRouter

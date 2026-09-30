@@ -139,6 +139,8 @@ export type ReadingWrongbookSessionReviewItem = ReadingFullSetReviewItem & {
   /** 1-based global order of this scoring point. */
   order: number;
   slotId: string | null;
+  /** The source's review has not loaded yet; the position is reserved. */
+  placeholder?: boolean;
 };
 
 export type ReadingWrongbookSessionReviewOccurrence = ReadingFullSetReviewOccurrence & {
@@ -156,23 +158,117 @@ export type ReadingWrongbookSessionReviewPayload = {
 };
 
 /**
+ * Global per-source item counts of a session review. RDL / RAP sources keep
+ * exactly their drawn targets; a CTW source additionally shows its preserved
+ * (previously answered) slots, so its count comes from the result page that
+ * already loaded the same rows. `null` means "unknown": the caller then loads
+ * every source before rendering instead of inventing positions.
+ */
+export type ReadingWrongbookSessionReviewShape = {
+  logicalItemId: string;
+  itemCount: number;
+};
+
+/**
+ * Cache key (within the student wrong-question namespace) where the session
+ * result page records the exact per-source item counts it just loaded, so the
+ * read-only review can position every global question before its own per-source
+ * requests return.
+ */
+export function readingWrongbookSessionShapeCacheKey(sessionId: string) {
+  return `reading-bank-result-shape:${sessionId}`;
+}
+
+export function resolveReadingWrongbookSessionReviewShape(input: {
+  cachedShape?: ReadingWrongbookSessionReviewShape[] | null;
+  groups: WrongQuestionSessionGroup[];
+  taskType: ReadingModule;
+}): ReadingWrongbookSessionReviewShape[] | null {
+  if (input.taskType !== "ctw") {
+    return input.groups.map((group) => ({
+      logicalItemId: group.logicalItemId,
+      itemCount: group.targets.length
+    }));
+  }
+  if (!input.cachedShape?.length) return null;
+  const countById = new Map(input.cachedShape.map((entry) => [entry.logicalItemId, entry.itemCount]));
+  const shape = input.groups.map((group) => ({
+    logicalItemId: group.logicalItemId,
+    itemCount: countById.get(group.logicalItemId) ?? -1
+  }));
+  return shape.every((entry) => entry.itemCount >= 0) ? shape : null;
+}
+
+/** 0-based source index that owns a global review index, or 0 when empty. */
+export function findReadingWrongbookSessionShapeIndex(
+  shape: ReadingWrongbookSessionReviewShape[],
+  globalIndex: number
+) {
+  let offset = 0;
+  for (let index = 0; index < shape.length; index += 1) {
+    const count = Math.max(0, shape[index].itemCount);
+    if (globalIndex < offset + count) return index;
+    offset += count;
+  }
+  return Math.max(0, shape.length - 1);
+}
+
+function placeholderReviewItem(input: {
+  globalIndex: number;
+  href: string;
+  logicalItemId: string;
+  localIndex: number;
+  taskType: ReadingModule;
+}): ReadingWrongbookSessionReviewItem {
+  return {
+    answerId: `${input.logicalItemId}:placeholder:${input.localIndex}`,
+    href: input.href,
+    isAnswered: false,
+    isCorrect: false,
+    key: `placeholder:${input.logicalItemId}:${input.localIndex}`,
+    moduleNumber: 1,
+    occurrenceId: input.logicalItemId,
+    order: input.globalIndex + 1,
+    orderEnd: input.globalIndex + 1,
+    orderStart: input.globalIndex + 1,
+    placeholder: true,
+    questionId: "",
+    questionTimeSeconds: null,
+    slotId: null,
+    slotReviews: [],
+    sourceAnswerIndex: input.globalIndex,
+    taskType: input.taskType
+  };
+}
+
+/**
  * Builds the multi-source read-only review payload for a finished session by
  * concatenating each source's existing submitted review in the frozen session
  * order. Global numbering continues across sources, and every item carries the
  * URL of its exact session review position.
+ *
+ * With `shapes` the payload is built eagerly for the whole session: sources
+ * whose review has not loaded yet contribute exact-position placeholder items,
+ * so the page can render (and number) immediately while a source loads on
+ * demand. Without shapes the payload contains only the loaded sources.
  */
 export function buildReadingWrongbookSessionReviewPayload(input: {
   groupReviews: ReadingWrongbookSessionReviewGroup[];
   reviewHref: (globalIndex: number) => string;
   sessionId: string;
+  shapes?: ReadingWrongbookSessionReviewShape[] | null;
   taskType: ReadingModule;
   title: string;
 }): ReadingWrongbookSessionReviewPayload {
   const occurrences: ReadingWrongbookSessionReviewOccurrence[] = [];
   const reviewItems: ReadingWrongbookSessionReviewItem[] = [];
   const disclosures: Record<string, ReadingCorrectionAnswerPresentation> = {};
+  const reviewByItemId = new Map(
+    input.groupReviews.map((entry) => [entry.group.logicalItemId, entry])
+  );
 
-  for (const { group, payload } of input.groupReviews) {
+  const appendLoadedGroup = (entry: ReadingWrongbookSessionReviewGroup) => {
+    const { group, payload } = entry;
     occurrences.push({
       answers: payload.answers,
       attemptId: payload.attempt.attemptId,
@@ -222,6 +318,28 @@ export function buildReadingWrongbookSessionReviewPayload(input: {
         taskType: input.taskType
       });
     });
+  };
+
+  if (input.shapes?.length) {
+    for (const shape of input.shapes) {
+      const loaded = reviewByItemId.get(shape.logicalItemId);
+      if (loaded) {
+        appendLoadedGroup(loaded);
+        continue;
+      }
+      for (let localIndex = 0; localIndex < Math.max(0, shape.itemCount); localIndex += 1) {
+        const globalIndex = reviewItems.length;
+        reviewItems.push(placeholderReviewItem({
+          globalIndex,
+          href: input.reviewHref(globalIndex),
+          logicalItemId: shape.logicalItemId,
+          localIndex,
+          taskType: input.taskType
+        }));
+      }
+    }
+  } else {
+    for (const entry of input.groupReviews) appendLoadedGroup(entry);
   }
 
   return {

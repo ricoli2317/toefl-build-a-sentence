@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   studentWrongQuestionsCacheKey,
   useStudentCachedData,
+  useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
 import { PracticeResultSummary } from "@/components/PracticeResult";
@@ -13,6 +14,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import type { ReadingCorrectionResultPayload } from "@/lib/reading/correctionResult";
 import {
   mergeReadingWrongbookSessionResults,
+  readingWrongbookSessionShapeCacheKey,
   type ReadingWrongbookSessionGroupResult
 } from "@/lib/reading/wrongbookSession";
 import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
@@ -41,6 +43,11 @@ export function ReadingWrongbookSessionResult({
     studentWrongQuestionsCacheKey(`reading-bank-result:${sessionId}`),
     (session) => loadSession(sessionId, session)
   );
+  const cache = useStudentDataCache();
+  // The cache context value changes on every notification, so effects that
+  // write into it must not depend on the object identity.
+  const cacheRef = useRef(cache);
+  cacheRef.current = cache;
   const session = state.data?.session ?? null;
   const [results, setResults] = useState<GroupResultsState>(null);
 
@@ -54,7 +61,14 @@ export function ReadingWrongbookSessionResult({
         if (!authSession) throw new Error("请先登录后再查看练习结果。");
         const groupResults = await Promise.all(groups.map(async (group) => {
           const progress = session.progress[group.logicalItemId];
-          if (!progress) throw new Error("这次练习还没有完成。");
+          if (!progress) {
+            console.error("Reading session result source not completed", {
+              sessionId,
+              logicalItemId: group.logicalItemId,
+              reason: "source-not-completed"
+            });
+            throw new Error(`第 ${group.title} 篇材料尚未提交，暂时无法显示完整结果。`);
+          }
           const response = await fetch(
             `/api/reading/wrongbook-attempts/${encodeURIComponent(progress.attemptId)}/result`,
             { cache: "no-store", headers: { Authorization: `Bearer ${authSession.access_token}` } }
@@ -62,7 +76,16 @@ export function ReadingWrongbookSessionResult({
           const payload = await response.json().catch(() => ({})) as
             ReadingCorrectionResultPayload & { error?: string };
           if (!response.ok || payload.error || !payload.answers || !payload.attempt) {
-            throw new Error(payload.error ?? "练习结果加载失败，请稍后重试。");
+            console.error("Reading session result source failed", {
+              sessionId,
+              logicalItemId: group.logicalItemId,
+              attemptId: progress.attemptId,
+              status: response.status,
+              reason: payload.error ?? "invalid-payload"
+            });
+            throw new Error(payload.error
+              ? `第 ${group.title} 篇材料结果加载失败：${payload.error}`
+              : `第 ${group.title} 篇材料结果暂时无法加载，请稍后重试。`);
           }
           return { group, payload };
         }));
@@ -77,16 +100,58 @@ export function ReadingWrongbookSessionResult({
       }
     })();
     return () => { cancelled = true; };
-  }, [session]);
+  }, [session, sessionId]);
+
+  // The read-only session review reuses these exact per-source item counts to
+  // position every global question before its own source requests return.
+  useEffect(() => {
+    if (results?.status !== "ready") return;
+    cacheRef.current.setData(
+      studentWrongQuestionsCacheKey(readingWrongbookSessionShapeCacheKey(sessionId)),
+      results.groups.map(({ group, payload }) => ({
+        logicalItemId: group.logicalItemId,
+        itemCount: Array.isArray(payload.answers) ? payload.answers.length : 0
+      }))
+    );
+  }, [results, sessionId]);
 
   if (state.loading) return <StudentLoadingState text="正在加载练习结果..." />;
-  if (state.error || state.data?.error || !session) {
-    return <StudentErrorState text="没有找到练习结果或加载失败。" />;
+  if (state.error) {
+    console.error("Reading session result manifest failed", {
+      sessionId,
+      reason: state.error
+    });
+    return <StudentErrorState text="练习结果暂时无法加载，请稍后重试。" />;
+  }
+  if (state.data?.error) {
+    return <StudentErrorState text={`没有找到练习结果：${state.data.error}`} />;
+  }
+  if (!session) return <StudentErrorState text="没有找到这次练习。" />;
+  if (session.status !== "completed") {
+    const missingProgress = (session.groups ?? []).some(
+      (group) => !session.progress[group.logicalItemId]
+    );
+    if (missingProgress) {
+      return <StudentErrorState text="这次练习还没有完成，请回到练习继续作答。" />;
+    }
+    console.warn("Reading session result loaded while the session status is not completed", {
+      sessionId,
+      status: session.status
+    });
   }
   if (!results) return <StudentLoadingState text="正在加载练习结果..." />;
   if (results.status === "error") return <StudentErrorState text={results.error} />;
 
-  const merged = mergeReadingWrongbookSessionResults(results.groups);
+  let merged;
+  try {
+    merged = mergeReadingWrongbookSessionResults(results.groups);
+  } catch (failure) {
+    console.error("Reading session result aggregation failed", {
+      sessionId,
+      reason: failure instanceof Error ? failure.message : "unknown"
+    });
+    return <StudentErrorState text="练习结果数据暂时无法聚合，请稍后重试。" />;
+  }
   const safeReturnTo = returnTo?.trim() || "";
   const selfBase = `/student/wrong-questions/sessions/${encodeURIComponent(sessionId)}`;
   const selfPath = withStudentReturnTo(selfBase, safeReturnTo);

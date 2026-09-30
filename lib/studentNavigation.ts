@@ -84,6 +84,29 @@ export function getReadingResultNavigation(
         ]
       };
     }
+    const origin = resolveEntryCorrectionOrigin(safeReturnTo);
+    if (origin.kind === "reading-result" || origin.kind === "full-set-result") {
+      const originSource = parseReadingResultSource(
+        new URL(origin.href, "https://tps.local").searchParams.get("source") ?? undefined
+      );
+      const chainCrumb: StudentBreadcrumbItem = originSource === "practice-history"
+        ? { label: STUDENT_UI_TEXT.practiceHistory, href: STUDENT_ROUTES.practiceHistory }
+        : origin.kind === "full-set-result"
+          ? { label: "Full Set Practice", href: STUDENT_ROUTES.readingFullSets }
+          : {
+              label: READING_RESULT_DESTINATIONS[taskType].label,
+              href: READING_RESULT_DESTINATIONS[taskType].href
+            };
+      return {
+        backHref: safeReturnTo,
+        crumbs: [
+          rootCrumb,
+          chainCrumb,
+          { label: "查看结果", href: origin.href },
+          { label: STUDENT_UI_TEXT.result }
+        ]
+      };
+    }
     return assignmentResultNavigation(safeReturnTo);
   }
   if (source === "practice-history") {
@@ -184,6 +207,123 @@ export function assignmentResultNavigation(returnTo: string): {
       { label: "我的作业", href: STUDENT_ROUTES.assignments },
       { label: STUDENT_UI_TEXT.result }
     ]
+  };
+}
+
+type EntryCorrectionOrigin =
+  | { href: string; kind: "assignments" | "full-set-result" | "reading-result" | "unknown" | "wrong-questions" };
+
+/**
+ * Resolves the true entry origin of an entry-level correction from the one
+ * validated `returnTo` chain. Nested correction results / read-only review
+ * links embed their own returnTo, so the chain is followed (with a depth limit)
+ * until a terminal page type is found. Only same-site `/student/...` links are
+ * ever followed, so an invalid or external target can never influence the
+ * derived navigation.
+ */
+function resolveEntryCorrectionOrigin(safeReturnTo: string, depth = 0): EntryCorrectionOrigin {
+  if (depth > 4) return { href: safeReturnTo, kind: "unknown" };
+  let parsed: URL;
+  try {
+    parsed = new URL(safeReturnTo, "https://tps.local");
+  } catch {
+    return { href: safeReturnTo, kind: "unknown" };
+  }
+  const pathname = parsed.pathname;
+  if (pathname.startsWith(STUDENT_ROUTES.wrongQuestions)) {
+    return { href: safeReturnTo, kind: "wrong-questions" };
+  }
+  if (/^\/student\/reading\/results\/[^/]+\/?$/.test(pathname)) {
+    return { href: safeReturnTo, kind: "reading-result" };
+  }
+  if (/^\/student\/reading\/full-sets\/[^/]+\/result\/[^/]+\/?$/.test(pathname)) {
+    return { href: safeReturnTo, kind: "full-set-result" };
+  }
+  if (pathname.startsWith(STUDENT_ROUTES.assignments)) {
+    return { href: safeReturnTo, kind: "assignments" };
+  }
+  if (pathname.startsWith("/student/reading/wrongbook-results/")) {
+    const nested = safeStudentReturnTo(parsed.searchParams.get("returnTo") ?? undefined);
+    if (nested) return resolveEntryCorrectionOrigin(nested, depth + 1);
+    // A read-only review questions link has no embedded origin: its own result
+    // page is one level up, but that page's origin stays unknown.
+    const resultPath = pathname.replace(/\/questions(?:\/[^/]*)?$/, "");
+    if (resultPath !== pathname) return { href: resultPath, kind: "unknown" };
+    return { href: safeReturnTo, kind: "unknown" };
+  }
+  return { href: safeReturnTo, kind: "unknown" };
+}
+
+function correctionOriginChainCrumb(
+  origin: EntryCorrectionOrigin,
+  taskType?: "ctw" | "full_set" | "rdl" | "rap" | null
+): StudentBreadcrumbItem {
+  const originSource = parseReadingResultSource(
+    new URL(origin.href, "https://tps.local").searchParams.get("source") ?? undefined
+  );
+  if (originSource === "practice-history") {
+    return { label: STUDENT_UI_TEXT.practiceHistory, href: STUDENT_ROUTES.practiceHistory };
+  }
+  if (origin.kind === "full-set-result") {
+    return { label: "Full Set Practice", href: STUDENT_ROUTES.readingFullSets };
+  }
+  if (taskType && taskType in READING_RESULT_DESTINATIONS) {
+    const destination = READING_RESULT_DESTINATIONS[taskType as keyof typeof READING_RESULT_DESTINATIONS];
+    return { label: destination.label, href: destination.href };
+  }
+  return { label: STUDENT_UI_TEXT.practiceSets, href: STUDENT_ROUTES.buildASentence };
+}
+
+/**
+ * Entry-correction result ("订正结果") navigation. The parent levels are always
+ * derived from the validated `returnTo` chain: a correction started from a
+ * Reading / Full Set / BAS practice result keeps that practice chain, while a
+ * correction started inside the wrong-question bank keeps the 错题集 chain.
+ * Only the last level is plain text; every parent level is a working link.
+ */
+export function getReadingCorrectionResultNavigation(
+  returnTo?: string | string[] | null,
+  taskType?: "ctw" | "full_set" | "rdl" | "rap" | null
+): { backHref: string; crumbs: StudentBreadcrumbItem[] } {
+  const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
+  const wrongQuestionsCrumb = {
+    label: STUDENT_UI_TEXT.wrongQuestions,
+    href: STUDENT_ROUTES.wrongQuestions
+  };
+  const safeReturnTo = safeStudentReturnTo(returnTo ?? undefined);
+  if (!safeReturnTo) {
+    return {
+      backHref: STUDENT_ROUTES.wrongQuestions,
+      crumbs: [rootCrumb, wrongQuestionsCrumb, { label: "订正结果" }]
+    };
+  }
+  const origin = resolveEntryCorrectionOrigin(safeReturnTo);
+  if (origin.kind === "reading-result" || origin.kind === "full-set-result") {
+    return {
+      backHref: safeReturnTo,
+      crumbs: [
+        rootCrumb,
+        correctionOriginChainCrumb(origin, taskType),
+        { label: "查看结果", href: origin.href },
+        { label: "订正结果" }
+      ]
+    };
+  }
+  if (origin.kind === "assignments") {
+    return {
+      backHref: safeReturnTo,
+      crumbs: [
+        rootCrumb,
+        { label: "我的作业", href: STUDENT_ROUTES.assignments },
+        { label: "订正结果" }
+      ]
+    };
+  }
+  // Wrong-question origins (错题集 / session / nested corrections whose chain
+  // ends in the bank) keep the 错题集 breadcrumb.
+  return {
+    backHref: safeReturnTo,
+    crumbs: [rootCrumb, wrongQuestionsCrumb, { label: "订正结果" }]
   };
 }
 
@@ -288,6 +428,31 @@ export function getStudentResultNavigation(
       return {
         backHref: safeReturnTo,
         crumbs: [rootCrumb, wrongQuestionsCrumb, { label: STUDENT_UI_TEXT.result }]
+      };
+    }
+    // A previous BAS practice result (entry correction / retake) keeps the BAS
+    // practice chain instead of pretending to come from the Assignment list.
+    const origin = resolveEntryCorrectionOrigin(safeReturnTo);
+    if (origin.kind === "reading-result" || origin.kind === "full-set-result") {
+      return {
+        backHref: safeReturnTo,
+        crumbs: [
+          rootCrumb,
+          correctionOriginChainCrumb(origin, null),
+          { label: "查看结果", href: origin.href },
+          { label: STUDENT_UI_TEXT.result }
+        ]
+      };
+    }
+    if (/^\/student\/results\/[^/]+\/?$/.test(new URL(safeReturnTo, "https://tps.local").pathname)) {
+      return {
+        backHref: safeReturnTo,
+        crumbs: [
+          rootCrumb,
+          { label: STUDENT_UI_TEXT.practiceSets, href: STUDENT_ROUTES.buildASentence },
+          { label: "查看结果", href: safeReturnTo },
+          { label: STUDENT_UI_TEXT.result }
+        ]
       };
     }
     return assignmentResultNavigation(safeReturnTo);

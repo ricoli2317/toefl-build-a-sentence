@@ -62,7 +62,16 @@ export function buildSubmittedReadingReviewItems(
 
 export function buildSubmittedReadingAnswerState(
   practice: StudentReadingPracticePayload,
-  rows: SubmittedReadingAnswerRow[]
+  rows: SubmittedReadingAnswerRow[],
+  options?: {
+    /**
+     * Correction reviews may only cover the drawn targets of a source. A CTW
+     * slot without a row is then restored as an empty (unanswered) slot
+     * instead of failing the whole review; ordinary attempts keep the strict
+     * completeness check.
+     */
+    tolerateMissingCtwSlots?: boolean;
+  }
 ): ReadingAnswerState {
   const rowsByQuestion = new Map<string, SubmittedReadingAnswerRow[]>();
   for (const row of rows) {
@@ -78,7 +87,13 @@ export function buildSubmittedReadingAnswerState(
       const rowBySlot = new Map(questionRows.map((row) => [row.slot_id, row]));
       const slots = Object.fromEntries(question.slots.map((slot) => {
         const row = rowBySlot.get(slot.slotId);
-        if (!row || row.answer_kind !== "ctw_slot") throw new Error("READING_REVIEW_CTW_ANSWER_MISSING");
+        if (!row) {
+          if (!options?.tolerateMissingCtwSlots) {
+            throw new Error("READING_REVIEW_CTW_ANSWER_MISSING");
+          }
+          return [slot.slotId, Array.from({ length: slot.missingLength }, () => "")];
+        }
+        if (row.answer_kind !== "ctw_slot") throw new Error("READING_REVIEW_CTW_ANSWER_MISSING");
         const characters = Array.from(row.student_answer ?? "").slice(0, slot.missingLength);
         return [slot.slotId, [
           ...characters,

@@ -122,7 +122,9 @@ export async function applyFullSetModuleWrongEvents(
     .filter((value): value is string => Boolean(value)));
   const events: WrongQuestionBankEvent[] = [];
   for (const answer of answers) {
-    if (answer.is_correct !== false || !answer.logical_item_id) continue;
+    // Correct only when explicitly scored correct; pending false / null rows
+    // (unanswered Full Set answers) are wrong questions too.
+    if (answer.is_correct === true || !answer.logical_item_id) continue;
     const moduleType = moduleByItem.get(answer.logical_item_id);
     if (!moduleType) continue;
     events.push(...readingWrongAnswerEvents({
@@ -144,10 +146,12 @@ async function readAnswers(
     .eq("attempt_id", input.attemptId)
     .range(from, to));
   if (result.error) throw new Error(result.error.message);
+  // A missing / unanswered scoring row is wrong too: `is_correct` is treated
+  // as "correct only when explicitly true", so an unanswered slot can never be
+  // dropped from the wrong-question candidate set.
   return (result.data ?? [])
-    .filter((answer) => answer.is_correct !== null)
     .map((answer) => ({
-      isCorrect: Boolean(answer.is_correct),
+      isCorrect: answer.is_correct === true,
       logicalItemId: answer.logical_item_id ? String(answer.logical_item_id) : null,
       questionId: String(answer.question_id),
       slotId: answer.slot_id ? String(answer.slot_id) : null

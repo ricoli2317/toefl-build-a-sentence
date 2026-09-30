@@ -94,7 +94,8 @@ test("B. entry corrections carry returnTo through practice, submit, and result",
   assert.match(bank, /withStudentReturnTo\(\n?\s*`\/student\/reading\/wrongbook-results\/\$\{encodeURIComponent\(submittedAttempt\.attemptId\)\}`/);
 
   const wrongbookResult = read("components/reading/ReadingWrongbookResult.tsx");
-  assert.match(wrongbookResult, /const backHref = returnTo\?\.trim\(\) \|\| STUDENT_ROUTES\.wrongQuestions/);
+  assert.match(wrongbookResult, /getReadingCorrectionResultNavigation\(returnTo, attempt\.taskType/);
+  assert.match(wrongbookResult, /backHref=\{navigation\.backHref\}/);
   assert.match(wrongbookResult, /questionHref=\{\(reviewIndex\) =>[\s\S]*withStudentReturnTo/);
 
   const reviewPage = read("app/student/reading/wrongbook-results/[attemptId]/questions/[questionIndex]/page.tsx");
@@ -141,10 +142,11 @@ test("B. session result and session review both restore each other through retur
   assert.match(review, /const resultHref = withStudentReturnTo\(selfBase, returnTo\)/);
   assert.match(review, /onBack=\{\(\) => router\.push\(resultHref\)\}/);
   assert.match(review, /reviewHref: \(globalIndex\) => withStudentReturnTo\(`\$\{selfBase\}\/questions\/\$\{globalIndex\}`, returnTo\)/);
-  // The per-source entry correction returns to the session result itself.
-  assert.match(review, /correctionReturnTo=\{resultHref\}/);
+  // The session review never offers an entry correction: entry corrections are
+  // only offered from a single-item practice result / read-only review.
+  assert.doesNotMatch(review, /correctionReturnTo|ReadingCorrectionEntryButton/);
   const shell = read("components/reading/ReadingPractice.tsx");
-  assert.match(shell, /<ReadingCorrectionEntryButton\n?\s+attemptId=\{correctionAttemptId\}\n?\s+returnTo=\{correctionReturnTo\}/);
+  assert.doesNotMatch(shell, /correctionAttemptId|correctionReturnTo/);
   const button = read("components/reading/ReadingCorrectionEntryButton.tsx");
   assert.match(button, /const origin = returnTo\?\.trim\(\)/);
   assert.match(button, /returnTo: origin/);

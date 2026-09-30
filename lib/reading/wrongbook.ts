@@ -31,6 +31,8 @@ export type ReadingWrongbookPracticeResponse = {
   attempt: ReadingWrongbookAttemptSummary;
   item?: ReadingWrongbookPracticeItem;
   preservedAnswers?: ReadingWrongbookPreservedAnswer[];
+  /** CTW only: correct text of the material's untargeted slots (context). */
+  contextAnswers?: ReadingWrongbookContextAnswer[];
 };
 
 export type ReadingWrongbookQueuePayload = {
@@ -45,6 +47,19 @@ export type ReadingWrongbookPreservedAnswer = {
   questionId: string;
   slotId: string | null;
   studentAnswer: string;
+};
+
+/**
+ * Correct CTW slot text for the material's slots that are NOT part of this
+ * correction attempt (the session's drawn targets or the source attempt's
+ * wrong slots). The practice renders the whole paragraph, so untargeted blanks
+ * show this text as read-only context instead of an empty blank. Target slot
+ * answers are never part of this payload.
+ */
+export type ReadingWrongbookContextAnswer = {
+  questionId: string;
+  slotId: string;
+  text: string;
 };
 
 export type ReadingFullSetWrongbookAttemptSummary = {
@@ -200,21 +215,38 @@ export function readingWrongbookEditableSlotIds(targets: ReadingWrongbookTarget[
   return new Set(targets.flatMap((target) => target.slotId ? [target.slotId] : []));
 }
 
+/**
+ * Seeds the correction workspace answer state.
+ *
+ * CTW slot priority per slot:
+ *   1. the student's own preserved (previously correct) answer,
+ *   2. the material's correct text as read-only context for slots outside this
+ *      attempt's targets,
+ *   3. an empty blank.
+ * Target slots without preserved answers always start empty.
+ */
 export function buildReadingWrongbookInitialAnswers(
   practice: StudentReadingPracticePayload,
-  preservedAnswers: ReadingWrongbookPreservedAnswer[]
+  preservedAnswers: ReadingWrongbookPreservedAnswer[],
+  contextAnswers: ReadingWrongbookContextAnswer[] = []
 ): ReadingAnswerState {
   const ctwRows = new Map(preservedAnswers
     .filter((answer) => answer.answerKind === "ctw_slot" && answer.slotId)
     .map((answer) => [`${answer.questionId}:${answer.slotId}`, answer.studentAnswer]));
+  const contextRows = new Map(contextAnswers
+    .filter((answer) => answer.slotId)
+    .map((answer) => [`${answer.questionId}:${answer.slotId}`, answer.text]));
   const answers: ReadingAnswerState = {};
   for (const question of practice.questions) {
     if (question.questionType !== "ctw") continue;
     answers[question.questionId] = {
       kind: "ctw",
       slots: Object.fromEntries(question.slots.map((slot) => {
-        const value = Array.from(ctwRows.get(`${question.questionId}:${slot.slotId}`) ?? "")
-          .slice(0, slot.missingLength);
+        const value = Array.from(
+          ctwRows.get(`${question.questionId}:${slot.slotId}`)
+          ?? contextRows.get(`${question.questionId}:${slot.slotId}`)
+          ?? ""
+        ).slice(0, slot.missingLength);
         return [slot.slotId, [
           ...value,
           ...Array.from({ length: Math.max(0, slot.missingLength - value.length) }, () => "")

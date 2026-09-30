@@ -128,6 +128,13 @@ export function buildReadingResultPayload(input: {
   ctwSegments?: ReadingCtwSegmentResultRow[];
   slots?: ReadingSlotResultRow[];
   allowDisplayAnswerCountMismatch?: boolean;
+  /**
+   * Correction results may only cover the drawn targets of a source. A CTW
+   * slot without an answer row is then rendered as a neutral unanswered blank
+   * instead of failing the whole result; ordinary attempts keep the strict
+   * scoring contract check.
+   */
+  tolerateMissingCtwAnswers?: boolean;
 }): ReadingResultPayload {
   const questionById = new Map(input.questions.map((question) => [question.question_id, question]));
   const slotById = new Map((input.slots ?? []).map((slot) => [`${slot.question_id}:${slot.slot_id}`, slot]));
@@ -178,7 +185,21 @@ export function buildReadingResultPayload(input: {
           const answer = segment.slot_id
             ? answerBySlot.get(`${segment.question_id}:${segment.slot_id}`)
             : null;
-          if (!slot || !answer) throw new Error("READING_RESULT_CTW_SEGMENT_MISSING");
+          if (!slot) throw new Error("READING_RESULT_CTW_SEGMENT_MISSING");
+          if (!answer) {
+            if (!input.tolerateMissingCtwAnswers) {
+              throw new Error("READING_RESULT_CTW_SEGMENT_MISSING");
+            }
+            return {
+              kind: "blank",
+              answerId: "",
+              isAnswered: false,
+              isCorrect: false,
+              order: slot.slot_order,
+              prefix: slot.prefix,
+              studentAnswer: ""
+            };
+          }
           const studentAnswer = emptyToNull(answer.student_answer) ?? "";
           return {
             kind: "blank",
