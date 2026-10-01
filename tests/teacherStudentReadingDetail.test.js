@@ -215,6 +215,11 @@ test("teacher Reading detail pages route by attempt id and reuse the read-only s
   assert.match(ui, /ReadingFullSetReviewShell/);
   assert.match(ui, /reading\/full-set-attempts\/\$\{encodeURIComponent\(attemptId\)\}/);
   assert.match(ui, /kind === "wrongbook" \? "wrongbook-attempts" : "attempts"/);
+  // A session-backed record renders the whole session through the same
+  // multi-source shell (with the session status bar) the student sees.
+  assert.match(ui, /"sessionReview" in state\.data/);
+  assert.match(ui, /payload=\{state\.data\.sessionReview\}/);
+  assert.match(ui, /variant="session"/);
   // Teacher detail must never call the student review APIs.
   assert.doesNotMatch(ui, /\/api\/reading\//);
 });
@@ -234,14 +239,30 @@ test("teacher Reading detail APIs are binding-scoped and load one attempt by id"
     assert.match(route, /insertSupabaseDebugMetrics|debugMetrics/);
   }
 
+  const wrongbookRoute = read(
+    "app/api/teacher/students/[studentId]/reading/wrongbook-attempts/[attemptId]/route.ts"
+  );
+  // Session-backed attempts open the whole session; only non-session attempts
+  // (entry / Full Set corrections) use the single-attempt view.
+  assert.match(wrongbookRoute, /loadTeacherStudentReadingWrongbookSessionReview\(db, studentId, attemptId\)/);
+  assert.match(wrongbookRoute, /if \(sessionReview\) \{/);
+  assert.match(wrongbookRoute, /sessionReview/);
+  assert.match(wrongbookRoute, /loadTeacherStudentReadingWrongbookAttemptReview\(db, studentId, attemptId\)/);
+
   const lib = read("lib/teacherStudentReadingAttempt.server.ts");
   assert.match(lib, /\.eq\("attempt_id", attemptId\)/);
   assert.match(lib, /\.eq\("student_id", studentId\)/);
   assert.match(lib, /loadStudentReadingPractice/);
   assert.match(lib, /buildSubmittedReadingAnswerState/);
-  assert.match(lib, /buildSubmittedReadingReviewItems/);
+  assert.match(lib, /buildSubmittedReadingReviewItems\(practice, correctionRows\)/);
   assert.match(lib, /loadReadingAnswerDisclosures/);
   assert.match(lib, /loadReadingFullSetFinalSnapshot/);
+  // The session drill-down resolves the attempt back to its frozen session and
+  // reuses the student session payload builder.
+  assert.match(lib, /loadTeacherStudentReadingWrongbookSessionReview/);
+  assert.match(lib, /student_wrong_question_sessions/);
+  assert.match(lib, /buildReadingWrongbookSessionReviewPayload\(/);
+  assert.match(lib, /reviewItems: payload\.reviewItems\.map\(\(\{ href: _href, \.\.\.item \}\) => item\)/);
   assert.doesNotMatch(lib, /listVisibleStudentIds|listTeacherStudentDomainBindings/);
 });
 
@@ -253,4 +274,18 @@ test("Full Set teacher review drops student-only question hrefs", () => {
   );
   const practice = read("components/reading/ReadingPractice.tsx");
   assert.match(practice, /export function ReadingFullSetReviewShell/);
+});
+
+test("teacher single-attempt review matches the student correction view", () => {
+  const lib = read("lib/teacherStudentReadingAttempt.server.ts");
+  // Navigation items are the target rows only, exactly like the student review.
+  assert.match(lib, /const correctionRows = \(answerResult\.data \?\? \[\]\) as SubmittedReadingAnswerRow\[\]/);
+  assert.match(lib, /reviewItems: buildSubmittedReadingReviewItems\(practice, correctionRows\)/);
+  // The paragraph keeps the student's read-only context and tolerates CTW slots
+  // outside the attempt, matching the practice and the student review.
+  assert.match(lib, /tolerateMissingCtwSlots: true/);
+  assert.match(
+    lib,
+    /options\?\.includeContext\s*\n\s*&& attempt\.task_type === "ctw"\s*\n\s*&& attempt\.scope === "history"/
+  );
 });

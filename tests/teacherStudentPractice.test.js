@@ -117,6 +117,106 @@ test("Reading wrongbook corrections stay out of the task cards but remain in rec
   assert.equal(wrongbook.taskType, "rdl");
 });
 
+test("one wrong-question session folds its per-material attempts into a single record", () => {
+  const practice = buildTeacherStudentReadingPractice({
+    attempts: [],
+    wrongbookAttempts: [
+      {
+        ...readingAttempt({
+          attempt_id: "w-1",
+          logical_item_id: "rap-a",
+          task_type: "rap",
+          correct_points: 1,
+          total_points: 2,
+          elapsed_seconds: 30,
+          submitted_at: "2026-09-22T02:00:00.000Z"
+        }),
+        scope: "history"
+      },
+      {
+        ...readingAttempt({
+          attempt_id: "w-2",
+          logical_item_id: "rap-b",
+          task_type: "rap",
+          correct_points: 0,
+          total_points: 1,
+          elapsed_seconds: 20,
+          submitted_at: "2026-09-22T02:02:00.000Z"
+        }),
+        scope: "history"
+      },
+      {
+        ...readingAttempt({
+          attempt_id: "w-3",
+          logical_item_id: "rap-c",
+          task_type: "rap",
+          correct_points: 1,
+          total_points: 1,
+          elapsed_seconds: 10,
+          submitted_at: "2026-09-22T02:01:00.000Z"
+        }),
+        scope: "history"
+      },
+      {
+        ...readingAttempt({
+          attempt_id: "w-entry",
+          logical_item_id: "rap-d",
+          task_type: "rap",
+          correct_points: 0,
+          total_points: 1,
+          elapsed_seconds: 5,
+          submitted_at: "2026-09-22T03:00:00.000Z"
+        }),
+        scope: "today"
+      }
+    ],
+    wrongbookSessions: [
+      {
+        session_id: "s-1",
+        task_type: "rap",
+        mode: "history",
+        progress: {
+          "rap-a": { attemptId: "w-1" },
+          "rap-b": { attemptId: "w-2" },
+          "rap-c": { attemptId: "w-3" }
+        }
+      }
+    ],
+    itemMeta: ITEM_META,
+    studentId: "student-1"
+  });
+
+  const sessionRecords = practice.records.filter(
+    (record) => record.recordId.startsWith("wrongbook-session:")
+  );
+  assert.equal(sessionRecords.length, 1);
+  const session = sessionRecords[0];
+  assert.equal(session.recordId, "wrongbook-session:s-1");
+  assert.equal(session.kind, "wrongbook");
+  assert.equal(session.title, "历史错题练习（3 篇材料）");
+  assert.equal(session.scope, "history");
+  assert.equal(session.taskType, "rap");
+  assert.deepEqual(session.metric, {
+    kind: "objective",
+    correct: 2,
+    total: 4,
+    accuracy: 0.5
+  });
+  assert.equal(session.durationSeconds, 60);
+  assert.equal(session.submittedAt, "2026-09-22T02:02:00.000Z");
+  // The drill-down opens the session's earliest material.
+  assert.equal(session.attemptId, "w-1");
+  assert.equal(session.href, "/teacher/students/student-1/reading/wrongbook-attempts/w-1");
+
+  // The session's per-material rows are gone; a correction outside any session
+  // (entry correction) keeps its own record.
+  assert.equal(practice.records.some((record) => record.attemptId === "w-2"), false);
+  assert.equal(practice.records.some((record) => record.attemptId === "w-3"), false);
+  const entry = practice.records.find((record) => record.attemptId === "w-entry");
+  assert.equal(entry.kind, "wrongbook");
+  assert.equal(entry.scope, "today");
+});
+
 test("Reading Full Set splits scoring points and practice units back into CTW/RDL/RAP", () => {
   const answers = [
     ...pointRows("m1-ctw-1", 7, 3),

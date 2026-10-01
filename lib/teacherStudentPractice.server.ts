@@ -26,6 +26,7 @@ import {
   type TeacherReadingAttemptRow,
   type TeacherReadingItemMeta,
   type TeacherReadingWrongbookAttemptRow,
+  type TeacherReadingWrongbookSessionRow,
   type TeacherStudentReadingPractice,
   type TeacherStudentWritingPractice,
   type TeacherWritingAttemptRow
@@ -306,7 +307,7 @@ export async function loadTeacherStudentReadingPractice(
   startAt: string,
   endAt: string
 ): Promise<TeacherStudentReadingPractice> {
-  const [attemptsResult, wrongbookResult, fullSetResult] = await Promise.all([
+  const [attemptsResult, wrongbookResult, fullSetResult, wrongbookSessionsResult] = await Promise.all([
     readAllSupabaseRows<TeacherReadingAttemptRow>((from, to) =>
       db
         .from("reading_attempts")
@@ -346,9 +347,22 @@ export async function loadTeacherStudentReadingPractice(
         .order("completed_at", { ascending: false })
         .order("attempt_id", { ascending: false })
         .range(from, to)
+    ),
+    // Frozen wrong-question sessions fold their per-material correction
+    // attempts into one teacher record.
+    readAllSupabaseRows<TeacherReadingWrongbookSessionRow>((from, to) =>
+      db
+        .from("student_wrong_question_sessions")
+        .select("session_id,task_type,mode,progress")
+        .eq("student_id", studentId)
+        .order("session_id", { ascending: true })
+        .range(from, to)
     )
   ]);
-  const queryError = attemptsResult.error ?? wrongbookResult.error ?? fullSetResult.error;
+  const queryError = attemptsResult.error
+    ?? wrongbookResult.error
+    ?? fullSetResult.error
+    ?? wrongbookSessionsResult.error;
   if (queryError) throw new Error(queryError.message);
 
   const fullSetAttempts = fullSetResult.data ?? [];
@@ -388,6 +402,7 @@ export async function loadTeacherStudentReadingPractice(
   return buildTeacherStudentReadingPractice({
     attempts: attemptsResult.data ?? [],
     wrongbookAttempts: wrongbookResult.data ?? [],
+    wrongbookSessions: wrongbookSessionsResult.data ?? [],
     fullSetAttempts,
     fullSetModules: modulesResult.data ?? [],
     fullSetAnswers: answersResult.data ?? [],

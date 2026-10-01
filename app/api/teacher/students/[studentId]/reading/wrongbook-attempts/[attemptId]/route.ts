@@ -8,7 +8,10 @@ import {
   type SupabaseQueryMetric
 } from "@/lib/supabase/debugMetrics.server";
 import { loadTeacherScope } from "@/lib/teacherScope.server";
-import { loadTeacherStudentReadingWrongbookAttemptReview } from "@/lib/teacherStudentReadingAttempt.server";
+import {
+  loadTeacherStudentReadingWrongbookAttemptReview,
+  loadTeacherStudentReadingWrongbookSessionReview
+} from "@/lib/teacherStudentReadingAttempt.server";
 
 export const dynamic = "force-dynamic";
 
@@ -38,6 +41,23 @@ export async function GET(
     if (!profile) return json({ error: "未找到该学生。" }, { status: 404 });
     if (!scope.studentDomains.get(studentId)?.includes("reading")) {
       return json({ error: "无权查看该学生的阅读练习记录。" }, { status: 403 });
+    }
+
+    // A record that belongs to a today / history wrong-question session opens
+    // the WHOLE session (every material, global numbering), exactly like the
+    // student's session review. Only attempts outside any session (entry / Full
+    // Set corrections) fall back to the single-attempt view.
+    const sessionReview = await loadTeacherStudentReadingWrongbookSessionReview(db, studentId, attemptId);
+    if (sessionReview) {
+      const sessionResponse = json({
+        student: {
+          studentId,
+          displayName: profile.displayName,
+          account: profile.email || "—"
+        },
+        sessionReview
+      });
+      return debugEnabled ? appendSupabaseDebugMetrics(sessionResponse, debugMetrics) : sessionResponse;
     }
 
     const detail = await loadTeacherStudentReadingWrongbookAttemptReview(db, studentId, attemptId);

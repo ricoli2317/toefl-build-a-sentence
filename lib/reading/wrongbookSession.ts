@@ -8,7 +8,9 @@ import type {
   ReadingFullSetReviewItem,
   ReadingFullSetReviewOccurrence
 } from "./fullSetReview.ts";
-import type { SubmittedReadingReviewItem, SubmittedReadingReviewPayload } from "./review.ts";
+import type { ReadingAnswerState } from "./practiceState.ts";
+import type { SubmittedReadingReviewItem } from "./review.ts";
+import type { StudentReadingPracticePayload } from "./studentPractice.ts";
 import type { ReadingModule } from "./types.ts";
 
 /**
@@ -129,8 +131,17 @@ export function mergeReadingWrongbookSessionResults(
 
 export type ReadingWrongbookSessionReviewGroup = {
   group: WrongQuestionSessionGroup;
-  payload: SubmittedReadingReviewPayload & {
+  /**
+   * One source's submitted review. Only the fields the session payload needs
+   * are required, so the student review route and the teacher drill-down can
+   * both feed this shape.
+   */
+  payload: {
+    answers: ReadingAnswerState;
+    attempt: { attemptId: string };
     disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
+    practice: StudentReadingPracticePayload;
+    reviewItems: SubmittedReadingReviewItem[];
   };
 };
 

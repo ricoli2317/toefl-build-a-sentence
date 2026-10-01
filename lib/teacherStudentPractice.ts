@@ -159,6 +159,19 @@ export type TeacherReadingWrongbookAttemptRow = TeacherReadingAttemptRow & {
   scope: "today" | "history";
 };
 
+/**
+ * One frozen wrong-question practice session. Its `progress` maps each
+ * material's logical item id to the correction attempt that submitted it, so
+ * the teacher list can fold a session's per-material attempts into the single
+ * record the student actually practised.
+ */
+export type TeacherReadingWrongbookSessionRow = {
+  mode: "history" | "today";
+  progress: Record<string, { attemptId?: string | null } | null> | null;
+  session_id: string;
+  task_type: string;
+};
+
 export type TeacherFullSetAttemptRow = {
   attempt_id: string;
   full_set_id: string;
@@ -237,6 +250,7 @@ export function normalizeBasGroupId(setId: string) {
 export function buildTeacherStudentReadingPractice(input: {
   attempts: TeacherReadingAttemptRow[];
   wrongbookAttempts?: TeacherReadingWrongbookAttemptRow[];
+  wrongbookSessions?: TeacherReadingWrongbookSessionRow[];
   fullSetAttempts?: TeacherFullSetAttemptRow[];
   fullSetModules?: TeacherFullSetModuleRow[];
   fullSetAnswers?: TeacherFullSetAnswerRow[];
@@ -276,9 +290,39 @@ export function buildTeacherStudentReadingPractice(input: {
     });
   }
 
+  // A today / history wrong-question practice is one frozen session covering
+  // several materials; the teacher list shows it as ONE record per session, not
+  // one record per screened material. Corrections that are not part of a
+  // session (formal-result entry corrections, Full Set corrections) stay
+  // individual records.
+  const sessionByAttemptId = new Map<string, TeacherReadingWrongbookSessionRow>();
+  for (const session of input.wrongbookSessions ?? []) {
+    for (const entry of Object.values(session.progress ?? {})) {
+      const attemptId = entry?.attemptId ? String(entry.attemptId) : "";
+      if (attemptId) sessionByAttemptId.set(attemptId, session);
+    }
+  }
+  const sessionAttemptGroups = new Map<string, {
+    attempts: TeacherReadingWrongbookAttemptRow[];
+    session: TeacherReadingWrongbookSessionRow;
+  }>();
+  const standaloneWrongbookAttempts: TeacherReadingWrongbookAttemptRow[] = [];
   for (const attempt of input.wrongbookAttempts ?? []) {
     const submittedAt = validSubmittedAt(attempt.submitted_at);
     if (attempt.status !== "submitted" || !submittedAt) continue;
+    const session = sessionByAttemptId.get(String(attempt.attempt_id));
+    if (session) {
+      const sessionId = String(session.session_id);
+      const group = sessionAttemptGroups.get(sessionId) ?? { attempts: [], session };
+      group.attempts.push(attempt);
+      sessionAttemptGroups.set(sessionId, group);
+    } else {
+      standaloneWrongbookAttempts.push(attempt);
+    }
+  }
+
+  for (const attempt of standaloneWrongbookAttempts) {
+    const submittedAt = validSubmittedAt(attempt.submitted_at)!;
     const totalPoints = nonNegativeInteger(attempt.total_points);
     const correctPoints = Math.min(totalPoints, nonNegativeInteger(attempt.correct_points));
     records.push({
@@ -304,6 +348,52 @@ export function buildTeacherStudentReadingPractice(input: {
             attemptId: String(attempt.attempt_id)
           })
         : null
+    });
+  }
+
+  for (const { attempts, session } of Array.from(sessionAttemptGroups.values())) {
+    // Earliest submitted material first: its attempt backs the drill-down link
+    // (the teacher detail page opens one correction attempt at a time).
+    const orderedAttempts = [...attempts].sort((left, right) =>
+      Date.parse(String(left.submitted_at)) - Date.parse(String(right.submitted_at))
+      || String(left.attempt_id).localeCompare(String(right.attempt_id))
+    );
+    const firstAttempt = orderedAttempts[0];
+    const totalPoints = orderedAttempts.reduce(
+      (sum, attempt) => sum + nonNegativeInteger(attempt.total_points), 0);
+    const correctPoints = orderedAttempts.reduce(
+      (sum, attempt) => sum + Math.min(
+        nonNegativeInteger(attempt.total_points),
+        nonNegativeInteger(attempt.correct_points)
+      ), 0);
+    // The record sits at the session's completion moment (its latest material).
+    const submittedAt = validSubmittedAt(
+      orderedAttempts[orderedAttempts.length - 1].submitted_at
+    )!;
+    records.push({
+      recordId: `wrongbook-session:${session.session_id}`,
+      attemptId: String(firstAttempt.attempt_id),
+      domain: "reading",
+      taskType: isReadingModuleValue(session.task_type)
+        ? session.task_type
+        : firstAttempt.task_type,
+      kind: "wrongbook",
+      title: `${session.mode === "today" ? "今日错题订正" : "历史错题练习"}（${orderedAttempts.length} 篇材料）`,
+      submittedAt,
+      durationSeconds: orderedAttempts.reduce(
+        (sum, attempt) => sum + nonNegativeInteger(attempt.elapsed_seconds), 0),
+      metric: {
+        kind: "objective",
+        correct: correctPoints,
+        total: totalPoints,
+        accuracy: ratio(correctPoints, totalPoints)
+      },
+      scope: session.mode,
+      href: teacherReadingAttemptHref({
+        studentId: input.studentId,
+        kind: "wrongbook",
+        attemptId: String(firstAttempt.attempt_id)
+      })
     });
   }
 

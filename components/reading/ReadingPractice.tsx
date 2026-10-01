@@ -473,6 +473,16 @@ type ReadingReviewShellPayload = {
 
 export type ReadingReviewSourceStatus = "error" | "loading";
 
+/**
+ * CTW shows one passage whose scoring points are its blanks. A single point
+ * must never render as the degenerate range "1–1"; the ordinary wording stays
+ * `Questions 1–N / N`.
+ */
+function readingCtwProgressLabel(scoringPointCount: number) {
+  const count = Math.max(1, scoringPointCount);
+  return count === 1 ? "Question 1 / 1" : `Questions 1–${count} / ${count}`;
+}
+
 export function ReadingFullSetReviewShell({
   initialSourceAnswerIndex,
   onBack,
@@ -849,7 +859,7 @@ export function ReadingPracticeShell({
         navigation.scoringPointCount
       )
     : practice.item.module === "ctw"
-      ? `Questions 1–${navigation.scoringPointCount} / ${navigation.scoringPointCount}`
+      ? readingCtwProgressLabel(navigation.scoringPointCount)
       : `Question ${navigation.currentIndex + 1} / ${navigation.workspaceCount}`;
   const captureCurrentQuestionTime = useCallback(() => {
     const questionId = activeQuestionIdRef.current;
@@ -1073,7 +1083,7 @@ export function ReadingPracticePendingShell({
         elapsedSeconds={0}
         onBack={onBack}
         progressLabel={practice.item.module === "ctw"
-          ? `Questions 1–${practice.item.scoringPointCount} / ${practice.item.scoringPointCount}`
+          ? readingCtwProgressLabel(practice.item.scoringPointCount)
           : `Question 1 / ${practice.item.questionCount}`}
         showElapsed={false}
         title={reviewTitle ?? practice.item.title}

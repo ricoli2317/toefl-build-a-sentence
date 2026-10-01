@@ -1013,3 +1013,18 @@ test("13. lite composition rebuilds the same review payload from the cached prac
     "slot-03": ["w", "o", "r", "d"]
   });
 });
+
+// ---------------------------------------------------------------------------
+// 14. A single CTW scoring point never renders as the degenerate range 1–1
+// ---------------------------------------------------------------------------
+
+test("14. the CTW progress label keeps a single scoring point out of range form", () => {
+  const shell = read("components/reading/ReadingPractice.tsx");
+  assert.match(shell, /function readingCtwProgressLabel\(scoringPointCount: number\) \{/);
+  assert.match(shell, /return count === 1 \? "Question 1 \/ 1" : `Questions 1–\$\{count\} \/ \$\{count\}`;/);
+  // Both the practice shell and the pending preview use it.
+  assert.match(shell, /readingCtwProgressLabel\(navigation\.scoringPointCount\)/);
+  assert.match(shell, /readingCtwProgressLabel\(practice\.item\.scoringPointCount\)/);
+  assert.doesNotMatch(shell, /Questions 1–\$\{navigation\.scoringPointCount\} \/ \$\{navigation\.scoringPointCount\}/);
+  assert.doesNotMatch(shell, /Questions 1–\$\{practice\.item\.scoringPointCount\} \/ \$\{practice\.item\.scoringPointCount\}/);
+});

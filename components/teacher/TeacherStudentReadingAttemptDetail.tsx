@@ -13,6 +13,7 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { safeTeacherReturnTo, teacherStudentDetailHref } from "@/lib/teacherNavigation";
 import type { ReadingFullSetReviewPayload } from "@/lib/reading/fullSetReview";
+import type { ReadingWrongbookSessionReviewPayload } from "@/lib/reading/wrongbookSession";
 import { readingLookupEnabled } from "@/lib/reading/lookupCapabilities";
 import type { TeacherReadingAttemptReviewPayload } from "@/lib/teacherStudentPractice";
 
@@ -20,7 +21,8 @@ export type TeacherReadingAttemptDetailKind = "attempt" | "wrongbook" | "full-se
 
 type ReadingAttemptDetailPayload =
   | TeacherReadingAttemptReviewPayload
-  | ReadingFullSetReviewPayload;
+  | ReadingFullSetReviewPayload
+  | { sessionReview: ReadingWrongbookSessionReviewPayload };
 
 /**
  * Teacher drill-down for one Reading attempt. The payload is fetched only after
@@ -71,6 +73,21 @@ export function TeacherStudentReadingAttemptDetail({
         initialSourceAnswerIndex={0}
         onBack={() => router.push(backHref)}
         payload={state.data as ReadingFullSetReviewPayload}
+      />
+    );
+  }
+
+  // A record that belongs to a today / history wrong-question session opens the
+  // whole session through the same multi-source shell the student sees: every
+  // material in the frozen order, continuous global numbering and the same
+  // read-only answers.
+  if (kind === "wrongbook" && "sessionReview" in state.data) {
+    return (
+      <ReadingFullSetReviewShell
+        initialSourceAnswerIndex={0}
+        onBack={() => router.push(backHref)}
+        payload={state.data.sessionReview}
+        variant="session"
       />
     );
   }
