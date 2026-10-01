@@ -9,6 +9,7 @@ export const TEACHER_PRACTICE_TASK_TYPES = [
   "ctw",
   "rdl",
   "rap",
+  "full_set",
   "build_sentence",
   "email",
   "academic_discussion"
@@ -22,6 +23,7 @@ export const TEACHER_PRACTICE_TASK_SHORT_LABELS: Record<TeacherPracticeTaskType,
   ctw: "CTW",
   rdl: "RDL",
   rap: "RAP",
+  full_set: "FS",
   build_sentence: "BAS",
   email: "WE",
   academic_discussion: "AD"
@@ -31,6 +33,7 @@ export const TEACHER_PRACTICE_TASK_LABELS: Record<TeacherPracticeTaskType, strin
   ctw: "Complete the Words",
   rdl: "Read in Daily Life",
   rap: "Read an Academic Passage",
+  full_set: "Full Set",
   build_sentence: "Build a Sentence",
   email: "Write an Email",
   academic_discussion: "Academic Discussion"
@@ -85,6 +88,10 @@ export type TeacherStudentReadingPractice = {
  * On-demand teacher payload for one submitted Reading attempt. It is only
  * requested after a teacher opens a record; the student detail list never
  * includes practice content, answers, or scoring detail.
+ *
+ * The attempt carries the same result numbers the student's result page shows
+ * (`correctPoints` / `totalPoints` / `elapsedSeconds`) so the teacher drill-down
+ * can open the student-shaped result view before any read-only question page.
  */
 export type TeacherReadingAttemptReviewPayload = {
   attempt: {
@@ -92,11 +99,39 @@ export type TeacherReadingAttemptReviewPayload = {
     logicalItemId: string;
     taskType: ReadingModule;
     submittedAt: string;
+    correctPoints: number;
+    totalPoints: number;
+    elapsedSeconds: number;
   };
   answers: ReadingAnswerState;
   disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
   practice: StudentReadingPracticePayload;
   reviewItems: SubmittedReadingReviewItem[];
+};
+
+/**
+ * The teacher result view header data for one reading record (practice,
+ * correction, session or Full Set). It mirrors the student result summary of
+ * the same attempt.
+ */
+export type TeacherReadingResultSummary = {
+  correctPoints: number;
+  elapsedSeconds: number | null;
+  /** Official Full Set score display (student result page score card). */
+  scoreDisplay?: string;
+  submittedAt: string;
+  title: string;
+  totalPoints: number;
+};
+
+/**
+ * Teacher drill-down data for a wrong-question session / Full Set: the
+ * student-shaped result summary plus the multi-source read-only review the
+ * question pages render.
+ */
+export type TeacherReadingMultiSourceDetail<Review> = {
+  review: Review;
+  summary: TeacherReadingResultSummary;
 };
 
 /**
@@ -259,6 +294,7 @@ export function buildTeacherStudentReadingPractice(input: {
   fullSetAttempts?: TeacherFullSetAttemptRow[];
   fullSetModules?: TeacherFullSetModuleRow[];
   fullSetAnswers?: TeacherFullSetAnswerRow[];
+  fullSetTitles?: Map<string, string>;
   itemMeta: Map<string, TeacherReadingItemMeta>;
   studentId?: string;
 }): TeacherStudentReadingPractice {
@@ -330,13 +366,18 @@ export function buildTeacherStudentReadingPractice(input: {
     const submittedAt = validSubmittedAt(attempt.submitted_at)!;
     const totalPoints = nonNegativeInteger(attempt.total_points);
     const correctPoints = Math.min(totalPoints, nonNegativeInteger(attempt.correct_points));
+    // An entry correction is one attempt on one material: it reads as the
+    // unified record name plus the material the student corrected
+    // (`错题订正·材料名`). Sessions keep their own 历史错题 / 今日错题 titles.
     records.push({
       recordId: `${attempt.task_type}:${attempt.attempt_id}`,
       attemptId: String(attempt.attempt_id),
       domain: "reading",
       taskType: attempt.task_type,
       kind: "wrongbook",
-      title: readingRecordTitle(input.itemMeta, attempt.logical_item_id, attempt.task_type),
+      title: isReadingModuleValue(attempt.task_type)
+        ? `错题订正·${readingRecordTitle(input.itemMeta, attempt.logical_item_id, attempt.task_type)}`
+        : readingRecordTitle(input.itemMeta, attempt.logical_item_id, attempt.task_type),
       submittedAt,
       durationSeconds: nonNegativeInteger(attempt.elapsed_seconds),
       metric: {
@@ -475,7 +516,9 @@ export function buildTeacherStudentWritingPractice(input: {
           ? "today"
           : "history"
         : null,
-      href: `/teacher/students/${encodeURIComponent(input.studentId)}/details/${encodeURIComponent(groupId)}`
+      // A BAS record opens the attempt's own result page, never the set-wide
+      // list of every attempt of that set.
+      href: `/teacher/students/${encodeURIComponent(input.studentId)}/attempts/${encodeURIComponent(String(attempt.attempt_id))}`
     });
   }
 
@@ -558,6 +601,7 @@ function buildFullSetReadingPractice(input: {
   fullSetAttempts?: TeacherFullSetAttemptRow[];
   fullSetModules?: TeacherFullSetModuleRow[];
   fullSetAnswers?: TeacherFullSetAnswerRow[];
+  fullSetTitles?: Map<string, string>;
   itemMeta: Map<string, TeacherReadingItemMeta>;
   studentId?: string;
 }): {
@@ -617,6 +661,7 @@ function buildFullSetReadingPractice(input: {
       byTask.set(occurrence.taskType, summary);
     }
 
+    // The Reading task cards keep counting Full Set work per module …
     for (const taskType of TEACHER_PRACTICE_READING_TASKS) {
       const summary = byTask.get(taskType);
       if (!summary) continue;
@@ -624,29 +669,39 @@ function buildFullSetReadingPractice(input: {
       tasks[taskType].correctPoints += summary.correct;
       tasks[taskType].totalPoints += summary.total;
       tasks[taskType].accuracy = ratio(tasks[taskType].correctPoints, tasks[taskType].totalPoints);
-      records.push({
-        recordId: `full_set:${attempt.attempt_id}:${taskType}`,
-        attemptId: String(attempt.attempt_id),
-        domain: "reading",
-        taskType,
-        kind: "full_set",
-        title: `Full Set ${attempt.full_set_id}`,
-        submittedAt: completedAt,
-        durationSeconds,
-        metric: {
-          kind: "objective",
-          correct: summary.correct,
-          total: summary.total,
-          accuracy: ratio(summary.correct, summary.total)
-        },
-        scope: null,
-        href: teacherReadingAttemptHref({
-          studentId: input.studentId,
-          kind: "full_set",
-          attemptId: String(attempt.attempt_id)
-        })
-      });
     }
+
+    // … while the record list shows the whole Full Set as ONE record: both
+    // modules, one score, the same title the student's Full Set result shows.
+    let correctPoints = 0;
+    let totalPoints = 0;
+    for (const summary of Array.from(byTask.values())) {
+      correctPoints += summary.correct;
+      totalPoints += summary.total;
+    }
+    records.push({
+      recordId: `full_set:${attempt.attempt_id}`,
+      attemptId: String(attempt.attempt_id),
+      domain: "reading",
+      taskType: "full_set",
+      kind: "full_set",
+      title: input.fullSetTitles?.get(String(attempt.full_set_id))?.trim()
+        || `Full Set ${attempt.full_set_id}`,
+      submittedAt: completedAt,
+      durationSeconds,
+      metric: {
+        kind: "objective",
+        correct: correctPoints,
+        total: totalPoints,
+        accuracy: ratio(correctPoints, totalPoints)
+      },
+      scope: null,
+      href: teacherReadingAttemptHref({
+        studentId: input.studentId,
+        kind: "full_set",
+        attemptId: String(attempt.attempt_id)
+      })
+    });
   }
 
   return { tasks, records };

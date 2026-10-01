@@ -10,7 +10,7 @@ import {
 import { loadTeacherScope } from "@/lib/teacherScope.server";
 import {
   loadTeacherStudentReadingWrongbookAttemptReview,
-  loadTeacherStudentReadingWrongbookSessionReview
+  loadTeacherStudentReadingWrongbookSessionDetail
 } from "@/lib/teacherStudentReadingAttempt.server";
 
 export const dynamic = "force-dynamic";
@@ -45,17 +45,33 @@ export async function GET(
 
     // A record that belongs to a today / history wrong-question session opens
     // the WHOLE session (every material, global numbering), exactly like the
-    // student's session review. Only attempts outside any session (entry / Full
-    // Set corrections) fall back to the single-attempt view.
-    const sessionReview = await loadTeacherStudentReadingWrongbookSessionReview(db, studentId, attemptId);
-    if (sessionReview) {
+    // student's session result and read-only review. An unfinished session has
+    // no result and is reported as such — it must never fall back to a
+    // single-material read-only page. Only attempts outside any session (entry
+    // / Full Set corrections) use the single-attempt view.
+    const sessionLookup = await loadTeacherStudentReadingWrongbookSessionDetail(db, studentId, attemptId);
+    if (sessionLookup.kind === "incomplete") {
+      const incompleteResponse = json({
+        student: {
+          studentId,
+          displayName: profile.displayName,
+          account: profile.email || "—"
+        },
+        sessionIncomplete: true
+      });
+      return debugEnabled ? appendSupabaseDebugMetrics(incompleteResponse, debugMetrics) : incompleteResponse;
+    }
+    if (sessionLookup.kind === "session") {
       const sessionResponse = json({
         student: {
           studentId,
           displayName: profile.displayName,
           account: profile.email || "—"
         },
-        sessionReview
+        sessionDetail: {
+          review: sessionLookup.review,
+          summary: sessionLookup.summary
+        }
       });
       return debugEnabled ? appendSupabaseDebugMetrics(sessionResponse, debugMetrics) : sessionResponse;
     }

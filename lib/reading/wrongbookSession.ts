@@ -59,6 +59,37 @@ export function readingWrongbookSessionGroupStarts(groups: WrongQuestionSessionG
 }
 
 /**
+ * Resume link for a frozen session. Re-entering pins the session id, so an
+ * unfinished practice continues the SAME session (same frozen draw, same
+ * remaining materials) instead of starting a new draw or dropping the student
+ * into a single-material correction.
+ */
+export function readingWrongbookSessionResumeHref(input: {
+  amount?: number | null;
+  mode: "history" | "today";
+  returnTo?: string | null;
+  sessionId: string;
+  taskType: string;
+}) {
+  const params = new URLSearchParams({
+    session: input.sessionId,
+    taskType: input.taskType
+  });
+  if (input.mode === "history") {
+    params.set("mode", "history");
+    if (typeof input.amount === "number" && input.amount > 0) {
+      params.set("amount", String(input.amount));
+    }
+  }
+  const returnTo = input.returnTo?.trim();
+  if (returnTo) params.set("returnTo", returnTo);
+  const base = input.mode === "history"
+    ? "/student/wrong-questions/history/reading/practice"
+    : "/student/wrong-questions/today/reading/practice";
+  return `${base}?${params.toString()}`;
+}
+
+/**
  * Global session numbering rule (4D): a workspace that maps to exactly one
  * scoring point shows `第 X / N 题`; a workspace covering several consecutive
  * scoring points shows `第 X–Y / N 题`. `X–X` never appears, and numbering is

@@ -51,6 +51,17 @@ export function firstSearchParamValue(value: string | string[] | undefined) {
 }
 
 /**
+ * Review position of a teacher Reading question page (`?question=N`). Invalid
+ * or absent values simply open the result view instead of a question.
+ */
+export function teacherReadingQuestionIndex(value: string | string[] | undefined) {
+  const raw = firstSearchParamValue(value);
+  if (!raw) return undefined;
+  const numeric = Number(raw);
+  return Number.isInteger(numeric) && numeric >= 0 ? numeric : undefined;
+}
+
+/**
  * Normalizes an untrusted `returnTo` value to an internal teacher path (path +
  * query, never a hash). Returns `fallback` for anything that is not a known
  * teacher route.

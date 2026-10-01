@@ -60,6 +60,7 @@ const ALL_TASKS_SELECTED: Record<TeacherPracticeTaskType, boolean> = {
   ctw: true,
   rdl: true,
   rap: true,
+  full_set: true,
   build_sentence: true,
   email: true,
   academic_discussion: true

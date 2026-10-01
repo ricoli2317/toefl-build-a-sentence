@@ -24,6 +24,7 @@ const {
   findReadingWrongbookSessionShapeIndex,
   mergeReadingWrongbookSessionResults,
   readingWrongbookSessionProgressLabel,
+  readingWrongbookSessionResumeHref,
   resolveReadingWrongbookSessionReviewShape
 } = require("../lib/reading/wrongbookSession.ts");
 const {
@@ -1027,4 +1028,61 @@ test("14. the CTW progress label keeps a single scoring point out of range form"
   assert.match(shell, /readingCtwProgressLabel\(practice\.item\.scoringPointCount\)/);
   assert.doesNotMatch(shell, /Questions 1–\$\{navigation\.scoringPointCount\} \/ \$\{navigation\.scoringPointCount\}/);
   assert.doesNotMatch(shell, /Questions 1–\$\{practice\.item\.scoringPointCount\} \/ \$\{practice\.item\.scoringPointCount\}/);
+});
+
+// ---------------------------------------------------------------------------
+// 15. The read-only review header counts questions, never slot numbers
+// ---------------------------------------------------------------------------
+
+test("15. the read-only review header counts drawn questions, not slot numbers", () => {
+  const shell = read("components/reading/ReadingPractice.tsx");
+  // A two-target correction must read 1/2, 2/2 — `order` is the material's
+  // question / slot number and only labels the chips.
+  assert.match(shell, /Question \$\{reviewIndex \+ 1\} \/ \$\{reviewItems\.length\}/);
+  assert.doesNotMatch(shell, /Question \$\{currentReviewItem\.order\} \/ \$\{reviewItems\.length\}/);
+  // The chips keep their own numbering.
+  assert.match(shell, /\{item\.order\}/);
+});
+
+// ---------------------------------------------------------------------------
+// 16. An unfinished session resumes as the same session
+// ---------------------------------------------------------------------------
+
+test("16. an unfinished session resumes as the same frozen session", () => {
+  const history = readingWrongbookSessionResumeHref({
+    amount: 8,
+    mode: "history",
+    returnTo: "/student/wrong-questions",
+    sessionId: "session-1",
+    taskType: "ctw"
+  });
+  assert.equal(
+    history,
+    "/student/wrong-questions/history/reading/practice?session=session-1&taskType=ctw&mode=history&amount=8&returnTo=%2Fstudent%2Fwrong-questions"
+  );
+  const today = readingWrongbookSessionResumeHref({
+    mode: "today",
+    returnTo: null,
+    sessionId: "session-2",
+    taskType: "rap"
+  });
+  assert.equal(
+    today,
+    "/student/wrong-questions/today/reading/practice?session=session-2&taskType=rap"
+  );
+
+  // The result page turns the dead-end message into 继续练习 back into the SAME
+  // session, and the review page never renders a partial (single-material)
+  // review for an unfinished session.
+  const result = read("components/reading/ReadingWrongbookSessionResult.tsx");
+  assert.match(result, /readingWrongbookSessionResumeHref\(\{/);
+  assert.match(result, /继续练习/);
+  assert.match(result, /这次练习还没有完成/);
+  assert.doesNotMatch(result, /这次练习还没有完成，请回到练习继续作答。/);
+  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
+  assert.match(
+    review,
+    /\(session\.groups \?\? \[\]\)\.some\(\(group\) => !session\.progress\?\.\[group\.logicalItemId\]\)/
+  );
+  assert.match(review, /description="这次练习还没有完成。"/);
 });

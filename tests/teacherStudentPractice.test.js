@@ -160,7 +160,7 @@ test("one wrong-question session folds its per-material attempts into a single r
       {
         ...readingAttempt({
           attempt_id: "w-entry",
-          logical_item_id: "rap-d",
+          logical_item_id: "rap-a",
           task_type: "rap",
           correct_points: 0,
           total_points: 1,
@@ -218,6 +218,9 @@ test("one wrong-question session folds its per-material attempts into a single r
   const entry = practice.records.find((record) => record.attemptId === "w-entry");
   assert.equal(entry.kind, "wrongbook");
   assert.equal(entry.scope, "today");
+  // Entry corrections read as 错题订正·材料名; the material name moved into the
+  // title instead of standing alone.
+  assert.equal(entry.title, "错题订正·题目001 · Passage");
 });
 
 test("an unfinished wrong-question session produces no record at all", () => {
@@ -348,15 +351,17 @@ test("Reading Full Set splits scoring points and practice units back into CTW/RD
   assert.equal(practice.tasks.rap.correctPoints, 3);
   assert.equal(practice.tasks.rap.totalPoints, 5);
 
+  // One Full Set is ONE record: both modules, one summed score, named after the
+  // Full Set the student sees on the result page.
   const fullSetRecords = practice.records.filter((record) => record.kind === "full_set");
-  assert.deepEqual(
-    fullSetRecords.map((record) => record.taskType).sort(),
-    ["ctw", "rap", "rdl"]
-  );
-  const ctwRecord = fullSetRecords.find((record) => record.taskType === "ctw");
-  assert.equal(ctwRecord.metric.correct, 17);
-  assert.equal(ctwRecord.metric.total, 20);
-  assert.equal(ctwRecord.durationSeconds, 18 * 60 + 8 * 60);
+  assert.equal(fullSetRecords.length, 1);
+  const fullSetRecord = fullSetRecords[0];
+  assert.equal(fullSetRecord.taskType, "full_set");
+  assert.equal(fullSetRecord.recordId, "full_set:fs-1");
+  assert.equal(fullSetRecord.title, "Full Set 20260922");
+  assert.equal(fullSetRecord.metric.correct, 22);
+  assert.equal(fullSetRecord.metric.total, 27);
+  assert.equal(fullSetRecord.durationSeconds, 18 * 60 + 8 * 60);
 
   function pointRows(occurrenceId, correct, incorrect) {
     const item = occurrenceId.includes("rdl")
@@ -452,12 +457,12 @@ test("BAS accuracy sums correct over total and ignores wrongbook attempts in the
 
   const official = practice.records.find((record) => record.attemptId === "b-1");
   assert.equal(official.title, "套题031");
-  assert.equal(official.href, "/teacher/students/student-1/details/set-1");
+  assert.equal(official.href, "/teacher/students/student-1/attempts/b-1");
   const wrongbook = practice.records.find((record) => record.attemptId === "b-wrongbook");
   assert.equal(wrongbook.kind, "wrongbook");
   assert.equal(wrongbook.scope, "today");
   assert.equal(wrongbook.title, "今日错题");
-  assert.equal(wrongbook.href, "/teacher/students/student-1/details/wrongbook-today");
+  assert.equal(wrongbook.href, "/teacher/students/student-1/attempts/b-wrongbook");
 });
 
 test("Email and Academic Discussion count every submitted attempt but average only published scores", () => {
@@ -576,6 +581,7 @@ test("checkbox short labels match the product copy", () => {  assert.deepEqual(T
     ctw: "CTW",
     rdl: "RDL",
     rap: "RAP",
+    full_set: "FS",
     build_sentence: "BAS",
     email: "WE",
     academic_discussion: "AD"

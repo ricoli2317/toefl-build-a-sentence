@@ -3003,8 +3003,12 @@ export function ReadingReadonlyReviewShell({
     : -1;
   const currentQuestion = practice.questions[reviewQuestionIndex >= 0 ? reviewQuestionIndex : 0]
     ?? practice.questions[0];
+  // The header shows how many questions this review actually walks through
+  // (1 / N … N / N). A review item's `order` is the material's question or slot
+  // number — chips on purpose keep that numbering — so it must never stand in
+  // for the question position here (`Question 3 / 2` for two drawn slots).
   const progressLabel = currentReviewItem
-    ? `Question ${currentReviewItem.order} / ${reviewItems.length}`
+    ? `Question ${reviewIndex + 1} / ${reviewItems.length}`
     : undefined;
   const selectReviewItem = (index: number) => {
     const target = reviewItems[index];

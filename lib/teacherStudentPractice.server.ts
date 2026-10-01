@@ -9,6 +9,7 @@ import {
   loadWritingHistoricalPracticeDisplayResolver
 } from "./historicalPracticeDisplay.ts";
 import { mapWithConcurrency } from "./mapWithConcurrency.ts";
+import { loadReadingFullSet } from "./reading/fullSets.server.ts";
 import { standardizeOrderTextCasing } from "./questionText.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import {
@@ -399,6 +400,20 @@ export async function loadTeacherStudentReadingPractice(
   ];
   const itemMeta = await loadTeacherReadingItemMeta(db, itemIds);
 
+  // Full Set records are named like the student's Full Set result page, so the
+  // list loads the (small) Full Set catalog for the attempts it shows.
+  const fullSetIds = Array.from(new Set(
+    fullSetAttempts.map((attempt) => String(attempt.full_set_id)).filter(Boolean)
+  ));
+  const fullSetTitles = new Map<string, string>();
+  const fullSetDefinitions = await Promise.all(
+    fullSetIds.map((fullSetId) => loadReadingFullSet(db, fullSetId))
+  );
+  fullSetIds.forEach((fullSetId, index) => {
+    const title = fullSetDefinitions[index]?.title?.trim();
+    if (title) fullSetTitles.set(fullSetId, title);
+  });
+
   return buildTeacherStudentReadingPractice({
     attempts: attemptsResult.data ?? [],
     wrongbookAttempts: wrongbookResult.data ?? [],
@@ -406,6 +421,7 @@ export async function loadTeacherStudentReadingPractice(
     fullSetAttempts,
     fullSetModules: modulesResult.data ?? [],
     fullSetAnswers: answersResult.data ?? [],
+    fullSetTitles,
     itemMeta,
     studentId
   });
@@ -691,8 +707,33 @@ export async function loadTeacherStudentBasAnswerDetail(
     question_id: string;
   } | null;
   if (!initialAnswer) return null;
+  return loadTeacherStudentBasAttemptDetail(
+    db,
+    studentId,
+    String(initialAnswer.attempt_id),
+    String(initialAnswer.question_id)
+  );
+}
 
-  const attemptId = String(initialAnswer.attempt_id);
+/**
+ * Attempt-level BAS result, the view a record opens. It is the same payload the
+ * per-question page uses, only without a preselected question: the teacher then
+ * follows the exact student flow (result first, question read-only on demand).
+ */
+export async function loadTeacherStudentBasAttemptResult(
+  db: SupabaseClient,
+  studentId: string,
+  attemptId: string
+): Promise<TeacherStudentBasAnswerDetail | null> {
+  return loadTeacherStudentBasAttemptDetail(db, studentId, attemptId, "");
+}
+
+async function loadTeacherStudentBasAttemptDetail(
+  db: SupabaseClient,
+  studentId: string,
+  attemptId: string,
+  initialQuestionId: string
+): Promise<TeacherStudentBasAnswerDetail | null> {
   const [attemptResult, answersResult] = await Promise.all([
     db
       .from("attempts")
@@ -758,7 +799,7 @@ export async function loadTeacherStudentBasAnswerDetail(
       timeSpentSeconds: nonNegativeNumber(attempt.time_spent_seconds),
       submittedAt: attempt.submitted_at ?? ""
     },
-    initialQuestionId: String(initialAnswer.question_id),
+    initialQuestionId,
     answers: answers.map((answer) => {
       const question = questionById.get(String(answer.question_id));
       return {

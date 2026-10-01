@@ -14,6 +14,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import type { ReadingCorrectionResultPayload } from "@/lib/reading/correctionResult";
 import {
   mergeReadingWrongbookSessionResults,
+  readingWrongbookSessionResumeHref,
   readingWrongbookSessionShapeCacheKey,
   type ReadingWrongbookSessionGroupResult
 } from "@/lib/reading/wrongbookSession";
@@ -141,7 +142,39 @@ export function ReadingWrongbookSessionResult({
       (group) => !session.progress[group.logicalItemId]
     );
     if (missingProgress) {
-      return <StudentErrorState text="这次练习还没有完成，请回到练习继续作答。" />;
+      // Re-entering continues the SAME frozen session: the resume link pins the
+      // session id, so the student never gets a different draw or a
+      // single-material correction instead of the unfinished practice.
+      return (
+        <div className="reading-theme mx-auto grid w-full max-w-xl gap-4 py-8">
+          <section className="student-card p-8 text-center">
+            <h1 className="text-2xl font-bold text-student-text">这次练习还没有完成</h1>
+            <p className="mt-3 text-sm leading-6 text-student-muted">
+              继续完成本场练习后即可查看完整结果。
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link
+                className="student-button-primary"
+                href={readingWrongbookSessionResumeHref({
+                  amount: session.amount ?? null,
+                  mode: session.mode,
+                  returnTo,
+                  sessionId,
+                  taskType: session.taskType
+                })}
+              >
+                继续练习
+              </Link>
+              <Link
+                className="student-button-secondary"
+                href={returnTo?.trim() || STUDENT_ROUTES.wrongQuestions}
+              >
+                返回错题集
+              </Link>
+            </div>
+          </section>
+        </div>
+      );
     }
     console.warn("Reading session result loaded while the session status is not completed", {
       sessionId,

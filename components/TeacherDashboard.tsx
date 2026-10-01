@@ -38,7 +38,6 @@ import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
 import {
   parseTeacherStudentChildReturnTo,
   teacherReturnToHref,
-  teacherSetDetailsReturnHref,
   teacherStudentChildCrumbs,
   teacherStudentSetDetailsHref,
   type TeacherNavCrumb,
@@ -417,7 +416,6 @@ export function TeacherStudentQuestionDetail({
         <TeacherStudentQuestionDetailContent
           className={className}
           detail={detail}
-          returnTo={returnTo}
           studentContext={studentContext}
         />
       ) : <TeacherEmptyState text="暂无答题数据。" />}
@@ -428,12 +426,13 @@ export function TeacherStudentQuestionDetail({
 function TeacherStudentQuestionDetailContent({
   className,
   detail,
-  returnTo,
+  selectInitialQuestion = true,
   studentContext
 }: {
   className: string;
   detail: TeacherStudentAnswerDetailPayload;
-  returnTo?: string;
+  /** false renders the attempt-level result with no question preselected. */
+  selectInitialQuestion?: boolean;
   studentContext: TeacherStudentReturnToContext | null;
 }) {
   const payload: ResultPayload = {
@@ -465,25 +464,23 @@ function TeacherStudentQuestionDetailContent({
       question_time_seconds: answer.questionTimeSeconds
     }))
   };
-  const initialAnswer = detail.answers.find(
-    (answer) => answer.questionId === detail.initialQuestionId
-  ) ?? detail.answers[0];
+  const initialAnswer = selectInitialQuestion
+    ? detail.answers.find((answer) => answer.questionId === detail.initialQuestionId)
+      ?? detail.answers[0]
+    : undefined;
   const crumbs = teacherStudentChildCrumbs({
     className,
     studentContext,
     studentId: detail.student.studentId,
     studentName: detail.student.displayName,
-    tail: [
-      {
-        label: detail.attempt.setTitle,
-        href: teacherSetDetailsReturnHref(
-          returnTo,
-          detail.student.studentId,
-          detail.attempt.setId
-        )
-      },
-      { label: `第 ${initialAnswer?.questionOrder ?? 1} 题` }
-    ]
+    // The set-wide attempt list is no longer an entry point: the material name
+    // stays as a plain crumb, and the record chain goes result -> question.
+    tail: initialAnswer
+      ? [
+          { label: detail.attempt.setTitle },
+          { label: `第 ${initialAnswer.questionOrder} 题` }
+        ]
+      : [{ label: detail.attempt.setTitle }]
   });
 
   return (
@@ -789,6 +786,59 @@ async function loadTeacherStudentAnswerDetail(studentId: string, attemptAnswerId
   return fetchTeacherStudentJson<TeacherStudentAnswerDetailPayload>(
     `/api/teacher/students/${encodeURIComponent(studentId)}/answers/${encodeURIComponent(attemptAnswerId)}`,
     "答题详情加载失败。"
+  );
+}
+
+/**
+ * The record's first hop: the attempt-level result view, exactly what the
+ * student sees after finishing (summary + question chips). Question chips open
+ * the read-only question page of that attempt.
+ */
+export function TeacherStudentAttemptResult({
+  attemptId,
+  returnTo,
+  studentId
+}: {
+  attemptId: string;
+  returnTo?: string;
+  studentId: string;
+}) {
+  const studentContext = parseTeacherStudentChildReturnTo(returnTo);
+  const className = useTeacherClassDisplayName(studentContext?.classId ?? "");
+  const state = useTeacherCachedData<TeacherStudentAnswerDetailPayload>(
+    `${TEACHER_STUDENT_BAS_ANSWER_CACHE_PREFIX}:${studentId}:attempt:${attemptId}`,
+    () => loadTeacherStudentAttemptResult(studentId, attemptId)
+  );
+  const detail = state.data;
+  const fallbackCrumbs = teacherStudentChildCrumbs({
+    className,
+    studentContext,
+    studentId,
+    studentName: "学生详情",
+    tail: [{ label: "练习结果" }]
+  });
+
+  return (
+    <div className="grid gap-5">
+      {state.loading ? <TeacherLoadingRegion label="正在加载练习结果" /> : null}
+      {state.loading ? <QuestionDetailSkeleton crumbs={fallbackCrumbs} /> : state.error ? (
+        <QuestionDetailError crumbs={fallbackCrumbs} text={toTeacherErrorMessage(state.error)} />
+      ) : detail ? (
+        <TeacherStudentQuestionDetailContent
+          className={className}
+          detail={detail}
+          selectInitialQuestion={false}
+          studentContext={studentContext}
+        />
+      ) : <TeacherEmptyState text="暂无练习数据。" />}
+    </div>
+  );
+}
+
+async function loadTeacherStudentAttemptResult(studentId: string, attemptId: string) {
+  return fetchTeacherStudentJson<TeacherStudentAnswerDetailPayload>(
+    `/api/teacher/students/${encodeURIComponent(studentId)}/attempts/${encodeURIComponent(attemptId)}`,
+    "练习结果加载失败。"
   );
 }
 

@@ -260,7 +260,9 @@ test("student detail and its drill-down pages thread the return context", () => 
   const dashboard = read("components/TeacherDashboard.tsx");
   assert.match(dashboard, /teacherStudentChildCrumbs\(/);
   assert.match(dashboard, /parseTeacherStudentChildReturnTo\(/);
-  assert.match(dashboard, /teacherSetDetailsReturnHref\(/);
+  // The set-wide attempt list is no longer reachable from the record chain: the
+  // per-question page keeps the material name as a plain crumb.
+  assert.doesNotMatch(dashboard, /teacherSetDetailsReturnHref/);
   assert.match(dashboard, /teacherReturnToHref\(\s*`\/teacher\/students\/\$\{studentId\}\/answers\/\$\{answer\.attemptAnswerId\}`,\s*selfHref\s*\)/);
 
   const readingPage = read("app/teacher/students/[studentId]/reading/attempts/[attemptId]/page.tsx");

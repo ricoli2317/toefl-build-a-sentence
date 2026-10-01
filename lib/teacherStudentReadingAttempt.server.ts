@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { mapWithConcurrency } from "./mapWithConcurrency.ts";
 import { loadReadingFullSetFinalSnapshot } from "./reading/fullSetReviewServer.ts";
-import type { ReadingFullSetReviewPayload } from "./reading/fullSetReview.ts";
+import { readingFullSetReviewTotalTime, type ReadingFullSetReviewPayload } from "./reading/fullSetReview.ts";
 import {
   buildSubmittedReadingAnswerState,
   buildSubmittedReadingReviewItems,
@@ -24,7 +24,7 @@ import {
   type ReadingWrongbookSessionReviewPayload
 } from "./reading/wrongbookSession.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
-import type { TeacherReadingAttemptReviewPayload } from "./teacherStudentPractice.ts";
+import type { TeacherReadingAttemptReviewPayload, TeacherReadingResultSummary } from "./teacherStudentPractice.ts";
 import type { WrongQuestionSessionGroup } from "./wrongQuestionBank.ts";
 import type { ReadingWrongbookTarget } from "./wrongQuestions.ts";
 
@@ -34,12 +34,19 @@ type TeacherReadingAttemptDetailRow = {
   task_type: string;
   status: string;
   submitted_at: string | null;
+  elapsed_seconds: number | null;
+  correct_points: number | null;
+  total_points: number | null;
 };
 
 /**
  * Loads one submitted Reading attempt on demand for the teacher drill-down.
  * The attempt is located by attempt_id and student_id together, so repeated
  * practices of the same item can never resolve to a different attempt.
+ *
+ * The attempt carries the same result numbers the student result page shows,
+ * so the teacher can open the student-shaped result view first and only then a
+ * read-only question page.
  */
 export async function loadTeacherStudentReadingAttemptReview(
   db: SupabaseClient,
@@ -48,7 +55,7 @@ export async function loadTeacherStudentReadingAttemptReview(
 ): Promise<TeacherReadingAttemptReviewPayload | null> {
   const attemptResult = await db
     .from("reading_attempts")
-    .select("attempt_id,logical_item_id,task_type,status,submitted_at")
+    .select("attempt_id,logical_item_id,task_type,status,submitted_at,elapsed_seconds,correct_points,total_points")
     .eq("attempt_id", attemptId)
     .eq("student_id", studentId)
     .maybeSingle();
@@ -71,7 +78,10 @@ export async function loadTeacherStudentReadingAttemptReview(
       attemptId: String(attempt.attempt_id),
       logicalItemId: String(attempt.logical_item_id),
       taskType: attempt.task_type,
-      submittedAt: attempt.submitted_at
+      submittedAt: attempt.submitted_at,
+      correctPoints: nonNegativeInteger(attempt.correct_points),
+      totalPoints: nonNegativeInteger(attempt.total_points),
+      elapsedSeconds: nonNegativeInteger(attempt.elapsed_seconds)
     },
     answers: buildSubmittedReadingAnswerState(practice, rows),
     disclosures: await loadReadingAnswerDisclosures(db, rows as ReadingDisclosureAnswerRow[]),
@@ -89,6 +99,9 @@ type TeacherReadingWrongbookAttemptDetailRow = {
   submitted_at: string | null;
   scope: "history" | "today";
   targets: unknown;
+  elapsed_seconds: number | null;
+  correct_points: number | null;
+  total_points: number | null;
 };
 
 /**
@@ -109,7 +122,7 @@ export async function loadTeacherStudentReadingWrongbookAttemptReview(
 ): Promise<TeacherReadingAttemptReviewPayload | null> {
   const attemptResult = await db
     .from("reading_wrongbook_attempts")
-    .select("attempt_id,logical_item_id,task_type,status,started_at,submitted_at,scope,targets")
+    .select("attempt_id,logical_item_id,task_type,status,started_at,submitted_at,scope,targets,elapsed_seconds,correct_points,total_points")
     .eq("attempt_id", attemptId)
     .eq("student_id", studentId)
     .maybeSingle();
@@ -162,7 +175,10 @@ export async function loadTeacherStudentReadingWrongbookAttemptReview(
       attemptId: String(attempt.attempt_id),
       logicalItemId: String(attempt.logical_item_id),
       taskType: attempt.task_type,
-      submittedAt: attempt.submitted_at
+      submittedAt: attempt.submitted_at,
+      correctPoints: nonNegativeInteger(attempt.correct_points),
+      totalPoints: nonNegativeInteger(attempt.total_points),
+      elapsedSeconds: nonNegativeInteger(attempt.elapsed_seconds)
     },
     answers: buildSubmittedReadingAnswerState(practice, rows, {
       tolerateMissingCtwSlots: true,
@@ -191,12 +207,35 @@ type TeacherWrongbookSessionRow = {
  * answers, and the same CTW context fill for history sessions. Returns null for
  * attempts that are not part of a session (entry / Full Set corrections), which
  * keep their single-attempt view.
+ *
+ * The summary mirrors the student's session result numbers (summed over the
+ * session's sources) so the teacher opens the result view first.
  */
-export async function loadTeacherStudentReadingWrongbookSessionReview(
+/**
+ * Result of resolving a wrongbook attempt back to its frozen session.
+ *
+ * `none`       — the attempt is not part of any session (entry / Full Set
+ *                correction): the single-attempt view is correct.
+ * `incomplete` — the attempt belongs to a session the student has not finished.
+ *                No result page exists for it and a single-material view would
+ *                misrepresent the practice, so callers must show the
+ *                not-finished state instead.
+ * `session`    — the finished session's result summary + read-only review.
+ */
+export type TeacherReadingWrongbookSessionLookup =
+  | { kind: "none" }
+  | { kind: "incomplete" }
+  | {
+      kind: "session";
+      review: ReadingWrongbookSessionReviewPayload;
+      summary: TeacherReadingResultSummary;
+    };
+
+export async function loadTeacherStudentReadingWrongbookSessionDetail(
   db: SupabaseClient,
   studentId: string,
   attemptId: string
-): Promise<ReadingWrongbookSessionReviewPayload | null> {
+): Promise<TeacherReadingWrongbookSessionLookup> {
   const sessionsResult = await readAllSupabaseRows<TeacherWrongbookSessionRow>((from, to) =>
     db
       .from("student_wrong_question_sessions")
@@ -209,10 +248,19 @@ export async function loadTeacherStudentReadingWrongbookSessionReview(
   if (sessionsResult.error) throw new Error(sessionsResult.error.message);
   const session = (sessionsResult.data ?? []).find((row) =>
     Object.values(row.progress ?? {}).some((entry) => entry?.attemptId === attemptId));
-  if (!session) return null;
-  if (!isReadingModuleTaskType(session.task_type)) return null;
+  if (!session) return { kind: "none" };
+  // A reading correction can only belong to a reading session. A malformed row
+  // must fail loudly rather than fall back to a single-material read-only page.
+  if (!isReadingModuleTaskType(session.task_type)) {
+    throw new Error("TEACHER_READING_SESSION_TASK_TYPE_INVALID");
+  }
   const groups = Array.isArray(session.manifest?.groups) ? session.manifest!.groups : [];
-  if (groups.length === 0) return null;
+  if (groups.length === 0) throw new Error("TEACHER_READING_SESSION_MANIFEST_MISSING");
+  // Unfinished: the student page sends the student back to keep practising and
+  // has no result; never render the completed part as a material-sized review.
+  if (groups.some((group) => !session.progress?.[group.logicalItemId]?.attemptId)) {
+    return { kind: "incomplete" };
+  }
 
   const includeContext = session.mode === "history";
   const reviews = await mapWithConcurrency(groups, 3, async (group) => {
@@ -225,7 +273,9 @@ export async function loadTeacherStudentReadingWrongbookSessionReview(
       { includeContext }
     );
   });
-  if (reviews.some((review) => !review)) return null;
+  if (reviews.some((review) => !review)) {
+    throw new Error("TEACHER_READING_SESSION_SOURCE_MISSING");
+  }
   const groupReviews: ReadingWrongbookSessionReviewGroup[] = groups.map((group, index) => ({
     group,
     payload: reviews[index]!
@@ -238,9 +288,33 @@ export async function loadTeacherStudentReadingWrongbookSessionReview(
     title: session.mode === "today" ? "今日错题订正" : "历史错题练习"
   });
   // Teacher navigation stays in memory; student-only question hrefs are dropped.
-  return {
+  const review = {
     ...payload,
     reviewItems: payload.reviewItems.map(({ href: _href, ...item }) => item)
+  };
+  // Same aggregation rule as the student session result: one scoring point per
+  // answer row, summed across the session's sources in frozen order.
+  let correctPoints = 0;
+  let elapsedSeconds = 0;
+  let totalPoints = 0;
+  let submittedAt = String(session.created_at ?? "");
+  for (const reviewEntry of reviews) {
+    if (!reviewEntry) continue;
+    correctPoints += nonNegativeInteger(reviewEntry.attempt.correctPoints);
+    elapsedSeconds += nonNegativeInteger(reviewEntry.attempt.elapsedSeconds);
+    totalPoints += nonNegativeInteger(reviewEntry.attempt.totalPoints);
+    if (reviewEntry.attempt.submittedAt) submittedAt = reviewEntry.attempt.submittedAt;
+  }
+  return {
+    kind: "session",
+    review,
+    summary: {
+      correctPoints,
+      elapsedSeconds,
+      submittedAt,
+      title: session.mode === "today" ? "今日错题订正" : "历史错题练习",
+      totalPoints
+    }
   };
 }
 
@@ -259,7 +333,7 @@ export async function loadTeacherStudentReadingFullSetAttemptReview(
   db: SupabaseClient,
   studentId: string,
   attemptId: string
-): Promise<ReadingFullSetReviewPayload | null> {
+): Promise<{ review: ReadingFullSetReviewPayload; summary: TeacherReadingResultSummary } | null> {
   const attemptResult = await db
     .from("reading_full_set_attempts")
     .select("attempt_id,full_set_id,status,completed_at")
@@ -276,12 +350,31 @@ export async function loadTeacherStudentReadingFullSetAttemptReview(
     status: String(attempt.status),
     completed_at: attempt.completed_at
   });
-  return {
+  const review = {
     ...snapshot.review,
     reviewItems: snapshot.review.reviewItems.map(({ href: _href, ...item }) => item)
+  };
+  // The student Full Set result summary: one scoring point per answer row, the
+  // official score display, and the review total time (unknown stays unknown).
+  const answers = snapshot.result.answers;
+  return {
+    review,
+    summary: {
+      correctPoints: answers.filter((answer) => answer.isCorrect).length,
+      elapsedSeconds: readingFullSetReviewTotalTime(answers),
+      scoreDisplay: snapshot.result.score.display,
+      submittedAt: snapshot.result.attempt.completedAt,
+      title: snapshot.result.attempt.title,
+      totalPoints: answers.length
+    }
   };
 }
 
 function isReadingModuleTaskType(value: string): value is ReadingModule {
   return value === "ctw" || value === "rdl" || value === "rap";
+}
+
+function nonNegativeInteger(value: unknown) {
+  const numeric = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(numeric) ? Math.max(0, Math.floor(numeric)) : 0;
 }

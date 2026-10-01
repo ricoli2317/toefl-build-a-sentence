@@ -183,7 +183,7 @@ test("Reading summary records stay summary-only and Writing links are unchanged"
   });
   assert.equal(
     writing.records[0].href,
-    "/teacher/students/student-9/details/set-1"
+    "/teacher/students/student-9/attempts/b-1"
   );
 });
 
@@ -205,21 +205,37 @@ test("teacher Reading detail pages route by attempt id and reuse the read-only s
     assert.match(source, new RegExp(`kind=${kind.replace(/"/g, '"')}`));
     assert.match(source, /attemptId=\{params\.attemptId\}/);
     assert.match(source, /studentId=\{params\.studentId\}/);
+    assert.match(source, /questionIndex=\{teacherReadingQuestionIndex\(searchParams\?\.question\)\}/);
     assert.match(source, /TeacherStudentReadingAttemptDetail/);
   }
 
   const ui = read("components/teacher/TeacherStudentReadingAttemptDetail.tsx");
   assert.match(ui, /TEACHER_STUDENT_READING_CACHE_PREFIX/);
   assert.match(ui, /useTeacherCachedData/);
+  // Every record opens the student-shaped RESULT view first (summary + question
+  // chips) and only a chip opens the read-only question shell.
+  assert.match(ui, /PracticeResultSummary/);
+  assert.match(ui, /ReadingQuestionStatusChips/);
+  assert.match(ui, /data-testid="teacher-reading-result"/);
+  assert.match(ui, /\?question=\$\{index\}/);
+  assert.match(ui, /questionIndex !== undefined/);
   assert.match(ui, /ReadingReadonlyReviewShell/);
+  assert.match(ui, /initialReviewIndex=\{questionIndex\}/);
   assert.match(ui, /ReadingFullSetReviewShell/);
+  assert.match(ui, /initialSourceAnswerIndex=\{questionIndex\}/);
   assert.match(ui, /reading\/full-set-attempts\/\$\{encodeURIComponent\(attemptId\)\}/);
-  assert.match(ui, /kind === "wrongbook" \? "wrongbook-attempts" : "attempts"/);
-  // A session-backed record renders the whole session through the same
-  // multi-source shell (with the session status bar) the student sees.
-  assert.match(ui, /"sessionReview" in state\.data/);
-  assert.match(ui, /payload=\{state\.data\.sessionReview\}/);
-  assert.match(ui, /variant="session"/);
+  assert.match(ui, /kind === "wrongbook"[\s\S]*"wrongbook-attempts"[\s\S]*"full-set-attempts"[\s\S]*"attempts"/);
+  // A session-backed record renders the whole session result and review through
+  // the same multi-source shell (with the session status bar) the student sees.
+  assert.match(ui, /"sessionDetail" in payload/);
+  assert.match(ui, /payload\.sessionDetail\.review/);
+  assert.match(ui, /view\.mode === "session" \? "session" : "full_set"/);
+  // An unfinished session never degrades into the single-material read-only page.
+  assert.match(ui, /"sessionIncomplete" in state\.data/);
+  assert.match(ui, /description="这次练习还没有完成。"/);
+  // Full Set uses the student's module-grouped question navigator.
+  assert.match(ui, /ReadingFullSetQuestionNavigator/);
+  assert.match(ui, /<ReadingFullSetQuestionNavigator items=\{fullSetItems\} \/>/);
   // Teacher detail must never call the student review APIs.
   assert.doesNotMatch(ui, /\/api\/reading\//);
 });
@@ -242,11 +258,15 @@ test("teacher Reading detail APIs are binding-scoped and load one attempt by id"
   const wrongbookRoute = read(
     "app/api/teacher/students/[studentId]/reading/wrongbook-attempts/[attemptId]/route.ts"
   );
-  // Session-backed attempts open the whole session; only non-session attempts
-  // (entry / Full Set corrections) use the single-attempt view.
-  assert.match(wrongbookRoute, /loadTeacherStudentReadingWrongbookSessionReview\(db, studentId, attemptId\)/);
-  assert.match(wrongbookRoute, /if \(sessionReview\) \{/);
-  assert.match(wrongbookRoute, /sessionReview/);
+  // Session-backed attempts open the whole session result + review; an
+  // unfinished session reports itself as such and never falls back to the
+  // single-material view; only non-session attempts (entry / Full Set
+  // corrections) use the single-attempt view.
+  assert.match(wrongbookRoute, /loadTeacherStudentReadingWrongbookSessionDetail\(db, studentId, attemptId\)/);
+  assert.match(wrongbookRoute, /if \(sessionLookup\.kind === "incomplete"\) \{/);
+  assert.match(wrongbookRoute, /sessionIncomplete: true/);
+  assert.match(wrongbookRoute, /if \(sessionLookup\.kind === "session"\) \{/);
+  assert.match(wrongbookRoute, /sessionDetail: \{/);
   assert.match(wrongbookRoute, /loadTeacherStudentReadingWrongbookAttemptReview\(db, studentId, attemptId\)/);
 
   const lib = read("lib/teacherStudentReadingAttempt.server.ts");
@@ -257,12 +277,24 @@ test("teacher Reading detail APIs are binding-scoped and load one attempt by id"
   assert.match(lib, /buildSubmittedReadingReviewItems\(practice, correctionRows\)/);
   assert.match(lib, /loadReadingAnswerDisclosures/);
   assert.match(lib, /loadReadingFullSetFinalSnapshot/);
+  // Result-view numbers come from the attempt rows the student result also uses.
+  assert.match(lib, /correctPoints: nonNegativeInteger\(attempt\.correct_points\)/);
+  assert.match(lib, /totalPoints: nonNegativeInteger\(attempt\.total_points\)/);
+  assert.match(lib, /elapsedSeconds: nonNegativeInteger\(attempt\.elapsed_seconds\)/);
   // The session drill-down resolves the attempt back to its frozen session and
-  // reuses the student session payload builder.
-  assert.match(lib, /loadTeacherStudentReadingWrongbookSessionReview/);
+  // reuses the student session payload builder plus its summed result numbers.
+  assert.match(lib, /loadTeacherStudentReadingWrongbookSessionDetail/);
   assert.match(lib, /student_wrong_question_sessions/);
   assert.match(lib, /buildReadingWrongbookSessionReviewPayload\(/);
   assert.match(lib, /reviewItems: payload\.reviewItems\.map\(\(\{ href: _href, \.\.\.item \}\) => item\)/);
+  assert.match(lib, /scoreDisplay: snapshot\.result\.score\.display/);
+  // Three-way lookup: not-a-session, unfinished (no result, never a
+  // single-material view) and the finished session itself.
+  assert.match(lib, /\| \{ kind: "none" \}/);
+  assert.match(lib, /\| \{ kind: "incomplete" \}/);
+  assert.match(lib, /groups\.some\(\(group\) => !session\.progress\?\.\[group\.logicalItemId\]\?\.attemptId\)/);
+  assert.match(lib, /TEACHER_READING_SESSION_MANIFEST_MISSING/);
+  assert.match(lib, /TEACHER_READING_SESSION_SOURCE_MISSING/);
   assert.doesNotMatch(lib, /listVisibleStudentIds|listTeacherStudentDomainBindings/);
 });
 
@@ -288,4 +320,93 @@ test("teacher single-attempt review matches the student correction view", () => 
     lib,
     /options\?\.includeContext\s*\n\s*&& attempt\.task_type === "ctw"\s*\n\s*&& attempt\.scope === "history"/
   );
+});
+
+test("one Full Set is one record and the list names it like the student result", () => {
+  const loader = read("lib/teacherStudentPractice.server.ts");
+  assert.match(loader, /fullSetTitles/);
+  assert.match(loader, /loadReadingFullSet\(db, fullSetId\)/);
+  const lib = read("lib/teacherStudentPractice.ts");
+  // Aggregated record: whole attempt, one score, no per-module split.
+  assert.match(lib, /recordId: `full_set:\$\{attempt\.attempt_id\}`/);
+  assert.match(lib, /taskType: "full_set"/);
+  assert.match(lib, /fullSetTitles\?\.get\(String\(attempt\.full_set_id\)\)/);
+  assert.doesNotMatch(lib, /recordId: `full_set:\$\{attempt\.attempt_id\}:\$\{taskType\}`/);
+  // The FS checkbox label exists alongside the other task types.
+  assert.match(lib, /full_set: "FS"/);
+});
+
+test("BAS records open the attempt result, then the read-only question page", () => {
+  const lib = read("lib/teacherStudentPractice.ts");
+  // The record never lands on the set-wide attempt list any more.
+  assert.match(lib, /attempts\/\$\{encodeURIComponent\(String\(attempt\.attempt_id\)\)\}/);
+  assert.doesNotMatch(lib, /href: `\/teacher\/students\/\$\{encodeURIComponent\(input\.studentId\)\}\/details\//);
+
+  const page = read("app/teacher/students/[studentId]/attempts/[attemptId]/page.tsx");
+  assert.match(page, /TeacherStudentAttemptResult/);
+  assert.match(page, /attemptId=\{params\.attemptId\}/);
+  assert.match(page, /studentId=\{params\.studentId\}/);
+
+  const api = read("app/api/teacher/students/[studentId]/attempts/[attemptId]/route.ts");
+  assert.match(api, /requireTeacherOnly\(bearerToken\(request\)\)/);
+  assert.match(api, /loadTeacherScope/);
+  assert.match(api, /scope\.studentDomains\.get\(studentId\)\?\.includes\("writing"\)/);
+  assert.match(api, /loadTeacherStudentBasAttemptResult\(db, studentId, attemptId\)/);
+
+  const server = read("lib/teacherStudentPractice.server.ts");
+  assert.match(server, /export async function loadTeacherStudentBasAttemptResult/);
+  assert.match(server, /loadTeacherStudentBasAttemptDetail\(db, studentId, attemptId, ""\)/);
+  // The per-question page keeps working through the same core loader.
+  assert.match(
+    server,
+    /return loadTeacherStudentBasAttemptDetail\(\s*\n\s*db,\s*\n\s*studentId,\s*\n\s*String\(initialAnswer\.attempt_id\),\s*\n\s*String\(initialAnswer\.question_id\)\s*\n\s*\);/
+  );
+
+  const dashboard = read("components/TeacherDashboard.tsx");
+  // Result view = the student's own result component, question chips included.
+  assert.match(dashboard, /export function TeacherStudentAttemptResult/);
+  assert.match(dashboard, /selectInitialQuestion=\{false\}/);
+  assert.match(dashboard, /studentId\}:attempt:\$\{attemptId\}/);
+  assert.match(dashboard, /initialQuestionId=\{initialAnswer\?\.questionId\}/);
+});
+
+test("entry corrections are titled 错题订正·材料名", () => {
+  const practice = buildTeacherStudentReadingPractice({
+    attempts: [],
+    wrongbookAttempts: [
+      {
+        ...readingAttempt({
+          attempt_id: "entry-1",
+          logical_item_id: "ctw-a",
+          task_type: "ctw",
+          correct_points: 1,
+          total_points: 2
+        }),
+        scope: "today"
+      }
+    ],
+    itemMeta: ITEM_META,
+    studentId: "student-9"
+  });
+  const entry = practice.records[0];
+  assert.equal(entry.kind, "wrongbook");
+  assert.equal(entry.title, "错题订正·题目001");
+  // Material identity is not lost when the meta is unknown: the task name still
+  // follows the unified prefix.
+  const unknown = buildTeacherStudentReadingPractice({
+    attempts: [],
+    wrongbookAttempts: [
+      {
+        ...readingAttempt({
+          attempt_id: "entry-2",
+          logical_item_id: "ctw-unknown",
+          task_type: "ctw"
+        }),
+        scope: "history"
+      }
+    ],
+    itemMeta: ITEM_META,
+    studentId: "student-9"
+  });
+  assert.equal(unknown.records[0].title, "错题订正·Complete the Words");
 });

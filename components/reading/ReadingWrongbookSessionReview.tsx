@@ -300,6 +300,22 @@ export function ReadingWrongbookSessionReview({
   if (sessionError) {
     return <ReadingPracticeMessage description={sessionError} onLeave={() => router.push(resultHref)} title="无法打开订正作答" />;
   }
+  // An unfinished session has no review: rendering only the completed sources
+  // would silently turn the session into a material-sized review. The student
+  // continues the same session from the result page instead.
+  if (
+    session
+    && (session.groups ?? []).some((group) => !session.progress?.[group.logicalItemId])
+  ) {
+    return (
+      <ReadingPracticeMessage
+        description="这次练习还没有完成。"
+        leaveLabel="返回练习结果"
+        onLeave={() => router.push(resultHref)}
+        title="无法打开订正作答"
+      />
+    );
+  }
   if (sessionIsNotReading) {
     return <ReadingPracticeMessage description="该练习不是阅读错题练习。" onLeave={() => router.push(resultHref)} title="无法打开订正作答" />;
   }
