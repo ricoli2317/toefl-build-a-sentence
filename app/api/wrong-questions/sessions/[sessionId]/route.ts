@@ -1,7 +1,8 @@
 import { requireStudentApiAuth, studentApiJson } from "@/lib/studentRequest.server";
 import {
   loadBasQuestionsByIds,
-  loadWrongQuestionPracticeSession
+  loadWrongQuestionPracticeSession,
+  loadWrongQuestionSessionElapsedSeconds
 } from "@/lib/wrongQuestionBank.server";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +22,12 @@ export async function GET(
     const session = await loadWrongQuestionPracticeSession(auth.db, auth.userId, sessionId);
     if (!session) return studentApiJson({ error: "错题练习不存在或已失效。" }, 404);
 
-    if (session.taskType !== "bas") return studentApiJson({ session });
+    if (session.taskType !== "bas") {
+      // The session-wide elapsed time travels with the manifest (first-screen
+      // data), so the review can show the final number immediately.
+      const elapsedSeconds = await loadWrongQuestionSessionElapsedSeconds(auth.db, session);
+      return studentApiJson({ session: { ...session, elapsedSeconds } });
+    }
     const questions = await loadBasQuestionsByIds(auth.db, session.questionIds ?? []);
     return studentApiJson({ questions, session });
   } catch (caught) {

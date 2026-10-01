@@ -169,7 +169,7 @@ export type ReadingWrongbookSessionReviewGroup = {
    */
   payload: {
     answers: ReadingAnswerState;
-    attempt: { attemptId: string };
+    attempt: { attemptId: string; elapsedSeconds?: number | null };
     disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
     practice: StudentReadingPracticePayload;
     reviewItems: SubmittedReadingReviewItem[];
@@ -197,6 +197,11 @@ export type ReadingWrongbookSessionReviewPayload = {
   disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
   occurrences: ReadingWrongbookSessionReviewOccurrence[];
   reviewItems: ReadingWrongbookSessionReviewItem[];
+  /**
+   * Whole-session elapsed time (sum of the frozen session's per-source
+   * attempts). `null` when any source is unknown/unloaded.
+   */
+  totalElapsedSeconds: number | null;
 };
 
 /** Per-item status snapshot the result page hands to the session review. */
@@ -319,6 +324,13 @@ export function buildReadingWrongbookSessionReviewPayload(input: {
   shapes?: ReadingWrongbookSessionReviewShape[] | null;
   taskType: ReadingModule;
   title: string;
+  /**
+   * Whole-session elapsed time, when the caller already knows it (the student
+   * review reads it with the session manifest). Passing it — even as `null` —
+   * keeps the number stable from the first render; omitting it lets the builder
+   * sum the loaded sources (the teacher drill-down loads every source first).
+   */
+  totalElapsedSeconds?: number | null;
 }): ReadingWrongbookSessionReviewPayload {
   const occurrences: ReadingWrongbookSessionReviewOccurrence[] = [];
   const reviewItems: ReadingWrongbookSessionReviewItem[] = [];
@@ -403,10 +415,32 @@ export function buildReadingWrongbookSessionReviewPayload(input: {
     for (const entry of input.groupReviews) appendLoadedGroup(entry);
   }
 
+  // Session-wide elapsed time: the sum of the frozen session's per-source
+  // attempts, i.e. the same 用时 the session result page shows. Every review
+  // item carries it so navigating between materials never changes the number.
+  // A caller that already knows the total (first-screen session data) wins.
+  let totalElapsedSeconds: number | null;
+  if (input.totalElapsedSeconds !== undefined) {
+    totalElapsedSeconds = input.totalElapsedSeconds;
+  } else {
+    totalElapsedSeconds = input.groupReviews.length === 0 ? null : 0;
+    if (totalElapsedSeconds !== null) {
+      for (const entry of input.groupReviews) {
+        const elapsed = entry.payload.attempt.elapsedSeconds;
+        if (typeof elapsed !== "number" || !Number.isFinite(elapsed)) {
+          totalElapsedSeconds = null;
+          break;
+        }
+        totalElapsedSeconds += elapsed;
+      }
+    }
+  }
+
   return {
     attempt: { attemptId: input.sessionId, title: input.title },
     disclosures,
     occurrences,
-    reviewItems
+    reviewItems,
+    totalElapsedSeconds
   };
 }

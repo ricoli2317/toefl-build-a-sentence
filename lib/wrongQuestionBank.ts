@@ -64,6 +64,12 @@ export type WrongQuestionPracticeSession = {
   questionIds?: string[];
   amount: number | null;
   createdAt: string;
+  /**
+   * Reading sessions: the whole-session elapsed time, computed server-side and
+   * returned together with the manifest. Reading it with the first screen keeps
+   * the review's status bar stable instead of recomputing as sources load.
+   */
+  elapsedSeconds?: number | null;
   /** Reading manifest; the order is frozen when the session is created. */
   groups?: WrongQuestionSessionGroup[];
   mode: "history" | "today";

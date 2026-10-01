@@ -223,6 +223,37 @@ export async function loadWrongQuestionPracticeSession(
 }
 
 /**
+ * Whole-session elapsed time: the sum of the session's recorded per-source
+ * attempts — the same number the session result page shows. It is returned with
+ * the session manifest (first-screen data) so the review never has to recompute
+ * it (and therefore never changes the displayed time) as sources load.
+ */
+export async function loadWrongQuestionSessionElapsedSeconds(
+  db: SupabaseClient,
+  session: WrongQuestionPracticeSession
+): Promise<number | null> {
+  if (session.taskType === "bas") return null;
+  const attemptIds = Array.from(new Set(
+    Object.values(session.progress ?? {})
+      .map((entry) => entry?.attemptId ? String(entry.attemptId) : "")
+      .filter(Boolean)
+  ));
+  if (attemptIds.length === 0) return null;
+  const { data, error } = await db
+    .from("reading_wrongbook_attempts")
+    .select("attempt_id,elapsed_seconds")
+    .in("attempt_id", attemptIds);
+  if (error) throw new Error(error.message);
+  const rows = data ?? [];
+  // A missing source row means the total is unknown; never guess a partial sum.
+  if (rows.length !== attemptIds.length) return null;
+  return rows.reduce((sum, row) => {
+    const value = Number(row.elapsed_seconds ?? 0);
+    return sum + (Number.isFinite(value) ? Math.max(0, Math.floor(value)) : 0);
+  }, 0);
+}
+
+/**
  * Records one finished Reading group. When every group has been submitted the
  * session completes; partial progress is what makes refresh/resume continue the
  * same frozen session.

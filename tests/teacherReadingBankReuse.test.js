@@ -88,7 +88,9 @@ test("student review and teacher answer key share one read-only rendering shell"
   assert.match(practice, /export function ReadingReadonlyReviewShell/);
   assert.match(practice, /if \(readOnly\) \{[\s\S]{0,400}ReadingReadonlyReviewShell/);
   assert.equal((practice.match(/answerKeyOnly=\{answerKeyOnly\}/g) ?? []).length, 7);
-  assert.equal((practice.match(/answerKeyOnly \? null : \(/g) ?? []).length, 2);
+  // Single-answer card label row + the CTW zone's label stack and its per-pair
+  // student word all hide 你的回答 in the teacher answer-key view.
+  assert.equal((practice.match(/answerKeyOnly \? null : \(/g) ?? []).length, 3);
   assert.match(practice, /answerZone=\{readOnly && reviewPresentation && reviewItem/);
   assert.match(practice, /\{canGoNext \|\| readOnly \? \(/);
 });

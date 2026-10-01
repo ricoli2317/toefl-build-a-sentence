@@ -341,7 +341,11 @@ export function ReadingWrongbookSessionReview({
     sessionId,
     shapes: shape,
     taskType,
-    title: session.mode === "today" ? "今日错题订正" : "历史错题练习"
+    title: session.mode === "today" ? "今日错题订正" : "历史错题练习",
+    // The session manifest already carries the whole-session elapsed time, so
+    // the status bar shows the final number from the first render (never the
+    // per-material time, and never a number that changes as sources load).
+    totalElapsedSeconds: typeof session.elapsedSeconds === "number" ? session.elapsedSeconds : null
   });
   const sourceStatus: Record<string, ReadingReviewSourceStatus> = {};
   for (const group of groups) {

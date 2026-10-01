@@ -426,6 +426,9 @@ test("5. placeholder items reserve exact global positions until a source loads",
   ]);
   // Loaded sources contribute their occurrence; placeholders never do.
   assert.deepEqual(payload.occurrences.map((occurrence) => occurrence.occurrenceId), ["item-b"]);
+  // The attempt fixture carries no elapsed time: the session total stays
+  // unknown instead of being invented.
+  assert.equal(payload.totalElapsedSeconds, null);
 
   // Cross-source navigation still steps over the exact global positions.
   const keys = payload.reviewItems.map((item) => `${item.occurrenceId}:${item.questionId}`);
@@ -1085,4 +1088,93 @@ test("16. an unfinished session resumes as the same frozen session", () => {
     /\(session\.groups \?\? \[\]\)\.some\(\(group\) => !session\.progress\?\.\[group\.logicalItemId\]\)/
   );
   assert.match(review, /description="这次练习还没有完成。"/);
+});
+
+// ---------------------------------------------------------------------------
+// 17. A wrong-question session is timed as one practice
+// ---------------------------------------------------------------------------
+
+test("17. session review shows one session-wide elapsed time on every item", () => {
+  const group = (logicalItemId, elapsedSeconds) => ({
+    group: { logicalItemId, targets: [{ questionId: `${logicalItemId}-q`, slotId: null }], title: logicalItemId },
+    payload: {
+      answers: {},
+      attempt: elapsedSeconds === undefined ? { attemptId: `attempt-${logicalItemId}` } : {
+        attemptId: `attempt-${logicalItemId}`,
+        elapsedSeconds
+      },
+      disclosures: {},
+      practice: { item: { itemId: logicalItemId, module: "rdl", title: logicalItemId }, questions: [] },
+      reviewItems: [{
+        answerId: `${logicalItemId}-a`,
+        order: 1,
+        isAnswered: true,
+        isCorrect: true,
+        questionId: `${logicalItemId}-q`,
+        slotId: null,
+        questionTimeSeconds: 7
+      }]
+    }
+  });
+
+  const payload = buildReadingWrongbookSessionReviewPayload({
+    groupReviews: [group("item-a", 100), group("item-b", 65)],
+    reviewHref: (globalIndex) => `/questions/${globalIndex}`,
+    sessionId: "s1",
+    taskType: "rdl",
+    title: "历史错题练习"
+  });
+  // The total is the same number the session result page shows: the sum of the
+  // frozen session's per-source attempts.
+  assert.equal(payload.totalElapsedSeconds, 165);
+
+  // One source without timing keeps the session total unknown rather than
+  // inventing a number.
+  const partial = buildReadingWrongbookSessionReviewPayload({
+    groupReviews: [group("item-a", 100), group("item-b")],
+    reviewHref: (globalIndex) => `/questions/${globalIndex}`,
+    sessionId: "s2",
+    taskType: "rdl",
+    title: "历史错题练习"
+  });
+  assert.equal(partial.totalElapsedSeconds, null);
+
+  // A caller that already knows the total (the student review reads it with the
+  // session manifest) wins, even when it is null: the displayed time must never
+  // be recomputed as sources load.
+  const known = buildReadingWrongbookSessionReviewPayload({
+    groupReviews: [group("item-a", 100)],
+    reviewHref: (globalIndex) => `/questions/${globalIndex}`,
+    sessionId: "s3",
+    taskType: "rdl",
+    title: "历史错题练习",
+    totalElapsedSeconds: 480
+  });
+  assert.equal(known.totalElapsedSeconds, 480);
+  const knownNull = buildReadingWrongbookSessionReviewPayload({
+    groupReviews: [group("item-a", 100)],
+    reviewHref: (globalIndex) => `/questions/${globalIndex}`,
+    sessionId: "s4",
+    taskType: "rdl",
+    title: "历史错题练习",
+    totalElapsedSeconds: null
+  });
+  assert.equal(knownNull.totalElapsedSeconds, null);
+
+  // The status bar of the multi-source shell shows that one session-wide value
+  // on every item and never falls back to a per-material time.
+  const shell = read("components/reading/ReadingPractice.tsx");
+  assert.match(shell, /questionTimeSeconds: payload\.totalElapsedSeconds \?\? null/);
+  assert.doesNotMatch(shell, /questionTimeSeconds: payload\.totalElapsedSeconds \?\? item\.questionTimeSeconds/);
+  assert.match(shell, /A session is timed as one practice/);
+  // The student review reads it with the session manifest (first-screen data).
+  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
+  assert.match(review, /totalElapsedSeconds: typeof session\.elapsedSeconds === "number" \? session\.elapsedSeconds : null/);
+  // …and the server computes it together with the manifest.
+  const sessionRoute = read("app/api/wrong-questions/sessions/[sessionId]/route.ts");
+  assert.match(sessionRoute, /loadWrongQuestionSessionElapsedSeconds\(auth\.db, session\)/);
+  assert.match(sessionRoute, /session: \{ \.\.\.session, elapsedSeconds \}/);
+  const bankServer = read("lib/wrongQuestionBank.server.ts");
+  assert.match(bankServer, /export async function loadWrongQuestionSessionElapsedSeconds/);
+  assert.match(bankServer, /if \(rows\.length !== attemptIds\.length\) return null;/);
 });

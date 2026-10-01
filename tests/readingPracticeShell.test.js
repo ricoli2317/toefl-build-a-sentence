@@ -237,8 +237,13 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   assert.equal((shellSource.match(/<ReadingQuestionColumn\s/g) ?? []).length, 2);
   assert.ok((shellSource.match(/style=\{readingQuestionTextStyle\}/g) ?? []).length >= 2);
   assert.match(shellSource, /style=\{\{ \.\.\.readingQuestionTextStyle, \.\.\.readingChoiceStyle \}\}/);
-  assert.match(viewportSource, /h-\[calc\(100dvh-var\(--reading-header-height\)\)\].*py-\[12px\]/);
+  assert.match(viewportSource, /py-\[12px\]/);
+  assert.match(viewportSource, /"h-\[calc\(100dvh-var\(--reading-header-height\)\)\]"/);
   assert.doesNotMatch(viewportSource, /100dvh-92px/);
+  // Only the narrow-screen CTW answer table makes the viewport flow (auto
+  // height so the page scrolls); every other layout keeps the fixed height.
+  assert.match(viewportSource, /flowingCtwReview[\s\S]*h-auto min-h-\[calc\(100dvh-var\(--reading-header-height\)\)\]/);
+  assert.match(viewportSource, /readOnly && module === "ctw" && answerLayout\?\.layout === "list"/);
   assert.match(viewportSource, /grid-cols-2[\s\S]*sm:grid-cols-\[minmax\(72px,1fr\)_minmax\(0,1440em\)_minmax\(72px,1fr\)\][\s\S]*lg:grid-cols-\[minmax\(100px,1fr\)_minmax\(0,1440em\)_minmax\(100px,1fr\)\]/);
   assert.match(viewportSource, /col-span-2 col-start-1 row-start-1[\s\S]*sm:col-span-1 sm:col-start-2/);
   assert.match(viewportSource, /className="contents"/);
@@ -278,11 +283,17 @@ test("CTW passage is vertically centered in the body without compounding its 19e
   );
 
   assert.match(ctwSource, /className="text-center font-extrabold text-student-text" style=\{readingTitleTypographyStyle\}/);
-  assert.match(ctwSource, /flex h-full min-h-0 max-w-4xl flex-col/);
-  assert.match(ctwSource, /flex min-h-0 flex-1 items-center/);
+  assert.match(ctwSource, /mx-auto flex max-w-4xl flex-col py-\[8em\]/);
+  assert.match(ctwSource, /flowingAnswerList \? "h-auto" : "h-full min-h-0"/);
+  // Practice keeps the single-center wrapper; the narrow-screen answer table
+  // flows instead (paragraph at natural height, page scrolls).
+  assert.match(ctwSource, /flowingAnswerList[\s\S]*"flex-none"/);
+  assert.match(ctwSource, /"items-center overflow-hidden"/);
+  assert.match(ctwSource, /"overflow-x-hidden overflow-y-auto"/);
+  assert.match(ctwSource, /readOnly \? "my-auto" : ""/);
   assert.match(ctwSource, /w-full text-left text-\[19em\]/);
   assert.match(ctwSource, /marginBottom: paragraphIndex === paragraphs\.length - 1 \? 0 : `\$\{20 \/ 19\}em`/);
-  assert.doesNotMatch(ctwSource, /mt-\[28em\]|mb-\[20em\]|justify-between|m[ty]-auto|py-\[24em\]|absolute bottom|translate-y/);
+  assert.doesNotMatch(ctwSource, /mt-\[28em\]|mb-\[20em\]|justify-between|py-\[24em\]|absolute bottom|translate-y/);
 });
 
 test("single-practice timer uses the shared lightweight Reading header without a second exit action", () => {
@@ -411,16 +422,27 @@ test("readonly Reading answers use fixed in-viewport zones without restoring the
   assert.doesNotMatch(statusSource, /耗时:/);
 
   assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-zone"/);
-  assert.match(ctwAnswerSource, /h-\[132em\] shrink-0 items-center justify-center/);
+  // Wide screens: one line that may shrink a little. Narrow screens: a
+  // two-column table with a clear gap above it, so it never touches or clips
+  // the passage.
+  assert.match(ctwAnswerSource, /min-h-\[132em\] items-center/);
+  assert.match(ctwAnswerSource, /"mt-\[28em\]"/);
   assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-card"/);
   assert.match(ctwAnswerSource, /w-full shrink-0/);
-  assert.match(source, /items-center \$\{readOnly \? "overflow-hidden" : ""\}/);
+  assert.match(source, /items-center overflow-hidden/);
+  assert.match(source, /overflow-x-hidden overflow-y-auto/);
   assert.match(source, /const readingAnswerCardClassName = "rounded-xl bg-student-bg px-\[24px\] py-\[16px\] shadow-\[0_4px_16px_rgba\(52,127,220,0\.08\)\]"/);
   assert.match(ctwAnswerSource, /style=\{readingQuestionTextStyle\}/);
-  // One shared column per reviewed slot keeps 你的回答 and 正确答案 aligned even
-  // when the words have different widths; slots without answers are omitted.
-  assert.match(ctwAnswerSource, /const columnTemplate = `max-content repeat\(\$\{Math\.max\(1, entries\.length\)\}, max-content\)`/);
-  assert.match(ctwAnswerSource, /gridTemplateColumns: columnTemplate/);
+  // One grid renders both layouts: auto-flow column with one column per blank
+  // (你的回答 above 正确答案) on wide screens, and auto-flow row with two equal
+  // columns (header 你的回答 | 正确答案, then one row per blank) on narrow ones.
+  assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-rows"/);
+  assert.match(source, /const CTW_ANSWER_COLUMN_GAP_EM = 20 \/ 19;/);
+  assert.match(source, /const CTW_ANSWER_ROW_GAP_EM = 10 \/ 19;/);
+  assert.match(source, /const CTW_ANSWER_MIN_SHRINK_SCALE = 0\.55;/);
+  assert.match(ctwAnswerSource, /gridAutoFlow: isList \? "row" : "column"/);
+  assert.match(ctwAnswerSource, /"repeat\(2, minmax\(0, 1fr\)\)"/);
+  assert.match(ctwAnswerSource, /const requiredRow = available \/ naturalRow;/);
   assert.match(ctwAnswerSource, /\.filter\(\(entry\) => Boolean\(entry\.presentation\)\)/);
   assert.match(ctwAnswerSource, /data-testid="ctw-readonly-answer-label"[\s\S]*data-testid="ctw-readonly-correct-label"/);
   assert.doesNotMatch(ctwAnswerSource, /flex min-w-0 flex-wrap gap-x-\[20px\] gap-y-\[10px\]/);

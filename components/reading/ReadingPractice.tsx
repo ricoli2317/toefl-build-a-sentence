@@ -3,8 +3,10 @@
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
+  createContext,
   Fragment,
   useCallback,
+  useContext,
   useEffect,
   useLayoutEffect,
   useMemo,
@@ -197,6 +199,21 @@ const readingPassageTextStyle = {
 } as CSSProperties;
 
 const readingAnswerCardClassName = "rounded-xl bg-student-bg px-[24px] py-[16px] shadow-[0_4px_16px_rgba(52,127,220,0.08)]";
+
+/**
+ * CTW answer-zone spacing is em-based so it scales with the answer type: at the
+ * 19em base these equal the previous fixed 20px column / 10px row gaps.
+ */
+const CTW_ANSWER_COLUMN_GAP_EM = 20 / 19;
+const CTW_ANSWER_ROW_GAP_EM = 10 / 19;
+/**
+ * A single line may shrink to this fraction of the material's answer size; any
+ * narrower container switches to the two-column list instead of shrinking
+ * further.
+ */
+const CTW_ANSWER_MIN_SHRINK_SCALE = 0.55;
+/** The narrow-screen list never shrinks below this; only very long words move it. */
+const CTW_ANSWER_MIN_LIST_SCALE = 0.5;
 
 const readingSpecialNoticeStyle = {
   fontSize: "14em",
@@ -469,6 +486,8 @@ type ReadingReviewShellPayload = {
   disclosures: Record<string, ReadingCorrectionAnswerPresentation>;
   occurrences: ReadingReviewShellOccurrence[];
   reviewItems: ReadingReviewShellItem[];
+  /** Wrong-question sessions: the session-wide elapsed time. */
+  totalElapsedSeconds?: number | null;
 };
 
 export type ReadingReviewSourceStatus = "error" | "loading";
@@ -626,7 +645,12 @@ export function ReadingFullSetReviewShell({
               order: item.order ?? item.orderStart,
               isAnswered: item.isAnswered,
               isCorrect: item.isCorrect,
-              questionTimeSeconds: item.questionTimeSeconds
+              // A session is timed as one practice: every item shows the same
+              // whole-session elapsed time, which travels with the session's
+              // first-screen data. There is deliberately no per-material
+              // fallback: the displayed number must never change while sources
+              // load.
+              questionTimeSeconds: payload.totalElapsedSeconds ?? null
             }))}
             onSelect={selectReviewItem}
           />
@@ -1399,6 +1423,11 @@ function CtwPracticeWorkspace({
 }) {
   const emptySlots = useMemo(() => createCtwSlotAnswers(question.slots), [question.slots]);
   const slotAnswers = answer?.kind === "ctw" ? answer.slots : emptySlots;
+  // Narrow screens render the answer table, which makes the whole review flow:
+  // the paragraph keeps its natural height and the page scrolls, so the answer
+  // area can never squeeze or cover the passage.
+  const answerLayout = useCtwAnswerLayout();
+  const flowingAnswerList = readOnly && answerLayout?.layout === "list";
   const interactionSlots = useMemo(
     () => editableSlotIds
       ? question.slots.filter((slot) => editableSlotIds.has(slot.slotId))
@@ -1506,7 +1535,9 @@ function CtwPracticeWorkspace({
   return (
     <DomTextLookupRegion enabled={lookupEnabled}>
     <div
-      className={`mx-auto flex h-full min-h-0 max-w-4xl flex-col py-[8em] ${lookupEnabled ? "" : "select-none"}`}
+      className={`mx-auto flex max-w-4xl flex-col py-[8em] ${
+        flowingAnswerList ? "h-auto" : "h-full min-h-0"
+      } ${lookupEnabled ? "" : "select-none"}`}
       data-lookup-enabled={lookupEnabled ? "true" : "false"}
     >
       {!readOnly ? (
@@ -1545,9 +1576,21 @@ function CtwPracticeWorkspace({
         />
       ) : null}
       <h1 className="text-center font-extrabold text-student-text" style={readingTitleTypographyStyle}>Fill in the missing letters in the paragraph.</h1>
-      <div className={`flex min-h-0 flex-1 items-center ${readOnly ? "overflow-hidden" : ""}`}>
+      {/* Read-only review: the paragraph scrolls inside its own area instead of
+          being clipped, so a short viewport can never push the passage under
+          the answer card. In the narrow-screen answer-table layout the whole
+          review flows instead: the paragraph keeps its natural height and the
+          page scrolls. */}
+      <div
+        className={`flex ${
+          flowingAnswerList
+            ? "flex-none"
+            : `min-h-0 flex-1 ${readOnly ? "overflow-x-hidden overflow-y-auto" : "items-center overflow-hidden"}`
+        }`}
+        data-testid="ctw-passage-area"
+      >
         <article
-          className="w-full text-left text-[19em] leading-[1.6842105263] text-student-text"
+          className={`w-full text-left text-[19em] leading-[1.6842105263] text-student-text ${readOnly ? "my-auto" : ""}`}
           data-testid="ctw-passage"
         >
           {[...question.paragraphs]
@@ -1707,50 +1750,178 @@ function CtwReadonlyAnswerZone({
     // only push the real words around; only answered/targeted slots belong to
     // this zone.
     .filter((entry) => Boolean(entry.presentation));
-  const columnTemplate = `max-content repeat(${Math.max(1, entries.length)}, max-content)`;
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  const rowsRef = useRef<HTMLDivElement | null>(null);
+  // `row`: the wide-screen single line (shrinks the type only as far as it
+  // stays readable). `list`: the narrow-screen two-column table
+  // (header 你的回答 | 正确答案, then one row per blank).
+  const [layout, setLayout] = useState<"row" | "list">("row");
+  const [fontScale, setFontScale] = useState(1);
+  // Tell the surrounding review shell which layout won: the narrow-screen list
+  // makes the whole review flow (page scroll) instead of fitting the viewport.
+  const answerLayout = useCtwAnswerLayout();
+  useEffect(() => {
+    answerLayout?.setLayout(layout);
+  }, [answerLayout, layout]);
+
+  const fitToCard = useCallback(() => {
+    const card = cardRef.current;
+    const rows = rowsRef.current;
+    if (!card || !rows) return;
+    const cardStyle = window.getComputedStyle(card);
+    const available = card.clientWidth
+      - parseFloat(cardStyle.paddingLeft || "0")
+      - parseFloat(cardStyle.paddingRight || "0");
+    if (!(available > 0)) return;
+    const baseFontSize = parseFloat(cardStyle.fontSize);
+    if (!(baseFontSize > 0)) return;
+    // Both natural sizes are measured at the base size (gaps are em-based and
+    // therefore scale with the type): the single-line width decides row vs
+    // list, and the widest single cell decides the list's readability. The
+    // applied inline styles are restored before anything can paint.
+    const applied = {
+      columns: rows.style.gridTemplateColumns,
+      flow: rows.style.gridAutoFlow,
+      fontSize: rows.style.fontSize,
+      rowSizes: rows.style.gridTemplateRows,
+      width: rows.style.width
+    };
+    rows.style.width = "max-content";
+    rows.style.fontSize = "calc(1em * 1)";
+    rows.style.gridAutoFlow = "column";
+    rows.style.gridTemplateColumns = `max-content repeat(${Math.max(1, entries.length)}, max-content)`;
+    rows.style.gridTemplateRows = "auto auto";
+    const naturalRow = rows.offsetWidth;
+    rows.style.gridAutoFlow = "row";
+    rows.style.gridTemplateColumns = "max-content";
+    rows.style.gridTemplateRows = "auto";
+    const naturalCell = rows.offsetWidth;
+    rows.style.gridTemplateColumns = applied.columns;
+    rows.style.gridAutoFlow = applied.flow;
+    rows.style.fontSize = applied.fontSize;
+    rows.style.gridTemplateRows = applied.rowSizes;
+    rows.style.width = applied.width;
+    if (!(naturalRow > 0)) return;
+    const requiredRow = available / naturalRow;
+    if (requiredRow >= CTW_ANSWER_MIN_SHRINK_SCALE) {
+      setLayout((current) => (current === "row" ? current : "row"));
+      const nextScale = Math.min(1, requiredRow * 0.995);
+      setFontScale((current) => (Math.abs(current - nextScale) < 0.005 ? current : nextScale));
+      return;
+    }
+    setLayout((current) => (current === "list" ? current : "list"));
+    // Two equal columns share the card width; only a cell wider than its half
+    // shrinks the list type at all.
+    const columnGapPx = CTW_ANSWER_COLUMN_GAP_EM * baseFontSize;
+    const perColumn = (available - columnGapPx) / 2;
+    const requiredCell = perColumn / Math.max(1, naturalCell);
+    const nextScale = Math.min(1, Math.max(CTW_ANSWER_MIN_LIST_SCALE, requiredCell * 0.995));
+    setFontScale((current) => (Math.abs(current - nextScale) < 0.005 ? current : nextScale));
+  }, [entries.length]);
+
+  useLayoutEffect(() => {
+    fitToCard();
+  }, [answerKeyOnly, fitToCard, reviewItems, reviewPresentations]);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card) return;
+    // Re-fit after the browser has finished the resize layout.
+    const scheduleFit = () => {
+      window.requestAnimationFrame(() => fitToCard());
+    };
+    const observer = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(scheduleFit);
+    observer?.observe(card);
+    window.addEventListener("resize", scheduleFit);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", scheduleFit);
+    };
+  }, [fitToCard]);
+
+  const isList = layout === "list";
 
   return (
     <div
-      className="flex h-[132em] shrink-0 items-center justify-center"
+      className={`flex shrink-0 justify-center ${
+        isList
+          // A clear gap: the answer table never touches the passage above it.
+          ? "mt-[28em]"
+          : "min-h-[132em] items-center"
+      }`}
+      data-layout={layout}
       data-slot-count={entries.length}
       data-testid="ctw-readonly-answer-zone"
     >
       <div
         className={`${readingAnswerCardClassName} w-full shrink-0`}
         data-testid="ctw-readonly-answer-card"
+        ref={cardRef}
         style={readingQuestionTextStyle}
       >
-        {/* One shared column per slot keeps the student word and the correct
-            word vertically aligned even when their widths differ. */}
+        {/* Wide screens: one column per blank, 你的回答 above 正确答案, so the
+            two words of a blank always line up. Narrow screens: a two-column
+            table with a header row and one row per blank. Both are the same
+            grid — only the auto-flow direction and the track sizing change. */}
         <div
-          className="grid items-baseline gap-x-[20px] gap-y-[10px]"
-          style={{ gridTemplateColumns: columnTemplate }}
+          className="grid items-baseline"
+          data-font-scale={fontScale.toFixed(3)}
+          data-testid="ctw-readonly-answer-rows"
+          ref={rowsRef}
+          style={{
+            columnGap: `${CTW_ANSWER_COLUMN_GAP_EM}em`,
+            fontSize: `calc(1em * ${fontScale})`,
+            gridAutoFlow: isList ? "row" : "column",
+            gridTemplateColumns: isList
+              ? answerKeyOnly
+                ? "minmax(0, 1fr)"
+                : "repeat(2, minmax(0, 1fr))"
+              : `max-content repeat(${Math.max(1, entries.length)}, max-content)`,
+            gridTemplateRows: isList
+              ? undefined
+              : answerKeyOnly
+                ? "auto"
+                : "auto auto",
+            rowGap: `${CTW_ANSWER_ROW_GAP_EM}em`
+          }}
         >
           {answerKeyOnly ? null : (
-            <>
-              <span className="whitespace-nowrap font-semibold text-student-text" data-testid="ctw-readonly-answer-label">
-                你的回答
-              </span>
-              {entries.map(({ presentation, reviewItem, slot }) => (
-                <span className="whitespace-nowrap" data-slot-order={slot.slotOrder} key={slot.slotId}>
-                  <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
-                </span>
-              ))}
-            </>
+            <span
+              className="whitespace-nowrap font-semibold text-student-text"
+              data-testid="ctw-readonly-answer-label"
+            >
+              你的回答
+            </span>
           )}
-          <span className="whitespace-nowrap font-semibold text-student-text" data-testid="ctw-readonly-correct-label">
+          <span
+            className="whitespace-nowrap font-semibold text-student-text"
+            data-testid="ctw-readonly-correct-label"
+          >
             正确答案
           </span>
-          {entries.map(({ presentation, slot }) => (
-            <span
-              className="whitespace-nowrap font-medium text-student-text"
-              data-slot-order={slot.slotOrder}
-              key={slot.slotId}
-            >
-              {presentation ? (
-                <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
-              ) : null}
-            </span>
+          {entries.map(({ presentation, reviewItem, slot }) => (
+            <Fragment key={slot.slotId}>
+              {answerKeyOnly ? null : (
+                <span
+                  className="whitespace-nowrap"
+                  data-slot-order={slot.slotOrder}
+                  data-testid="ctw-readonly-student-word"
+                >
+                  <CtwReadonlyStudentWord presentation={presentation} reviewItem={reviewItem} />
+                </span>
+              )}
+              <span
+                className="whitespace-nowrap font-medium text-student-text"
+                data-slot-order={slot.slotOrder}
+                data-testid="ctw-readonly-correct-word"
+              >
+                {presentation ? (
+                  <ReadingCorrectionAnswerValue answer={presentation.correctAnswer} emphasizeCtwFill={false} />
+                ) : null}
+              </span>
+            </Fragment>
           ))}
         </div>
       </div>
@@ -2774,7 +2945,55 @@ function ChoiceOptionList({
   );
 }
 
-export function ReadingQuestionViewport({
+export function ReadingQuestionViewport(props: {
+  canGoNext?: boolean;
+  canGoPrevious?: boolean;
+  children: ReactNode;
+  module: StudentReadingPracticePayload["item"]["module"];
+  navigationDisabled?: boolean;
+  onNext?: () => void;
+  onPrevious?: () => void;
+  onSubmit?: () => void;
+  readOnly: boolean;
+  submitError?: string;
+  submitDisabled?: boolean;
+  /** End-of-workspace action: Next while a multi-source session continues. */
+  submitLabel?: "Next" | "Submit";
+  submitting?: boolean;
+}) {
+  return (
+    <CtwAnswerLayoutProvider>
+      <ReadingQuestionViewportBody {...props} />
+    </CtwAnswerLayoutProvider>
+  );
+}
+
+/**
+ * CTW read-only answer layout, shared with the surrounding shell:
+ *   * `row`  — the wide-screen single line; the question viewport keeps its
+ *              fixed height and the paragraph area fills the free space.
+ *   * `list` — the narrow-screen answer table; the whole review flows (the
+ *              paragraph at its natural height, then the table) and the page
+ *              scrolls instead of squeezing either part.
+ */
+const CtwAnswerLayoutContext = createContext<{
+  layout: "row" | "list";
+  setLayout: (layout: "row" | "list") => void;
+} | null>(null);
+
+function CtwAnswerLayoutProvider({ children }: { children: ReactNode }) {
+  const [layout, setLayout] = useState<"row" | "list">("row");
+  const value = useMemo(() => ({ layout, setLayout }), [layout]);
+  return (
+    <CtwAnswerLayoutContext.Provider value={value}>{children}</CtwAnswerLayoutContext.Provider>
+  );
+}
+
+function useCtwAnswerLayout() {
+  return useContext(CtwAnswerLayoutContext);
+}
+
+function ReadingQuestionViewportBody({
   canGoNext = false,
   canGoPrevious = false,
   children,
@@ -2804,13 +3023,19 @@ export function ReadingQuestionViewport({
   submitLabel?: "Next" | "Submit";
   submitting?: boolean;
 }) {
+  const answerLayout = useCtwAnswerLayout();
+  const flowingCtwReview = readOnly && module === "ctw" && answerLayout?.layout === "list";
   return (
     <div
-      className="grid h-[calc(100dvh-var(--reading-header-height))] min-h-0 grid-cols-2 grid-rows-[minmax(0,1fr)_auto_auto] gap-x-3 px-3 py-[12px] sm:grid-cols-[minmax(72px,1fr)_minmax(0,1440em)_minmax(72px,1fr)] sm:grid-rows-[minmax(0,1fr)_auto] sm:gap-x-0 sm:px-0 lg:grid-cols-[minmax(100px,1fr)_minmax(0,1440em)_minmax(100px,1fr)]"
+      className={`grid min-h-0 grid-cols-2 grid-rows-[minmax(0,1fr)_auto_auto] gap-x-3 px-3 py-[12px] sm:grid-cols-[minmax(72px,1fr)_minmax(0,1440em)_minmax(72px,1fr)] sm:grid-rows-[minmax(0,1fr)_auto] sm:gap-x-0 sm:px-0 lg:grid-cols-[minmax(100px,1fr)_minmax(0,1440em)_minmax(100px,1fr)] ${
+        flowingCtwReview
+          ? "h-auto min-h-[calc(100dvh-var(--reading-header-height))]"
+          : "h-[calc(100dvh-var(--reading-header-height))]"
+      }`}
       data-testid="reading-question-viewport"
     >
       <section className={module === "ctw"
-        ? "col-span-2 col-start-1 row-start-1 h-full overflow-visible rounded-2xl border border-student-border bg-white p-[28em] shadow-sm sm:col-span-1 sm:col-start-2"
+        ? `col-span-2 col-start-1 row-start-1 ${flowingCtwReview ? "h-auto" : "h-full"} overflow-visible rounded-2xl border border-student-border bg-white p-[28em] shadow-sm sm:col-span-1 sm:col-start-2`
         : "col-span-2 col-start-1 row-start-1 flex h-full min-h-0 flex-col overflow-hidden bg-white sm:col-span-1 sm:col-start-2"}
       >
         {children}
