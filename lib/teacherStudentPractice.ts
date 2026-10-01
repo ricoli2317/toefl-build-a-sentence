@@ -164,11 +164,16 @@ export type TeacherReadingWrongbookAttemptRow = TeacherReadingAttemptRow & {
  * material's logical item id to the correction attempt that submitted it, so
  * the teacher list can fold a session's per-material attempts into the single
  * record the student actually practised.
+ *
+ * Only completed sessions produce a record: an unfinished session has no
+ * student result to open (the student page sends the student back to keep
+ * practising) and would otherwise appear as a partial, material-sized record.
  */
 export type TeacherReadingWrongbookSessionRow = {
   mode: "history" | "today";
   progress: Record<string, { attemptId?: string | null } | null> | null;
   session_id: string;
+  status?: string | null;
   task_type: string;
 };
 
@@ -352,6 +357,10 @@ export function buildTeacherStudentReadingPractice(input: {
   }
 
   for (const { attempts, session } of Array.from(sessionAttemptGroups.values())) {
+    // Only a finished practice has a result the teacher can open. An unfinished
+    // session would show up as a partial one-material record, exactly the
+    // per-material list the session record replaces.
+    if (session.status !== "completed") continue;
     // Earliest submitted material first: its attempt backs the drill-down link
     // (the teacher detail page opens one correction attempt at a time).
     const orderedAttempts = [...attempts].sort((left, right) =>
@@ -378,7 +387,8 @@ export function buildTeacherStudentReadingPractice(input: {
         ? session.task_type
         : firstAttempt.task_type,
       kind: "wrongbook",
-      title: `${session.mode === "today" ? "今日错题订正" : "历史错题练习"}（${orderedAttempts.length} 篇材料）`,
+      // One record per session, named like the Writing wrongbook records.
+      title: session.mode === "today" ? "今日错题" : "历史错题",
       submittedAt,
       durationSeconds: orderedAttempts.reduce(
         (sum, attempt) => sum + nonNegativeInteger(attempt.elapsed_seconds), 0),

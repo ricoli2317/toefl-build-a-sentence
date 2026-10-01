@@ -175,6 +175,7 @@ test("one wrong-question session folds its per-material attempts into a single r
         session_id: "s-1",
         task_type: "rap",
         mode: "history",
+        status: "completed",
         progress: {
           "rap-a": { attemptId: "w-1" },
           "rap-b": { attemptId: "w-2" },
@@ -193,7 +194,9 @@ test("one wrong-question session folds its per-material attempts into a single r
   const session = sessionRecords[0];
   assert.equal(session.recordId, "wrongbook-session:s-1");
   assert.equal(session.kind, "wrongbook");
-  assert.equal(session.title, "历史错题练习（3 篇材料）");
+  // The record name matches the Writing wrongbook records and never carries a
+  // material count.
+  assert.equal(session.title, "历史错题");
   assert.equal(session.scope, "history");
   assert.equal(session.taskType, "rap");
   assert.deepEqual(session.metric, {
@@ -215,6 +218,92 @@ test("one wrong-question session folds its per-material attempts into a single r
   const entry = practice.records.find((record) => record.attemptId === "w-entry");
   assert.equal(entry.kind, "wrongbook");
   assert.equal(entry.scope, "today");
+});
+
+test("an unfinished wrong-question session produces no record at all", () => {
+  const practice = buildTeacherStudentReadingPractice({
+    attempts: [],
+    wrongbookAttempts: [
+      {
+        ...readingAttempt({
+          attempt_id: "u-1",
+          logical_item_id: "rap-a",
+          task_type: "rap",
+          correct_points: 0,
+          total_points: 1,
+          submitted_at: "2026-09-22T02:00:00.000Z"
+        }),
+        scope: "history"
+      },
+      {
+        ...readingAttempt({
+          attempt_id: "u-2",
+          logical_item_id: "rap-e",
+          task_type: "rap",
+          correct_points: 0,
+          total_points: 1,
+          submitted_at: "2026-09-22T02:05:00.000Z"
+        }),
+        scope: "history"
+      }
+    ],
+    wrongbookSessions: [
+      {
+        session_id: "s-active",
+        task_type: "rap",
+        mode: "today",
+        status: "active",
+        progress: { "rap-a": { attemptId: "u-1" } }
+      }
+    ],
+    itemMeta: ITEM_META,
+    studentId: "student-1"
+  });
+
+  // The unfinished session's material never becomes a partial session record …
+  assert.equal(
+    practice.records.some((record) => record.recordId.startsWith("wrongbook-session:")),
+    false
+  );
+  // … and it does not fall back to a material-sized row either.
+  assert.equal(practice.records.some((record) => record.attemptId === "u-1"), false);
+  // A correction that is not part of the unfinished session still shows up.
+  assert.ok(practice.records.some((record) => record.attemptId === "u-2"));
+});
+
+test("a finished today session is named 今日错题", () => {
+  const practice = buildTeacherStudentReadingPractice({
+    attempts: [],
+    wrongbookAttempts: [
+      {
+        ...readingAttempt({
+          attempt_id: "t-1",
+          logical_item_id: "ctw-a",
+          task_type: "ctw",
+          correct_points: 1,
+          total_points: 1,
+          submitted_at: "2026-09-22T04:00:00.000Z"
+        }),
+        scope: "today"
+      }
+    ],
+    wrongbookSessions: [
+      {
+        session_id: "s-today",
+        task_type: "ctw",
+        mode: "today",
+        status: "completed",
+        progress: { "ctw-a": { attemptId: "t-1" } }
+      }
+    ],
+    itemMeta: ITEM_META,
+    studentId: "student-1"
+  });
+
+  const session = practice.records.find((record) =>
+    record.recordId === "wrongbook-session:s-today");
+  assert.equal(session.title, "今日错题");
+  assert.equal(session.scope, "today");
 });
 
 test("Reading Full Set splits scoring points and practice units back into CTW/RDL/RAP", () => {

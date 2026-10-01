@@ -349,11 +349,11 @@ export async function loadTeacherStudentReadingPractice(
         .range(from, to)
     ),
     // Frozen wrong-question sessions fold their per-material correction
-    // attempts into one teacher record.
+    // attempts into one teacher record (completed sessions only).
     readAllSupabaseRows<TeacherReadingWrongbookSessionRow>((from, to) =>
       db
         .from("student_wrong_question_sessions")
-        .select("session_id,task_type,mode,progress")
+        .select("session_id,task_type,mode,status,progress")
         .eq("student_id", studentId)
         .order("session_id", { ascending: true })
         .range(from, to)
