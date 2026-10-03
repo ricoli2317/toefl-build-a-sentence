@@ -1,25 +1,28 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { INTERNAL_ACCOUNT_DOMAIN, prepareNewAccount } from "@/lib/accountIdentifier";
-import { readAllSupabaseRows } from "@/lib/supabasePagination";
-import { validateBindingDomains, type StudentBindingDomain } from "@/lib/studentBindings";
-import { firstAvailableStudentAccount, studentAccountCandidates } from "@/lib/studentAccountSuggestion";
+import { INTERNAL_ACCOUNT_DOMAIN, prepareNewAccount } from "./accountIdentifier.ts";
+import { validateBindingDomains, type StudentBindingDomain } from "./studentBindings.ts";
+import { resolveAvailableStudentAccount } from "./studentAccountAvailability.server.ts";
+import { DEFAULT_STUDENT_PASSWORD } from "./teacherClasses.ts";
 import {
   buildStudentBindingCandidates,
   createTeacherStudentBindings,
   findActiveStudentsByName,
   rollbackCreatedStudentAccount,
   type StudentBindingCandidate
-} from "@/lib/teacherStudentBindings";
-import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+} from "./teacherStudentBindings.ts";
+import { getPreferredUserDisplayName } from "./userDisplayName.ts";
 
 /**
  * Shared Teacher-side student-account creation used by the standalone 新增学生
  * page and by the class creation flow.
  *
- * Behavior is identical to the original route, plus one opt-in rule used by the
- * class flow: when the auto-suggested pinyin account is already taken by a
- * DIFFERENT student, the account receives the next free numeric suffix instead
- * of failing. Teacher-edited accounts keep the original conflict behavior.
+ * Every student account is created with the frozen initial password
+ * DEFAULT_STUDENT_PASSWORD (123456); callers never supply a password. Behavior
+ * is otherwise identical to the original route, plus the auto-suffix rule: when
+ * the account is still the auto-generated name slug and it is already taken by
+ * a DIFFERENT student, the account receives the next free numeric suffix
+ * instead of failing (used by the class flow and by the 新增学生 page).
+ * Teacher-edited accounts keep the original conflict behavior.
  */
 
 const AUTH_CREATE_ATTEMPTS = 4;
@@ -28,11 +31,10 @@ export type CreateStudentAccountInput = {
   actorId: string;
   actorRole: "teacher" | "admin";
   account: string;
-  password: string;
   studentName: string;
   domains?: unknown;
   confirmDuplicateName?: boolean;
-  /** Class flow only: auto-suffix a taken auto-generated account. */
+  /** Class flow and auto-generated accounts: auto-suffix a taken account. */
   autoSuffix?: boolean;
 };
 
@@ -59,19 +61,18 @@ export async function createTeacherStudentAccount(
   input: CreateStudentAccountInput
 ): Promise<CreateStudentAccountResult> {
   const preparedAccount = prepareNewAccount(input.account ?? "");
-  const password = input.password ?? "";
+  // The initial password is fixed by the product and set here on the server;
+  // the client never sends a password.
+  const password = DEFAULT_STUDENT_PASSWORD;
   const studentName = typeof input.studentName === "string" ? input.studentName.trim() : "";
 
   if (!preparedAccount.ok) return { ok: false, status: 400, error: preparedAccount.error };
-  if (!password || !studentName) {
+  if (!studentName) {
     return {
       ok: false,
       status: 400,
-      error: "Account, password, and student name are required."
+      error: "Student name is required."
     };
-  }
-  if (password.length < 6) {
-    return { ok: false, status: 400, error: "Password must be at least 6 characters." };
   }
 
   // Ordinary teachers must pick at least one teaching subject so the new
@@ -88,6 +89,7 @@ export async function createTeacherStudentAccount(
 
   let account = preparedAccount.account;
   let authEmail = preparedAccount.authEmail;
+  const baseAccount = preparedAccount.account;
   const { data: existingProfile, error: existingProfileError } = await supabase
     .from("profiles")
     .select("id,full_name")
@@ -98,10 +100,11 @@ export async function createTeacherStudentAccount(
     const sameName =
       typeof existingProfile.full_name === "string"
       && existingProfile.full_name.trim() === studentName;
-    // Same account + same name is the same student: the teacher should bind
-    // the existing account, never create a suffixed duplicate person.
-    if (!sameName && autoSuffix) {
-      const available = await resolveAvailableStudentAccount(supabase, account);
+    if (autoSuffix) {
+      // The auto-generated account is already taken. The caller already
+      // decided this is a new student (continue-new), so resolve the next
+      // free suffix from the ORIGINAL base to keep the numeric sequence.
+      const available = await resolveAvailableStudentAccount(supabase, baseAccount);
       if (!available) {
         return { ok: false, status: 409, code: "ACCOUNT_EXISTS", error: "该账号已存在。" };
       }
@@ -112,7 +115,7 @@ export async function createTeacherStudentAccount(
         ok: false,
         status: 409,
         code: sameName ? "ACCOUNT_EXISTS_SAME_NAME" : "ACCOUNT_EXISTS",
-        error: sameName ? "该学生账号已存在，请使用“绑定学生”。" : "该账号已存在。"
+        error: sameName ? "该学生账号已存在，请使用“绑定学生/班级”。" : "该账号已存在。"
       };
     }
   }
@@ -173,9 +176,9 @@ export async function createTeacherStudentAccount(
     const alreadyRegistered = /already (been )?registered|already exists/i.test(lastAuthError);
     if (!alreadyRegistered || !autoSuffix) break;
     // A concurrent create took the account between the pre-check and the Auth
-    // call: resolve the next free suffix and retry.
-    const available = await resolveAvailableStudentAccount(supabase, account);
-    if (!available) break;
+    // call: resolve the next free suffix from the original base and retry.
+    const available = await resolveAvailableStudentAccount(supabase, baseAccount);
+    if (!available || available === account) break;
     account = available;
     authEmail = `${available}@${INTERNAL_ACCOUNT_DOMAIN}`;
   }
@@ -241,29 +244,7 @@ export async function createTeacherStudentAccount(
   };
 }
 
-/**
- * First account candidate that is still free for `base` (base, base2, ...).
- * Only the internal student namespace is checked; "admin" stays reserved.
- */
-export async function resolveAvailableStudentAccount(supabase: SupabaseClient, base: string) {
-  const candidates = studentAccountCandidates(base);
-  if (candidates.length === 0) return null;
-
-  const taken = new Set<string>(["admin"]);
-  const suffix = `@${INTERNAL_ACCOUNT_DOMAIN}`;
-  const result = await readAllSupabaseRows<{ email: string | null }>((from, to) =>
-    supabase
-      .from("profiles")
-      .select("email")
-      .ilike("email", `${candidates[0]}%`)
-      .order("id", { ascending: true })
-      .range(from, to)
-  );
-  if (result.error) throw result.error;
-  for (const row of result.data ?? []) {
-    const email = String(row.email ?? "").toLocaleLowerCase();
-    if (email.endsWith(suffix)) taken.add(email.slice(0, -suffix.length));
-  }
-
-  return firstAvailableStudentAccount(candidates[0], (candidate) => taken.has(candidate));
-}
+export {
+  isStudentAccountAvailable,
+  resolveAvailableStudentAccount
+} from "./studentAccountAvailability.server.ts";

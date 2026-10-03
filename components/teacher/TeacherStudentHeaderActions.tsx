@@ -17,7 +17,7 @@ export function TeacherStudentHeaderActions({
     <div className="flex flex-wrap gap-3">
       {role === "teacher" ? (
         <Link className="teacher-button-secondary bg-student-primary-soft" href="/teacher/students/bind">
-          绑定学生
+          绑定学生/班级
           <Network aria-hidden="true" size={17} strokeWidth={2} />
         </Link>
       ) : null}

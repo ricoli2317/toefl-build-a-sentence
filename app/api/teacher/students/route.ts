@@ -42,10 +42,11 @@ export async function POST(request: Request) {
 
     const body = (await request.json()) as {
       account?: string;
-      password?: string;
       studentName?: string;
       domains?: unknown;
       confirmDuplicateName?: boolean;
+      /** True while the account is still the auto-generated name slug. */
+      autoSuffix?: boolean;
     };
 
     const supabase = createServiceSupabase();
@@ -53,10 +54,10 @@ export async function POST(request: Request) {
       actorId: auth.userId,
       actorRole: auth.role === "admin" ? "admin" : "teacher",
       account: body.account ?? "",
-      password: body.password ?? "",
       studentName: body.studentName ?? "",
       domains: body.domains,
-      confirmDuplicateName: body.confirmDuplicateName === true
+      confirmDuplicateName: body.confirmDuplicateName === true,
+      autoSuffix: body.autoSuffix === true
     });
 
     if (!result.ok) {

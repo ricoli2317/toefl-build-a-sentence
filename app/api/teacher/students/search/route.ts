@@ -6,6 +6,7 @@ import {
   searchActiveStudents,
   type TeacherStudentProfileRow
 } from "@/lib/teacherStudentBindings";
+import { searchTeacherClasses } from "@/lib/teacherClasses.server";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ const json = (data: unknown, init?: ResponseInit) => NextResponse.json(data, {
 function errorResponse(auth: { error: string | null }) {
   const forbidden = auth.error === "Forbidden";
   return json(
-    { message: forbidden ? "仅普通教师可以绑定学生。" : "登录状态已失效，请重新登录。" },
+    { message: forbidden ? "仅普通教师可以绑定学生/班级。" : "登录状态已失效，请重新登录。" },
     { status: forbidden ? 403 : 401 }
   );
 }
@@ -31,8 +32,8 @@ export async function GET(request: Request) {
     const query = (url.searchParams.get("q") ?? "").trim();
     const studentId = (url.searchParams.get("studentId") ?? "").trim();
     // Search is always explicit: no query and no id means no student directory
-    // is loaded.
-    if (!query && !studentId) return json({ students: [] });
+    // and no class directory is loaded.
+    if (!query && !studentId) return json({ students: [], classes: [] });
 
     const supabase = createServiceSupabase();
     const students: TeacherStudentProfileRow[] = studentId
@@ -49,10 +50,15 @@ export async function GET(request: Request) {
         })()
       : await searchActiveStudents(supabase, query);
 
-    const candidates = await buildStudentBindingCandidates(supabase, students);
-    return json({ students: candidates });
+    // Students keep their original search logic; classes are name-matched in
+    // the same request and returned as a separate minimal list.
+    const [candidates, classes] = await Promise.all([
+      buildStudentBindingCandidates(supabase, students),
+      query ? searchTeacherClasses(supabase, auth.userId, query) : Promise.resolve([])
+    ]);
+    return json({ students: candidates, classes });
   } catch (error) {
     console.error("[teacher-students-search] failed", error);
-    return json({ message: "学生搜索失败，请稍后重试。" }, { status: 500 });
+    return json({ message: "搜索失败，请稍后重试。" }, { status: 500 });
   }
 }

@@ -37,6 +37,9 @@ const sql = read("supabase/teacher_classes.sql");
 // The subject-aware Assignment RPCs (写作 / 阅读) live in the later migration;
 // the class / membership RPCs stay in supabase/teacher_classes.sql.
 const assignmentSql = read("supabase/assignment_subjects_and_item_types.sql");
+// Multi-teacher class sharing: supersedes the class RPCs above with the
+// owner-or-bound-teacher authorization and cross-teacher binding backfill.
+const multiTeacherSql = read("supabase/teacher_class_multi_teacher_binding_20261003.sql");
 
 function rpcBlock(name, signatureHint = "") {
   const pattern = new RegExp(
@@ -44,6 +47,7 @@ function rpcBlock(name, signatureHint = "") {
     "g"
   );
   const matches = [
+    ...(multiTeacherSql.match(pattern) ?? []),
     ...(assignmentSql.match(pattern) ?? []),
     ...(sql.match(pattern) ?? [])
   ];
@@ -64,6 +68,9 @@ function assignmentRpcBlocks(name) {
 
 // 1 + 2 + 3: many-to-many membership across classes/teachers with ownership
 test("classes and members support many students per class and many classes per student", () => {
+  assert.match(multiTeacherSql, /create table if not exists public\.teacher_class_bindings/);
+  assert.match(multiTeacherSql, /primary key \(class_id, teacher_id\)/);
+  assert.match(multiTeacherSql, /references public\.teacher_classes\(class_id\) on delete cascade/);
   assert.match(sql, /create table if not exists public\.teacher_classes/);
   assert.match(sql, /create table if not exists public\.class_members/);
   assert.match(sql, /primary key \(class_id, student_id\)/);
@@ -72,16 +79,21 @@ test("classes and members support many students per class and many classes per s
   const membership = sql.match(/create table if not exists public\.class_members[\s\S]*?\);/)?.[0] ?? "";
   assert.doesNotMatch(membership, /unique \(student_id\)/);
   assert.doesNotMatch(membership, /teacher_id/);
-  // Every class operation is scoped to its owning teacher.
+  // Every class operation is scoped to a class teacher: the owner or a
+  // teacher holding a sharing link.
   for (const name of ["sync_class_members", "update_class_subjects", "remove_class_member"]) {
     const rpc = rpcBlock(name);
-    assert.match(rpc, /where class_id = p_class_id and teacher_id = p_teacher_id/, `${name} must scope by teacher`);
+    assert.match(
+      rpc,
+      /where class_id = p_class_id\s*\n\s*and public\.is_class_teacher\(p_class_id, p_teacher_id\)/,
+      `${name} must scope by class teacher`
+    );
   }
   const assignRpc = rpcBlock("create_writing_assignment_group");
-  assert.match(assignRpc, /where class_id = p_class_id and teacher_id = p_teacher_id/);
+  assert.match(assignRpc, /and public\.is_class_teacher\(p_class_id, p_teacher_id\)/);
 });
 
-test("adding members ensures the subject relations the class requires", () => {
+test("adding members ensures the subject relations the class requires for every class teacher", () => {
   const sync = rpcBlock("sync_class_members");
   assert.match(sync, /select subjects into class_subjects/);
   assert.match(
@@ -93,6 +105,11 @@ test("adding members ensures the subject relations the class requires", () => {
     sync,
     /insert into public\.class_members \(class_id, student_id\)[\s\S]{0,160}on conflict \(class_id, student_id\) do nothing/
   );
+  // New members are backfilled for every teacher of the class (owner union
+  // sharing links), so a later join never leaves a bound teacher behind.
+  assert.match(sync, /from public\.teacher_classes class_row[\s\S]{0,120}union[\s\S]{0,160}from public\.teacher_class_bindings link/);
+  const update = rpcBlock("update_class_subjects");
+  assert.match(update, /from public\.teacher_class_bindings link/);
 });
 
 // 5: pinyin account suggestion, editable, unique suffix
@@ -266,7 +283,7 @@ test("class completion only counts the class's own assignment items", () => {
   assert.equal(classCompletionPercent({ total: 0, completed: 0 }), null);
 
   const server = read("lib/teacherClasses.server.ts");
-  assert.match(server, /\.from\("writing_assignment_groups"\)[\s\S]{0,120}\.eq\("class_id", classId\)/);
+  assert.match(server, /\.from\("writing_assignment_groups"\)[\s\S]{0,160}\.eq\("class_id", classId\)[\s\S]{0,80}\.eq\("teacher_id", teacherId\)/);
   assert.match(server, /\.neq\("status", "withdrawn"\)/);
 });
 
@@ -343,7 +360,7 @@ test("classes never create a teacher-student relation from an arbitrary id", () 
   assert.match(sync, /join public\.teacher_student_bindings binding[\s\S]{0,120}related_count <> requested_count/);
 });
 
-test("only the owning teacher can read or operate a class", () => {
+test("only a class teacher (owner or bound) can read or operate a class", () => {
   for (const routeFile of [
     "app/api/teacher/classes/route.ts",
     "app/api/teacher/classes/[classId]/route.ts",
@@ -355,8 +372,16 @@ test("only the owning teacher can read or operate a class", () => {
     const source = read(routeFile);
     assert.match(source, /requireTeacherOnly\(bearerToken\(request\)\)/, `${routeFile} must require a teacher session`);
   }
-  const server = read("lib/teacherClasses.server.ts");
-  assert.match(server, /\.eq\("class_id", classId\)\s*\.eq\("teacher_id", teacherId\)/);
+  const sharing = read("lib/teacherClassSharing.server.ts");
+  // The owner check stays first; anything else must hold a sharing link.
+  assert.match(sharing, /if \(String\(row\.teacher_id\) === teacherId\) return row/);
+  assert.match(sharing, /await teacherHasClassLink\(db, teacherId, classId\)/);
+  assert.match(sharing, /\.from\("teacher_class_bindings"\)/);
+  // The list merges owner classes with classes shared to the teacher.
+  assert.match(sharing, /await listLinkedClassIds\(db, teacherId\)/);
+  const helper = rpcBlock("is_class_teacher");
+  assert.match(helper, /class_row\.teacher_id = p_teacher_id/);
+  assert.match(helper, /from public\.teacher_class_bindings link/);
   const assignRpc = rpcBlock("create_writing_assignment_group");
   assert.match(assignRpc, /if not found then\s*\n\s*raise exception 'CLASS_NOT_FOUND'/);
 });

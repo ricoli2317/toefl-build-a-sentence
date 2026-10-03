@@ -298,7 +298,7 @@ test("teacher creation route enforces subjects, duplicate-name flow, and cleanup
   assert.match(helper, /code: "DUPLICATE_NAME"/);
   assert.match(helper, /candidates/);
   assert.match(helper, /code: sameName \? "ACCOUNT_EXISTS_SAME_NAME" : "ACCOUNT_EXISTS"/);
-  assert.match(helper, /该学生账号已存在，请使用“绑定学生”。/);
+  assert.match(helper, /该学生账号已存在，请使用“绑定学生\/班级”。/);
   assert.match(helper, /if \(isTeacher\) \{\s*const bindings = await createTeacherStudentBindings/);
   assert.match(helper, /teacherId: input\.actorId/);
   assert.match(helper, /rollbackCreatedStudentAccount\(supabase, \{/);
@@ -324,22 +324,24 @@ test("Admin creation flow stays unchanged and never creates a teaching binding",
 test("student search API requires a teacher session, a query, and never loads the full library", async () => {
   const route = await read("app/api/teacher/students/search/route.ts");
   assert.match(route, /requireTeacherOnly\(bearerToken\(request\)\)/);
-  assert.match(route, /if \(!query && !studentId\) return json\(\{ students: \[\] \}\)/);
+  assert.match(route, /if \(!query && !studentId\) return json\(\{ students: \[\], classes: \[\] \}\)/);
   assert.match(route, /searchActiveStudents\(supabase, query\)/);
   assert.match(route, /buildStudentBindingCandidates/);
+  assert.match(route, /searchTeacherClasses\(supabase, auth\.userId, query\)/);
   assert.doesNotMatch(route, /\.eq\("role", "student"\)\.eq\("is_active", true\)[\s\S]{0,40}\.order[\s\S]{0,40}\.range\(0/);
 });
 
-test("students page shows 绑定学生 left of 新增学生 for teachers only", async () => {
+test("students page shows 绑定学生/班级 left of 新增学生 for teachers only", async () => {
   const page = await read("app/teacher/students/page.tsx");
   const actions = await read("components/teacher/TeacherStudentHeaderActions.tsx");
   assert.match(page, /TeacherStudentHeaderActions/);
   assert.match(actions, /role === "teacher"/);
   assert.match(actions, /href="\/teacher\/students\/bind"/);
   assert.match(actions, /href="\/teacher\/students\/new"/);
+  assert.match(actions, /绑定学生\/班级/);
   assert.ok(
-    actions.indexOf("绑定学生") < actions.indexOf("新增学生"),
-    "绑定学生 must render before 新增学生"
+    actions.indexOf("绑定学生/班级") < actions.indexOf("新增学生"),
+    "绑定学生/班级 must render before 新增学生"
   );
 });
 
@@ -414,7 +416,8 @@ test("Phase 5/6 teaching permissions stay binding-based and untouched", async ()
 
 test("bind page route resolves under /teacher/students/bind without matching the student detail route", async () => {
   const page = await read("app/teacher/students/bind/page.tsx");
-  assert.match(page, /title="绑定学生"/);
+  assert.match(page, /title="绑定学生\/班级"/);
+  assert.match(page, /subtitle="搜索已有学生或班级并建立授课绑定"/);
   assert.match(page, /TeacherOnly/);
   assert.match(page, /normalizeBindingDomains/);
   assert.match(page, /initialStudentId/);

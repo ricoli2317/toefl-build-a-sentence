@@ -20,10 +20,10 @@ export default function TeacherBindStudentPage({
       crumbs={[
         { label: "首页", href: "/teacher/dashboard" },
         { label: "学生", href: "/teacher/students" },
-        { label: "绑定学生" }
+        { label: "绑定学生/班级" }
       ]}
-      subtitle="搜索已有学生并建立授课绑定"
-      title="绑定学生"
+      subtitle="搜索已有学生或班级并建立授课绑定"
+      title="绑定学生/班级"
     >
       <TeacherOnly>
         <TeacherBindStudent

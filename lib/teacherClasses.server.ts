@@ -1,7 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
-  DEFAULT_STUDENT_PASSWORD,
   computeClassCompletions,
   normalizeClassSubjects,
   type ClassCompletionCounts,
@@ -19,6 +18,14 @@ import type { StudentBindingDomain } from "@/lib/studentBindings";
 import { createTeacherStudentAccount } from "@/lib/teacherStudentAccount.server";
 import { loadTeacherScope } from "@/lib/teacherScope.server";
 import {
+  chunkValues,
+  listTeacherClasses,
+  loadTeacherClassRow,
+  searchTeacherClasses,
+  toTeacherClassSummary,
+  type TeacherClassRow
+} from "@/lib/teacherClassSharing.server";
+import {
   buildStudentBindingCandidates,
   findActiveStudentsByName,
   rollbackCreatedStudentAccount
@@ -28,14 +35,7 @@ import type { createServiceSupabase } from "@/lib/supabase/server";
 
 type Db = ReturnType<typeof createServiceSupabase>;
 
-const QUERY_BATCH_SIZE = 100;
-
-type ClassRow = {
-  class_id: string;
-  name: string;
-  subjects: string[] | null;
-  created_at: string;
-};
+type ClassRow = TeacherClassRow;
 
 export type TeacherClassActionResult =
   | { ok: true; class: TeacherClassSummary }
@@ -48,13 +48,12 @@ export type TeacherClassActionResult =
       members?: ClassDuplicateMemberIssue[];
     };
 
-function chunkValues<T>(values: T[], size = QUERY_BATCH_SIZE) {
-  const chunks: T[][] = [];
-  for (let index = 0; index < values.length; index += size) {
-    chunks.push(values.slice(index, index + size));
-  }
-  return chunks;
-}
+export {
+  bindTeacherToClass,
+  listTeacherClasses,
+  loadTeacherClassRow,
+  searchTeacherClasses
+} from "@/lib/teacherClassSharing.server";
 
 async function readRowsByIds<T extends Record<string, unknown>>(
   db: Db,
@@ -83,45 +82,7 @@ async function readRowsByIds<T extends Record<string, unknown>>(
   return rows;
 }
 
-function mapClassSummary(row: ClassRow, memberCount: number): TeacherClassSummary {
-  return {
-    class_id: String(row.class_id),
-    name: String(row.name).trim() || "未命名班级",
-    subjects: normalizeClassSubjects(row.subjects),
-    member_count: memberCount,
-    created_at: row.created_at
-  };
-}
-
-/** Home / tab list: minimal fields only, member counts come from the FK count. */
-export async function listTeacherClasses(db: Db, teacherId: string): Promise<TeacherClassSummary[]> {
-  const result = await readAllSupabaseRows<
-    ClassRow & { class_members: Array<{ count: number }> | null }
-  >((from, to) =>
-    db
-      .from("teacher_classes")
-      .select("class_id,name,subjects,created_at,class_members(count)")
-      .eq("teacher_id", teacherId)
-      .order("created_at", { ascending: false })
-      .order("class_id", { ascending: false })
-      .range(from, to)
-  );
-  if (result.error) throw result.error;
-  return (result.data ?? []).map((row) =>
-    mapClassSummary(row, Number(row.class_members?.[0]?.count ?? 0))
-  );
-}
-
-export async function loadTeacherClassRow(db: Db, teacherId: string, classId: string) {
-  const result = await db
-    .from("teacher_classes")
-    .select("class_id,name,subjects,created_at")
-    .eq("class_id", classId)
-    .eq("teacher_id", teacherId)
-    .maybeSingle();
-  if (result.error) throw result.error;
-  return (result.data as ClassRow | null) ?? null;
-}
+const mapClassSummary = toTeacherClassSummary;
 
 /**
  * Class detail: members + per-student completion over the class's own
@@ -158,7 +119,7 @@ export async function loadTeacherClassDetail(
       memberIds,
       "id"
     ),
-    loadClassCompletionCounts(db, classId)
+    loadClassCompletionCounts(db, teacherId, classId)
   ]);
   const profileById = new Map(profileRows.map((profile) => [String(profile.id), profile]));
 
@@ -185,8 +146,14 @@ export async function loadTeacherClassDetail(
   };
 }
 
+/**
+ * Completion counts are scoped to the ACTING teacher's own assignment items
+ * for the class. A shared class may carry another teacher's groups; those are
+ * never counted or exposed here.
+ */
 async function loadClassCompletionCounts(
   db: Db,
+  teacherId: string,
   classId: string
 ): Promise<Map<string, ClassCompletionCounts>> {
   const groupsResult = await readAllSupabaseRows<{ group_id: string }>((from, to) =>
@@ -194,6 +161,7 @@ async function loadClassCompletionCounts(
       .from("writing_assignment_groups")
       .select("group_id")
       .eq("class_id", classId)
+      .eq("teacher_id", teacherId)
       .order("group_id", { ascending: true })
       .range(from, to)
   );
@@ -359,7 +327,6 @@ async function createNewClassMembers(
       actorId: teacherId,
       actorRole: "teacher",
       account: member.account,
-      password: DEFAULT_STUDENT_PASSWORD,
       studentName: member.student_name,
       domains: subjects,
       confirmDuplicateName: true,
@@ -533,12 +500,14 @@ export async function renameTeacherClass(
   classId: string,
   name: string
 ): Promise<TeacherClassActionResult> {
+  // Owner or bound teacher: the shared class keeps one name for all teachers.
+  const authorized = await loadTeacherClassRow(db, teacherId, classId);
+  if (!authorized) return { ok: false, status: 404, error: "班级不存在或无权操作。" };
   const result = await db
     .from("teacher_classes")
     .update({ name })
     .eq("class_id", classId)
-    .eq("teacher_id", teacherId)
-    .select("class_id,name,subjects,created_at")
+    .select("class_id,teacher_id,name,subjects,created_at")
     .maybeSingle();
   if (result.error) throw result.error;
   if (!result.data) return { ok: false, status: 404, error: "班级不存在或无权操作。" };
@@ -656,13 +625,21 @@ export async function listClassReviewSummaries(
   if (classes.length === 0) return [];
   const classIds = classes.map((entry) => entry.class_id);
 
-  const groupRows = await readRowsByIds<{ group_id: string; class_id: string | null }>(
-    db,
-    "writing_assignment_groups",
-    "group_id,class_id",
-    classIds,
-    "class_id"
-  );
+  const groupRows: Array<{ group_id: string; class_id: string | null }> = [];
+  for (const batch of chunkValues(classIds)) {
+    const groupResult = await readAllSupabaseRows<{ group_id: string; class_id: string | null }>(
+      (from, to) =>
+        db
+          .from("writing_assignment_groups")
+          .select("group_id,class_id")
+          .in("class_id", batch)
+          .eq("teacher_id", teacherId)
+          .order("group_id", { ascending: true })
+          .range(from, to)
+    );
+    if (groupResult.error) throw groupResult.error;
+    groupRows.push(...(groupResult.data ?? []));
+  }
   const groupToClass = new Map(
     groupRows.map((row) => [String(row.group_id), String(row.class_id)])
   );

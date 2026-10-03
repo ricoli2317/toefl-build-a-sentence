@@ -45,6 +45,21 @@ export function createMockSupabase(tables, options = {}) {
           table.push(...inserted);
           return { data: selectRequested ? inserted : null, error: null };
         }
+        if (operation.type === "upsert") {
+          const table = tables[tableName] ?? (tables[tableName] = []);
+          const upserted = operation.rows.map((row) => {
+            const existing = table.find((candidate) =>
+              operation.conflict.every((column) => candidate[column] === row[column])
+            );
+            if (existing) {
+              Object.assign(existing, row);
+              return { ...existing };
+            }
+            table.push({ ...row });
+            return { ...row };
+          });
+          return { data: selectRequested ? upserted : null, error: null };
+        }
         if (operation.type === "update") {
           const table = tables[tableName] ?? [];
           const matches = (row) => filters.every((filter) => filter(row));
@@ -80,6 +95,17 @@ export function createMockSupabase(tables, options = {}) {
         },
         insert(rows) {
           operation = { type: "insert", rows: Array.isArray(rows) ? rows : [rows] };
+          return builder;
+        },
+        upsert(rows, options) {
+          operation = {
+            type: "upsert",
+            rows: Array.isArray(rows) ? rows : [rows],
+            conflict: String(options?.onConflict ?? "id")
+              .split(",")
+              .map((column) => column.trim())
+              .filter(Boolean)
+          };
           return builder;
         },
         update(values) {

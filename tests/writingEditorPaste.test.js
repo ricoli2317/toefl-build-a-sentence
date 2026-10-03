@@ -69,7 +69,7 @@ test("external paste permission comes from the authenticated session and still c
     path.join(process.cwd(), "components/writing/WritingPractice.tsx"),
     "utf8"
   );
-  assert.match(source, /canUseExternalWritingPaste\(data\.session\?\.user\.email, taskType\)/);
+  assert.match(source, /canUseExternalWritingPaste\(session\.email, taskType\)/);
   assert.match(source, /function onPaste[\s\S]*event\.preventDefault\(\)[\s\S]*if \(!allowExternalPaste\) return/);
   assert.match(source, /commit\([\s\S]*applyExternalWritingPaste/);
   assert.match(source, /onTextChange\(snapshot\.text, snapshot\.overtimeRanges\)/);

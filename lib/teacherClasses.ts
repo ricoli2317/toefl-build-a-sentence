@@ -48,6 +48,19 @@ export type ClassStudentCandidate = {
 };
 
 /**
+ * One row of the 绑定学生/班级 class search result. Deliberately minimal: a
+ * class name match never exposes the member list, only the count and whether
+ * the searching teacher can already manage the class.
+ */
+export type TeacherClassSearchResult = {
+  class_id: string;
+  name: string;
+  subjects: StudentBindingDomain[];
+  member_count: number;
+  bound: boolean;
+};
+
+/**
  * One "student source" row of the class member editor: either an existing
  * teacher-bound student or a new student account created together with the
  * class.

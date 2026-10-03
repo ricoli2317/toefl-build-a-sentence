@@ -12,8 +12,25 @@ import {
 } from "@/lib/accountCredentials";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { resolveLoginAuthEmail } from "@/lib/accountIdentifier";
+import { safeStudentReturnTo } from "@/lib/studentNavigation";
 
 type ForgotPasswordStage = "closed" | "confirm" | "success";
+
+/**
+ * The one optional post-login destination. Only same-site `/student/...`
+ * paths survive `safeStudentReturnTo`, so a crafted query string can never
+ * turn the shared login page into an open redirect.
+ */
+function readLoginReturnTo() {
+  if (typeof window === "undefined") return undefined;
+  try {
+    return safeStudentReturnTo(
+      new URLSearchParams(window.location.search).get("returnTo") ?? undefined
+    );
+  } catch {
+    return undefined;
+  }
+}
 
 export function LoginPanel() {
   const router = useRouter();
@@ -38,7 +55,7 @@ export function LoginPanel() {
       const result = await resolveAuthenticatedRoute(session.access_token);
       if (cancelled || !result) return;
       if (result.defaultRoute) {
-        router.replace(result.defaultRoute);
+        router.replace(readLoginReturnTo() ?? result.defaultRoute);
         return;
       }
       setError(
@@ -125,7 +142,7 @@ export function LoginPanel() {
       setLoading(false);
       return;
     }
-    router.push(result.defaultRoute);
+    router.push(readLoginReturnTo() ?? result.defaultRoute);
     router.refresh();
   }
 

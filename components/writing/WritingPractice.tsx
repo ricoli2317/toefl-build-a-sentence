@@ -21,9 +21,9 @@ import {
   type ClipboardEvent,
   type FormEvent,
   type KeyboardEvent,
-  type MouseEvent
+  type MouseEvent,
+  type ReactNode
 } from "react";
-import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY,
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
@@ -78,6 +78,24 @@ import {
   measureStudentRequest
 } from "@/lib/studentPerformance.client";
 import { WritingPracticeActions } from "@/components/writing/WritingPracticeActions";
+import {
+  getWritingClientSession,
+  refreshWritingClientSession,
+  signOutWritingClientSession
+} from "@/lib/writingClientSession";
+import {
+  isWritingSessionError,
+  sendWritingRequestWithSession
+} from "@/lib/writingRequestSession";
+import {
+  applyWritingRecoveryBackup,
+  clearWritingRecoveryBackup,
+  createWritingRecoveryBackup,
+  getWritingRecoveryStorage,
+  readWritingRecoveryBackup,
+  writeWritingRecoveryBackup,
+  writingRecoveryMatchesAttempt
+} from "@/lib/writingRecovery";
 
 type PracticePayload = {
   assignment_available?: boolean;
@@ -97,6 +115,17 @@ type PracticePayload = {
 
 const EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP: AcademicDiscussionAvatarMap = {};
 const submittedReadonlyStarts = new Map<string, number>();
+const WRITING_SESSION_DEPENDENCIES = {
+  getSession: getWritingClientSession,
+  refreshSession: refreshWritingClientSession
+};
+
+type SaveRecoveryState = {
+  stage: "manual" | "backup";
+  authRelated: boolean;
+  busy: boolean;
+  backupWriteFailed: boolean;
+};
 
 export function WritingPractice({
   assignmentId,
@@ -119,7 +148,9 @@ export function WritingPractice({
   const { getEntry } = useStudentDataCache();
   const [selectedWritingMode, setSelectedWritingMode] = useState<WritingMode | null>(null);
   const [payload, setPayload] = useState<PracticePayload | null>(null);
-  const [accessToken, setAccessToken] = useState("");
+  const [viewer, setViewer] = useState<{ email: string | null; studentId: string } | null>(null);
+  const [recoveryApplied, setRecoveryApplied] = useState(false);
+  const [blockedRecoveryText, setBlockedRecoveryText] = useState<string | null>(null);
   const [allowExternalPaste, setAllowExternalPaste] = useState(false);
   const [error, setError] = useState("");
   const avatarState = useStudentCachedData<AcademicDiscussionAvatarsPayload>(
@@ -161,6 +192,17 @@ export function WritingPractice({
 
   useEffect(() => {
     let ignore = false;
+    let loadedStudentId: string | null = null;
+    async function revealUnavailableRecovery() {
+      if (!attemptId) return;
+      const backup = readWritingRecoveryBackup(getWritingRecoveryStorage(), attemptId);
+      if (!backup) return;
+      const studentId = loadedStudentId
+        ?? (await getWritingClientSession())?.studentId
+        ?? null;
+      if (!studentId || backup.studentId !== studentId) return;
+      if (!ignore) setBlockedRecoveryText(backup.text);
+    }
     async function load() {
       try {
         if (mode === "readonly" && !attemptId) {
@@ -174,41 +216,42 @@ export function WritingPractice({
           if (!ignore) setPayload(cachedReadonlyPayload);
           return;
         }
-        const supabase = createBrowserSupabase();
-        const { data } = await supabase.auth.getSession();
-        const token = data.session?.access_token ?? "";
-        if (!token) throw new Error("登录状态已失效，请重新登录。");
         const detailUrl = attemptId
           ? `/api/writing/attempts/${encodeURIComponent(attemptId)}${
               mode === "readonly" ? "?mode=submission" : ""
             }`
           : "/api/writing/attempts";
-        const response = await measureStudentRequest(
+        const { response, session } = await measureStudentRequest(
           `${attemptId ? "GET" : "POST"} ${detailUrl}`,
-          async (captureResponse) => {
-            const detailResponse = attemptId
-              ? await fetch(detailUrl, {
-                  cache: "no-store",
-                  headers: { Authorization: `Bearer ${token}` }
-                })
-              : await fetch(detailUrl, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                  },
-                  body: JSON.stringify({
-                    assignmentId,
-                    forceNew: Boolean(forceNew),
-                    questionId,
-                    taskType,
-                    writingMode: selectedWritingMode
-                  })
-                });
-            captureResponse(detailResponse);
-            return detailResponse;
-          }
+          async (captureResponse) =>
+            sendWritingRequestWithSession(
+              async (token) => {
+                const detailResponse = attemptId
+                  ? await fetch(detailUrl, {
+                      cache: "no-store",
+                      headers: { Authorization: `Bearer ${token}` }
+                    })
+                  : await fetch(detailUrl, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                      },
+                      body: JSON.stringify({
+                        assignmentId,
+                        forceNew: Boolean(forceNew),
+                        questionId,
+                        taskType,
+                        writingMode: selectedWritingMode
+                      })
+                    });
+                captureResponse(detailResponse);
+                return detailResponse;
+              },
+              WRITING_SESSION_DEPENDENCIES
+            )
         );
+        loadedStudentId = session.studentId;
         const result = (await response.json()) as PracticePayload;
         if (!response.ok || result.error || !result.attempt || !result.question) {
           throw new Error(result.error ?? "无法进入写作练习。");
@@ -224,11 +267,39 @@ export function WritingPractice({
           throw new Error("只能查看已提交的写作记录。");
         }
         if (!ignore) {
-          setAccessToken(token);
+          setViewer({ email: session.email, studentId: session.studentId });
           setAllowExternalPaste(
-            canUseExternalWritingPaste(data.session?.user.email, taskType)
+            canUseExternalWritingPaste(session.email, taskType)
           );
-          setPayload(result);
+          let nextPayload = result;
+          let nextRecoveryApplied = false;
+          let nextBlockedRecoveryText: string | null = null;
+          if (attemptId) {
+            const backup = readWritingRecoveryBackup(getWritingRecoveryStorage(), attemptId);
+            if (
+              backup &&
+              writingRecoveryMatchesAttempt({
+                attempt: result.attempt,
+                backup,
+                studentId: session.studentId
+              })
+            ) {
+              if (result.attempt.status === "draft") {
+                nextPayload = {
+                  ...result,
+                  attempt: applyWritingRecoveryBackup(result.attempt, backup)
+                };
+                nextRecoveryApplied = true;
+              } else {
+                // A submitted / read-only attempt is never overwritten; the
+                // backup stays in this tab and the editor offers a copy.
+                nextBlockedRecoveryText = backup.text;
+              }
+            }
+          }
+          setRecoveryApplied(nextRecoveryApplied);
+          setBlockedRecoveryText(nextBlockedRecoveryText);
+          setPayload(nextPayload);
           if (!attemptId && result.attempt.status === "draft") {
             publishCacheInvalidation({
               type: "WRITING_DRAFT_UPDATED",
@@ -246,7 +317,9 @@ export function WritingPractice({
           }
         }
       } catch (loadError) {
-        if (!ignore) setError(loadError instanceof Error ? loadError.message : "无法进入写作练习。");
+        if (ignore) return;
+        setError(loadError instanceof Error ? loadError.message : "无法进入写作练习。");
+        if (attemptId) void revealUnavailableRecovery();
       }
     }
     void load();
@@ -281,7 +354,7 @@ export function WritingPractice({
       source: cachedReadonlyPayload ? "submitted_attempt_cache" : "api_reload",
       totalMs: Math.round((performance.now() - startedAt) * 10) / 10
     });
-  }, [accessToken, attemptId, cachedReadonlyPayload, mode, payload?.attempt?.status]);
+  }, [viewer, attemptId, cachedReadonlyPayload, mode, payload?.attempt?.status]);
 
   if (mode === "practice" && !attemptId && !selectedWritingMode) {
     if (modePolicyState.loading) {
@@ -301,15 +374,18 @@ export function WritingPractice({
   }
 
   if (error) {
-    return <PracticeMessage title="无法进入练习" description={error} />;
+    return (
+      <PracticeMessage title="无法进入练习" description={error}>
+        {blockedRecoveryText ? <RecoveryCopyNotice text={blockedRecoveryText} /> : null}
+      </PracticeMessage>
+    );
   }
-  if (!payload?.attempt || !payload.question || (!accessToken && mode !== "readonly")) {
+  if (!payload?.attempt || !payload.question || (!viewer && mode !== "readonly")) {
     return <PracticeMessage title="正在准备练习" description="正在加载题目和草稿..." />;
   }
 
   return (
     <WritingPracticeSession
-      accessToken={accessToken}
       allowExternalPaste={allowExternalPaste}
       avatarMap={
         avatarState.data?.avatars ?? EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP
@@ -318,8 +394,10 @@ export function WritingPractice({
       assignmentAvailable={payload.assignment_available !== false}
       assignmentQuestionSource={payload.question_source}
       attempt={payload.attempt}
+      blockedRecoveryText={blockedRecoveryText}
       displayName={payload.display_name}
       readOnly={mode === "readonly"}
+      recoveryApplied={recoveryApplied}
       reviewPublished={payload.has_published_review === true}
       question={payload.question}
       returnTo={returnTo}
@@ -329,29 +407,31 @@ export function WritingPractice({
 }
 
 function WritingPracticeSession({
-  accessToken,
   allowExternalPaste,
   avatarMap,
   avatarMapReady,
   assignmentAvailable,
   assignmentQuestionSource,
   attempt: initialAttempt,
+  blockedRecoveryText,
   displayName,
   readOnly: requestedReadOnly,
+  recoveryApplied,
   reviewPublished,
   question,
   returnTo,
   taskType
 }: {
-  accessToken: string;
   allowExternalPaste: boolean;
   avatarMap: AcademicDiscussionAvatarMap;
   avatarMapReady: boolean;
   assignmentAvailable: boolean;
   assignmentQuestionSource?: "question_bank" | "custom";
   attempt: WritingAttempt;
+  blockedRecoveryText: string | null;
   displayName: string;
   readOnly: boolean;
+  recoveryApplied: boolean;
   reviewPublished: boolean;
   question: WritingQuestion;
   returnTo?: string;
@@ -375,9 +455,12 @@ function WritingPracticeSession({
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [saveRecovery, setSaveRecovery] = useState<SaveRecoveryState | null>(null);
   const [exitPromptOpen, setExitPromptOpen] = useState(false);
   const submitStartedRef = useRef(false);
   const submittingRef = useRef(false);
+  const saveRecoveryBusyRef = useRef(false);
+  const recoverySaveStartedRef = useRef(false);
   const remainingRef = useRef(remainingSeconds);
   const elapsedRef = useRef(elapsedSeconds);
   const sessionStartedAtRef = useRef(Date.now());
@@ -448,6 +531,24 @@ function WritingPracticeSession({
     return snapshot;
   }, [readActiveTimer]);
 
+  /**
+   * Silent background recovery failed. The first failure only arms the
+   * persistent "重新连接并保存" prompt; a manual attempt that also fails moves
+   * the student to the explicitly described backup/re-login resolution.
+   */
+  const markSaveFailure = useCallback((recoveryError: unknown) => {
+    setSaveRecovery((current) =>
+      current?.stage === "backup"
+        ? current
+        : {
+            stage: "manual",
+            authRelated: isWritingSessionError(recoveryError),
+            busy: false,
+            backupWriteFailed: false
+          }
+    );
+  }, []);
+
   useEffect(() => {
     if (readOnly || attempt.status !== "draft") return;
     updateActiveTimer();
@@ -463,28 +564,33 @@ function WritingPracticeSession({
       const timerSnapshot = readActiveTimer();
       const detailUrl = `/api/writing/attempts/${encodeURIComponent(attempt.attempt_id)}`;
       if (action === "submit") logStudentPerformance({ event: "patch_request_start", attemptId: attempt.attempt_id });
-      const response = await measureStudentRequest(
+      const responseText = options?.responseText ?? textRef.current;
+      const { response } = await measureStudentRequest(
         `PATCH ${detailUrl} (${action})`,
-        async (captureResponse) => {
-          const updateResponse = await fetch(detailUrl, {
-            method: "PATCH",
-            cache: "no-store",
-            keepalive: options?.keepalive,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`
+        async (captureResponse) =>
+          sendWritingRequestWithSession(
+            async (token) => {
+              const updateResponse = await fetch(detailUrl, {
+                method: "PATCH",
+                cache: "no-store",
+                keepalive: options?.keepalive,
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                  action,
+                  elapsedSeconds: timerSnapshot.elapsedSeconds,
+                  overtimeRanges: overtimeRangesRef.current,
+                  remainingSeconds: timerSnapshot.remainingSeconds,
+                  responseText
+                })
+              });
+              captureResponse(updateResponse);
+              return updateResponse;
             },
-            body: JSON.stringify({
-              action,
-              elapsedSeconds: timerSnapshot.elapsedSeconds,
-              overtimeRanges: overtimeRangesRef.current,
-              remainingSeconds: timerSnapshot.remainingSeconds,
-              responseText: options?.responseText ?? textRef.current
-            })
-          });
-          captureResponse(updateResponse);
-          return updateResponse;
-        }
+            WRITING_SESSION_DEPENDENCIES
+          )
       );
       const result = (await response.json()) as { attempt?: WritingAttempt; error?: string };
       if (action === "submit") logStudentPerformance({ event: "patch_request_complete", attemptId: attempt.attempt_id });
@@ -493,17 +599,30 @@ function WritingPracticeSession({
       }
       return result.attempt;
     },
-    [accessToken, attempt.attempt_id, readActiveTimer]
+    [attempt.attempt_id, readActiveTimer]
   );
 
   useEffect(() => {
     if (readOnly || submitting || attempt.status !== "draft") return;
     const sync = window.setInterval(() => {
       if (submittingRef.current) return;
-      void requestUpdate("sync").catch(() => undefined);
+      const syncSnapshot = textRef.current;
+      void requestUpdate("sync")
+        .then(() => {
+          if (syncSnapshot === textRef.current) {
+            // The current text is confirmed on the server; a one-time recovery
+            // backup from an earlier failed flow is now stale.
+            clearWritingRecoveryBackup(getWritingRecoveryStorage(), attempt.attempt_id);
+          }
+          // The server confirmed the latest draft; any recovery prompt is stale.
+          setSaveRecovery(null);
+        })
+        .catch((syncError) => {
+          markSaveFailure(syncError);
+        });
     }, 8000);
     return () => window.clearInterval(sync);
-  }, [attempt.status, readOnly, requestUpdate, submitting]);
+  }, [attempt.attempt_id, attempt.status, markSaveFailure, readOnly, requestUpdate, submitting]);
 
   useEffect(() => {
     if (readOnly || attempt.status !== "draft") return;
@@ -547,15 +666,16 @@ function WritingPracticeSession({
     invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
   }, [initialAttempt.assignment_id, invalidate]);
 
-  const saveDraft = useCallback(async () => {
-    setSaving(true);
-    setError("");
-    try {
-      const savedAttempt = await requestUpdate("save", { responseText: textRef.current });
+  const applySavedAttempt = useCallback(
+    (savedAttempt: WritingAttempt, snapshotText: string) => {
       setAttempt(savedAttempt);
-      setLastSavedText(textRef.current);
+      setLastSavedText(snapshotText);
       setLastSavedRanges([...overtimeRangesRef.current]);
-      setMessage("草稿已保存");
+      if (snapshotText === textRef.current) {
+        // The newest text is confirmed on the server, so the one-time recovery
+        // backup for this attempt can be removed.
+        clearWritingRecoveryBackup(getWritingRecoveryStorage(), savedAttempt.attempt_id);
+      }
       invalidateWritingData();
       publishCacheInvalidation({
         type: "WRITING_DRAFT_UPDATED",
@@ -563,15 +683,52 @@ function WritingPracticeSession({
         attemptId: savedAttempt.attempt_id,
         assignmentId: savedAttempt.assignment_id ?? null
       });
+    },
+    [invalidateWritingData]
+  );
+
+  const saveDraft = useCallback(async () => {
+    setSaving(true);
+    setError("");
+    try {
+      const snapshotText = textRef.current;
+      const savedAttempt = await requestUpdate("save", { responseText: snapshotText });
+      applySavedAttempt(savedAttempt, snapshotText);
+      setSaveRecovery(null);
+      setMessage("草稿已保存");
       window.setTimeout(() => setMessage(""), 2200);
       return true;
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : "草稿保存失败。");
+      markSaveFailure(saveError);
       return false;
     } finally {
       setSaving(false);
     }
-  }, [invalidateWritingData, requestUpdate]);
+  }, [applySavedAttempt, markSaveFailure, requestUpdate]);
+
+  // A page that was reloaded from the one-time backup first saves the restored
+  // text to the original attempt. It never auto-submits: the student still
+  // clicks Submit themselves.
+  useEffect(() => {
+    if (!recoveryApplied || readOnly || attempt.status !== "draft") return;
+    if (recoverySaveStartedRef.current) return;
+    recoverySaveStartedRef.current = true;
+    const snapshotText = textRef.current;
+    void (async () => {
+      try {
+        const savedAttempt = await requestUpdate("save", { responseText: snapshotText });
+        applySavedAttempt(savedAttempt, snapshotText);
+        setSaveRecovery(null);
+        setMessage("已恢复未保存的正文");
+        window.setTimeout(() => setMessage(""), 2600);
+      } catch (restoreError) {
+        // The backup stays in sessionStorage; the editor offers reconnect or
+        // backup-and-relogin again.
+        markSaveFailure(restoreError);
+      }
+    })();
+  }, [applySavedAttempt, attempt.status, markSaveFailure, readOnly, recoveryApplied, requestUpdate]);
 
   const submit = useCallback(
     async (automatic = false) => {
@@ -589,6 +746,9 @@ function WritingPracticeSession({
         setAttempt(submittedAttempt);
         setLastSavedText(textRef.current);
         setLastSavedRanges([...overtimeRangesRef.current]);
+        // A successful submission is final: no recovery backup is needed.
+        clearWritingRecoveryBackup(getWritingRecoveryStorage(), submittedAttempt.attempt_id);
+        setSaveRecovery(null);
         // Invalidation for standalone writing uses the broad "writing" prefix.
         // Run it before storing the readonly handoff so it cannot evict the
         // submitted payload that the destination page consumes.
@@ -621,15 +781,18 @@ function WritingPracticeSession({
         submitStartedRef.current = false;
         submittingRef.current = false;
         setError(submitError instanceof Error ? submitError.message : "提交失败。");
+        if (isWritingSessionError(submitError)) markSaveFailure(submitError);
       } finally {
         setSubmitting(false);
       }
     }, [
       assignmentAvailable,
       assignmentQuestionSource,
+      attempt.attempt_id,
       attempt.status,
       displayName,
       invalidateWritingData,
+      markSaveFailure,
       question,
       requestUpdate,
       returnTo,
@@ -640,8 +803,11 @@ function WritingPracticeSession({
   );
 
   useEffect(() => {
+    // A restored backup always saves the draft first: the student reviews the
+    // recovered text and submits manually instead of being auto-submitted.
+    if (recoveryApplied) return;
     if (answerMode === "exam" && !readOnly && attempt.status === "draft" && remainingSeconds === 0) void submit(true);
-  }, [answerMode, attempt.status, readOnly, remainingSeconds, submit]);
+  }, [answerMode, attempt.status, readOnly, recoveryApplied, remainingSeconds, submit]);
 
   async function leavePractice(saveChanges: boolean) {
     setExitPromptOpen(false);
@@ -675,6 +841,82 @@ function WritingPracticeSession({
       void submit(false);
     }
   }
+
+  async function copyRecoveryText(text: string) {
+    const copied = await copyWritingRecoveryText(text);
+    if (copied) {
+      setMessage("已复制全文到剪贴板");
+      window.setTimeout(() => setMessage(""), 2200);
+    } else {
+      setError("复制失败，请手动全选并复制正文。");
+    }
+  }
+
+  async function reconnectAndSave() {
+    if (saveRecoveryBusyRef.current) return;
+    saveRecoveryBusyRef.current = true;
+    setSaveRecovery((current) => (current ? { ...current, busy: true } : current));
+    try {
+      const snapshotText = textRef.current;
+      const savedAttempt = await requestUpdate("save", { responseText: snapshotText });
+      applySavedAttempt(savedAttempt, snapshotText);
+      setSaveRecovery(null);
+      setMessage("草稿已保存");
+      window.setTimeout(() => setMessage(""), 2200);
+    } catch (recoveryError) {
+      setSaveRecovery({
+        stage: "backup",
+        authRelated: isWritingSessionError(recoveryError),
+        busy: false,
+        backupWriteFailed: false
+      });
+    } finally {
+      saveRecoveryBusyRef.current = false;
+    }
+  }
+
+  async function backupAndRelogin() {
+    const storage = getWritingRecoveryStorage();
+    const timerSnapshot = readActiveTimer();
+    const backup = createWritingRecoveryBackup({
+      attemptId: attempt.attempt_id,
+      studentId: attempt.user_id,
+      taskType: attempt.task_type,
+      assignmentId: attempt.assignment_id ?? null,
+      questionId: attempt.question_id,
+      text: textRef.current,
+      overtimeRanges: overtimeRangesRef.current,
+      elapsedSeconds: timerSnapshot.elapsedSeconds,
+      remainingSeconds: timerSnapshot.remainingSeconds,
+      savedAt: new Date().toISOString()
+    });
+    const stored = writeWritingRecoveryBackup(storage, backup);
+    if (!stored) {
+      setSaveRecovery((current) => ({
+        stage: "backup",
+        authRelated: current?.authRelated ?? false,
+        busy: false,
+        backupWriteFailed: true
+      }));
+      return;
+    }
+    await signOutWritingClientSession();
+    const returnTo = `${window.location.pathname}${window.location.search}`;
+    window.location.assign(`/login?returnTo=${encodeURIComponent(returnTo)}`);
+  }
+
+  const recoveryBanner = blockedRecoveryText ? (
+    <WritingBlockedRecoveryBanner
+      onCopy={() => void copyRecoveryText(blockedRecoveryText)}
+    />
+  ) : saveRecovery ? (
+    <WritingRecoveryBanner
+      onBackupRelogin={() => void backupAndRelogin()}
+      onCopyLatest={() => void copyRecoveryText(textRef.current)}
+      onReconnect={() => void reconnectAndSave()}
+      state={saveRecovery}
+    />
+  ) : null;
 
   return (
     <div className="writing-practice min-h-[100dvh] bg-[#fbfbfe] text-student-text lg:h-[100dvh] lg:overflow-hidden">
@@ -715,6 +957,7 @@ function WritingPracticeSession({
                 onSubmit={requestManualSubmit}
                 question={question as EmailQuestion}
                 readOnly={readOnly}
+                recovery={recoveryBanner}
                 reviewHref={reviewHref}
                 retakeHref={retakeHref}
                 wordCount={readOnly ? attempt.word_count : undefined}
@@ -732,6 +975,7 @@ function WritingPracticeSession({
                 onSubmit={requestManualSubmit}
                 question={question as AcademicDiscussionQuestion}
                 readOnly={readOnly}
+                recovery={recoveryBanner}
                 reviewHref={reviewHref}
                 retakeHref={retakeHref}
                 wordCount={readOnly ? attempt.word_count : undefined}
@@ -819,6 +1063,7 @@ function EmailResponsePanel({
   onSubmit,
   question,
   readOnly,
+  recovery,
   reviewHref,
   retakeHref,
   wordCount
@@ -831,6 +1076,7 @@ function EmailResponsePanel({
   onSubmit: () => void;
   question: EmailQuestion;
   readOnly: boolean;
+  recovery?: ReactNode;
   reviewHref?: string;
   retakeHref?: string;
   wordCount?: number;
@@ -847,6 +1093,7 @@ function EmailResponsePanel({
         compact
         disabled={disabled}
         readOnly={readOnly}
+        recovery={recovery}
         wordCount={wordCount}
       />
       {readOnly ? (
@@ -875,6 +1122,7 @@ function AcademicResponsePanel({
   onSubmit,
   question,
   readOnly,
+  recovery,
   reviewHref,
   retakeHref,
   wordCount
@@ -890,6 +1138,7 @@ function AcademicResponsePanel({
   onSubmit: () => void;
   question: AcademicDiscussionQuestion;
   readOnly: boolean;
+  recovery?: ReactNode;
   reviewHref?: string;
   retakeHref?: string;
   wordCount?: number;
@@ -922,6 +1171,7 @@ function AcademicResponsePanel({
         compact
         disabled={disabled}
         readOnly={readOnly}
+        recovery={recovery}
         wordCount={wordCount}
       />
       {readOnly ? (
@@ -943,12 +1193,14 @@ function WritingEditor({
   compact = false,
   disabled,
   readOnly = false,
+  recovery,
   wordCount
 }: {
   actions: EditorActions;
   compact?: boolean;
   disabled: boolean;
   readOnly?: boolean;
+  recovery?: ReactNode;
   wordCount?: number;
 }) {
   return (
@@ -963,6 +1215,14 @@ function WritingEditor({
         disabled={disabled || readOnly}
         wordCount={wordCount}
       />
+      {recovery ? (
+        <div
+          className="shrink-0 border-b border-student-error-border bg-student-error-soft px-4 py-2.5 text-sm leading-6 text-student-error"
+          role="status"
+        >
+          {recovery}
+        </div>
+      ) : null}
       <div className="relative min-h-0 flex-1 overflow-hidden bg-white">
         <div
           aria-hidden="true"
@@ -1386,15 +1646,154 @@ function WritingToast({ tone, text }: { tone: "error" | "success"; text: string 
   );
 }
 
-function PracticeMessage({ description, title }: { description: string; title: string }) {
+function PracticeMessage({
+  children,
+  description,
+  title
+}: {
+  children?: ReactNode;
+  description: string;
+  title: string;
+}) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fbfbfe] px-5">
       <div className="student-card max-w-md text-center">
         <h1 className="text-xl font-bold">{title}</h1>
         <p className="mt-2 text-sm text-student-muted">{description}</p>
+        {children}
       </div>
     </div>
   );
+}
+
+function WritingRecoveryBanner({
+  onBackupRelogin,
+  onCopyLatest,
+  onReconnect,
+  state
+}: {
+  onBackupRelogin: () => void;
+  onCopyLatest: () => void;
+  onReconnect: () => void;
+  state: SaveRecoveryState;
+}) {
+  const buttonClass = "inline-flex min-h-9 items-center justify-center rounded-lg border border-student-error-border bg-white px-3 text-sm font-semibold text-student-error transition hover:bg-student-error-soft disabled:opacity-60";
+  if (state.stage === "manual") {
+    return (
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <p className="min-w-[220px] flex-1">
+          草稿暂未保存。当前作文仍保留在编辑器中，请点击“重新连接并保存”。
+        </p>
+        <button
+          className={buttonClass}
+          disabled={state.busy}
+          onClick={onReconnect}
+          type="button"
+        >
+          {state.busy ? "正在重新连接..." : "重新连接并保存"}
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div className="grid gap-1.5">
+      <p>
+        当前作文尚未成功保存到服务器。你可以先备份作文，再重新登录并恢复，无需重新输入全文。
+      </p>
+      {state.authRelated ? null : (
+        <p className="text-xs">
+          当前故障可能不是登录状态引起的；重新登录后若仍无法保存，请稍后重试，并可用“复制全文”自行保管。
+        </p>
+      )}
+      {state.backupWriteFailed ? (
+        <p className="text-xs font-semibold">
+          临时备份写入失败。请先点击“复制全文”保存到本地，再重新登录。
+        </p>
+      ) : null}
+      <div className="flex flex-wrap gap-2">
+        <button
+          className={buttonClass}
+          disabled={state.busy}
+          onClick={onBackupRelogin}
+          type="button"
+        >
+          {state.busy ? "正在准备..." : "备份并重新登录"}
+        </button>
+        <button className={buttonClass} onClick={onCopyLatest} type="button">
+          复制全文
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function WritingBlockedRecoveryBanner({ onCopy }: { onCopy: () => void }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <p className="min-w-[220px] flex-1">
+        本标签页中还有一份未同步的备份正文。本次作答已提交，无法自动覆盖；可先复制全文保存。
+      </p>
+      <button
+        className="inline-flex min-h-9 items-center justify-center rounded-lg border border-student-error-border bg-white px-3 text-sm font-semibold text-student-error transition hover:bg-student-error-soft"
+        onClick={onCopy}
+        type="button"
+      >
+        复制全文
+      </button>
+    </div>
+  );
+}
+
+function RecoveryCopyNotice({ text }: { text: string }) {
+  const [copyState, setCopyState] = useState<"copied" | "failed" | "idle">("idle");
+  return (
+    <div className="mt-4 grid gap-2 text-left">
+      <p className="text-sm leading-6">
+        本标签页中还有一份未同步的备份正文；当前作答记录无法访问（可能已提交或已删除）。你可以先复制全文保存。
+      </p>
+      <button
+        className="student-button-secondary justify-center"
+        onClick={() =>
+          void copyWritingRecoveryText(text).then((copied) =>
+            setCopyState(copied ? "copied" : "failed")
+          )
+        }
+        type="button"
+      >
+        {copyState === "copied"
+          ? "已复制全文"
+          : copyState === "failed"
+            ? "复制失败，请手动复制"
+            : "复制全文"}
+      </button>
+    </div>
+  );
+}
+
+async function copyWritingRecoveryText(text: string) {
+  if (!text) return false;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch {
+    // Fall through to the selection based copy.
+  }
+  try {
+    const helper = document.createElement("textarea");
+    helper.value = text;
+    helper.setAttribute("readonly", "");
+    helper.style.position = "fixed";
+    helper.style.opacity = "0";
+    document.body.appendChild(helper);
+    helper.select();
+    const copied = document.execCommand("copy");
+    helper.remove();
+    return copied;
+  } catch {
+    return false;
+  }
 }
 
 function WritingModeChoice({
