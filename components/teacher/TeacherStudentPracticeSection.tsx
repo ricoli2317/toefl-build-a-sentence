@@ -318,7 +318,8 @@ export function TeacherStudentPracticeWorkspace({
                 <TeacherSectionTitle>Reading 练习</TeacherSectionTitle>
                 <DomainChip domain="reading" />
               </div>
-              <div className="grid gap-4 sm:grid-cols-3">
+              {/* Desktop: CTW / RDL / RAP / Full Set in one equal-width row. */}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {READING_TASKS.map((taskType) => {
                   const task = payload.reading!.tasks[taskType];
                   return (
@@ -332,6 +333,17 @@ export function TeacherStudentPracticeWorkspace({
                     />
                   );
                 })}
+                <TeacherMetricCard
+                  icon={STUDENT_PRACTICE_ICONS.full_set}
+                  label={TEACHER_PRACTICE_TASK_LABELS.full_set}
+                  secondary={`平均正确率 ${
+                    payload.reading!.fullSet.totalPoints > 0
+                      ? formatPercent(payload.reading!.fullSet.accuracy)
+                      : "—"
+                  }`}
+                  tone="reading"
+                  value={`${payload.reading!.fullSet.attempts} 次`}
+                />
               </div>
               <TeacherPracticeRecordList
                 emptyText="该日期暂无 Reading 练习记录。"

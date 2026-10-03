@@ -81,6 +81,12 @@ export type TeacherPracticeRecord = {
 
 export type TeacherStudentReadingPractice = {
   tasks: Record<ReadingModule, TeacherReadingTaskSummary>;
+  /**
+   * Completed Full Set practices. One completed Full Set is one practice (both
+   * modules, one run) and its accuracy is weighted by all of its scoring
+   * points. Full Set work never enters the CTW / RDL / RAP cards.
+   */
+  fullSet: TeacherReadingTaskSummary;
   records: TeacherPracticeRecord[];
 };
 
@@ -448,17 +454,13 @@ export function buildTeacherStudentReadingPractice(input: {
     });
   }
 
+  // Full Set work stays out of the CTW / RDL / RAP cards: those count only the
+  // student's own single-task practices. The dedicated Full Set card counts a
+  // completed Full Set as one whole practice (see buildFullSetReadingPractice).
   const fullSet = buildFullSetReadingPractice(input);
-  for (const taskType of TEACHER_PRACTICE_READING_TASKS) {
-    const summary = fullSet.tasks[taskType];
-    tasks[taskType].attempts += summary.attempts;
-    tasks[taskType].correctPoints += summary.correctPoints;
-    tasks[taskType].totalPoints += summary.totalPoints;
-    tasks[taskType].accuracy = ratio(tasks[taskType].correctPoints, tasks[taskType].totalPoints);
-  }
   records.push(...fullSet.records);
 
-  return { tasks, records: sortPracticeRecords(records) };
+  return { tasks, fullSet: fullSet.fullSet, records: sortPracticeRecords(records) };
 }
 
 export function buildTeacherStudentWritingPractice(input: {
@@ -605,14 +607,10 @@ function buildFullSetReadingPractice(input: {
   itemMeta: Map<string, TeacherReadingItemMeta>;
   studentId?: string;
 }): {
-  tasks: Record<ReadingModule, TeacherReadingTaskSummary>;
+  fullSet: TeacherReadingTaskSummary;
   records: TeacherPracticeRecord[];
 } {
-  const tasks: Record<ReadingModule, TeacherReadingTaskSummary> = {
-    ctw: emptyReadingTask(),
-    rdl: emptyReadingTask(),
-    rap: emptyReadingTask()
-  };
+  const fullSet = emptyReadingTask();
   const records: TeacherPracticeRecord[] = [];
   const modulesByAttempt = groupBy(input.fullSetModules ?? [], (moduleRow) => String(moduleRow.attempt_id));
   const answersByModule = groupBy(input.fullSetAnswers ?? [], (answer) => String(answer.module_attempt_id));
@@ -633,7 +631,7 @@ function buildFullSetReadingPractice(input: {
       return sum + (timeLimit > 0 ? Math.min(elapsed, timeLimit) : elapsed);
     }, 0);
 
-    const occurrences = new Map<string, { correct: number; total: number; taskType: ReadingModule }>();
+    const occurrences = new Map<string, { correct: number; total: number }>();
     for (const fullSetModule of attemptModules) {
       for (const answer of answersByModule.get(String(fullSetModule.module_attempt_id)) ?? []) {
         const occurrenceId = String(answer.occurrence_id);
@@ -642,8 +640,7 @@ function buildFullSetReadingPractice(input: {
         if (!existing) {
           occurrences.set(occurrenceId, {
             correct: answer.is_correct === true ? 1 : 0,
-            total: meta ? Math.max(0, nonNegativeInteger(meta.scoringPointCount)) : 1,
-            taskType: meta?.module ?? "ctw"
+            total: meta ? Math.max(0, nonNegativeInteger(meta.scoringPointCount)) : 1
           });
           continue;
         }
@@ -652,33 +649,21 @@ function buildFullSetReadingPractice(input: {
       }
     }
 
-    const byTask = new Map<ReadingModule, { correct: number; total: number; attempts: number }>();
-    for (const occurrence of Array.from(occurrences.values())) {
-      const summary = byTask.get(occurrence.taskType) ?? { correct: 0, total: 0, attempts: 0 };
-      summary.correct += occurrence.correct;
-      summary.total += occurrence.total;
-      summary.attempts += 1;
-      byTask.set(occurrence.taskType, summary);
-    }
-
-    // The Reading task cards keep counting Full Set work per module …
-    for (const taskType of TEACHER_PRACTICE_READING_TASKS) {
-      const summary = byTask.get(taskType);
-      if (!summary) continue;
-      tasks[taskType].attempts += summary.attempts;
-      tasks[taskType].correctPoints += summary.correct;
-      tasks[taskType].totalPoints += summary.total;
-      tasks[taskType].accuracy = ratio(tasks[taskType].correctPoints, tasks[taskType].totalPoints);
-    }
-
-    // … while the record list shows the whole Full Set as ONE record: both
-    // modules, one score, the same title the student's Full Set result shows.
+    // The card and the record list both show the whole Full Set as ONE run:
+    // both modules, one summed score, the same title the student's Full Set
+    // result shows. The card's accuracy is the accumulated correct ÷ total
+    // scoring points of completed Full Sets, never a per-module count.
     let correctPoints = 0;
     let totalPoints = 0;
-    for (const summary of Array.from(byTask.values())) {
-      correctPoints += summary.correct;
-      totalPoints += summary.total;
+    for (const occurrence of Array.from(occurrences.values())) {
+      correctPoints += occurrence.correct;
+      totalPoints += occurrence.total;
     }
+    fullSet.attempts += 1;
+    fullSet.correctPoints += correctPoints;
+    fullSet.totalPoints += totalPoints;
+    fullSet.accuracy = ratio(fullSet.correctPoints, fullSet.totalPoints);
+
     records.push({
       recordId: `full_set:${attempt.attempt_id}`,
       attemptId: String(attempt.attempt_id),
@@ -704,7 +689,7 @@ function buildFullSetReadingPractice(input: {
     });
   }
 
-  return { tasks, records };
+  return { fullSet, records };
 }
 
 function accumulateReadingTask(

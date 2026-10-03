@@ -111,6 +111,8 @@ test("Reading wrongbook corrections stay out of the task cards but remain in rec
   assert.equal(practice.tasks.rdl.attempts, 0);
   assert.equal(practice.tasks.rdl.totalPoints, 0);
   assert.equal(practice.tasks.ctw.attempts, 1);
+  assert.equal(practice.fullSet.attempts, 0);
+  assert.equal(practice.fullSet.totalPoints, 0);
   const wrongbook = practice.records.find((record) => record.attemptId === "w-1");
   assert.equal(wrongbook.kind, "wrongbook");
   assert.equal(wrongbook.scope, "today");
@@ -309,7 +311,7 @@ test("a finished today session is named 今日错题", () => {
   assert.equal(session.scope, "today");
 });
 
-test("Reading Full Set splits scoring points and practice units back into CTW/RDL/RAP", () => {
+test("Reading Full Set counts one whole practice in its own card, never in CTW/RDL/RAP", () => {
   const answers = [
     ...pointRows("m1-ctw-1", 7, 3),
     ...pointRows("m1-rdl-1", 2, 0),
@@ -341,15 +343,21 @@ test("Reading Full Set splits scoring points and practice units back into CTW/RD
     itemMeta: ITEM_META
   });
 
-  assert.equal(practice.tasks.ctw.attempts, 2);
-  assert.equal(practice.tasks.ctw.correctPoints, 17);
-  assert.equal(practice.tasks.ctw.totalPoints, 20);
-  assert.equal(practice.tasks.rdl.attempts, 1);
-  assert.equal(practice.tasks.rdl.correctPoints, 2);
-  assert.equal(practice.tasks.rdl.totalPoints, 2);
-  assert.equal(practice.tasks.rap.attempts, 1);
-  assert.equal(practice.tasks.rap.correctPoints, 3);
-  assert.equal(practice.tasks.rap.totalPoints, 5);
+  // Full Set work never inflates the single-task cards.
+  assert.equal(practice.tasks.ctw.attempts, 0);
+  assert.equal(practice.tasks.ctw.correctPoints, 0);
+  assert.equal(practice.tasks.ctw.totalPoints, 0);
+  assert.equal(practice.tasks.rdl.attempts, 0);
+  assert.equal(practice.tasks.rdl.totalPoints, 0);
+  assert.equal(practice.tasks.rap.attempts, 0);
+  assert.equal(practice.tasks.rap.totalPoints, 0);
+
+  // The dedicated Full Set card counts ONE completed Full Set as one practice
+  // and weights accuracy by its own cumulative scoring points.
+  assert.equal(practice.fullSet.attempts, 1);
+  assert.equal(practice.fullSet.correctPoints, 22);
+  assert.equal(practice.fullSet.totalPoints, 27);
+  assert.equal(practice.fullSet.accuracy, 22 / 27);
 
   // One Full Set is ONE record: both modules, one summed score, named after the
   // Full Set the student sees on the result page.
@@ -410,7 +418,97 @@ test("Reading Full Set attempts without two submitted modules are ignored", () =
   });
 
   assert.equal(practice.tasks.ctw.attempts, 0);
+  assert.equal(practice.fullSet.attempts, 0);
+  assert.equal(practice.fullSet.totalPoints, 0);
   assert.equal(practice.records.length, 0);
+});
+
+test("single-task cards and the Full Set card accumulate independently", () => {
+  const practice = buildTeacherStudentReadingPractice({
+    attempts: [
+      readingAttempt({ attempt_id: "r-ctw", task_type: "ctw", correct_points: 8, total_points: 10 }),
+      readingAttempt({
+        attempt_id: "r-rap",
+        logical_item_id: "rap-a",
+        task_type: "rap",
+        correct_points: 2,
+        total_points: 5
+      })
+    ],
+    fullSetAttempts: [
+      { attempt_id: "fs-1", full_set_id: "20260922", completed_at: "2026-09-22T05:00:00.000Z" },
+      { attempt_id: "fs-2", full_set_id: "20260923", completed_at: "2026-09-23T05:00:00.000Z" }
+    ],
+    fullSetModules: [
+      ...fullSetModules("fs-1", "2026-09-22"),
+      ...fullSetModules("fs-2", "2026-09-23")
+    ],
+    fullSetAnswers: [
+      // fs-1: rdl 1/2 + rap 3/5 -> 4/7 points.
+      ...answerRows("m1-fs-1", "rdl-a", 1, 1),
+      ...answerRows("m2-fs-1", "rap-a", 3, 2),
+      // fs-2: rdl 2/2 -> 2/2 points.
+      ...answerRows("m1-fs-2", "rdl-a", 2, 0)
+    ],
+    itemMeta: ITEM_META
+  });
+
+  // Ordinary CTW/RDL/RAP practice counts only itself.
+  assert.equal(practice.tasks.ctw.attempts, 1);
+  assert.equal(practice.tasks.ctw.correctPoints, 8);
+  assert.equal(practice.tasks.ctw.totalPoints, 10);
+  assert.equal(practice.tasks.rdl.attempts, 0);
+  assert.equal(practice.tasks.rap.attempts, 1);
+  assert.equal(practice.tasks.rap.correctPoints, 2);
+  assert.equal(practice.tasks.rap.totalPoints, 5);
+
+  // Full Sets accumulate as whole runs: 2 practices, points weighted together
+  // (4/7 + 2/2 = 6/9), not as per-module attempts.
+  assert.equal(practice.fullSet.attempts, 2);
+  assert.equal(practice.fullSet.correctPoints, 6);
+  assert.equal(practice.fullSet.totalPoints, 9);
+  assert.equal(practice.fullSet.accuracy, 6 / 9);
+
+  function fullSetModules(attemptId, day) {
+    return [
+      {
+        attempt_id: attemptId,
+        module_attempt_id: `m1-${attemptId}`,
+        module_number: 1,
+        started_at: `${day}T04:00:00.000Z`,
+        submitted_at: `${day}T04:18:00.000Z`,
+        time_limit_seconds: 1230
+      },
+      {
+        attempt_id: attemptId,
+        module_attempt_id: `m2-${attemptId}`,
+        module_number: 2,
+        started_at: `${day}T04:18:00.000Z`,
+        submitted_at: `${day}T04:26:00.000Z`,
+        time_limit_seconds: 540
+      }
+    ];
+  }
+
+  function answerRows(moduleId, logicalItemId, correct, incorrect) {
+    const occurrenceId = `${moduleId}-${logicalItemId}`;
+    return [
+      ...Array.from({ length: correct }, (_, index) => ({
+        module_attempt_id: moduleId,
+        occurrence_id: occurrenceId,
+        logical_item_id: logicalItemId,
+        is_correct: true,
+        answer_id: `${occurrenceId}-c${index}`
+      })),
+      ...Array.from({ length: incorrect }, (_, index) => ({
+        module_attempt_id: moduleId,
+        occurrence_id: occurrenceId,
+        logical_item_id: logicalItemId,
+        is_correct: false,
+        answer_id: `${occurrenceId}-w${index}`
+      }))
+    ];
+  }
 });
 
 test("BAS accuracy sums correct over total and ignores wrongbook attempts in the card", () => {
@@ -697,10 +795,36 @@ test("Reading and Writing cards reuse the Sidebar icon components with domain to
   assert.match(icons, /ctw: CompleteTheWordsIcon/);
   assert.match(icons, /rdl: FileText/);
   assert.match(icons, /rap: BookOpen/);
+  assert.match(icons, /full_set: Library/);
 
   const ui = read("components/teacher/TeacherUI.tsx");
   assert.match(ui, /tone === "reading" && "bg-\[#eef6ff\] text-\[#347fdc\]"/);
   assert.match(ui, /tone === "primary" && "bg-student-primary-soft text-student-primary"/);
+});
+
+test("single-day Reading cards show CTW/RDL/RAP + Full Set on one equal four-column row", () => {
+  const component = read("components/teacher/TeacherStudentPracticeSection.tsx");
+  const readingSection = component.match(
+    /\{payload\.reading \? \([\s\S]*?\n          \) : null\}/
+  )?.[0] ?? "";
+  assert.notEqual(readingSection, "");
+  // The Full Set card reuses the existing metric card, icon, label and tone.
+  assert.match(readingSection, /STUDENT_PRACTICE_ICONS\.full_set/);
+  assert.match(readingSection, /TEACHER_PRACTICE_TASK_LABELS\.full_set/);
+  assert.match(readingSection, /payload\.reading!\.fullSet\.attempts/);
+  assert.match(readingSection, /payload\.reading!\.fullSet\.totalPoints > 0/);
+  // Desktop: four equal columns in one row; narrow screens keep a grid instead
+  // of overflowing.
+  assert.match(readingSection, /grid gap-4 sm:grid-cols-2 lg:grid-cols-4/);
+
+  // The Writing row keeps its untouched three-column layout and gains no
+  // Full Set card.
+  const writingSection = component.match(
+    /\{payload\.writing \? \([\s\S]*?\n          \) : null\}/
+  )?.[0] ?? "";
+  assert.notEqual(writingSection, "");
+  assert.match(writingSection, /sm:grid-cols-3/);
+  assert.doesNotMatch(writingSection, /fullSet|full_set/);
 });
 
 test("both domains render through the same record list component", () => {
