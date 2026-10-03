@@ -805,7 +805,7 @@ test("Reading and Writing cards reuse the Sidebar icon components with domain to
 test("single-day Reading cards show CTW/RDL/RAP + Full Set on one equal four-column row", () => {
   const component = read("components/teacher/TeacherStudentPracticeSection.tsx");
   const readingSection = component.match(
-    /\{payload\.reading \? \([\s\S]*?\n          \) : null\}/
+    /\{view\.kind !== "range" && payload\.reading \? \([\s\S]*?\n          \) : null\}/
   )?.[0] ?? "";
   assert.notEqual(readingSection, "");
   // The Full Set card reuses the existing metric card, icon, label and tone.
@@ -820,7 +820,7 @@ test("single-day Reading cards show CTW/RDL/RAP + Full Set on one equal four-col
   // The Writing row keeps its untouched three-column layout and gains no
   // Full Set card.
   const writingSection = component.match(
-    /\{payload\.writing \? \([\s\S]*?\n          \) : null\}/
+    /\{view\.kind !== "range" && payload\.writing \? \([\s\S]*?\n          \) : null\}/
   )?.[0] ?? "";
   assert.notEqual(writingSection, "");
   assert.match(writingSection, /sm:grid-cols-3/);

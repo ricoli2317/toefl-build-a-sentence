@@ -12,13 +12,16 @@ export function TeacherPopover({
   buttonContent,
   children,
   menuAlign = "right",
-  menuClassName
+  menuClassName,
+  panelRole = "menu"
 }: {
   buttonClassName: string;
   buttonContent: ReactNode;
   children: (close: () => void) => ReactNode;
   menuAlign?: "left" | "right";
   menuClassName?: string;
+  /** "dialog" keeps form popovers (for example the date range picker) valid. */
+  panelRole?: "dialog" | "menu";
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -56,7 +59,7 @@ export function TeacherPopover({
             menuAlign === "left" ? "left-0" : "right-0",
             menuClassName
           )}
-          role="menu"
+          role={panelRole}
         >
           {children(() => setOpen(false))}
         </div>

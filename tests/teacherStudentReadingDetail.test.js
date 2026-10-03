@@ -191,7 +191,11 @@ test("student detail list adds no Reading detail fetch", () => {
   const list = read("components/teacher/TeacherStudentPracticeSection.tsx");
   assert.doesNotMatch(list, /reading\/attempts|reading\/wrongbook-attempts|reading\/full-set-attempts/);
   assert.doesNotMatch(list, /ReadingReadonlyReviewShell|ReadingFullSetReviewShell/);
-  assert.equal((list.match(/fetch\(/g) ?? []).length, 1);
+  // Two scoped, summary-only fetches: the single-day practice payload and the
+  // lightweight range statistics. Neither loads attempt detail.
+  assert.equal((list.match(/fetch\(/g) ?? []).length, 2);
+  assert.match(list, /\/practice\?\$\{params\.toString\(\)\}/);
+  assert.match(list, /\/practice-range\?\$\{params\.toString\(\)\}/);
 });
 
 test("teacher Reading detail pages route by attempt id and reuse the read-only shells", () => {

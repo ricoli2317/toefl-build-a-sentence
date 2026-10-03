@@ -26,6 +26,7 @@ export const TEACHER_INACTIVE_STUDENTS_CACHE_KEY = "teacher:inactive-students:v1
 export const TEACHER_STUDENT_OVERVIEW_CACHE_KEY = "teacher:student-overview:v1";
 export const TEACHER_STUDENT_READING_CACHE_PREFIX = "teacher:student-reading";
 export const TEACHER_STUDENT_PRACTICE_CACHE_PREFIX = "teacher:student-practice";
+export const TEACHER_STUDENT_PRACTICE_RANGE_CACHE_PREFIX = "teacher:student-practice-range";
 export const TEACHER_CURRENT_USER_CACHE_KEY = "teacher:current-user";
 export const TEACHER_ACCESS_CACHE_KEY = "teacher:access";
 export const TEACHER_WRITING_REVIEWS_CACHE_KEY =
@@ -224,6 +225,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
             case "teacherStats":
               invalidate(TEACHER_STATS_CACHE_KEY);
               invalidate(TEACHER_STUDENT_PRACTICE_CACHE_PREFIX);
+              invalidate(TEACHER_STUDENT_PRACTICE_RANGE_CACHE_PREFIX);
               break;
             case "teacherDashboard":
               invalidate(TEACHER_DASHBOARD_CACHE_KEY);
@@ -236,6 +238,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               invalidate(TEACHER_READING_STATS_CACHE_KEY);
               invalidate(TEACHER_STUDENT_READING_CACHE_PREFIX);
               invalidate(TEACHER_STUDENT_PRACTICE_CACHE_PREFIX);
+              invalidate(TEACHER_STUDENT_PRACTICE_RANGE_CACHE_PREFIX);
               break;
             case "teacherQuestionBank":
               invalidate(TEACHER_QUESTION_BANK_CACHE_PREFIX);
@@ -244,6 +247,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
             case "teacherWritingReviews":
               invalidate(TEACHER_WRITING_REVIEWS_CACHE_KEY);
               invalidate(TEACHER_STUDENT_PRACTICE_CACHE_PREFIX);
+              invalidate(TEACHER_STUDENT_PRACTICE_RANGE_CACHE_PREFIX);
               break;
             case "teacherWritingReviewWorkspace":
               // A review mutation only affects its own attempt workspace.
