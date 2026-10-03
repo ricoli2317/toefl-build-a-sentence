@@ -58,6 +58,7 @@ import {
   type WritingTaskType
 } from "@/lib/writing";
 import { normalizeWritingOvertimeRanges, updateWritingOvertimeRanges } from "@/lib/writingOvertime";
+import { resolveMirrorScrollTop, writingScrollbarWidth } from "@/lib/writingEditorScroll";
 import { WritingOvertimeText } from "@/components/writing/WritingOvertimeText";
 import {
   getWritingResultNavigation,
@@ -1413,13 +1414,64 @@ function useWritingEditor(
   const currentText = history.current.text;
   const currentRanges = history.current.overtimeRanges;
 
+  /**
+   * Aligns the mirror with the textarea's real geometry. Two defects are
+   * repaired here: the mirror takes over exactly the width a layout scrollbar
+   * consumes (0 on overlay platforms, so no extra right gap appears), and the
+   * scroll position is copied from the live textarea including each layer's
+   * own maximum, with the bottom edge pinned so the visible end of the text
+   * always matches the caret.
+   */
+  const syncMirror = useCallback(() => {
+    const textarea = textareaRef.current;
+    const mirror = mirrorRef.current;
+    if (!textarea || !mirror) return;
+    const scrollbarWidth = writingScrollbarWidth(textarea.offsetWidth, textarea.clientWidth);
+    const desiredRight = scrollbarWidth > 0 ? `${scrollbarWidth}px` : "0px";
+    if ((mirror.style.right || "0px") !== desiredRight) mirror.style.right = desiredRight;
+    mirror.scrollTop = resolveMirrorScrollTop({
+      textareaScrollTop: textarea.scrollTop,
+      textareaScrollHeight: textarea.scrollHeight,
+      textareaClientHeight: textarea.clientHeight,
+      mirrorScrollHeight: mirror.scrollHeight,
+      mirrorClientHeight: mirror.clientHeight
+    });
+    mirror.scrollLeft = textarea.scrollLeft;
+  }, []);
+
   const focusSelection = useCallback((start: number, end = start) => {
     window.requestAnimationFrame(() => {
       textareaRef.current?.focus();
       textareaRef.current?.setSelectionRange(start, end);
       setSelection({ start, end });
+      // Restoring a selection can move the textarea's own scroll position
+      // without a scroll event; re-align the mirror in the same frame.
+      syncMirror();
     });
-  }, []);
+  }, [syncMirror]);
+
+  // Synchronization points that do not emit a textarea scroll event: first
+  // layout, container/viewport resizes (including a layout scrollbar appearing
+  // or disappearing), and returning from a background tab or page cache.
+  useEffect(() => {
+    syncMirror();
+    const textarea = textareaRef.current;
+    const observer = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(() => syncMirror());
+    if (textarea) observer?.observe(textarea);
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") syncMirror();
+    };
+    const onPageShow = () => syncMirror();
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    window.addEventListener("pageshow", onPageShow);
+    return () => {
+      observer?.disconnect();
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      window.removeEventListener("pageshow", onPageShow);
+    };
+  }, [syncMirror]);
 
   const commit = useCallback(
     (snapshot: EditorSnapshot) => {
@@ -1520,10 +1572,8 @@ function useWritingEditor(
     setSelection({ start: event.currentTarget.selectionStart, end: event.currentTarget.selectionEnd });
   }
 
-  function onScroll(event: FormEvent<HTMLTextAreaElement>) {
-    if (!mirrorRef.current) return;
-    mirrorRef.current.scrollTop = event.currentTarget.scrollTop;
-    mirrorRef.current.scrollLeft = event.currentTarget.scrollLeft;
+  function onScroll() {
+    syncMirror();
   }
 
   function onPaste(event: ClipboardEvent<HTMLTextAreaElement>) {
