@@ -204,6 +204,12 @@ export function buildTeacherStudentPracticeRange(input: {
   reading?: TeacherPracticeRangeReadingInput | null;
   writing?: TeacherPracticeRangeWritingInput | null;
   timeZone: string;
+  /** Defaults to true; the student practice history passes false so Entry /
+   *  今日错题 / 历史错题 counters never enter its per-day list. */
+  includeWrongbook?: boolean;
+  /** Defaults to true; the student practice history passes false so
+   *  `wrongbook-*` / legacy `grammar-*` BAS rows are not counted at all. */
+  includeVirtualBas?: boolean;
   /** Range boundaries (exclusive end); sessions completed outside it are only
    * used for attempt ownership, never counted as a range day. */
   startAt?: string;
@@ -223,13 +229,18 @@ export function buildTeacherStudentPracticeRange(input: {
   };
 
   const reading = input.reading
-    ? buildReadingRange(input.reading, addCount, {
-        endAt: input.endAt ? Date.parse(input.endAt) : null,
-        startAt: input.startAt ? Date.parse(input.startAt) : null
-      })
+    ? buildReadingRange(
+        input.reading,
+        addCount,
+        {
+          endAt: input.endAt ? Date.parse(input.endAt) : null,
+          startAt: input.startAt ? Date.parse(input.startAt) : null
+        },
+        input.includeWrongbook !== false
+      )
     : null;
   const writing = input.writing
-    ? buildWritingRange(input.writing, addCount)
+    ? buildWritingRange(input.writing, addCount, input.includeVirtualBas !== false)
     : null;
 
   const days = Array.from(dayCounts.entries())
@@ -244,7 +255,8 @@ export function buildTeacherStudentPracticeRange(input: {
 function buildReadingRange(
   reading: TeacherPracticeRangeReadingInput,
   addCount: (submittedAt: string, key: TeacherPracticeRangeDayCountKey, amount?: number) => void,
-  bounds: { startAt: number | null; endAt: number | null }
+  bounds: { startAt: number | null; endAt: number | null },
+  includeWrongbook: boolean
 ): TeacherStudentPracticeRangeReading {
   const tasks: Record<ReadingModule, TeacherReadingTaskSummary> = {
     ctw: emptyReadingTask(),
@@ -262,34 +274,37 @@ function buildReadingRange(
     addCount(submittedAt, attempt.task_type);
   }
 
-  // Any session (active or completed) owns its attempts: those attempts never
-  // double count as independent Entry corrections.
-  const sessionAttemptIds = new Set<string>();
-  for (const session of reading.sessions) {
-    for (const entry of Object.values(session.progress ?? {})) {
-      const attemptId = entry?.attemptId ? String(entry.attemptId) : "";
-      if (attemptId) sessionAttemptIds.add(attemptId);
+  if (includeWrongbook) {
+    // Any session (active or completed) owns its attempts: those attempts never
+    // double count as independent Entry corrections.
+    const sessionAttemptIds = new Set<string>();
+    for (const session of reading.sessions) {
+      for (const entry of Object.values(session.progress ?? {})) {
+        const attemptId = entry?.attemptId ? String(entry.attemptId) : "";
+        if (attemptId) sessionAttemptIds.add(attemptId);
+      }
     }
-  }
-  for (const attempt of reading.wrongbookAttempts) {
-    const submittedAt = validSubmittedAt(attempt.submitted_at);
-    if (attempt.status !== "submitted" || !submittedAt) continue;
-    if (sessionAttemptIds.has(String(attempt.attempt_id))) continue;
-    addCount(submittedAt, "wrongbook_entry");
-  }
-  // A frozen session counts once, at the moment it completed. Sessions outside
-  // the requested range stay in the list above only to own their attempts.
-  for (const session of reading.sessions) {
-    if (session.status !== "completed") continue;
-    const completedAt = validSubmittedAt(session.completed_at);
-    if (!completedAt) continue;
-    const completedAtMs = Date.parse(completedAt);
-    if (bounds.startAt !== null && completedAtMs < bounds.startAt) continue;
-    if (bounds.endAt !== null && completedAtMs >= bounds.endAt) continue;
-    addCount(
-      completedAt,
-      session.mode === "today" ? "wrongbook_today" : "wrongbook_history"
-    );
+    for (const attempt of reading.wrongbookAttempts) {
+      const submittedAt = validSubmittedAt(attempt.submitted_at);
+      if (attempt.status !== "submitted" || !submittedAt) continue;
+      if (sessionAttemptIds.has(String(attempt.attempt_id))) continue;
+      addCount(submittedAt, "wrongbook_entry");
+    }
+    // A frozen session counts once, at the moment it completed. Sessions
+    // outside the requested range stay in the list above only to own their
+    // attempts.
+    for (const session of reading.sessions) {
+      if (session.status !== "completed") continue;
+      const completedAt = validSubmittedAt(session.completed_at);
+      if (!completedAt) continue;
+      const completedAtMs = Date.parse(completedAt);
+      if (bounds.startAt !== null && completedAtMs < bounds.startAt) continue;
+      if (bounds.endAt !== null && completedAtMs >= bounds.endAt) continue;
+      addCount(
+        completedAt,
+        session.mode === "today" ? "wrongbook_today" : "wrongbook_history"
+      );
+    }
   }
 
   const modulesByAttempt = groupBy(
@@ -322,7 +337,8 @@ function buildReadingRange(
 
 function buildWritingRange(
   writing: TeacherPracticeRangeWritingInput,
-  addCount: (submittedAt: string, key: TeacherPracticeRangeDayCountKey, amount?: number) => void
+  addCount: (submittedAt: string, key: TeacherPracticeRangeDayCountKey, amount?: number) => void,
+  includeVirtualBas: boolean
 ): TeacherStudentPracticeRangeWriting {
   const tasks: TeacherStudentPracticeRangeWriting["tasks"] = {
     build_sentence: { attempts: 0, correctCount: 0, totalQuestions: 0, accuracy: 0 },
@@ -336,16 +352,17 @@ function buildWritingRange(
     const submittedAt = validSubmittedAt(attempt.submitted_at);
     if (!submittedAt) continue;
     const category = basAttemptCategory(attempt.set_id, attempt.set_title);
-    if (category === "today") {
-      addCount(submittedAt, "wrongbook_today");
-      continue;
-    }
-    if (category === "history") {
-      addCount(submittedAt, "wrongbook_history");
-      continue;
-    }
-    if (category === "entry") {
-      addCount(submittedAt, "wrongbook_entry");
+    if (category !== "practice") {
+      if (includeVirtualBas) {
+        addCount(
+          submittedAt,
+          category === "today"
+            ? "wrongbook_today"
+            : category === "history"
+              ? "wrongbook_history"
+              : "wrongbook_entry"
+        );
+      }
       continue;
     }
     const totalQuestions = nonNegativeInteger(attempt.total_questions);

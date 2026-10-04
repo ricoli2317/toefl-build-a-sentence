@@ -71,6 +71,9 @@ export function getReadingResultNavigation(
   const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
   const safeReturnTo = safeStudentReturnTo(returnTo);
   if (safeReturnTo) {
+    if (isPracticeHistoryReturnTo(safeReturnTo)) {
+      return practiceHistoryReturnNavigation(safeReturnTo);
+    }
     if (
       safeReturnTo.startsWith(STUDENT_ROUTES.wrongQuestions)
       || safeReturnTo.startsWith("/student/reading/wrongbook-results/")
@@ -136,7 +139,12 @@ export function getReadingFullSetResultNavigation(
   returnTo?: string | string[]
 ): { backHref: string; crumbs: StudentBreadcrumbItem[] } {
   const safeReturnTo = safeStudentReturnTo(returnTo);
-  if (safeReturnTo) return assignmentResultNavigation(safeReturnTo);
+  if (safeReturnTo) {
+    if (isPracticeHistoryReturnTo(safeReturnTo)) {
+      return practiceHistoryReturnNavigation(safeReturnTo, title);
+    }
+    return assignmentResultNavigation(safeReturnTo);
+  }
   const rootCrumb = { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home };
   if (source === "practice-history") {
     return {
@@ -170,6 +178,35 @@ export function safeStudentReturnTo(value: string | string[] | undefined) {
   } catch {
     return undefined;
   }
+}
+
+/** Exact practice-history page (with its date / range / filter params). */
+function isPracticeHistoryReturnTo(safeReturnTo: string) {
+  try {
+    return new URL(safeReturnTo, "https://tps.local").pathname
+      === STUDENT_ROUTES.practiceHistory;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * A result opened from practice history keeps that exact state as its back
+ * target (date, task filter and active range), with the ordinary history
+ * breadcrumb instead of the Assignment chain.
+ */
+function practiceHistoryReturnNavigation(
+  returnTo: string,
+  lastLabel = "查看结果"
+): { backHref: string; crumbs: StudentBreadcrumbItem[] } {
+  return {
+    backHref: returnTo,
+    crumbs: [
+      { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
+      { label: STUDENT_UI_TEXT.practiceHistory, href: STUDENT_ROUTES.practiceHistory },
+      { label: lastLabel }
+    ]
+  };
 }
 
 /**
@@ -449,6 +486,9 @@ export function getStudentResultNavigation(
   };
   const safeReturnTo = safeStudentReturnTo(options?.returnTo);
   if (safeReturnTo) {
+    if (isPracticeHistoryReturnTo(safeReturnTo)) {
+      return practiceHistoryReturnNavigation(safeReturnTo);
+    }
     // Wrong-question origins (result / read-only review / history practice
     // result) keep their own crumbs while still returning to that exact page.
     if (

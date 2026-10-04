@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import { loadTeacherWritingReviewScores } from "./teacherStudentPractice.server.ts";
+import type { PracticeHistoryLoadScope } from "./teacherStudentPractice.ts";
 import {
   buildTeacherStudentPracticeRange,
   type TeacherPracticeRangeReadingInput,
@@ -28,26 +29,40 @@ export async function loadTeacherStudentPracticeRange(
   startAt: string,
   endAt: string,
   timeZone: string,
-  allowed: { reading: boolean; writing: boolean }
+  allowed: { reading: boolean; writing: boolean },
+  scope?: PracticeHistoryLoadScope
 ): Promise<TeacherStudentPracticeRangeStats> {
+  const includeWrongbook = scope?.includeWrongbook !== false;
   const [reading, writing] = await Promise.all([
     allowed.reading
-      ? loadReadingRange(db, studentId, startAt, endAt)
+      ? loadReadingRange(db, studentId, startAt, endAt, includeWrongbook)
       : Promise.resolve(null),
     allowed.writing
       ? loadWritingRange(db, studentId, startAt, endAt)
       : Promise.resolve(null)
   ]);
 
-  return buildTeacherStudentPracticeRange({ reading, writing, timeZone, startAt, endAt });
+  return buildTeacherStudentPracticeRange({
+    reading,
+    writing,
+    timeZone,
+    startAt,
+    endAt,
+    includeWrongbook,
+    includeVirtualBas: scope?.includeVirtualBas !== false
+  });
 }
 
 async function loadReadingRange(
   db: SupabaseClient,
   studentId: string,
   startAt: string,
-  endAt: string
+  endAt: string,
+  includeWrongbook: boolean
 ): Promise<TeacherPracticeRangeReadingInput> {
+  // The student practice history never shows Entry / 今日错题 / 历史错题
+  // counters, so it skips the wrong-question attempt and session queries
+  // entirely instead of loading rows the day list will not display.
   const [attemptsResult, wrongbookResult, sessionsResult, fullSetResult] = await Promise.all([
     readAllSupabaseRows<TeacherRangeReadingAttemptRow>((from, to) =>
       db
@@ -60,30 +75,40 @@ async function loadReadingRange(
         .order("submitted_at", { ascending: false })
         .range(from, to)
     ),
-    readAllSupabaseRows<TeacherRangeWrongbookAttemptRow>((from, to) =>
-      db
-        .from("reading_wrongbook_attempts")
-        .select("attempt_id,status,submitted_at")
-        .eq("student_id", studentId)
-        .eq("status", "submitted")
-        .gte("submitted_at", startAt)
-        .lt("submitted_at", endAt)
-        .order("submitted_at", { ascending: false })
-        .range(from, to)
-    ),
+    includeWrongbook
+      ? readAllSupabaseRows<TeacherRangeWrongbookAttemptRow>((from, to) =>
+          db
+            .from("reading_wrongbook_attempts")
+            .select("attempt_id,status,submitted_at")
+            .eq("student_id", studentId)
+            .eq("status", "submitted")
+            .gte("submitted_at", startAt)
+            .lt("submitted_at", endAt)
+            .order("submitted_at", { ascending: false })
+            .range(from, to)
+        )
+      : Promise.resolve({
+          data: [] as TeacherRangeWrongbookAttemptRow[],
+          error: null as { message: string } | null
+        }),
     // Sessions own their attempts for Entry classification. Only sessions that
     // can still touch this range are read: created before the range ends and
     // either unfinished or completed inside/after the range start.
-    readAllSupabaseRows<TeacherRangeWrongbookSessionRow>((from, to) =>
-      db
-        .from("student_wrong_question_sessions")
-        .select("session_id,mode,status,completed_at,progress")
-        .eq("student_id", studentId)
-        .lt("created_at", endAt)
-        .or(`completed_at.is.null,completed_at.gte.${startAt}`)
-        .order("session_id", { ascending: true })
-        .range(from, to)
-    ),
+    includeWrongbook
+      ? readAllSupabaseRows<TeacherRangeWrongbookSessionRow>((from, to) =>
+          db
+            .from("student_wrong_question_sessions")
+            .select("session_id,mode,status,completed_at,progress")
+            .eq("student_id", studentId)
+            .lt("created_at", endAt)
+            .or(`completed_at.is.null,completed_at.gte.${startAt}`)
+            .order("session_id", { ascending: true })
+            .range(from, to)
+        )
+      : Promise.resolve({
+          data: [] as TeacherRangeWrongbookSessionRow[],
+          error: null as { message: string } | null
+        }),
     readAllSupabaseRows<TeacherRangeFullSetAttemptRow>((from, to) =>
       db
         .from("reading_full_set_attempts")

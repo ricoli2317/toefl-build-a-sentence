@@ -46,6 +46,24 @@ export function allTeacherPracticeTasksSelected(): Record<TeacherPracticeTaskTyp
 }
 
 /**
+ * Record scope of the shared practice history loaders. The teacher student
+ * detail keeps every record it already showed; the student practice history
+ * excludes wrong-question material so it never duplicates the wrong-question
+ * bank and stays on its seven public task types.
+ *
+ * Both options default to `true`, so omitting the scope preserves the exact
+ * teacher behavior:
+ * - `includeWrongbook`: Reading wrong-question corrections
+ *   (`reading_wrongbook_attempts`) and their frozen sessions.
+ * - `includeVirtualBas`: virtual BAS set id spaces (`wrongbook-*` and the
+ *   legacy `grammar-*` ids) that are practiced through their own surfaces.
+ */
+export type PracticeHistoryLoadScope = {
+  includeWrongbook?: boolean;
+  includeVirtualBas?: boolean;
+};
+
+/**
  * Parses the `tasks` search param of the student detail page. A missing value
  * keeps the default (all selected); `none` is an explicit empty selection;
  * unknown-only values fall back to the default so a stale link never hides
@@ -105,6 +123,21 @@ export type TeacherPracticeRecordMetric =
 
 export type TeacherPracticeRecordKind = "practice" | "wrongbook" | "full_set";
 
+/**
+ * Source ids the student result / retake routes need. The teacher student page
+ * never reads them; the student practice history maps them onto its own
+ * result pages, retake entries and Full Set runner.
+ */
+export type TeacherPracticeRecordSource = {
+  /** BAS set id (`/student/practice/{setId}` retake route). */
+  basSetId?: string;
+  /** Full Set id (official result page and 再次练习 route). */
+  fullSetId?: string;
+  /** Writing question/assignment ids for the student retake entry. */
+  writingAssignmentId?: string | null;
+  writingQuestionId?: string;
+};
+
 export type TeacherPracticeRecord = {
   recordId: string;
   attemptId: string;
@@ -117,6 +150,7 @@ export type TeacherPracticeRecord = {
   metric: TeacherPracticeRecordMetric;
   scope: "today" | "history" | null;
   href: string | null;
+  source?: TeacherPracticeRecordSource;
 };
 
 export type TeacherStudentReadingPractice = {
@@ -320,6 +354,18 @@ export function isBasWrongbookSetId(setId: string) {
   return normalized.startsWith("wrongbook-");
 }
 
+/**
+ * Virtual BAS set id spaces: wrong-question sets and the legacy grammar
+ * practice ids. They are practiced through their own surfaces, so the student
+ * practice history excludes them instead of rendering them as BAS practices.
+ */
+export function isVirtualBasSetId(setId: string) {
+  const normalized = setId.trim().toLocaleLowerCase();
+  return normalized.startsWith("wrongbook-")
+    || normalized.startsWith("grammar-all-")
+    || normalized.startsWith("grammar-random-");
+}
+
 export function basAttemptGroupId(setId: string) {
   const normalized = setId.trim().toLocaleLowerCase();
   if (normalized.startsWith("wrongbook-today")) return WRONGBOOK_TODAY_GROUP_ID;
@@ -506,6 +552,9 @@ export function buildTeacherStudentReadingPractice(input: {
 export function buildTeacherStudentWritingPractice(input: {
   basAttempts: TeacherBasAttemptRow[];
   basTitles?: Map<string, string>;
+  /** Defaults to true; the student practice history passes false to skip
+   *  `wrongbook-*` / `grammar-*` sets (see PracticeHistoryLoadScope). */
+  includeVirtualBas?: boolean;
   studentId: string;
   writingAttempts: TeacherWritingAttemptRow[];
   writingDisplayNames: Map<string, string>;
@@ -525,9 +574,12 @@ export function buildTeacherStudentWritingPractice(input: {
     const submittedAt = validSubmittedAt(attempt.submitted_at);
     if (!submittedAt) continue;
     const setId = String(attempt.set_id);
+    const isWrongbook = isBasWrongbookSetId(setId);
+    // The student practice history excludes the whole virtual set id space
+    // (`wrongbook-*` / legacy `grammar-*`) from cards and records alike.
+    if (isVirtualBasSetId(setId) && input.includeVirtualBas === false) continue;
     const totalQuestions = nonNegativeInteger(attempt.total_questions);
     const correctCount = Math.min(totalQuestions, nonNegativeInteger(attempt.correct_count));
-    const isWrongbook = isBasWrongbookSetId(setId);
     if (!isWrongbook) {
       tasks.build_sentence.attempts += 1;
       tasks.build_sentence.correctCount += correctCount;
@@ -560,7 +612,8 @@ export function buildTeacherStudentWritingPractice(input: {
         : null,
       // A BAS record opens the attempt's own result page, never the set-wide
       // list of every attempt of that set.
-      href: `/teacher/students/${encodeURIComponent(input.studentId)}/attempts/${encodeURIComponent(String(attempt.attempt_id))}`
+      href: `/teacher/students/${encodeURIComponent(input.studentId)}/attempts/${encodeURIComponent(String(attempt.attempt_id))}`,
+      source: { basSetId: setId }
     });
   }
 
@@ -594,7 +647,11 @@ export function buildTeacherStudentWritingPractice(input: {
         wordCount: nonNegativeInteger(attempt.word_count)
       },
       scope: null,
-      href: `/teacher/writing/reviews/${encodeURIComponent(String(attempt.attempt_id))}`
+      href: `/teacher/writing/reviews/${encodeURIComponent(String(attempt.attempt_id))}`,
+      source: {
+        writingAssignmentId: attempt.assignment_id ? String(attempt.assignment_id) : null,
+        writingQuestionId: String(attempt.question_id)
+      }
     });
   }
 
@@ -725,7 +782,8 @@ function buildFullSetReadingPractice(input: {
         studentId: input.studentId,
         kind: "full_set",
         attemptId: String(attempt.attempt_id)
-      })
+      }),
+      source: { fullSetId: String(attempt.full_set_id) }
     });
   }
 

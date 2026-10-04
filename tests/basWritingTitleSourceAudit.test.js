@@ -139,9 +139,12 @@ test("Assignment snapshots never replace a resolvable logical title in the UI he
 
 test("BAS / WE / AD practice and history payloads keep raw ids for identity only", () => {
   // The raw ids (set_id / question_id) stay in payloads for routing, retake and
-  // cache keys; they must not be rendered as titles.
-  const unified = read("lib/unifiedPracticeHistory.ts");
-  assert.doesNotMatch(unified, /title: titles\.get\(setId\)\?\.trim\(\) \|\| attempt\.set_title/);
+  // cache keys; they must not be rendered as titles. The student practice
+  // history reuses the shared resolver through the teacher build and never
+  // renders a raw stored set_title itself.
+  const studentHistory = read("lib/studentPracticeHistory.ts");
+  assert.doesNotMatch(studentHistory, /attempt\.set_title/);
+  assert.doesNotMatch(studentHistory, /titles\.get\(setId\)/);
   const teacherPractice = read("lib/teacherStudentPractice.ts");
   assert.doesNotMatch(
     teacherPractice,

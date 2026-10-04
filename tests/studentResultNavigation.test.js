@@ -5,6 +5,7 @@ const test = require("node:test");
 const {
   getReadingFullSetResultNavigation,
   getReadingResultNavigation,
+  getStudentResultNavigation,
   getWritingResultNavigation,
   parseReadingResultSource,
   readingFullSetResultHref,
@@ -110,7 +111,7 @@ test("submit and history routes wire the explicit context into shared Result UIs
   const readingPractice = read("components/reading/ReadingPractice.tsx");
   const fullSetRunner = read("components/reading/ReadingFullSetRunner.tsx");
   const writingPractice = read("components/writing/WritingPractice.tsx");
-  const unifiedHistory = read("lib/unifiedPracticeHistory.ts");
+  const studentHistory = read("lib/studentPracticeHistory.ts");
   const readingResultPage = read("app/student/reading/results/[attemptId]/page.tsx");
   const fullSetResultPage = read("app/student/reading/full-sets/[fullSetId]/result/[attemptId]/page.tsx");
 
@@ -119,9 +120,47 @@ test("submit and history routes wire the explicit context into shared Result UIs
   assert.match(fullSetRunner, /actionHref=\{withStudentReturnTo\(/);
   assert.match(fullSetRunner, /\$\{STUDENT_ROUTES\.readingFullSets\}/);
   assert.match(writingPractice, /router\.replace\([\s\S]*WRITING_TASK_CONFIG\[taskType\]\.submissionHref/);
-  assert.match(unifiedHistory, /readingResultHref\(attemptId, "practice-history"\)/);
-  assert.match(unifiedHistory, /readingFullSetResultHref\([\s\S]*"practice-history"/);
-  assert.match(unifiedHistory, /writingSubmissionResultHref\([\s\S]*STUDENT_ROUTES\.practiceHistory/);
+  assert.match(studentHistory, /readingResultHref\(attemptId, "practice-history"\)/);
+  assert.match(studentHistory, /readingFullSetResultHref\(fullSetId, attemptId, "practice-history"\)/);
+  assert.match(
+    studentHistory,
+    /writingSubmissionResultHref\(record\.taskType, attemptId, fallbackReturnTo\)/
+  );
+  assert.match(
+    studentHistory,
+    /const fallbackReturnTo = returnTo \|\| STUDENT_ROUTES\.practiceHistory/
+  );
   assert.match(readingResultPage, /parseReadingResultSource\(searchParams\.source\)/);
   assert.match(fullSetResultPage, /parseReadingResultSource\(searchParams\.source\)/);
+});
+
+test("practice-history returnTo restores the exact date / range state on every result page", () => {
+  const historyHref = "/student/practice-history?date=2026-10-02&tasks=ctw";
+  for (const taskType of ["ctw", "rdl", "rap"]) {
+    const navigation = getReadingResultNavigation(taskType, undefined, historyHref);
+    assert.equal(navigation.backHref, historyHref);
+    assert.deepEqual(
+      navigation.crumbs.map((crumb) => crumb.label),
+      ["学生首页", "练习历史", "查看结果"]
+    );
+  }
+  const fullSet = getReadingFullSetResultNavigation("20260917A", undefined, historyHref);
+  assert.equal(fullSet.backHref, historyHref);
+  assert.deepEqual(fullSet.crumbs.map((crumb) => crumb.label), [
+    "学生首页",
+    "练习历史",
+    "20260917A"
+  ]);
+  const bas = getStudentResultNavigation("set-1", {
+    returnTo: "/student/practice-history?start=2026-10-01&end=2026-10-08&date=2026-10-02",
+    source: "practice-history"
+  });
+  assert.equal(
+    bas.backHref,
+    "/student/practice-history?start=2026-10-01&end=2026-10-08&date=2026-10-02"
+  );
+  assert.deepEqual(
+    bas.crumbs.map((crumb) => crumb.label),
+    ["学生首页", "练习历史", "查看结果"]
+  );
 });

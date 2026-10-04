@@ -23,6 +23,7 @@ import {
   resolveTeacherWritingAttemptDisplayName,
   WRONGBOOK_HISTORY_GROUP_ID,
   WRONGBOOK_TODAY_GROUP_ID,
+  type PracticeHistoryLoadScope,
   type TeacherBasAttemptRow,
   type TeacherFullSetAnswerRow,
   type TeacherFullSetAttemptRow,
@@ -369,8 +370,12 @@ export async function loadTeacherStudentReadingPractice(
   studentId: string,
   startAt: string,
   endAt: string,
-  loadCatalog: TeacherReadingCatalogLoader
+  loadCatalog: TeacherReadingCatalogLoader,
+  scope?: PracticeHistoryLoadScope
 ): Promise<TeacherStudentReadingPractice> {
+  // The student practice history loads only the seven public task types, so
+  // wrong-question attempts and their sessions are never queried for it.
+  const includeWrongbook = scope?.includeWrongbook !== false;
   const [attemptsResult, wrongbookResult, fullSetResult] = await Promise.all([
     readAllSupabaseRows<TeacherReadingAttemptRow>((from, to) =>
       db
@@ -386,20 +391,25 @@ export async function loadTeacherStudentReadingPractice(
         .order("attempt_id", { ascending: false })
         .range(from, to)
     ),
-    readAllSupabaseRows<TeacherReadingWrongbookAttemptRow>((from, to) =>
-      db
-        .from("reading_wrongbook_attempts")
-        .select(
-          "attempt_id,student_id,logical_item_id,task_type,scope,status,elapsed_seconds,total_points,correct_points,submitted_at"
+    includeWrongbook
+      ? readAllSupabaseRows<TeacherReadingWrongbookAttemptRow>((from, to) =>
+          db
+            .from("reading_wrongbook_attempts")
+            .select(
+              "attempt_id,student_id,logical_item_id,task_type,scope,status,elapsed_seconds,total_points,correct_points,submitted_at"
+            )
+            .eq("student_id", studentId)
+            .eq("status", "submitted")
+            .gte("submitted_at", startAt)
+            .lt("submitted_at", endAt)
+            .order("submitted_at", { ascending: false })
+            .order("attempt_id", { ascending: false })
+            .range(from, to)
         )
-        .eq("student_id", studentId)
-        .eq("status", "submitted")
-        .gte("submitted_at", startAt)
-        .lt("submitted_at", endAt)
-        .order("submitted_at", { ascending: false })
-        .order("attempt_id", { ascending: false })
-        .range(from, to)
-    ),
+      : Promise.resolve({
+          data: [] as TeacherReadingWrongbookAttemptRow[],
+          error: null as { message: string } | null
+        }),
     readAllSupabaseRows<TeacherFullSetAttemptRow>((from, to) =>
       db
         .from("reading_full_set_attempts")
@@ -426,11 +436,13 @@ export async function loadTeacherStudentReadingPractice(
   // and must share an attempt's task type. Cross-date sessions stay covered:
   // started before the day or completed after it still satisfy both bounds. A
   // day without wrong-question attempts skips the lookup entirely.
-  const wrongbookTaskTypes = distinct(
-    (wrongbookResult.data ?? []).map((attempt) => String(attempt.task_type))
-  ).filter((taskType): taskType is ReadingModule =>
-    (READING_MODULES as readonly string[]).includes(taskType)
-  );
+  const wrongbookTaskTypes = includeWrongbook
+    ? distinct(
+        (wrongbookResult.data ?? []).map((attempt) => String(attempt.task_type))
+      ).filter((taskType): taskType is ReadingModule =>
+        (READING_MODULES as readonly string[]).includes(taskType)
+      )
+    : [];
   const wrongbookSessionsResult = wrongbookTaskTypes.length
     ? await readAllSupabaseRows<TeacherReadingWrongbookSessionRow>((from, to) =>
         db
@@ -513,7 +525,8 @@ export async function loadTeacherStudentWritingPractice(
   db: SupabaseClient,
   studentId: string,
   startAt: string,
-  endAt: string
+  endAt: string,
+  scope?: PracticeHistoryLoadScope
 ): Promise<TeacherStudentWritingPractice> {
   const [basResult, writingResult] = await Promise.all([
     readAllSupabaseRows<TeacherBasAttemptRow>((from, to) =>
@@ -561,6 +574,7 @@ export async function loadTeacherStudentWritingPractice(
   return buildTeacherStudentWritingPractice({
     basAttempts,
     basTitles,
+    includeVirtualBas: scope?.includeVirtualBas !== false,
     studentId,
     writingAttempts,
     writingDisplayNames,
