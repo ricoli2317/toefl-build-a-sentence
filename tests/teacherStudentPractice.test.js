@@ -7,6 +7,8 @@ const {
   TEACHER_PRACTICE_TASK_SHORT_LABELS,
   buildTeacherStudentReadingPractice,
   buildTeacherStudentWritingPractice,
+  formatTeacherPracticeTaskSelection,
+  parseTeacherPracticeTaskSelection,
   resolveTeacherWritingAttemptDisplayName
 } = require("../lib/teacherStudentPractice.ts");
 const {
@@ -661,7 +663,12 @@ test("scoped Reading metadata keeps the global display numbers without loading t
       readingCatalogRow({ logical_item_id: "ctw-a", first_seen_date: "2026-01-01", first_seen_source_order: 1 }),
       readingCatalogRow({ logical_item_id: "ctw-b", first_seen_date: "2026-01-01", first_seen_source_order: 2 }),
       readingCatalogRow({ logical_item_id: "ctw-c", first_seen_date: "2026-01-05", first_seen_source_order: 1 }),
-      readingCatalogRow({ logical_item_id: "ctw-d", first_seen_date: "2026-02-01", first_seen_source_order: 1 }),
+      readingCatalogRow({
+        logical_item_id: "ctw-d",
+        first_seen_date: "2026-02-01",
+        first_seen_source_order: 1,
+        title: "Night Sky"
+      }),
       readingCatalogRow({ logical_item_id: "ctw-e", first_seen_date: "2026-02-01", first_seen_source_order: 2 }),
       readingCatalogRow({ logical_item_id: "rdl-x", module: "rdl", title: "Library Notice", first_seen_date: "2026-01-02" })
     ]
@@ -670,9 +677,42 @@ test("scoped Reading metadata keeps the global display numbers without loading t
   const meta = await loadTeacherReadingItemMeta(db, ["ctw-b", "ctw-d"]);
 
   assert.equal(meta.size, 2);
+  // CTW records show the canonical catalog title next to the display number.
   assert.equal(meta.get("ctw-b").displayName, "题目002");
-  assert.equal(meta.get("ctw-d").displayName, "题目004");
+  assert.equal(meta.get("ctw-d").displayName, "题目004 · Night Sky");
   assert.equal(meta.get("ctw-d").scoringPointCount, 10);
+});
+
+test("teacher task filter params round-trip date and filter state", () => {
+  const all = parseTeacherPracticeTaskSelection(undefined);
+  assert.equal(formatTeacherPracticeTaskSelection(all), "");
+  assert.equal(formatTeacherPracticeTaskSelection(parseTeacherPracticeTaskSelection("")), "");
+  assert.deepEqual(parseTeacherPracticeTaskSelection(""), all);
+  assert.deepEqual(parseTeacherPracticeTaskSelection("unknown"), all);
+
+  const partial = parseTeacherPracticeTaskSelection("ctw,rdl,build_sentence");
+  assert.equal(partial.ctw, true);
+  assert.equal(partial.rdl, true);
+  assert.equal(partial.rap, false);
+  assert.equal(partial.full_set, false);
+  assert.equal(partial.build_sentence, true);
+  assert.equal(partial.email, false);
+  assert.equal(partial.academic_discussion, false);
+  assert.equal(formatTeacherPracticeTaskSelection(partial), "ctw,rdl,build_sentence");
+  assert.deepEqual(parseTeacherPracticeTaskSelection("ctw,rdl,build_sentence"), partial);
+
+  const none = parseTeacherPracticeTaskSelection("none");
+  assert.deepEqual(none, {
+    ctw: false,
+    rdl: false,
+    rap: false,
+    full_set: false,
+    build_sentence: false,
+    email: false,
+    academic_discussion: false
+  });
+  assert.equal(formatTeacherPracticeTaskSelection(none), "none");
+  assert.deepEqual(parseTeacherPracticeTaskSelection("none"), none);
 });
 
 test("checkbox short labels match the product copy", () => {  assert.deepEqual(TEACHER_PRACTICE_TASK_SHORT_LABELS, {

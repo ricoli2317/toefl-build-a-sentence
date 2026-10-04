@@ -464,6 +464,10 @@ test("range API is binding-scoped, lightweight, and never reads content", () => 
   assert.doesNotMatch(route, /loadTeacherStudentReadingPractice|loadTeacherStudentWritingPractice/);
 
   const loader = read("lib/teacherStudentPracticeRange.server.ts");
+  // Disallowed subjects are never queried at all: shared counters cannot see
+  // records from a subject the teacher is not bound to.
+  assert.match(loader, /allowed\.reading[\s\S]{0,40}\? loadReadingRange\(/);
+  assert.match(loader, /allowed\.writing[\s\S]{0,40}\? loadWritingRange\(/);
   // Minimal scoring / counting columns only, always student- and range-scoped.
   assert.match(loader, /\.select\("task_type,status,correct_points,total_points,submitted_at"\)/);
   assert.match(loader, /\.select\("attempt_id,status,submitted_at"\)/);
@@ -504,8 +508,15 @@ test("range view keeps the date area and adds no route change", () => {
   assert.match(component, /practice-range\?\$\{params\.toString\(\)\}/);
   assert.match(component, /TEACHER_STUDENT_PRACTICE_RANGE_CACHE_PREFIX/);
   assert.match(component, /返回范围统计/);
-  // No URL navigation for range selection.
-  assert.doesNotMatch(component, /router\.(push|replace)|window\.location/);
+  // Range selection itself never navigates; only the single-day date / filter
+  // state is mirrored into the URL so drill-down returns restore it.
+  assert.match(
+    component,
+    /router\.replace\(teacherQueryUrl\(\{ date: desiredDate, tasks: desiredTasks \|\| null \}\)\)/
+  );
+  const applyRegion = component.match(/function applyDateDraft[\s\S]*?\n  \}/)?.[0] ?? "";
+  assert.notEqual(applyRegion, "");
+  assert.doesNotMatch(applyRegion, /router\./);
 });
 
 test("range cards use one equal four-column grid for both rows", () => {
@@ -522,14 +533,122 @@ test("range cards use one equal four-column grid for both rows", () => {
   assert.match(writingRow, /\(\["email", "academic_discussion"\] as const\)\.map/);
   assert.doesNotMatch(writingRow, /full_set/);
 
-  // The ten-category date list is present and never renders practice records.
+  // The per-day date list is present and never renders practice records.
   const listRegion = component.match(
     /function TeacherPracticeRangeDayList[\s\S]*?function TeacherPracticeRangeReturnBar/
   )?.[0] ?? "";
   assert.notEqual(listRegion, "");
-  assert.match(listRegion, /TEACHER_PRACTICE_RANGE_DAY_COUNT_KEYS\.map/);
+  assert.match(listRegion, /visibleKeys\.map\(\(key\)/);
   assert.match(listRegion, /TEACHER_PRACTICE_RANGE_DAY_COUNT_LABELS\[key\]/);
   assert.doesNotMatch(listRegion, /TeacherPracticeRecordList/);
+  // 10 / 7 / 6 columns for both / reading-only / writing-only.
+  assert.match(listRegion, /grid-cols-5 sm:grid-cols-10/);
+  assert.match(listRegion, /grid-cols-4 sm:grid-cols-7/);
+  assert.match(listRegion, /grid-cols-3 sm:grid-cols-6/);
+});
+
+test("range date list keeps shared counters and follows the bound subject", () => {
+  const component = read("components/teacher/TeacherStudentPracticeSection.tsx");
+  assert.match(component, /RANGE_READING_DAY_KEYS = new Set<TeacherPracticeRangeDayCountKey>\(\[/);
+  assert.match(component, /RANGE_WRITING_DAY_KEYS = new Set<TeacherPracticeRangeDayCountKey>\(\[/);
+  assert.match(component, /visibleKeys=\{rangeDayVisibleKeys\(data\)\}/);
+  const keysRegion = component.match(/function rangeDayVisibleKeys[\s\S]*?\n\}/)?.[0] ?? "";
+  assert.notEqual(keysRegion, "");
+  // Shared wrong-question keys are in neither subject set, so they always show.
+  assert.doesNotMatch(keysRegion, /wrongbook_entry|wrongbook_today|wrongbook_history/);
+  assert.match(keysRegion, /Boolean\(data\.reading\)/);
+  assert.match(keysRegion, /Boolean\(data\.writing\)/);
+});
+
+test("shared wrong-question counters only count the bound subject's records", () => {
+  const reading = {
+    attempts: [],
+    wrongbookAttempts: [
+      {
+        attempt_id: "w-reading-entry",
+        status: "submitted",
+        submitted_at: "2026-10-01T03:00:00.000Z"
+      }
+    ],
+    sessions: [],
+    fullSetAttempts: [],
+    fullSetModules: []
+  };
+  const writing = {
+    basAttempts: [
+      {
+        set_id: "wrongbook-today-20261001",
+        set_title: "错题订正",
+        correct_count: 0,
+        total_questions: 1,
+        submitted_at: "2026-10-01T04:00:00.000Z"
+      }
+    ],
+    writingAttempts: []
+  };
+
+  const readingOnly = buildTeacherStudentPracticeRange({
+    reading,
+    writing: null,
+    timeZone: "Asia/Shanghai"
+  });
+  assert.equal(readingOnly.writing, null);
+  const readingDay = readingOnly.days.find((day) => day.date === "2026-10-01");
+  assert.equal(readingDay.counts.wrongbook_entry, 1);
+  assert.equal(readingDay.counts.wrongbook_today, 0);
+  assert.equal(readingDay.counts.build_sentence, 0);
+
+  const writingOnly = buildTeacherStudentPracticeRange({
+    reading: null,
+    writing,
+    timeZone: "Asia/Shanghai"
+  });
+  assert.equal(writingOnly.reading, null);
+  const writingDay = writingOnly.days.find((day) => day.date === "2026-10-01");
+  assert.equal(writingDay.counts.wrongbook_entry, 1);
+  assert.equal(writingDay.counts.ctw, 0);
+
+  const both = buildTeacherStudentPracticeRange({
+    reading,
+    writing,
+    timeZone: "Asia/Shanghai"
+  });
+  const bothDay = both.days.find((day) => day.date === "2026-10-01");
+  assert.equal(bothDay.counts.wrongbook_entry, 2);
+});
+
+test("student detail URL keeps the date and task filter for drill-down returns", () => {
+  const page = read("app/teacher/students/[studentId]/page.tsx");
+  assert.match(page, /initialDate=\{firstSearchParamValue\(searchParams\?\.date\)\}/);
+  assert.match(page, /initialTasks=\{firstSearchParamValue\(searchParams\?\.tasks\)\}/);
+  assert.match(page, /returnTo=\{firstSearchParamValue\(searchParams\?\.returnTo\)\}/);
+
+  const dashboard = read("components/TeacherDashboard.tsx");
+  assert.match(dashboard, /initialDate=\{initialDate\}/);
+  assert.match(dashboard, /initialTasks=\{initialTasks\}/);
+  // A different student remounts the workspace instead of reusing its state.
+  assert.match(dashboard, /key=\{studentId\}/);
+
+  const component = read("components/teacher/TeacherStudentPracticeSection.tsx");
+  // Every record's returnTo carries the active date and filter.
+  assert.match(
+    component,
+    /const selfQuery = new URLSearchParams\(\{ date: formatDateInputValue\(selectedDay\) \}\)/
+  );
+  assert.match(component, /if \(selfTasks\) selfQuery\.set\("tasks", selfTasks\)/);
+  assert.match(
+    component,
+    /teacherReturnToHref\(\s*`\$\{teacherStudentDetailHref\(studentId\)\}\?\$\{selfQuery\.toString\(\)\}`,\s*parentReturnTo\s*\)/
+  );
+  // Back/Forward realigns from the URL props.
+  assert.match(
+    component,
+    /setSelectedDay\(parseDateInputValue\(initialDate \?\? ""\) \?\? startOfLocalDay\(\)\)/
+  );
+  assert.match(
+    component,
+    /setSelectedTasks\(parseTeacherPracticeTaskSelection\(initialTasks\)\)/
+  );
 });
 
 test("range cache is invalidated with the single-day practice cache", () => {

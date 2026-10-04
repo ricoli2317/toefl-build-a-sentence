@@ -39,6 +39,46 @@ export const TEACHER_PRACTICE_TASK_LABELS: Record<TeacherPracticeTaskType, strin
   academic_discussion: "Academic Discussion"
 };
 
+export function allTeacherPracticeTasksSelected(): Record<TeacherPracticeTaskType, boolean> {
+  return Object.fromEntries(
+    TEACHER_PRACTICE_TASK_TYPES.map((taskType) => [taskType, true])
+  ) as Record<TeacherPracticeTaskType, boolean>;
+}
+
+/**
+ * Parses the `tasks` search param of the student detail page. A missing value
+ * keeps the default (all selected); `none` is an explicit empty selection;
+ * unknown-only values fall back to the default so a stale link never hides
+ * every record.
+ */
+export function parseTeacherPracticeTaskSelection(
+  value: string | null | undefined
+): Record<TeacherPracticeTaskType, boolean> {
+  const selected = Object.fromEntries(
+    TEACHER_PRACTICE_TASK_TYPES.map((taskType) => [taskType, false])
+  ) as Record<TeacherPracticeTaskType, boolean>;
+  const raw = (value ?? "").trim();
+  if (!raw) return allTeacherPracticeTasksSelected();
+  if (raw === "none") return selected;
+  const wanted = new Set(raw.split(",").map((part) => part.trim()).filter(Boolean));
+  for (const taskType of TEACHER_PRACTICE_TASK_TYPES) {
+    selected[taskType] = wanted.has(taskType);
+  }
+  return TEACHER_PRACTICE_TASK_TYPES.some((taskType) => selected[taskType])
+    ? selected
+    : allTeacherPracticeTasksSelected();
+}
+
+/** Serializes the filter for the URL; "" means the default all-selected state. */
+export function formatTeacherPracticeTaskSelection(
+  selected: Record<TeacherPracticeTaskType, boolean>
+) {
+  const checked = TEACHER_PRACTICE_TASK_TYPES.filter((taskType) => selected[taskType]);
+  if (checked.length === TEACHER_PRACTICE_TASK_TYPES.length) return "";
+  if (checked.length === 0) return "none";
+  return checked.join(",");
+}
+
 export type TeacherReadingTaskSummary = {
   attempts: number;
   correctPoints: number;

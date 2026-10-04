@@ -224,7 +224,13 @@ function buildDisplayRanks(items: ReadingCatalogItemRow[]) {
 
 export function readingItemDisplayName(item: ReadingCatalogItemRow, ranks: Map<string, string>) {
   const prefix = `题目${ranks.get(item.logical_item_id) ?? "—"}`;
-  return item.module === "ctw" ? prefix : `${prefix} · ${item.title?.trim() || READING_PRODUCT_NAMES[item.module]}`;
+  const title = item.title?.trim();
+  if (item.module === "ctw") {
+    // CTW's canonical catalog title (up to 5 words) is its display title; the
+    // number stays the prefix. Legacy rows without a title keep the number only.
+    return title ? `${prefix} · ${title}` : prefix;
+  }
+  return `${prefix} · ${title || READING_PRODUCT_NAMES[item.module]}`;
 }
 
 function naturalQuestionType(questionType: string) {

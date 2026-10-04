@@ -8,7 +8,11 @@ export default function TeacherStudentPage({
   searchParams
 }: {
   params: { studentId: string };
-  searchParams?: { returnTo?: string | string[] };
+  searchParams?: {
+    date?: string | string[];
+    returnTo?: string | string[];
+    tasks?: string | string[];
+  };
 }) {
   return (
     <TeacherOnly>
@@ -17,6 +21,8 @@ export default function TeacherStudentPage({
       title="学生概览"
     >
       <TeacherStudentSummary
+        initialDate={firstSearchParamValue(searchParams?.date)}
+        initialTasks={firstSearchParamValue(searchParams?.tasks)}
         returnTo={firstSearchParamValue(searchParams?.returnTo)}
         studentId={params.studentId}
       />

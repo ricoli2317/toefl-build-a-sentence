@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CalendarDays, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
@@ -29,6 +30,7 @@ import {
 import {
   safeTeacherReturnTo,
   teacherClassIdFromReturnTo,
+  teacherQueryUrl,
   teacherReturnToHref,
   teacherStudentDetailCrumbs,
   teacherStudentDetailHref,
@@ -47,6 +49,8 @@ import {
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { formatAccountForDisplay } from "@/lib/accountIdentifier";
 import {
+  formatTeacherPracticeTaskSelection,
+  parseTeacherPracticeTaskSelection,
   TEACHER_PRACTICE_TASK_LABELS,
   TEACHER_PRACTICE_TASK_SHORT_LABELS,
   TEACHER_PRACTICE_TASK_TYPES,
@@ -58,11 +62,26 @@ import {
   TEACHER_PRACTICE_RANGE_DAY_COUNT_KEYS,
   TEACHER_PRACTICE_RANGE_DAY_COUNT_LABELS,
   type TeacherPracticeRangeDay,
+  type TeacherPracticeRangeDayCountKey,
   type TeacherStudentPracticeRangePayload
 } from "@/lib/teacherStudentPracticeRange";
 
 const READING_TASKS = ["ctw", "rdl", "rap"] as const;
 const WRITING_TASKS = ["build_sentence", "email", "academic_discussion"] as const;
+
+// The date list keeps its shared wrong-question counters for every teacher,
+// while subject-specific columns follow the student's binding domains.
+const RANGE_READING_DAY_KEYS = new Set<TeacherPracticeRangeDayCountKey>([
+  "ctw",
+  "rdl",
+  "rap",
+  "full_set"
+]);
+const RANGE_WRITING_DAY_KEYS = new Set<TeacherPracticeRangeDayCountKey>([
+  "build_sentence",
+  "email",
+  "academic_discussion"
+]);
 
 type PracticeView =
   | { kind: "day" }
@@ -80,23 +99,35 @@ const ALL_TASKS_SELECTED: Record<TeacherPracticeTaskType, boolean> = {
 };
 
 export function TeacherStudentPracticeWorkspace({
+  initialDate,
+  initialTasks,
   returnTo,
   studentId
 }: {
+  /** Calendar date (YYYY-MM-DD) from the URL; missing means today. */
+  initialDate?: string;
+  /** Task filter (comma list / `none`) from the URL; missing means all. */
+  initialTasks?: string;
   returnTo?: string;
   studentId: string;
 }) {
+  const router = useRouter();
   const cache = useTeacherDataCache();
-  const [selectedDay, setSelectedDay] = useState(() => startOfLocalDay());
+  const [selectedDay, setSelectedDay] = useState(
+    () => parseDateInputValue(initialDate ?? "") ?? startOfLocalDay()
+  );
   // "day" is the untouched single-day detail. "range" swaps the practice area
   // for the range statistics. "rangeDay" reuses the single-day detail for one
   // date of the active range and can return to the cached range view.
   const [view, setView] = useState<PracticeView>({ kind: "day" });
   const [dateDraft, setDateDraft] = useState(() => ({
-    start: formatDateInputValue(startOfLocalDay()),
-    end: formatDateInputValue(startOfLocalDay())
+    start: formatDateInputValue(parseDateInputValue(initialDate ?? "") ?? startOfLocalDay()),
+    end: formatDateInputValue(parseDateInputValue(initialDate ?? "") ?? startOfLocalDay())
   }));
-  const [selectedTasks, setSelectedTasks] = useState(ALL_TASKS_SELECTED);
+  const [selectedTasks, setSelectedTasks] = useState(() =>
+    initialTasks === undefined
+      ? ALL_TASKS_SELECTED
+      : parseTeacherPracticeTaskSelection(initialTasks));
   const [subjectsDraft, setSubjectsDraft] = useState<StudentBindingDomain[]>([]);
   const [subjectsDialogOpen, setSubjectsDialogOpen] = useState(false);
   const [subjectsBusy, setSubjectsBusy] = useState(false);
@@ -107,7 +138,40 @@ export function TeacherStudentPracticeWorkspace({
   const range = useMemo(() => localDayRange(selectedDay), [selectedDay]);
   const parentReturnTo = safeTeacherReturnTo(returnTo, TEACHER_HOME_HREF);
   const className = useTeacherClassDisplayName(teacherClassIdFromReturnTo(parentReturnTo));
-  const selfHref = teacherReturnToHref(teacherStudentDetailHref(studentId), parentReturnTo);
+  // The drill-down returnTo carries the active date and task filter, so every
+  // result page (and its read-only question pages) can come back to exactly
+  // this view instead of the default today view.
+  const selfQuery = new URLSearchParams({ date: formatDateInputValue(selectedDay) });
+  const selfTasks = formatTeacherPracticeTaskSelection(selectedTasks);
+  if (selfTasks) selfQuery.set("tasks", selfTasks);
+  const selfHref = teacherReturnToHref(
+    `${teacherStudentDetailHref(studentId)}?${selfQuery.toString()}`,
+    parentReturnTo
+  );
+
+  // The URL props stay the source of truth, so browser Back/Forward restores
+  // the date and the filter exactly like a fresh drill-down return does.
+  useEffect(() => {
+    setSelectedDay(parseDateInputValue(initialDate ?? "") ?? startOfLocalDay());
+  }, [initialDate]);
+  useEffect(() => {
+    setSelectedTasks(parseTeacherPracticeTaskSelection(initialTasks));
+  }, [initialTasks]);
+
+  // Keep the address bar in sync so a refresh (or a copied URL) keeps the same
+  // view. Missing `date` already means today, so the default state never
+  // rewrites the URL.
+  useEffect(() => {
+    const desiredDate = formatDateInputValue(selectedDay);
+    const desiredTasks = formatTeacherPracticeTaskSelection(selectedTasks);
+    const params = new URLSearchParams(window.location.search);
+    const currentDate = params.get("date") ?? "";
+    const currentTasks = params.get("tasks") ?? "";
+    const dateMatches = currentDate === desiredDate
+      || (currentDate === "" && isToday(selectedDay));
+    if (dateMatches && currentTasks === desiredTasks) return;
+    router.replace(teacherQueryUrl({ date: desiredDate, tasks: desiredTasks || null }));
+  }, [router, selectedDay, selectedTasks]);
   const practiceCacheKey =
     `${TEACHER_STUDENT_PRACTICE_CACHE_PREFIX}:${studentId}:${range.startAt}:${range.endAt}`;
   // A teacher with no binding for this student can no longer load their
@@ -973,23 +1037,49 @@ function TeacherStudentPracticeRangeView({
         </section>
       ) : null}
 
-      <TeacherPracticeRangeDayList days={data.days} onOpenDay={onOpenDay} />
+      <TeacherPracticeRangeDayList
+        days={data.days}
+        onOpenDay={onOpenDay}
+        visibleKeys={rangeDayVisibleKeys(data)}
+      />
     </section>
   );
 }
 
 /**
- * The ten categories the range view counts per day. Entry corrections are
- * independent attempts; today / history wrong questions count finished
- * sessions (one per session), never the attempts inside them.
+ * The date list keeps every shared wrong-question counter and only shows the
+ * subject-specific columns the teacher is bound to for this student.
+ */
+function rangeDayVisibleKeys(data: TeacherStudentPracticeRangePayload) {
+  return TEACHER_PRACTICE_RANGE_DAY_COUNT_KEYS.filter((key) =>
+    RANGE_READING_DAY_KEYS.has(key)
+      ? Boolean(data.reading)
+      : RANGE_WRITING_DAY_KEYS.has(key)
+        ? Boolean(data.writing)
+        : true
+  );
+}
+
+/**
+ * The per-day counters. Entry corrections are independent attempts; today /
+ * history wrong questions count finished sessions (one per session), never the
+ * attempts inside them. Shared counters stay visible for every teacher.
  */
 function TeacherPracticeRangeDayList({
   days,
-  onOpenDay
+  onOpenDay,
+  visibleKeys
 }: {
   days: TeacherPracticeRangeDay[];
   onOpenDay: (date: string) => void;
+  visibleKeys: TeacherPracticeRangeDayCountKey[];
 }) {
+  // 10 (both subjects) / 7 (reading only) / 6 (writing only) columns.
+  const columnsClass = visibleKeys.length > 7
+    ? "grid-cols-5 sm:grid-cols-10"
+    : visibleKeys.length > 6
+      ? "grid-cols-4 sm:grid-cols-7"
+      : "grid-cols-3 sm:grid-cols-6";
   return (
     <section className="grid gap-4">
       <div className="flex flex-wrap items-center gap-3">
@@ -1015,8 +1105,8 @@ function TeacherPracticeRangeDayList({
                 >
                   {formatRangeDayLabel(day.date)}
                 </button>
-                <div className="grid grid-cols-5 gap-x-3 gap-y-1 sm:grid-cols-10">
-                  {TEACHER_PRACTICE_RANGE_DAY_COUNT_KEYS.map((key) => (
+                <div className={`grid gap-x-3 gap-y-1 ${columnsClass}`}>
+                  {visibleKeys.map((key) => (
                     <div className="min-w-[64px] text-center" key={key}>
                       <p className="text-[11px] font-medium text-student-muted">
                         {TEACHER_PRACTICE_RANGE_DAY_COUNT_LABELS[key]}

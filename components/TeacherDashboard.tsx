@@ -257,13 +257,27 @@ export function AdminPlatformHome() {
 }
 
 export function TeacherStudentSummary({
+  initialDate,
+  initialTasks,
   returnTo,
   studentId
 }: {
+  initialDate?: string;
+  initialTasks?: string;
   returnTo?: string;
   studentId: string;
 }) {
-  return <TeacherStudentPracticeWorkspace returnTo={returnTo} studentId={studentId} />;
+  // The key resets the workspace when the teacher opens another student, so a
+  // previous student's date / task filter / subject override never leaks over.
+  return (
+    <TeacherStudentPracticeWorkspace
+      initialDate={initialDate}
+      initialTasks={initialTasks}
+      key={studentId}
+      returnTo={returnTo}
+      studentId={studentId}
+    />
+  );
 }
 
 type TeacherStudentSetDetailsPayload = {
