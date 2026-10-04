@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { bearerToken, requireTeacherOnly } from "@/lib/auth";
+import { loadCachedPublicReadingCatalog } from "@/lib/reading/catalogCache.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   appendSupabaseDebugMetrics,
@@ -58,7 +59,15 @@ export async function GET(
 
     const [reading, writing] = await Promise.all([
       readingAllowed
-        ? loadTeacherStudentReadingPractice(db, studentId, startAt, endAt)
+        ? loadTeacherStudentReadingPractice(
+            db,
+            studentId,
+            startAt,
+            endAt,
+            // Same cached public catalog the student directory uses, so the
+            // display numbers never recompute per-date counts.
+            loadCachedPublicReadingCatalog
+          )
         : Promise.resolve(null),
       writingAllowed
         ? loadTeacherStudentWritingPractice(db, studentId, startAt, endAt)

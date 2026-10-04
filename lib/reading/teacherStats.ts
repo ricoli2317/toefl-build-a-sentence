@@ -1,6 +1,7 @@
 import {
   compareReadingCatalogIdentityOrder,
-  type ReadingCatalogItemRow
+  type ReadingCatalogItemRow,
+  type ReadingCatalogPublicItem
 } from "./catalog.ts";
 import { READING_PRODUCT_NAMES } from "./product.ts";
 import type { ReadingModule } from "./types.ts";
@@ -222,15 +223,30 @@ function buildDisplayRanks(items: ReadingCatalogItemRow[]) {
   return ranks;
 }
 
-export function readingItemDisplayName(item: ReadingCatalogItemRow, ranks: Map<string, string>) {
-  const prefix = `题目${ranks.get(item.logical_item_id) ?? "—"}`;
+/**
+ * One display-name rule for both catalog sources: the cached public catalog
+ * item (teacher detail / student catalog) and the live scoped row with a
+ * computed rank (fallback).
+ */
+export function readingCatalogItemDisplayName(
+  item: Pick<ReadingCatalogPublicItem, "taskType" | "displayNumber" | "title">
+) {
+  const prefix = `题目${item.displayNumber}`;
   const title = item.title?.trim();
-  if (item.module === "ctw") {
+  if (item.taskType === "ctw") {
     // CTW's canonical catalog title (up to 5 words) is its display title; the
-    // number stays the prefix. Legacy rows without a title keep the number only.
+    // number stays the prefix. Rows without a title keep the number only.
     return title ? `${prefix} · ${title}` : prefix;
   }
-  return `${prefix} · ${title || READING_PRODUCT_NAMES[item.module]}`;
+  return `${prefix} · ${title || READING_PRODUCT_NAMES[item.taskType]}`;
+}
+
+export function readingItemDisplayName(item: ReadingCatalogItemRow, ranks: Map<string, string>) {
+  return readingCatalogItemDisplayName({
+    displayNumber: ranks.get(item.logical_item_id) ?? "—",
+    taskType: item.module,
+    title: item.title ?? ""
+  });
 }
 
 function naturalQuestionType(questionType: string) {

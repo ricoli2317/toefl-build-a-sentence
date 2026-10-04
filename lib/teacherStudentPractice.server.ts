@@ -1,9 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
   compareReadingCatalogIdentityOrder,
-  type ReadingCatalogItemRow
+  type ReadingCatalogItemRow,
+  type ReadingCatalogPublicItem,
+  type ReadingCatalogPublicPayload
 } from "./reading/catalog.ts";
-import { readingItemDisplayName } from "./reading/teacherStats.ts";
+import { readingCatalogItemDisplayName, readingItemDisplayName } from "./reading/teacherStats.ts";
+import type { ReadingModule } from "./reading/types.ts";
 import {
   loadBuildSentenceHistoricalPracticeDisplayResolver,
   loadWritingHistoricalPracticeDisplayResolver
@@ -37,6 +40,15 @@ const READING_MODULES = ["ctw", "rdl", "rap"] as const;
 
 type ReadingItemRow = ReadingCatalogItemRow;
 
+/**
+ * One cached public reading catalog payload per module. The API route wires the
+ * Next.js-cached loader in (the same one the student directory uses), so this
+ * module stays independent of `next/cache` and stays unit-testable.
+ */
+export type TeacherReadingCatalogLoader = (
+  taskType: ReadingModule
+) => Promise<ReadingCatalogPublicPayload>;
+
 type WritingAssignmentRow = {
   assignment_id: string;
   question_source: "custom" | "question_bank";
@@ -62,7 +74,8 @@ type BasAttemptTitleRow = {
 
 export async function loadTeacherReadingItemMeta(
   db: SupabaseClient,
-  itemIds: string[]
+  itemIds: string[],
+  loadCatalog: TeacherReadingCatalogLoader
 ): Promise<Map<string, TeacherReadingItemMeta>> {
   const ids = distinct(itemIds);
   const meta = new Map<string, TeacherReadingItemMeta>();
@@ -81,13 +94,33 @@ export async function loadTeacherReadingItemMeta(
     throw new Error(`Failed to load scoped Reading item metadata: ${visibleResult.error.message}`);
   }
   const visibleItems = visibleResult.data ?? [];
-  const ranks = await loadReadingItemDisplayRanks(db, visibleItems);
+
+  // Display numbers and titles come from the same cached public catalog the
+  // student directory uses, so the normal path runs no per-date COUNT / rank
+  // walk at all. Only when a scoped item is absent from the catalog (stale
+  // cache or a failed catalog build) does the live rank computation run — and
+  // it then covers every scoped item so the numbers stay mutually consistent.
+  const catalogItems = await loadTeacherReadingCatalogItems(visibleItems, loadCatalog);
+  const missingCatalogItems = visibleItems.filter(
+    (item) => !catalogItems.has(item.logical_item_id)
+  );
+  const fallbackRanks = missingCatalogItems.length > 0
+    ? await loadReadingItemDisplayRanks(db, visibleItems)
+    : null;
 
   for (const item of visibleItems) {
+    const catalogItem = catalogItems.get(item.logical_item_id);
+    const displayName = fallbackRanks?.has(item.logical_item_id)
+      ? readingItemDisplayName(item, fallbackRanks)
+      : catalogItem
+        ? readingCatalogItemDisplayName(catalogItem)
+        : readingItemDisplayName(item, new Map());
     meta.set(item.logical_item_id, {
       logical_item_id: item.logical_item_id,
       module: item.module,
-      displayName: readingItemDisplayName(item, ranks),
+      displayName,
+      // The scoring point count still comes from the scoped live row: it feeds
+      // the Full Set accuracy and must keep its exact meaning.
       scoringPointCount: Math.max(0, Number(item.scored_item_count) || 0)
     });
   }
@@ -96,11 +129,40 @@ export async function loadTeacherReadingItemMeta(
 }
 
 /**
- * Module display numbers are computed in two parallel waves for every module
- * at once (base counts by date + same-date siblings) instead of walking each
- * module's count/sibling chain one round trip at a time. Rank semantics are
- * unchanged: global position inside the module ordered by first-seen date and
- * canonical identity.
+ * Loads only the catalog modules the scoped items actually belong to, once per
+ * module, and indexes them by logical item id. A failed catalog build degrades
+ * to the scoped fallback ranks instead of failing the whole teacher list.
+ */
+async function loadTeacherReadingCatalogItems(
+  visibleItems: ReadingItemRow[],
+  loadCatalog: TeacherReadingCatalogLoader
+): Promise<Map<string, ReadingCatalogPublicItem>> {
+  const items = new Map<string, ReadingCatalogPublicItem>();
+  const modules = distinct(visibleItems.map((item) => item.module)).filter(
+    (module): module is ReadingModule =>
+      (READING_MODULES as readonly string[]).includes(module)
+  );
+  await Promise.all(
+    modules.map(async (module) => {
+      try {
+        const payload = await loadCatalog(module);
+        for (const item of payload.items) items.set(item.itemId, item);
+      } catch (error) {
+        console.warn("[teacher-reading-item-meta] catalog load failed", {
+          module,
+          error: error instanceof Error ? error.message : String(error)
+        });
+      }
+    })
+  );
+  return items;
+}
+
+/**
+ * Fallback rank computation for items missing from the cached public catalog.
+ * It keeps the original two-wave count/sibling semantics (global position
+ * inside the module ordered by first-seen date and canonical identity); the
+ * normal path never calls it.
  */
 async function loadReadingItemDisplayRanks(
   db: SupabaseClient,
@@ -306,9 +368,10 @@ export async function loadTeacherStudentReadingPractice(
   db: SupabaseClient,
   studentId: string,
   startAt: string,
-  endAt: string
+  endAt: string,
+  loadCatalog: TeacherReadingCatalogLoader
 ): Promise<TeacherStudentReadingPractice> {
-  const [attemptsResult, wrongbookResult, fullSetResult, wrongbookSessionsResult] = await Promise.all([
+  const [attemptsResult, wrongbookResult, fullSetResult] = await Promise.all([
     readAllSupabaseRows<TeacherReadingAttemptRow>((from, to) =>
       db
         .from("reading_attempts")
@@ -348,23 +411,42 @@ export async function loadTeacherStudentReadingPractice(
         .order("completed_at", { ascending: false })
         .order("attempt_id", { ascending: false })
         .range(from, to)
-    ),
-    // Frozen wrong-question sessions fold their per-material correction
-    // attempts into one teacher record (completed sessions only).
-    readAllSupabaseRows<TeacherReadingWrongbookSessionRow>((from, to) =>
-      db
-        .from("student_wrong_question_sessions")
-        .select("session_id,task_type,mode,status,progress")
-        .eq("student_id", studentId)
-        .order("session_id", { ascending: true })
-        .range(from, to)
     )
   ]);
   const queryError = attemptsResult.error
     ?? wrongbookResult.error
-    ?? fullSetResult.error
-    ?? wrongbookSessionsResult.error;
+    ?? fullSetResult.error;
   if (queryError) throw new Error(queryError.message);
+
+  // Frozen wrong-question sessions fold their per-material correction attempts
+  // into one teacher record. Only sessions that can own one of THIS day's
+  // attempts are read: a session must exist before the day ends, must have
+  // been updated at/after the day's attempts (recording progress always bumps
+  // `updated_at`, so an owning session is updated at or after its attempts),
+  // and must share an attempt's task type. Cross-date sessions stay covered:
+  // started before the day or completed after it still satisfy both bounds. A
+  // day without wrong-question attempts skips the lookup entirely.
+  const wrongbookTaskTypes = distinct(
+    (wrongbookResult.data ?? []).map((attempt) => String(attempt.task_type))
+  ).filter((taskType): taskType is ReadingModule =>
+    (READING_MODULES as readonly string[]).includes(taskType)
+  );
+  const wrongbookSessionsResult = wrongbookTaskTypes.length
+    ? await readAllSupabaseRows<TeacherReadingWrongbookSessionRow>((from, to) =>
+        db
+          .from("student_wrong_question_sessions")
+          .select("session_id,task_type,mode,status,progress")
+          .eq("student_id", studentId)
+          .in("task_type", wrongbookTaskTypes)
+          .lt("created_at", endAt)
+          .gte("updated_at", startAt)
+          .order("session_id", { ascending: true })
+          .range(from, to)
+      )
+    : { data: [] as TeacherReadingWrongbookSessionRow[], error: null };
+  if (wrongbookSessionsResult.error) {
+    throw new Error(wrongbookSessionsResult.error.message);
+  }
 
   const fullSetAttempts = fullSetResult.data ?? [];
   const fullSetAttemptIds = fullSetAttempts.map((attempt) => String(attempt.attempt_id));
@@ -398,7 +480,7 @@ export async function loadTeacherStudentReadingPractice(
     ...(wrongbookResult.data ?? []).map((attempt) => String(attempt.logical_item_id)),
     ...(answersResult.data ?? []).map((answer) => String(answer.logical_item_id))
   ];
-  const itemMeta = await loadTeacherReadingItemMeta(db, itemIds);
+  const itemMeta = await loadTeacherReadingItemMeta(db, itemIds, loadCatalog);
 
   // Full Set records are named like the student's Full Set result page, so the
   // list loads the (small) Full Set catalog for the attempts it shows.

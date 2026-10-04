@@ -14,8 +14,26 @@ const {
 const {
   createHistoricalPracticeDisplayResolver
 } = require("../lib/historicalPracticeDisplay.ts");
-const { loadTeacherReadingItemMeta } = require("../lib/teacherStudentPractice.server.ts");
+const {
+  loadTeacherReadingItemMeta,
+  loadTeacherStudentReadingPractice
+} = require("../lib/teacherStudentPractice.server.ts");
+const { buildReadingCatalogPublicPayload } = require("../lib/reading/catalog.ts");
 const { createMockSupabase } = require("./fixtures/mockSupabase.js");
+
+/**
+ * Test double for the cached public reading catalog: builds the exact payload
+ * `loadCachedPublicReadingCatalog()` serves, from the same mock rows.
+ */
+function catalogLoaderFromRows(rows, loadedModules) {
+  return async (taskType) => {
+    loadedModules?.push(taskType);
+    return buildReadingCatalogPublicPayload({
+      taskType,
+      items: rows.filter((row) => row.module === taskType)
+    });
+  };
+}
 
 const ROOT = path.resolve(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
@@ -657,30 +675,316 @@ test("custom assignment titles stay custom and question-bank assignments use the
   assert.equal(questionBank, "题目021 Request for Schedule Change");
 });
 
-test("scoped Reading metadata keeps the global display numbers without loading the whole catalog", async () => {
+test("scoped Reading metadata takes numbers and titles from the public catalog", async () => {
+  const rows = [
+    readingCatalogRow({ logical_item_id: "ctw-a", first_seen_date: "2026-01-01", first_seen_source_order: 1, title: "Alpha Topic" }),
+    readingCatalogRow({ logical_item_id: "ctw-b", first_seen_date: "2026-01-01", first_seen_source_order: 2, title: "Beta Topic" }),
+    readingCatalogRow({ logical_item_id: "ctw-c", first_seen_date: "2026-01-05", first_seen_source_order: 1, title: "Gamma Topic" }),
+    readingCatalogRow({
+      logical_item_id: "ctw-d",
+      first_seen_date: "2026-02-01",
+      first_seen_source_order: 1,
+      title: "Night Sky"
+    }),
+    readingCatalogRow({ logical_item_id: "ctw-e", first_seen_date: "2026-02-01", first_seen_source_order: 2, title: "Epsilon Topic" }),
+    readingCatalogRow({ logical_item_id: "rdl-x", module: "rdl", title: "Library Notice", first_seen_date: "2026-01-02" })
+  ];
+  const db = createMockSupabase({ reading_logical_items: rows });
+  const loadedModules = [];
+
+  const meta = await loadTeacherReadingItemMeta(
+    db,
+    ["ctw-b", "ctw-d", "rdl-x"],
+    catalogLoaderFromRows(rows, loadedModules)
+  );
+
+  // Only the modules actually involved are loaded, once each.
+  assert.deepEqual(loadedModules.sort(), ["ctw", "rdl"]);
+  assert.equal(meta.size, 3);
+  // Numbers and titles are exactly the public catalog's, including items with
+  // different first-seen dates inside the same module.
+  assert.equal(meta.get("ctw-b").displayName, "题目002 · Beta Topic");
+  assert.equal(meta.get("ctw-d").displayName, "题目004 · Night Sky");
+  assert.equal(meta.get("rdl-x").displayName, "题目001 · Library Notice");
+  // scoringPointCount still comes from the scoped live row.
+  assert.equal(meta.get("ctw-d").scoringPointCount, 10);
+});
+
+test("teacher Reading numbers follow the catalog revision without a count walk", async () => {
+  const rows = [
+    readingCatalogRow({ logical_item_id: "ctw-a", first_seen_date: "2026-01-01", first_seen_source_order: 1, title: "Alpha Topic" }),
+    readingCatalogRow({ logical_item_id: "ctw-b", first_seen_date: "2026-01-01", first_seen_source_order: 2, title: "Beta Topic" })
+  ];
+  const db = createMockSupabase({ reading_logical_items: rows });
+  // A backfilled earlier item shifts every existing number in the catalog.
+  const revisedRows = [
+    readingCatalogRow({
+      logical_item_id: "ctw-earlier",
+      first_seen_date: "2025-12-01",
+      first_seen_source_order: 1,
+      title: "Earlier Topic"
+    }),
+    ...rows
+  ];
+
+  const meta = await loadTeacherReadingItemMeta(
+    db,
+    ["ctw-a"],
+    catalogLoaderFromRows(revisedRows)
+  );
+
+  assert.equal(meta.get("ctw-a").displayName, "题目002 · Alpha Topic");
+});
+
+test("a scoped item missing from the catalog falls back to the live rank", async () => {
+  const rows = [
+    readingCatalogRow({ logical_item_id: "ctw-a", first_seen_date: "2026-01-01", first_seen_source_order: 1, title: "Alpha Topic" }),
+    readingCatalogRow({ logical_item_id: "ctw-b", first_seen_date: "2026-01-01", first_seen_source_order: 2, title: "Beta Topic" }),
+    readingCatalogRow({ logical_item_id: "ctw-c", first_seen_date: "2026-01-05", first_seen_source_order: 1, title: "Gamma Topic" })
+  ];
+  const db = createMockSupabase({ reading_logical_items: rows });
+  const partialCatalog = rows.filter((row) => row.logical_item_id !== "ctw-b");
+
+  const meta = await loadTeacherReadingItemMeta(
+    db,
+    ["ctw-a", "ctw-b"],
+    catalogLoaderFromRows(partialCatalog)
+  );
+
+  // The fallback covers every scoped item so the numbers stay consistent.
+  assert.equal(meta.get("ctw-a").displayName, "题目001 · Alpha Topic");
+  assert.equal(meta.get("ctw-b").displayName, "题目002 · Beta Topic");
+});
+
+test("a failing catalog build degrades to the scoped rank fallback", async () => {
+  const rows = [
+    readingCatalogRow({ logical_item_id: "ctw-a", first_seen_date: "2026-01-01", first_seen_source_order: 1, title: "Alpha Topic" }),
+    readingCatalogRow({ logical_item_id: "ctw-b", first_seen_date: "2026-01-01", first_seen_source_order: 2, title: "Beta Topic" })
+  ];
+  const db = createMockSupabase({ reading_logical_items: rows });
+
+  const meta = await loadTeacherReadingItemMeta(
+    db,
+    ["ctw-b"],
+    async () => {
+      throw new Error("catalog cache unavailable");
+    }
+  );
+
+  assert.equal(meta.get("ctw-b").displayName, "题目002 · Beta Topic");
+  assert.equal(meta.get("ctw-b").scoringPointCount, 10);
+});
+
+test("day view reads only the sessions that can own the day's wrong-question attempts", async () => {
+  const rows = [
+    readingCatalogRow({ logical_item_id: "ctw-a", first_seen_date: "2026-01-01", title: "Alpha Topic" })
+  ];
   const db = createMockSupabase({
-    reading_logical_items: [
-      readingCatalogRow({ logical_item_id: "ctw-a", first_seen_date: "2026-01-01", first_seen_source_order: 1 }),
-      readingCatalogRow({ logical_item_id: "ctw-b", first_seen_date: "2026-01-01", first_seen_source_order: 2 }),
-      readingCatalogRow({ logical_item_id: "ctw-c", first_seen_date: "2026-01-05", first_seen_source_order: 1 }),
-      readingCatalogRow({
-        logical_item_id: "ctw-d",
-        first_seen_date: "2026-02-01",
-        first_seen_source_order: 1,
-        title: "Night Sky"
-      }),
-      readingCatalogRow({ logical_item_id: "ctw-e", first_seen_date: "2026-02-01", first_seen_source_order: 2 }),
-      readingCatalogRow({ logical_item_id: "rdl-x", module: "rdl", title: "Library Notice", first_seen_date: "2026-01-02" })
+    reading_logical_items: rows,
+    reading_attempts: [],
+    reading_wrongbook_attempts: [
+      {
+        attempt_id: "w-day",
+        student_id: "student-1",
+        logical_item_id: "ctw-a",
+        task_type: "ctw",
+        scope: "history",
+        status: "submitted",
+        elapsed_seconds: 30,
+        total_points: 10,
+        correct_points: 4,
+        submitted_at: "2026-10-02T03:00:00.000Z"
+      }
+    ],
+    student_wrong_question_sessions: [
+      {
+        session_id: "s-own",
+        student_id: "student-1",
+        task_type: "ctw",
+        mode: "history",
+        status: "completed",
+        created_at: "2026-10-01T20:00:00.000Z",
+        updated_at: "2026-10-02T03:00:05.000Z",
+        progress: {
+          "ctw-a": {
+            attemptId: "w-day",
+            correctPoints: 4,
+            submittedAt: "2026-10-02T03:00:00.000Z",
+            totalPoints: 10
+          }
+        }
+      },
+      {
+        // Stale session, updated long before the day: never loaded.
+        session_id: "s-stale",
+        student_id: "student-1",
+        task_type: "ctw",
+        mode: "history",
+        status: "completed",
+        created_at: "2026-08-01T00:00:00.000Z",
+        updated_at: "2026-08-01T01:00:00.000Z",
+        progress: { "ctw-a": { attemptId: "w-old" } }
+      },
+      {
+        // Created after the day: never loaded.
+        session_id: "s-future",
+        student_id: "student-1",
+        task_type: "ctw",
+        mode: "today",
+        status: "active",
+        created_at: "2026-10-03T00:00:00.000Z",
+        updated_at: "2026-10-03T01:00:00.000Z",
+        progress: {}
+      },
+      {
+        // Different task type: filtered out with the day's task types.
+        session_id: "s-rdl",
+        student_id: "student-1",
+        task_type: "rdl",
+        mode: "history",
+        status: "completed",
+        created_at: "2026-10-01T20:00:00.000Z",
+        updated_at: "2026-10-02T04:00:00.000Z",
+        progress: { "rdl-x": { attemptId: "w-rdl" } }
+      }
     ]
   });
 
-  const meta = await loadTeacherReadingItemMeta(db, ["ctw-b", "ctw-d"]);
+  const practice = await loadTeacherStudentReadingPractice(
+    db,
+    "student-1",
+    "2026-10-02T00:00:00.000Z",
+    "2026-10-03T00:00:00.000Z",
+    catalogLoaderFromRows(rows)
+  );
 
-  assert.equal(meta.size, 2);
-  // CTW records show the canonical catalog title next to the display number.
-  assert.equal(meta.get("ctw-b").displayName, "题目002");
-  assert.equal(meta.get("ctw-d").displayName, "题目004 · Night Sky");
-  assert.equal(meta.get("ctw-d").scoringPointCount, 10);
+  const session = practice.records.find(
+    (record) => record.recordId === "wrongbook-session:s-own"
+  );
+  assert.equal(session.kind, "wrongbook");
+  assert.equal(session.title, "历史错题");
+  assert.equal(session.submittedAt, "2026-10-02T03:00:00.000Z");
+  assert.equal(session.attemptId, "w-day");
+  assert.equal(session.metric.correct, 4);
+  assert.equal(session.metric.total, 10);
+  // The session owns the attempt: no standalone Entry record for it.
+  assert.equal(practice.records.filter((record) => record.attemptId === "w-day").length, 1);
+});
+
+test("an unfinished cross-day session hides its day attempts without an Entry record", async () => {
+  const rows = [
+    readingCatalogRow({ logical_item_id: "ctw-a", first_seen_date: "2026-01-01", title: "Alpha Topic" })
+  ];
+  const db = createMockSupabase({
+    reading_logical_items: rows,
+    reading_attempts: [],
+    reading_wrongbook_attempts: [
+      {
+        attempt_id: "w-active",
+        student_id: "student-1",
+        logical_item_id: "ctw-a",
+        task_type: "ctw",
+        scope: "today",
+        status: "submitted",
+        elapsed_seconds: 5,
+        total_points: 10,
+        correct_points: 3,
+        submitted_at: "2026-10-02T05:00:00.000Z"
+      }
+    ],
+    student_wrong_question_sessions: [
+      {
+        session_id: "s-active",
+        student_id: "student-1",
+        task_type: "ctw",
+        mode: "today",
+        status: "active",
+        created_at: "2026-10-01T10:00:00.000Z",
+        updated_at: "2026-10-02T05:00:01.000Z",
+        progress: { "ctw-a": { attemptId: "w-active" } }
+      }
+    ]
+  });
+
+  const practice = await loadTeacherStudentReadingPractice(
+    db,
+    "student-1",
+    "2026-10-02T00:00:00.000Z",
+    "2026-10-03T00:00:00.000Z",
+    catalogLoaderFromRows(rows)
+  );
+
+  assert.deepEqual(practice.records, []);
+});
+
+test("a day without Reading wrong-question attempts skips the session lookup", async () => {
+  const db = createMockSupabase({
+    reading_logical_items: [],
+    reading_attempts: [],
+    reading_wrongbook_attempts: [],
+    reading_full_set_attempts: [],
+    student_wrong_question_sessions: []
+  });
+  let sessionQueried = false;
+  const originalFrom = db.from.bind(db);
+  db.from = (table) => {
+    if (table === "student_wrong_question_sessions") {
+      sessionQueried = true;
+      throw new Error("session lookup must be skipped");
+    }
+    return originalFrom(table);
+  };
+
+  const practice = await loadTeacherStudentReadingPractice(
+    db,
+    "student-1",
+    "2026-10-02T00:00:00.000Z",
+    "2026-10-03T00:00:00.000Z",
+    async () => {
+      throw new Error("catalog must not load without scoped items");
+    }
+  );
+
+  assert.equal(sessionQueried, false);
+  assert.deepEqual(practice.records, []);
+});
+
+test("a session spanning days keeps the day's attempt time and grouping", () => {
+  const practice = buildTeacherStudentReadingPractice({
+    attempts: [],
+    wrongbookAttempts: [
+      {
+        ...readingAttempt({
+          attempt_id: "w-cross",
+          logical_item_id: "rap-a",
+          task_type: "rap",
+          correct_points: 2,
+          total_points: 5,
+          submitted_at: "2026-10-02T02:00:00.000Z"
+        }),
+        scope: "history"
+      }
+    ],
+    wrongbookSessions: [
+      {
+        session_id: "s-cross",
+        task_type: "rap",
+        mode: "history",
+        status: "completed",
+        progress: { "rap-a": { attemptId: "w-cross" } }
+      }
+    ],
+    itemMeta: ITEM_META
+  });
+
+  const session = practice.records.find(
+    (record) => record.recordId === "wrongbook-session:s-cross"
+  );
+  assert.equal(session.submittedAt, "2026-10-02T02:00:00.000Z");
+  assert.equal(session.metric.correct, 2);
+  assert.equal(session.metric.total, 5);
+  assert.equal(session.attemptId, "w-cross");
+  assert.equal(practice.records.filter((record) => record.attemptId === "w-cross").length, 1);
 });
 
 test("teacher task filter params round-trip date and filter state", () => {
@@ -766,7 +1070,12 @@ test("practice API is single-student and single-range scoped with per-domain aut
   assert.match(route, /boundDomains\.includes\("writing"\)/);
   assert.match(route, /if \(!readingAllowed && !writingAllowed\)/);
   assert.match(route, /parseDateBoundary/);
-  assert.match(route, /loadTeacherStudentReadingPractice\(db, studentId, startAt, endAt\)/);
+  // The route wires the cached public catalog into the reading loader.
+  assert.match(route, /loadCachedPublicReadingCatalog/);
+  assert.match(
+    route,
+    /loadTeacherStudentReadingPractice\([\s\S]{0,400}loadCachedPublicReadingCatalog/
+  );
   assert.match(route, /loadTeacherStudentWritingPractice\(db, studentId, startAt, endAt\)/);
   assert.doesNotMatch(route, /listVisibleStudentIds|listTeacherStudentDomainBindings/);
 
@@ -783,6 +1092,22 @@ test("practice API is single-student and single-range scoped with per-domain aut
     lib,
     /"response_text"|published_language_edits|published_content_feedback|ai_review_raw/
   );
+
+  // Wrong-question sessions are scoped to the day's attempts instead of the
+  // student's whole history, and are skipped entirely without such attempts.
+  assert.match(lib, /\.in\("task_type", wrongbookTaskTypes\)/);
+  assert.match(lib, /\.lt\("created_at", endAt\)/);
+  assert.match(lib, /\.gte\("updated_at", startAt\)/);
+  assert.match(lib, /wrongbookTaskTypes\.length[\s\S]{0,60}\? await readAllSupabaseRows/);
+
+  // Display numbers come from the cached public catalog; the per-date COUNT
+  // walk only runs for items missing from that catalog.
+  assert.match(lib, /loadTeacherReadingItemMeta\(db, itemIds, loadCatalog\)/);
+  assert.match(lib, /missingCatalogItems\.length > 0[\s\S]{0,80}loadReadingItemDisplayRanks/);
+  assert.match(lib, /for \(const item of payload\.items\) items\.set\(item\.itemId, item\)/);
+  assert.match(lib, /loadCatalog: TeacherReadingCatalogLoader/);
+  assert.doesNotMatch(lib, /loadCachedPublicReadingCatalogSearchIndex/);
+  assert.doesNotMatch(lib, /from "next\/cache"|from "\.\/reading\/catalogCache\.server\.ts"/);
 });
 
 test("BAS drill-down routes are scoped to one student and one set or answer", () => {
