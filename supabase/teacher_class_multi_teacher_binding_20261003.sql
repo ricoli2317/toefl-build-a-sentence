@@ -345,9 +345,13 @@ begin
   cross join (
     select class_teacher_ids.teacher_id
     from (
-      select class_row.teacher_id
-      from public.teacher_classes class_row
-      where class_row.class_id = p_class_id
+      -- The table alias must not be named class_row: that name is already the
+      -- plpgsql record variable loaded above, and the default
+      -- plpgsql.variable_conflict=error makes "class_row.teacher_id" ambiguous
+      -- (SQLSTATE 42702), aborting the whole RPC.
+      select owner_class.teacher_id
+      from public.teacher_classes owner_class
+      where owner_class.class_id = p_class_id
       union
       select link.teacher_id
       from public.teacher_class_bindings link

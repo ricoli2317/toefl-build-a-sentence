@@ -580,3 +580,29 @@ test("multi-teacher class migration is additive and idempotent", async () => {
   const editRpc = rpcBlock(sql, "update_withdrawn_writing_assignment_group");
   assert.match(editRpc, /where class_id = p_class_id\s*\n\s*and public\.is_class_teacher\(p_class_id, p_teacher_id\)/);
 });
+
+test("class RPCs never shadow a class_row variable with a class_row table alias", async () => {
+  // plpgsql.variable_conflict defaults to error: when a function declares
+  // `class_row public.teacher_classes%rowtype` and also aliases the table as
+  // `class_row`, every qualified reference (class_row.teacher_id) becomes
+  // ambiguous (SQLSTATE 42702) and the whole RPC aborts at runtime. That is
+  // exactly how update_class_subjects failed with
+  // "column reference \"class_row.teacher_id\" is ambiguous".
+  for (const file of [
+    "supabase/teacher_class_multi_teacher_binding_20261003.sql",
+    "supabase/teacher_classes.sql"
+  ]) {
+    const sql = await read(file);
+    const blocks = sql.match(/create or replace function public\.\w+\([\s\S]*?\n\$\$;/g) ?? [];
+    assert.ok(blocks.length > 0, `${file} must define public RPCs`);
+    for (const block of blocks) {
+      const name = block.match(/function public\.(\w+)/)?.[1] ?? "unknown";
+      if (!/\bclass_row\s+public\.teacher_classes%rowtype/.test(block)) continue;
+      assert.doesNotMatch(
+        block,
+        /from public\.teacher_classes class_row\b/,
+        `${file}:${name} aliases teacher_classes as class_row while declaring a class_row variable`
+      );
+    }
+  }
+});
