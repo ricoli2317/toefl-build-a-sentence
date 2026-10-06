@@ -121,7 +121,7 @@ type WorkspaceAttempt = {
 
 type WorkspaceReview = WritingReviewWorkingDraft & {
   review_id: string | null;
-  status: "pending" | "reviewing" | "published";
+  status: "pending" | "reviewing" | "published" | "ignored";
   has_ai_review: boolean;
   ai_model: string | null;
   ai_generated_at: string | null;
@@ -930,7 +930,9 @@ function WorkspaceToolbar({
             ? "已发布"
             : data.review.status === "pending"
               ? "待批改"
-              : "批改中"}
+              : data.review.status === "ignored"
+                ? "已忽略"
+                : "批改中"}
         </span>
         <span className="hidden truncate text-student-muted sm:inline">
           / {data.displayName}
@@ -998,7 +1000,9 @@ function WorkspaceToolbar({
                     ? "有未发布修改"
                     : data.review.status === "pending"
                       ? "尚未保存"
-                      : "已保存"))}
+                      : data.review.status === "ignored"
+                        ? "已忽略，保存或发布后进入批改"
+                        : "已保存"))}
         </span>
         <button
           className="teacher-button-secondary !min-h-8 !px-3 !py-1 text-xs"

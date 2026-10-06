@@ -80,8 +80,8 @@ async function countRows(
 
 /**
  * Pending review count matches the Writing review list model exactly: submitted
- * attempts that are visible to the teacher and have no published review yet
- * (no review, AI draft, or teacher-saved-but-unpublished all count).
+ * attempts that are visible to the teacher minus published reviews and 已忽略
+ * reviews (no review and teacher-saved-but-unpublished both still count).
  * Every number comes from a database `count`, never from loaded attempt rows.
  */
 export async function loadPendingReviewCount(
@@ -90,33 +90,50 @@ export async function loadPendingReviewCount(
   writingStudentIds: string[]
 ) {
   const ownAssignmentIds = await listOwnAssignmentIds(db, teacherId);
-  const [selfSubmitted, selfPublished, assignmentSubmitted, assignmentPublished] =
-    await Promise.all([
-      countVisibleSubmittedAttempts(db, { studentIds: writingStudentIds }),
-      countVisibleSubmittedAttempts(db, { studentIds: writingStudentIds, publishedOnly: true }),
-      countVisibleSubmittedAttempts(db, { assignmentIds: ownAssignmentIds }),
-      countVisibleSubmittedAttempts(db, { assignmentIds: ownAssignmentIds, publishedOnly: true })
-    ]);
+  const [
+    selfSubmitted,
+    selfPublished,
+    selfIgnored,
+    assignmentSubmitted,
+    assignmentPublished,
+    assignmentIgnored
+  ] = await Promise.all([
+    countVisibleSubmittedAttempts(db, { studentIds: writingStudentIds }),
+    countVisibleSubmittedAttempts(db, { studentIds: writingStudentIds, publishedOnly: true }),
+    countVisibleSubmittedAttempts(db, { studentIds: writingStudentIds, ignoredOnly: true }),
+    countVisibleSubmittedAttempts(db, { assignmentIds: ownAssignmentIds }),
+    countVisibleSubmittedAttempts(db, { assignmentIds: ownAssignmentIds, publishedOnly: true }),
+    countVisibleSubmittedAttempts(db, { assignmentIds: ownAssignmentIds, ignoredOnly: true })
+  ]);
   return Math.max(
     0,
-    selfSubmitted + assignmentSubmitted - selfPublished - assignmentPublished
+    selfSubmitted +
+      assignmentSubmitted -
+      selfPublished -
+      assignmentPublished -
+      selfIgnored -
+      assignmentIgnored
   );
 }
 
 async function countVisibleSubmittedAttempts(
   db: SupabaseClient,
-  scope: { assignmentIds?: string[]; publishedOnly?: boolean; studentIds?: string[] }
+  scope: {
+    assignmentIds?: string[];
+    publishedOnly?: boolean;
+    ignoredOnly?: boolean;
+    studentIds?: string[];
+  }
 ) {
   const ids = scope.studentIds ?? scope.assignmentIds ?? [];
+  const joined = scope.publishedOnly || scope.ignoredOnly;
   let total = 0;
   for (const batch of batchesOf(ids)) {
     total += await countRows(() => {
       let query = db
         .from("writing_attempts")
         .select(
-          scope.publishedOnly
-            ? "attempt_id,writing_reviews!inner(attempt_id)"
-            : "attempt_id",
+          joined ? "attempt_id,writing_reviews!inner(attempt_id)" : "attempt_id",
           { count: "exact", head: true }
         )
         .eq("status", "submitted");
@@ -127,6 +144,9 @@ async function countVisibleSubmittedAttempts(
       }
       if (scope.publishedOnly) {
         query = query.eq("writing_reviews.status", "published");
+      }
+      if (scope.ignoredOnly) {
+        query = query.eq("writing_reviews.status", "ignored");
       }
       return query;
     });

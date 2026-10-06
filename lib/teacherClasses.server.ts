@@ -711,7 +711,9 @@ export async function listClassReviewSummaries(
     const review = reviewByAttempt.get(String(attempt.attempt_id));
     if (!review) counts.pending += 1;
     else if (review.status === "published" && review.published_at) counts.published += 1;
-    else counts.reviewing += 1;
+    // 已忽略 belongs to neither the 待批改 / 批改中 / 已发布 buckets; it has
+    // its own list filter and is never reported as 批改中.
+    else if (review.status !== "ignored") counts.reviewing += 1;
     countsByClass.set(classId, counts);
   }
 

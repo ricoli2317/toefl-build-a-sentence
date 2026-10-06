@@ -600,6 +600,11 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
             case "studentWritingHistory":
               invalidate(STUDENT_WRITING_SUBMISSION_HISTORY_CACHE_PREFIX);
               break;
+            case "studentWritingAttempts":
+              // A returned attempt must not keep serving its old submitted
+              // payload to the readonly submission view.
+              invalidate(STUDENT_WRITING_CACHE_PREFIX);
+              break;
             case "studentPublishedReviews":
               invalidate(STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_PREFIX);
               invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);

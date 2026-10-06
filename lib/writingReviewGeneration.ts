@@ -64,7 +64,7 @@ export type WritingReviewRepository = {
 
 export type ExistingWritingReview = {
   review_id: string;
-  status?: "reviewing" | "published";
+  status?: "reviewing" | "published" | "ignored";
   ai_model?: string | null;
   ai_generated_at?: string | null;
 };

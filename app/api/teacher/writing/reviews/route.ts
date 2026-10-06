@@ -53,7 +53,7 @@ type AssignmentRow = {
 };
 
 type PageError = { message: string };
-type ReviewListStatus = "pending" | "reviewing" | "published";
+type ReviewListStatus = "pending" | "reviewing" | "published" | "ignored";
 
 const QUERY_BATCH_SIZE = 100;
 
@@ -305,6 +305,7 @@ export async function GET(request: Request) {
 function toReviewStatus(review: ReviewRow | undefined): ReviewListStatus {
   if (!review) return "pending";
   if (review.status === "published") return "published";
+  if (review.status === "ignored") return "ignored";
   return "reviewing";
 }
 

@@ -2,15 +2,25 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MouseEvent as ReactMouseEvent
+} from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import { ArrowLeft } from "lucide-react";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { TeacherClassIcon } from "@/components/icons/TeacherClassIcon";
 import {
   TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY,
   TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX,
   TEACHER_WRITING_REVIEWS_CACHE_KEY,
-  useTeacherCachedData
+  useTeacherCachedData,
+  useTeacherDataCache
 } from "@/components/TeacherDataCache";
 import {
   TeacherClassFilterPopover,
@@ -37,6 +47,13 @@ import {
   type WritingReviewStatusFilter,
   type WritingReviewTaskTypeFilter
 } from "@/lib/teacherWritingReviewList";
+import {
+  applyWritingReviewModerationToEntries,
+  parseWritingReviewModerationResponse,
+  publishWritingReviewModerationInvalidation,
+  writingReviewModerationNotice,
+  type WritingReviewModerationAction
+} from "@/lib/writingReviewModeration";
 import { classSubjectsLabel, type TeacherClassReviewSummary } from "@/lib/teacherClasses";
 import type { WritingAssignmentRecipient } from "@/lib/writingAssignments";
 import type { WritingTaskType } from "@/lib/writing";
@@ -66,6 +83,25 @@ type WritingReviewListItem = {
 type WritingReviewListPayload = { attempts: WritingReviewListItem[] };
 type ErrorPayload = { code?: string; message?: string; error?: string };
 
+/** Desktop drag-select threshold: a plain click must never become a marquee. */
+const MARQUEE_DRAG_THRESHOLD_PX = 6;
+const ROW_ATTRIBUTE = "data-writing-review-row";
+
+type ReviewListSelection = {
+  selectedIds: ReadonlySet<string>;
+  toggle: (attemptId: string) => void;
+  addMany: (attemptIds: string[]) => void;
+  clear: () => void;
+};
+
+type ReviewTableActions = {
+  busy: boolean;
+  onModerate: (
+    action: WritingReviewModerationAction,
+    attemptIds: string[]
+  ) => void;
+};
+
 /**
  * 写作批改 list with the 学生 | 班级 tabs.
  *
@@ -77,6 +113,11 @@ type ErrorPayload = { code?: string; message?: string; error?: string };
  * its 班级列表 → 班级 submission 列表 drill-down: 全部班级 shows the class
  * cards, and selecting a class (card or class filter) opens that class's
  * submissions only.
+ *
+ * Each tab also owns one 退回/忽略 selection state: clicking a row (or
+ * checkboxes, or a desktop drag rectangle) selects it, the filter bar's spare
+ * area grows the two batch buttons, and every row always renders the same
+ * three compact 查看 | 退回 | 忽略 buttons so the action column never moves.
  */
 export function TeacherWritingReviewList({
   initialClassId,
@@ -326,6 +367,256 @@ export function TeacherWritingReviewList({
   );
 }
 
+/**
+ * The single selection model behind clicking, checkboxes and the drag
+ * rectangle. A new filter context starts empty (never carry ids across
+ * students / statuses / task types), and ids that leave the visible list are
+ * dropped immediately so a stale attempt can never be batch-acted on.
+ */
+function useReviewListSelection(
+  items: readonly { attemptId: string }[],
+  resetKey: string
+): ReviewListSelection {
+  const [selectedIds, setSelectedIds] = useState<ReadonlySet<string>>(() => new Set());
+  const itemIds = useMemo(() => new Set(items.map((item) => item.attemptId)), [items]);
+
+  useEffect(() => {
+    setSelectedIds((current) => (current.size === 0 ? current : new Set()));
+  }, [resetKey]);
+
+  useEffect(() => {
+    setSelectedIds((current) => {
+      if (current.size === 0) return current;
+      let changed = false;
+      const next = new Set<string>();
+      current.forEach((id) => {
+        if (itemIds.has(id)) next.add(id);
+        else changed = true;
+      });
+      return changed ? next : current;
+    });
+  }, [itemIds]);
+
+  const toggle = useCallback((attemptId: string) => {
+    setSelectedIds((current) => {
+      const next = new Set(current);
+      if (next.has(attemptId)) next.delete(attemptId);
+      else next.add(attemptId);
+      return next;
+    });
+  }, []);
+
+  const addMany = useCallback((attemptIds: string[]) => {
+    setSelectedIds((current) => {
+      let changed = false;
+      const next = new Set(current);
+      for (const id of attemptIds) {
+        if (!next.has(id)) {
+          next.add(id);
+          changed = true;
+        }
+      }
+      return changed ? next : current;
+    });
+  }, []);
+
+  const clear = useCallback(() => {
+    setSelectedIds((current) => (current.size === 0 ? current : new Set()));
+  }, []);
+
+  return { selectedIds, toggle, addMany, clear };
+}
+
+type WritingReviewModerationControls = {
+  busy: boolean;
+  confirmIds: string[] | null;
+  error: string;
+  notice: string;
+  confirmReturn: () => void;
+  cancelReturn: () => void;
+  requestIgnore: (attemptIds: string[]) => void;
+  requestReturn: (attemptIds: string[]) => void;
+};
+
+/**
+ * One batch request (never N single requests) followed by the same cache
+ * pipeline the rest of Writing Review uses: publish the invalidation events
+ * first, then store the optimistic list payload for this tab. The server owns
+ * the final word: skipped attempts stay in the list and are reported.
+ */
+function useWritingReviewModeration(options: {
+  cacheKey: string;
+  clearSelection: () => void;
+  items: readonly WritingReviewListItem[];
+}): WritingReviewModerationControls {
+  const cache = useTeacherDataCache();
+  const [busy, setBusy] = useState(false);
+  const busyRef = useRef(false);
+  const [notice, setNotice] = useState("");
+  const [error, setError] = useState("");
+  const [confirmIds, setConfirmIds] = useState<string[] | null>(null);
+  const itemsRef = useRef(options.items);
+  itemsRef.current = options.items;
+  const { cacheKey, clearSelection } = options;
+
+  const run = useCallback(
+    async (action: WritingReviewModerationAction, attemptIds: string[]) => {
+      const ids = Array.from(new Set(attemptIds)).filter(Boolean);
+      if (ids.length === 0 || busyRef.current) return;
+      busyRef.current = true;
+      setBusy(true);
+      setNotice("");
+      setError("");
+      try {
+        const response = await teacherFetch("/api/teacher/writing/reviews/moderate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action, attemptIds: ids })
+        });
+        const payload = await readJson<unknown>(response);
+        const parsed = response.ok ? parseWritingReviewModerationResponse(payload) : null;
+        if (!parsed) {
+          throw new Error(
+            errorMessage(
+              payload,
+              action === "return" ? "退回失败，请稍后重试。" : "忽略失败，请稍后重试。"
+            )
+          );
+        }
+        // Capture this list's payload BEFORE the invalidation below clears it,
+        // then store the merged result after: the acting tab updates
+        // immediately (no loading skeleton) while every other cache consumer
+        // still receives the invalidation event.
+        const listPayload = readCachedReviewListPayload(cache.getEntry(cacheKey));
+        publishWritingReviewModerationInvalidation(action, itemsRef.current, parsed.results);
+        if (listPayload) {
+          cache.set(cacheKey, {
+            ...listPayload,
+            attempts: applyWritingReviewModerationToEntries(
+              listPayload.attempts,
+              action,
+              parsed.results
+            )
+          });
+        } else {
+          cache.invalidate(cacheKey);
+        }
+        clearSelection();
+        setNotice(writingReviewModerationNotice(action, parsed.results));
+      } catch (moderationError) {
+        setError(
+          moderationError instanceof Error
+            ? moderationError.message
+            : "操作失败，请稍后重试。"
+        );
+      } finally {
+        busyRef.current = false;
+        setBusy(false);
+        setConfirmIds(null);
+      }
+    },
+    [cache, cacheKey, clearSelection]
+  );
+
+  const requestReturn = useCallback((attemptIds: string[]) => {
+    const ids = Array.from(new Set(attemptIds)).filter(Boolean);
+    if (ids.length === 0) return;
+    setConfirmIds(ids);
+  }, []);
+
+  const requestIgnore = useCallback(
+    (attemptIds: string[]) => {
+      void run("ignore", attemptIds);
+    },
+    [run]
+  );
+
+  const confirmReturn = useCallback(() => {
+    if (!confirmIds) return;
+    void run("return", confirmIds);
+  }, [confirmIds, run]);
+
+  const cancelReturn = useCallback(() => {
+    if (busyRef.current) return;
+    setConfirmIds(null);
+  }, []);
+
+  return {
+    busy,
+    confirmIds,
+    error,
+    notice,
+    confirmReturn,
+    cancelReturn,
+    requestIgnore,
+    requestReturn
+  };
+}
+
+function WritingReviewBulkActions({
+  busy,
+  count,
+  onIgnore,
+  onReturn
+}: {
+  busy: boolean;
+  count: number;
+  onIgnore: () => void;
+  onReturn: () => void;
+}) {
+  return (
+    <div className="flex flex-wrap items-end gap-3">
+      <span className="pb-2 text-sm font-semibold text-student-muted">已选 {count} 条</span>
+      <button
+        className="teacher-button-secondary !min-h-10 !px-4 !py-1.5 text-sm"
+        disabled={busy}
+        onClick={onReturn}
+        type="button"
+      >
+        退回
+      </button>
+      <button
+        className="teacher-button-secondary !min-h-10 !px-4 !py-1.5 text-sm"
+        disabled={busy}
+        onClick={onIgnore}
+        type="button"
+      >
+        忽略
+      </button>
+    </div>
+  );
+}
+
+function WritingReviewReturnDialog({
+  busy,
+  ids,
+  onCancel,
+  onConfirm
+}: {
+  busy: boolean;
+  ids: string[] | null;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const count = ids?.length ?? 0;
+  return (
+    <ConfirmDialog
+      cancelText="取消"
+      confirmText="退回"
+      confirming={busy}
+      message={
+        count > 1
+          ? `退回后这 ${count} 篇作文将恢复为学生草稿，学生可以继续修改并重新提交；教师端会从当前列表移除。`
+          : "退回后这篇作文将恢复为学生草稿，学生可以继续修改并重新提交；教师端会从当前列表移除。"
+      }
+      onCancel={onCancel}
+      onConfirm={onConfirm}
+      open={ids !== null}
+      title="退回草稿"
+    />
+  );
+}
+
 function StudentReviewSection({
   attempts,
   error,
@@ -353,17 +644,37 @@ function StudentReviewSection({
   studentOptions: WritingAssignmentRecipient[];
   taskFilter: WritingReviewTaskTypeFilter;
 }) {
+  const selection = useReviewListSelection(
+    filtered,
+    `${statusFilter}|${selectedStudentId}|${taskFilter}`
+  );
+  const moderation = useWritingReviewModeration({
+    cacheKey: TEACHER_WRITING_REVIEWS_CACHE_KEY,
+    clearSelection: selection.clear,
+    items: filtered
+  });
   const selectedStudent = selectedStudentId
     ? studentOptions.find((option) => option.student_id === selectedStudentId) ?? {
         student_id: selectedStudentId,
         student_name: ""
       }
     : null;
+  const selectedCount = selection.selectedIds.size;
 
   return (
     <div className="grid gap-5">
       {loading ? <TeacherLoadingRegion label="正在加载写作批改列表" /> : null}
       <TeacherReviewFilterBar
+        bulkActions={
+          selectedCount > 0 ? (
+            <WritingReviewBulkActions
+              busy={moderation.busy}
+              count={selectedCount}
+              onIgnore={() => moderation.requestIgnore(Array.from(selection.selectedIds))}
+              onReturn={() => moderation.requestReturn(Array.from(selection.selectedIds))}
+            />
+          ) : undefined
+        }
         onStatusFilter={onStatusFilter}
         onTaskFilter={onTaskFilter}
         primary={
@@ -378,15 +689,30 @@ function StudentReviewSection({
         taskFilter={taskFilter}
       />
       <ReviewTable
+        actions={{
+          busy: moderation.busy,
+          onModerate: (action, attemptIds) =>
+            action === "return"
+              ? moderation.requestReturn(attemptIds)
+              : moderation.requestIgnore(attemptIds)
+        }}
         attempts={attempts}
-        error={error}
+        error={error || moderation.error}
         filtered={filtered}
         loading={loading}
+        notice={moderation.notice}
         returnTo={returnTo}
         emptyTexts={{
           noAttempts: "暂无已提交的写作练习。",
           noMatch: "当前筛选条件下暂无提交。"
         }}
+        selection={selection}
+      />
+      <WritingReviewReturnDialog
+        busy={moderation.busy}
+        ids={moderation.confirmIds}
+        onCancel={moderation.cancelReturn}
+        onConfirm={moderation.confirmReturn}
       />
     </div>
   );
@@ -419,17 +745,18 @@ function ClassReviewSection({
   statusFilter: WritingReviewStatusFilter;
   taskFilter: WritingReviewTaskTypeFilter;
 }) {
+  const classFilter = (
+    <TeacherClassFilterPopover
+      onSelect={(entry) => onOpenClass(entry?.class_id ?? "")}
+      options={classOptions}
+      selected={classId ? { class_id: classId, name: className } : null}
+    />
+  );
   const filterBar = (
     <TeacherReviewFilterBar
       onStatusFilter={onStatusFilter}
       onTaskFilter={onTaskFilter}
-      primary={
-        <TeacherClassFilterPopover
-          onSelect={(entry) => onOpenClass(entry?.class_id ?? "")}
-          options={classOptions}
-          selected={classId ? { class_id: classId, name: className } : null}
-        />
-      }
+      primary={classFilter}
       primaryLabel="班级"
       statusFilter={statusFilter}
       taskFilter={taskFilter}
@@ -452,17 +779,17 @@ function ClassReviewSection({
       );
     }
     return (
-      <div className="grid gap-5">
-        {filterBar}
-        <ClassReviewList
-          classId={classId}
-          className={className}
-          onBack={onBack}
-          returnTo={returnTo}
-          statusFilter={statusFilter}
-          taskFilter={taskFilter}
-        />
-      </div>
+      <ClassReviewList
+        classId={classId}
+        classFilter={classFilter}
+        className={className}
+        onBack={onBack}
+        onStatusFilter={onStatusFilter}
+        onTaskFilter={onTaskFilter}
+        statusFilter={statusFilter}
+        taskFilter={taskFilter}
+        returnTo={returnTo}
+      />
     );
   }
 
@@ -537,21 +864,28 @@ function ClassReviewOverview({
 
 function ClassReviewList({
   classId,
+  classFilter,
   className,
   onBack,
+  onStatusFilter,
+  onTaskFilter,
   returnTo,
   statusFilter,
   taskFilter
 }: {
   classId: string;
+  classFilter: React.ReactNode;
   className: string;
   onBack: () => void;
+  onStatusFilter: (value: WritingReviewStatusFilter) => void;
+  onTaskFilter: (value: WritingReviewTaskTypeFilter) => void;
   returnTo: string;
   statusFilter: WritingReviewStatusFilter;
   taskFilter: WritingReviewTaskTypeFilter;
 }) {
+  const cacheKey = `${TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX}:${classId}`;
   const { data, error, loading } = useTeacherCachedData<WritingReviewListPayload>(
-    `${TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX}:${classId}`,
+    cacheKey,
     () => loadWritingReviews(`?classId=${encodeURIComponent(classId)}`)
   );
   const attempts = useMemo(() => data?.attempts ?? [], [data]);
@@ -563,10 +897,35 @@ function ClassReviewList({
       }),
     [attempts, statusFilter, taskFilter]
   );
+  const selection = useReviewListSelection(filtered, `${classId}|${statusFilter}|${taskFilter}`);
+  const moderation = useWritingReviewModeration({
+    cacheKey,
+    clearSelection: selection.clear,
+    items: filtered
+  });
+  const selectedCount = selection.selectedIds.size;
 
   return (
     <div className="grid gap-5">
       {loading ? <TeacherLoadingRegion label="正在加载班级写作提交" /> : null}
+      <TeacherReviewFilterBar
+        bulkActions={
+          selectedCount > 0 ? (
+            <WritingReviewBulkActions
+              busy={moderation.busy}
+              count={selectedCount}
+              onIgnore={() => moderation.requestIgnore(Array.from(selection.selectedIds))}
+              onReturn={() => moderation.requestReturn(Array.from(selection.selectedIds))}
+            />
+          ) : undefined
+        }
+        onStatusFilter={onStatusFilter}
+        onTaskFilter={onTaskFilter}
+        primary={classFilter}
+        primaryLabel="班级"
+        statusFilter={statusFilter}
+        taskFilter={taskFilter}
+      />
       <TeacherCard className="flex flex-wrap items-center justify-between gap-3 p-4">
         <div className="flex flex-wrap items-center gap-3">
           <button className="teacher-button-secondary" onClick={onBack} type="button">
@@ -579,41 +938,171 @@ function ClassReviewList({
         </div>
       </TeacherCard>
       <ReviewTable
+        actions={{
+          busy: moderation.busy,
+          onModerate: (action, attemptIds) =>
+            action === "return"
+              ? moderation.requestReturn(attemptIds)
+              : moderation.requestIgnore(attemptIds)
+        }}
         attempts={attempts}
-        error={error}
+        error={error || moderation.error}
         filtered={filtered}
         loading={loading}
+        notice={moderation.notice}
         returnTo={returnTo}
         emptyTexts={{
           noAttempts: "该班级暂无已提交的写作练习。",
           noMatch: "当前筛选条件下暂无提交。"
         }}
+        selection={selection}
+      />
+      <WritingReviewReturnDialog
+        busy={moderation.busy}
+        ids={moderation.confirmIds}
+        onCancel={moderation.cancelReturn}
+        onConfirm={moderation.confirmReturn}
       />
     </div>
   );
 }
 
 function ReviewTable({
+  actions,
   attempts,
   emptyTexts,
   error,
   filtered,
   loading,
-  returnTo
+  notice,
+  returnTo,
+  selection
 }: {
+  actions: ReviewTableActions;
   attempts: WritingReviewListItem[];
   emptyTexts: { noAttempts: string; noMatch: string };
   error: string;
   filtered: WritingReviewListItem[];
   loading: boolean;
+  notice?: string;
   returnTo: string;
+  selection: ReviewListSelection;
 }) {
+  const selectionActive = selection.selectedIds.size > 0;
+  const { addMany } = selection;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [marqueeRect, setMarqueeRect] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  const marqueeStateRef = useRef<{
+    startX: number;
+    startY: number;
+    active: boolean;
+  } | null>(null);
+  const suppressRowClickRef = useRef(false);
+
+  // The rectangle is a window-level gesture: it may start on a row and end
+  // outside the table, so move/up/blur all live on window. Rows are matched by
+  // their current viewport rect, which also keeps the gesture correct while
+  // the page itself scrolls.
+  useEffect(() => {
+    function finishMarquee() {
+      const state = marqueeStateRef.current;
+      if (!state) return;
+      marqueeStateRef.current = null;
+      if (state.active) {
+        // The click that follows mouseup must not toggle the row under the
+        // pointer; a plain click (no drag) never reaches this branch.
+        suppressRowClickRef.current = true;
+        window.setTimeout(() => {
+          suppressRowClickRef.current = false;
+        }, 0);
+        document.body.style.userSelect = "";
+        document.body.style.cursor = "";
+      }
+      setMarqueeRect(null);
+    }
+
+    function onMouseMove(event: MouseEvent) {
+      const state = marqueeStateRef.current;
+      if (!state) return;
+      const dx = event.clientX - state.startX;
+      const dy = event.clientY - state.startY;
+      if (!state.active) {
+        if (
+          Math.abs(dx) < MARQUEE_DRAG_THRESHOLD_PX &&
+          Math.abs(dy) < MARQUEE_DRAG_THRESHOLD_PX
+        ) {
+          return;
+        }
+        state.active = true;
+        document.body.style.userSelect = "none";
+        document.body.style.cursor = "crosshair";
+      }
+      const left = Math.min(state.startX, event.clientX);
+      const top = Math.min(state.startY, event.clientY);
+      const right = Math.max(state.startX, event.clientX);
+      const bottom = Math.max(state.startY, event.clientY);
+      setMarqueeRect({ left, top, width: right - left, height: bottom - top });
+      const container = scrollRef.current;
+      if (!container) return;
+      const covered: string[] = [];
+      container.querySelectorAll<HTMLElement>(`[${ROW_ATTRIBUTE}]`).forEach((row) => {
+        const rect = row.getBoundingClientRect();
+        if (
+          !(rect.right < left || rect.left > right || rect.bottom < top || rect.top > bottom)
+        ) {
+          const attemptId = row.getAttribute(ROW_ATTRIBUTE);
+          if (attemptId) covered.push(attemptId);
+        }
+      });
+      addMany(covered);
+    }
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", finishMarquee);
+    window.addEventListener("blur", finishMarquee);
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", finishMarquee);
+      window.removeEventListener("blur", finishMarquee);
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+    };
+  }, [addMany]);
+
+  function startMarquee(event: ReactMouseEvent<HTMLDivElement>) {
+    if (event.button !== 0) return;
+    // Buttons, links, checkboxes, selects and other controls keep their own
+    // click behaviour: a mousedown on them never starts a drag rectangle.
+    if (isInteractiveRowTarget(event.target)) return;
+    marqueeStateRef.current = {
+      startX: event.clientX,
+      startY: event.clientY,
+      active: false
+    };
+    // Suppress the browser's native text selection for this gesture.
+    event.preventDefault();
+  }
+
   return (
     <TeacherCard className="overflow-hidden p-0">
-      <div className="overflow-x-auto px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6">
+      <div
+        className="overflow-x-auto px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6"
+        onMouseDown={startMarquee}
+        ref={scrollRef}
+      >
         <table className="w-full min-w-[1040px] border-separate border-spacing-0 overflow-hidden rounded-xl border border-student-border text-left text-sm">
           <thead className="bg-student-primary-soft/55">
             <tr className="text-student-text">
+              {selectionActive ? (
+                <th className="w-11 px-3 py-4 font-semibold">
+                  <span className="sr-only">选择</span>
+                </th>
+              ) : null}
               <th className="px-4 py-4 font-semibold">学生姓名</th>
               <th className="px-4 py-4 font-semibold">题型</th>
               <th className="px-4 py-4 font-semibold">题目名称</th>
@@ -624,15 +1113,42 @@ function ReviewTable({
             </tr>
           </thead>
           {loading ? (
-            <WritingReviewTableSkeleton />
+            <WritingReviewTableSkeleton withSelection={selectionActive} />
           ) : filtered.length > 0 ? (
             <tbody>
               {filtered.map((attempt) => {
+                const selected = selection.selectedIds.has(attempt.attemptId);
+                const canModerate = attempt.reviewStatus === "pending";
                 return (
                   <tr
-                    className="transition hover:bg-student-primary-soft/35"
+                    className={clsx(
+                      "transition",
+                      selected
+                        ? "bg-student-primary-soft/45 hover:bg-student-primary-soft/60"
+                        : "hover:bg-student-primary-soft/35"
+                    )}
+                    data-writing-review-row={attempt.attemptId}
                     key={attempt.attemptId}
+                    onClick={(event) => {
+                      if (suppressRowClickRef.current) {
+                        suppressRowClickRef.current = false;
+                        return;
+                      }
+                      if (isInteractiveRowTarget(event.target)) return;
+                      selection.toggle(attempt.attemptId);
+                    }}
                   >
+                    {selectionActive ? (
+                      <td className="border-t border-student-border px-3 py-4">
+                        <input
+                          aria-label={`选择 ${attempt.studentName} 的作文`}
+                          checked={selected}
+                          className="h-4 w-4 accent-student-primary"
+                          onChange={() => selection.toggle(attempt.attemptId)}
+                          type="checkbox"
+                        />
+                      </td>
+                    ) : null}
                     <td className="border-t border-student-border px-4 py-4 font-semibold text-student-text">
                       {attempt.studentName}
                     </td>
@@ -659,15 +1175,41 @@ function ReviewTable({
                       <ReviewStatusBadge status={attempt.reviewStatus} />
                     </td>
                     <td className="border-t border-student-border px-4 py-4">
-                      <Link
-                        className="teacher-button-secondary min-w-[104px]"
-                        href={teacherWritingReviewWorkspaceHref(
-                          attempt.attemptId,
-                          returnTo || "/teacher/writing/reviews"
-                        )}
-                      >
-                        查看
-                      </Link>
+                      <div className="flex items-center gap-1.5">
+                        <Link
+                          className="teacher-button-secondary !min-h-8 min-w-[52px] !px-2 !py-1 text-xs"
+                          href={teacherWritingReviewWorkspaceHref(
+                            attempt.attemptId,
+                            returnTo || "/teacher/writing/reviews"
+                          )}
+                        >
+                          查看
+                        </Link>
+                        <button
+                          className={clsx(
+                            "teacher-button-secondary !min-h-8 min-w-[52px] !px-2 !py-1 text-xs disabled:cursor-not-allowed disabled:pointer-events-auto",
+                            !canModerate &&
+                              "disabled:border-student-border disabled:text-student-muted"
+                          )}
+                          disabled={!canModerate || actions.busy}
+                          onClick={() => actions.onModerate("return", [attempt.attemptId])}
+                          type="button"
+                        >
+                          退回
+                        </button>
+                        <button
+                          className={clsx(
+                            "teacher-button-secondary !min-h-8 min-w-[52px] !px-2 !py-1 text-xs disabled:cursor-not-allowed disabled:pointer-events-auto",
+                            !canModerate &&
+                              "disabled:border-student-border disabled:text-student-muted"
+                          )}
+                          disabled={!canModerate || actions.busy}
+                          onClick={() => actions.onModerate("ignore", [attempt.attemptId])}
+                          type="button"
+                        >
+                          忽略
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -681,6 +1223,11 @@ function ReviewTable({
             <TeacherDataError text={toChineseLoadError(error)} />
           </div>
         ) : null}
+        {!error && notice ? (
+          <div className="mt-4">
+            <p className="teacher-loading">{notice}</p>
+          </div>
+        ) : null}
         {!loading && !error && filtered.length === 0 ? (
           <div className="mt-4">
             <TeacherEmptyState
@@ -689,19 +1236,42 @@ function ReviewTable({
           </div>
         ) : null}
       </div>
+      {marqueeRect && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              aria-hidden="true"
+              className="pointer-events-none fixed z-[95] rounded-[3px] border border-student-primary bg-student-primary/10"
+              style={{
+                left: marqueeRect.left,
+                top: marqueeRect.top,
+                width: marqueeRect.width,
+                height: marqueeRect.height
+              }}
+            />,
+            document.body
+          )
+        : null}
     </TeacherCard>
   );
 }
 
-function WritingReviewTableSkeleton() {
+function WritingReviewTableSkeleton({ withSelection }: { withSelection: boolean }) {
+  const columns = withSelection ? 8 : 7;
+  const titleIndex = withSelection ? 3 : 2;
   return (
     <tbody>
       {Array.from({ length: 5 }, (_, rowIndex) => (
         <tr key={rowIndex}>
-          {Array.from({ length: 7 }, (_, cellIndex) => (
+          {Array.from({ length: columns }, (_, cellIndex) => (
             <td className="border-t border-student-border px-4 py-4" key={cellIndex}>
               <TeacherSkeleton
-                className={cellIndex === 2 ? "h-5 w-40" : cellIndex === 6 ? "h-10 w-24" : "h-5 w-24"}
+                className={
+                  cellIndex === titleIndex
+                    ? "h-5 w-40"
+                    : cellIndex === columns - 1
+                      ? "h-10 w-24"
+                      : "h-5 w-24"
+                }
               />
             </td>
           ))}
@@ -719,12 +1289,39 @@ function ReviewStatusBadge({ status }: { status: WritingReviewListStatus }) {
         status === "pending" && "border-amber-200 bg-amber-50 text-amber-700",
         status === "reviewing" &&
           "border-student-primary-border bg-student-primary-soft text-student-primary",
-        status === "published" && "border-emerald-200 bg-emerald-50 text-emerald-700"
+        status === "published" && "border-emerald-200 bg-emerald-50 text-emerald-700",
+        status === "ignored" && "border-student-border bg-student-bg text-student-muted"
       )}
     >
-      {status === "pending" ? "待批改" : status === "reviewing" ? "批改中" : "已发布"}
+      {status === "pending"
+        ? "待批改"
+        : status === "reviewing"
+          ? "批改中"
+          : status === "published"
+            ? "已发布"
+            : "已忽略"}
     </span>
   );
+}
+
+/** Row-level controls that keep their own click behaviour. */
+function isInteractiveRowTarget(target: EventTarget | null) {
+  return (
+    target instanceof Element &&
+    Boolean(
+      target.closest(
+        "a,button,input,select,textarea,label,[role='menuitem'],[role='checkbox']"
+      )
+    )
+  );
+}
+
+function readCachedReviewListPayload(
+  entry: ReturnType<ReturnType<typeof useTeacherDataCache>["getEntry"]>
+): WritingReviewListPayload | null {
+  if (!entry || (entry.status !== "success" && entry.status !== "refreshing")) return null;
+  const payload = entry.data as WritingReviewListPayload;
+  return Array.isArray(payload?.attempts) ? payload : null;
 }
 
 async function loadWritingReviews(query = ""): Promise<WritingReviewListPayload> {

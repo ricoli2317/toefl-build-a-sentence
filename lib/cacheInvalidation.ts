@@ -9,6 +9,7 @@ export type CacheInvalidationMutation =
   | "WRONGBOOK_CHANGED"
   | "WRITING_DRAFT_UPDATED"
   | "WRITING_ATTEMPT_SUBMITTED"
+  | "WRITING_ATTEMPT_RETURNED"
   | "WRITING_REVIEW_UPDATED"
   | "WRITING_REVIEW_PUBLISHED"
   | "ASSIGNMENT_UPDATED"
@@ -25,6 +26,7 @@ export type CacheInvalidationDomain =
   | "studentWritingCatalog"
   | "studentWritingOverview"
   | "studentWritingHistory"
+  | "studentWritingAttempts"
   | "studentPublishedReviews"
   | "studentAssignments"
   | "teacherStats"
@@ -88,6 +90,22 @@ const BASE_INVALIDATION_MATRIX: Record<
     "teacherClasses",
     "teacherClassReviews"
   ],
+  // 退回 turns a submitted attempt back into the student's draft: the teacher
+  // list loses the row, the student side switches from 已提交 back to an
+  // editable draft (assignment or standalone catalog), and the attempt detail
+  // cache must not answer with the old submitted payload.
+  WRITING_ATTEMPT_RETURNED: [
+    "studentWritingOverview",
+    "studentWritingHistory",
+    "studentWritingAttempts",
+    "studentPracticeHistory",
+    "teacherWritingReviews",
+    "teacherWritingReviewWorkspace",
+    "teacherDashboard",
+    "teacherAssignments",
+    "teacherClasses",
+    "teacherClassReviews"
+  ],
   // Saving or regenerating a review does not change publish state or
   // assignment progress, so only the review caches are affected.
   WRITING_REVIEW_UPDATED: [
@@ -143,6 +161,14 @@ export function cacheDomainsForEvent(
       if (event.type === "WRITING_ATTEMPT_SUBMITTED") {
         domains.add("teacherAssignments");
       }
+    } else {
+      domains.add("studentWritingCatalog");
+    }
+  }
+
+  if (event.type === "WRITING_ATTEMPT_RETURNED") {
+    if (event.assignmentId) {
+      domains.add("studentAssignments");
     } else {
       domains.add("studentWritingCatalog");
     }

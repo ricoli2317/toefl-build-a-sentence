@@ -6,7 +6,7 @@ import {
 
 export type RecoverableWritingReview = WritingReviewWorkingDraft & {
   review_id: string | null;
-  status: "pending" | "reviewing" | "published";
+  status: "pending" | "reviewing" | "published" | "ignored";
   has_ai_review: boolean;
   published_language_edits?: unknown;
   published_scores?: unknown;
@@ -26,9 +26,14 @@ export async function recoverWritingReviewAfterUnknownOutcome(
 ) {
   const review = await reload();
   if (operation === "generate") {
+    // Generating AI content on an ignored review keeps the ignored lifecycle
+    // state until the teacher really Saves / Publishes, so it still counts as
+    // a persisted generation.
     return review.review_id &&
       review.has_ai_review &&
-      (review.status === "reviewing" || review.status === "published")
+      (review.status === "reviewing" ||
+        review.status === "published" ||
+        review.status === "ignored")
       ? review
       : null;
   }

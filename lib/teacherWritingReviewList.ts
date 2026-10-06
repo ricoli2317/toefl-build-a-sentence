@@ -10,18 +10,28 @@ import type { WritingAssignmentRecipient } from "./writingAssignments.ts";
  * conflicting sorts.
  */
 
-export type WritingReviewListStatus = "pending" | "reviewing" | "published";
+export type WritingReviewListStatus =
+  | "pending"
+  | "reviewing"
+  | "published"
+  | "ignored";
 export type WritingReviewStatusFilter = "all" | WritingReviewListStatus;
 export type WritingReviewTaskTypeFilter = "all" | WritingTaskType;
 
 export const WRITING_REVIEW_LIST_STATUSES: readonly WritingReviewListStatus[] = [
   "pending",
   "reviewing",
-  "published"
+  "published",
+  "ignored"
 ];
 
 export function isWritingReviewListStatus(value: unknown): value is WritingReviewListStatus {
-  return value === "pending" || value === "reviewing" || value === "published";
+  return (
+    value === "pending" ||
+    value === "reviewing" ||
+    value === "published" ||
+    value === "ignored"
+  );
 }
 
 export function isWritingReviewStatusFilter(

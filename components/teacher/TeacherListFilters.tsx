@@ -28,7 +28,8 @@ const STATUS_FILTERS: Array<{ value: WritingReviewStatusFilter; label: string }>
   { value: "all", label: "全部" },
   { value: "pending", label: "待批改" },
   { value: "reviewing", label: "批改中" },
-  { value: "published", label: "已发布" }
+  { value: "published", label: "已发布" },
+  { value: "ignored", label: "已忽略" }
 ];
 
 const TASK_TYPE_FILTERS: readonly WritingTaskType[] = ["email", "academic_discussion"];
@@ -140,6 +141,7 @@ export function TeacherClassFilterPopover({
  * tabs render this exact bar; only the primary filter (and its label) differs.
  */
 export function TeacherReviewFilterBar({
+  bulkActions,
   onStatusFilter,
   onTaskFilter,
   primary,
@@ -147,6 +149,8 @@ export function TeacherReviewFilterBar({
   statusFilter,
   taskFilter
 }: {
+  /** 退回/忽略 for the current selection; hidden entirely when nothing is selected. */
+  bulkActions?: ReactNode;
   onStatusFilter: (value: WritingReviewStatusFilter) => void;
   onTaskFilter: (value: WritingReviewTaskTypeFilter) => void;
   primary: ReactNode;
@@ -184,6 +188,10 @@ export function TeacherReviewFilterBar({
             </div>
           </fieldset>
         </div>
+
+        {bulkActions ? (
+          <div className="flex items-end">{bulkActions}</div>
+        ) : null}
 
         <label className="block w-full max-w-[260px]">
           <span className="mb-2 block text-sm font-semibold text-student-text">题型</span>

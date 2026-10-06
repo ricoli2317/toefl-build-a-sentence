@@ -564,7 +564,9 @@ function isUsableExistingAiReview(value: {
 }) {
   return (
     typeof value.review_id === "string" &&
-    (value.status === "reviewing" || value.status === "published") &&
+    (value.status === "reviewing" ||
+      value.status === "published" ||
+      value.status === "ignored") &&
     typeof value.ai_model === "string" &&
     value.ai_model.length > 0 &&
     isRecord(value.ai_review_raw) &&

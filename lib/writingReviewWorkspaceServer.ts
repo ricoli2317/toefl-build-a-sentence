@@ -220,7 +220,14 @@ export async function saveWritingReviewWorkspace(
   }
   const mutation = publish
     ? buildWritingReviewPublishUpdate(draft, publishedAt)
-    : buildWritingReviewSaveUpdate(draft);
+    : {
+        ...buildWritingReviewSaveUpdate(draft),
+        // A real save on an ignored review starts the human review lifecycle;
+        // merely opening the workspace never changes it (see 已忽略 rules).
+        ...(loaded.review.status === "ignored"
+          ? { status: "reviewing" as const }
+          : {})
+      };
   const inserting = !loaded.review.review_id;
   let reviewQuery;
   if (loaded.review.review_id) {
@@ -393,11 +400,17 @@ function normalizeReviewRow(
       teacherComment: row.teacher_comment
     });
   } catch (error) {
-    throw new WritingReviewWorkspaceServerError(
-      "WORKSPACE_INVALID",
-      "数据库中的批改工作稿格式无效。",
-      500
-    );
+    // An ignored review starts as an empty moderation placeholder; opening it
+    // must still load a valid empty working draft until the teacher Saves.
+    if (row.status === "ignored") {
+      draft = buildManualWritingReviewDraft(taskType);
+    } else {
+      throw new WritingReviewWorkspaceServerError(
+        "WORKSPACE_INVALID",
+        "数据库中的批改工作稿格式无效。",
+        500
+      );
+    }
   }
 
   const legacyTeacherOverall =
@@ -417,7 +430,12 @@ function normalizeReviewRow(
 
   return {
     review_id: String(row.review_id),
-    status: row.status === "published" ? "published" : "reviewing",
+    status:
+      row.status === "published"
+        ? "published"
+        : row.status === "ignored"
+          ? "ignored"
+          : "reviewing",
     has_ai_review:
       typeof row.ai_generated_at === "string" && row.ai_generated_at.length > 0,
     ai_model: typeof row.ai_model === "string" ? row.ai_model : null,
