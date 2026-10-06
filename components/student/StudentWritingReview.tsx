@@ -94,7 +94,7 @@ type ReviewSummary = {
 
 type ReviewListPayload = { error?: string; reviews: ReviewSummary[] };
 type ReviewTab = "all" | "language_edit" | "content_feedback";
-type ReviewView = "marked" | "revised" | "original" | "question";
+type ReviewView = "marked" | "revised" | "original" | "question" | "sample";
 
 const EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP: AcademicDiscussionAvatarMap = {};
 
@@ -172,6 +172,11 @@ export function StudentWritingReviewResult({
   const { attempt, question, review } = state.data;
   const selectedItem = items.find((item) => item.id === selectedId) ?? null;
   const taskLabel = WRITING_TASK_CONFIG[attempt.task_type].label;
+  const sampleEssay =
+    typeof review.sample_essay === "string" && review.sample_essay.trim()
+      ? review.sample_essay
+      : null;
+  const hasSampleEssay = sampleEssay !== null;
 
   function selectTab(nextTab: ReviewTab) {
     setTab(nextTab);
@@ -228,6 +233,9 @@ export function StudentWritingReviewResult({
           <ReviewViewTab active={view === "revised"} onClick={() => setView("revised")}>修改稿</ReviewViewTab>
           <ReviewViewTab active={view === "original"} onClick={() => setView("original")}>原文</ReviewViewTab>
           <ReviewViewTab active={view === "question"} onClick={() => setView("question")}>题目</ReviewViewTab>
+          {hasSampleEssay ? (
+            <ReviewViewTab active={view === "sample"} onClick={() => setView("sample")}>范文</ReviewViewTab>
+          ) : null}
         </nav>
       </header>
 
@@ -237,7 +245,7 @@ export function StudentWritingReviewResult({
             <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-student-border px-4 py-2.5">
               <div>
                 <h2 className="font-bold text-student-text">
-                  {view === "marked" ? "批改稿" : view === "revised" ? "修改稿" : view === "original" ? "原文" : "题目"}
+                  {view === "marked" ? "批改稿" : view === "revised" ? "修改稿" : view === "original" ? "原文" : view === "sample" ? "范文" : "题目"}
                 </h2>
                 {view === "marked" ? (
                   <p className="mt-0.5 text-[11px] text-student-muted">点击修改标记查看对应详情</p>
@@ -261,6 +269,12 @@ export function StudentWritingReviewResult({
                 <p className="whitespace-pre-wrap">
                   <WritingOvertimeText ranges={attempt.overtime_ranges} text={attempt.response_text} />
                 </p>
+              ) : view === "sample" ? (
+                sampleEssay ? (
+                  <p className="whitespace-pre-wrap">{sampleEssay}</p>
+                ) : (
+                  <p className="text-sm text-student-muted">暂无范文。</p>
+                )
               ) : (
                 <WritingQuestionReview
                   academicDiscussionAvatarSource={state.data.question_source}

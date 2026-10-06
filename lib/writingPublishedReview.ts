@@ -17,6 +17,7 @@ export type PublishedReviewItem =
 
 export type PublishedWritingReviewSnapshot = WritingReviewWorkingDraft & {
   overall_evaluation: string;
+  sample_essay: string | null;
   published_at: string;
 };
 
@@ -28,6 +29,8 @@ export type StudentPublishedWritingReview = {
     dimension_scores: Record<string, { score: number; rationale: string }> | null;
   };
   overall_evaluation: string;
+  /** Present only when the teacher published a non-empty sample essay. */
+  sample_essay: string | null;
   published_at: string;
 };
 
@@ -50,6 +53,7 @@ export function hydratePublishedWritingReviewSnapshot(input: {
   publishedScores: unknown;
   publishedContentFeedback: unknown;
   publishedTeacherComment: unknown;
+  publishedSampleEssay?: unknown;
   publishedAt: unknown;
 }): PublishedWritingReviewSnapshot {
   if (!Array.isArray(input.publishedLanguageEdits)) {
@@ -84,6 +88,11 @@ export function hydratePublishedWritingReviewSnapshot(input: {
       ? input.publishedTeacherComment
       : "";
   const overallFeedback = input.publishedContentFeedback.overall_feedback;
+  const sampleEssay =
+    typeof input.publishedSampleEssay === "string" &&
+    input.publishedSampleEssay.trim().length > 0
+      ? input.publishedSampleEssay
+      : null;
 
   return {
     language_edits: languageEdits,
@@ -95,6 +104,7 @@ export function hydratePublishedWritingReviewSnapshot(input: {
     },
     teacher_comment: teacherComment,
     overall_evaluation: teacherComment.trim() || overallFeedback,
+    sample_essay: sampleEssay,
     published_at: input.publishedAt
   };
 }
@@ -185,6 +195,7 @@ export function toStudentPublishedWritingReview(
         : null
     },
     overall_evaluation: snapshot.overall_evaluation,
+    sample_essay: snapshot.sample_essay,
     published_at: snapshot.published_at
   };
 }

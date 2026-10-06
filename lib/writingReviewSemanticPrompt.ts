@@ -33,13 +33,20 @@ export function buildWritingReviewSemanticC3Messages(input: {
   taskType: WritingTaskType;
   question: Record<string, unknown>;
   anchoredResponse: string;
+  wordCount?: number | null;
 }) {
   const dimensions = WRITING_REVIEW_C3_DIMENSIONS[input.taskType];
   const categories = WRITING_REVIEW_C3_CONTENT_CATEGORIES[input.taskType];
   const task =
     input.taskType === "email"
-      ? "Evaluate completion of the email's communicative requirements, politeness, social conventions, greeting/closing, and specific content."
-      : "Evaluate response to the professor, clear stance, genuine discussion participation, engagement with peers, elaboration, relevance, and coherence.";
+      ? `Evaluate completion of the email's communicative requirements, politeness, social conventions, greeting/closing, and specific content.
+The subject is provided by the task and is not part of the student's required response. Do not penalize the student or give negative feedback for omitting a subject line.`
+      : `Evaluate response to the professor, clear stance, genuine discussion participation, engagement with peers, elaboration, relevance, and coherence.
+Responding to either peer is optional. Do not penalize a response for failing to address one or both student posts. A response can fully satisfy the task by directly answering the professor's question and making a meaningful, supported contribution.
+Academic Discussion word-count rule:
+- First determine the base overall score under the existing official rubric. Then apply one under-100-word adjustment: 5 → 4, 4 → 3, 3 → 2, 2 → 1, 1 → 1, 0 → 0. Return the adjusted value as official_score.
+- Never turn a valid English response with a base score of 1 into 0 merely because it is under 100 words. Score 0 remains reserved for the existing essentially invalid responses (blank, not meaningfully English, entirely copied prompt, meaningless keyboard input, or the existing Score 0 cases).
+- Apply the adjustment exactly once. Do not apply further mechanical deductions for the same word-count fact; genuine problems such as insufficient development, support, or explanation are still evaluated normally under the official rubric.`;
 
   return [
     {
@@ -59,7 +66,10 @@ Never return offsets, overlap decisions, database IDs, or a v2.2 object.`,
       content: JSON.stringify({
         task_type: input.taskType,
         question: input.question,
-        anchored_response: input.anchoredResponse
+        anchored_response: input.anchoredResponse,
+        ...(typeof input.wordCount === "number"
+          ? { word_count: input.wordCount }
+          : {})
       })
     }
   ];

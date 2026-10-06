@@ -15,6 +15,7 @@ export type FullRegenerationAttempt = {
   question_id: string;
   response_text: string;
   status: string;
+  word_count?: number | null;
 };
 
 export type FullRegenerationReview = {
@@ -60,6 +61,7 @@ export type WritingReviewFullRegenerationDependencies = {
     taskType: WritingTaskType;
     question: Record<string, unknown>;
     responseText: string;
+    wordCount?: number | null;
   }): Promise<{ content: string; model: string }>;
   parseReview(value: unknown, responseText: string): AIReviewResultV22;
   now?: () => Date;
@@ -114,7 +116,9 @@ export async function regenerateFullWritingReview(
   const aiResponse = await dependencies.requestAI({
     taskType: attempt.task_type,
     question: question as unknown as Record<string, unknown>,
-    responseText: attempt.response_text
+    responseText: attempt.response_text,
+    wordCount:
+      typeof attempt.word_count === "number" ? attempt.word_count : null
   });
   let raw: unknown;
   let review: AIReviewResultV22;

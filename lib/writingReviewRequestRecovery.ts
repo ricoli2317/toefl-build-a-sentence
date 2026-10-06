@@ -12,6 +12,8 @@ export type RecoverableWritingReview = WritingReviewWorkingDraft & {
   published_scores?: unknown;
   published_content_feedback?: unknown;
   published_teacher_comment?: string | null;
+  published_sample_essay?: string | null;
+  sample_essay_draft?: string | null;
 };
 
 export type WritingReviewUnknownOutcomeOperation =
@@ -55,7 +57,8 @@ export async function recoverWritingReviewAfterUnknownOutcome(
   if (review.status !== "published") return null;
   const expected = buildWritingReviewPublishUpdate(
     draft,
-    "1970-01-01T00:00:00.000Z"
+    "1970-01-01T00:00:00.000Z",
+    review.sample_essay_draft ?? null
   );
   return (
     jsonValuesEqual(
@@ -67,7 +70,9 @@ export async function recoverWritingReviewAfterUnknownOutcome(
       review.published_content_feedback,
       expected.published_content_feedback
     ) &&
-    review.published_teacher_comment === expected.published_teacher_comment
+    review.published_teacher_comment === expected.published_teacher_comment &&
+    (expected.published_sample_essay === undefined ||
+      (review.published_sample_essay ?? null) === expected.published_sample_essay)
   )
     ? review
     : null;

@@ -130,6 +130,9 @@ type WorkspaceReview = WritingReviewWorkingDraft & {
   published_language_edits?: unknown;
   published_scores?: unknown;
   published_teacher_comment?: string | null;
+  published_sample_essay?: string | null;
+  sample_essay_instruction?: string | null;
+  sample_essay_draft?: string | null;
   published_at: string | null;
   updated_at: string | null;
 };
@@ -150,7 +153,7 @@ type WorkspacePayload = {
 };
 
 type ErrorPayload = { code?: string; message?: string };
-type WorkspaceMode = "workspace" | "original" | "revised";
+type WorkspaceMode = "workspace" | "original" | "revised" | "sample";
 type AiGenerationTeacherContentMode = "preserve" | "overwrite";
 type InspectorPosition = { left: number; top: number };
 type PositionedSourceSelection = SourceTextSelection & InspectorPosition;
@@ -198,6 +201,17 @@ export function TeacherWritingReviewWorkspace({
   const essayHighlightTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [message, setMessage] = useState("");
   const [requestError, setRequestError] = useState("");
+  const [sampleInstruction, setSampleInstruction] = useState("");
+  const [sampleDraft, setSampleDraft] = useState<string | null>(null);
+  const [sampleGenerating, setSampleGenerating] = useState(false);
+  const [sampleMessage, setSampleMessage] = useState("");
+  const [sampleError, setSampleError] = useState("");
+  const sampleOperationRef = useRef(false);
+  const sampleServerRef = useRef<{
+    instruction: string | null;
+    draft: string | null;
+  } | null>(null);
+  const dirtyRef = useRef(false);
   const articleRef = useRef<HTMLDivElement>(null);
   const articleScrollRef = useRef<HTMLDivElement>(null);
   const rightColumnRef = useRef<HTMLElement>(null);
@@ -206,8 +220,32 @@ export function TeacherWritingReviewWorkspace({
 
   useEffect(() => {
     if (!data) return;
+    // Sample-essay generation refreshes the cached payload without saving the
+    // working review draft; unsaved local review edits must survive it.
+    if (dirtyRef.current) return;
     setDraft(toDraft(data.review));
     setSelectedEditId(data.review.language_edits[0]?.edit_id ?? null);
+  }, [data]);
+  useEffect(() => {
+    dirtyRef.current = dirty;
+  }, [dirty]);
+  useEffect(() => {
+    if (!data) return;
+    const serverInstruction = data.review.sample_essay_instruction ?? null;
+    const serverDraft = data.review.sample_essay_draft ?? null;
+    if (
+      sampleServerRef.current &&
+      sampleServerRef.current.instruction === serverInstruction &&
+      sampleServerRef.current.draft === serverDraft
+    ) {
+      return;
+    }
+    sampleServerRef.current = {
+      instruction: serverInstruction,
+      draft: serverDraft
+    };
+    setSampleInstruction(serverInstruction ?? "");
+    setSampleDraft(serverDraft);
   }, [data]);
   useEffect(() => {
     function closeOnOutsidePointer(event: MouseEvent) {
@@ -466,7 +504,7 @@ export function TeacherWritingReviewWorkspace({
   }
 
   function requestAiGeneration() {
-    if (!data || !draft || operationRef.current) return;
+    if (!data || !draft || operationRef.current || sampleOperationRef.current) return;
     if (
       dirty ||
       hasWritingReviewTeacherContent(
@@ -482,7 +520,7 @@ export function TeacherWritingReviewWorkspace({
   }
 
   async function regenerateAll(teacherContentMode: AiGenerationTeacherContentMode) {
-    if (!data || !draft || operationRef.current) return;
+    if (!data || !draft || operationRef.current || sampleOperationRef.current) return;
     const hadAiReview = data.review.has_ai_review;
     operationRef.current = "regenerate";
     setTeacherContentConfirmOpen(false);
@@ -584,7 +622,7 @@ export function TeacherWritingReviewWorkspace({
   }
 
   async function persist(publish: boolean) {
-    if (!draft || !data || operationRef.current) return;
+    if (!draft || !data || operationRef.current || sampleOperationRef.current) return;
     const nextOperation = publish ? "publish" : "save";
     operationRef.current = nextOperation;
     setOperation(nextOperation);
@@ -634,6 +672,49 @@ export function TeacherWritingReviewWorkspace({
     }
   }
 
+  async function generateSampleEssay() {
+    if (!data || sampleOperationRef.current || operationRef.current) return;
+    const instruction = sampleInstruction.trim();
+    if (!instruction) {
+      setSampleError("请输入范文要求。");
+      return;
+    }
+    sampleOperationRef.current = true;
+    setSampleGenerating(true);
+    setSampleMessage("");
+    setSampleError("");
+    try {
+      const saved = await requestSampleEssayGeneration(attemptId, instruction);
+      const nextPayload: WorkspacePayload = {
+        ...data,
+        review: {
+          ...data.review,
+          sample_essay_instruction: saved.instruction,
+          sample_essay_draft: saved.draft,
+          updated_at: saved.updated_at ?? data.review.updated_at
+        }
+      };
+      cache.set(cacheKey, nextPayload);
+      sampleServerRef.current = {
+        instruction: saved.instruction,
+        draft: saved.draft
+      };
+      setSampleInstruction(saved.instruction);
+      setSampleDraft(saved.draft);
+      setSampleMessage("范文已生成并保存");
+    } catch (generationError) {
+      // A failed generation never clears the last saved draft or instruction.
+      setSampleError(
+        generationError instanceof Error
+          ? generationError.message
+          : "范文生成失败，请稍后重试。"
+      );
+    } finally {
+      sampleOperationRef.current = false;
+      setSampleGenerating(false);
+    }
+  }
+
   if (loading || !data || !draft) return <WorkspaceSkeleton error={error} />;
 
   const restoredCount = draft.language_edits.filter((edit) => edit.restored).length;
@@ -661,6 +742,7 @@ export function TeacherWritingReviewWorkspace({
         publishedWithLaterChanges={publishedWithLaterChanges}
         requestError={requestError}
         returnTo={returnTo}
+        sampleGenerating={sampleGenerating}
         showRevisionMarks={showRevisionMarks}
         setMode={changeMode}
         setShowRevisionMarks={setShowRevisionMarks}
@@ -688,6 +770,20 @@ export function TeacherWritingReviewWorkspace({
             />
           ) : null}
         </FullscreenArticle>
+      ) : mode === "sample" ? (
+        <SampleEssayWorkspace
+          draft={sampleDraft}
+          error={sampleError}
+          generating={sampleGenerating}
+          instruction={sampleInstruction}
+          message={sampleMessage}
+          onGenerate={() => void generateSampleEssay()}
+          onInstructionChange={(value) => {
+            setSampleInstruction(value);
+            setSampleMessage("");
+            setSampleError("");
+          }}
+        />
       ) : (
         <div className="writing-review-grid min-h-0 flex-1 bg-[#f8f7fc] p-2">
           <QuestionColumn question={data.question} taskType={data.attempt.task_type} />
@@ -893,6 +989,7 @@ function WorkspaceToolbar({
   publishedWithLaterChanges,
   requestError,
   returnTo,
+  sampleGenerating,
   showRevisionMarks,
   setMode,
   setShowRevisionMarks,
@@ -907,6 +1004,7 @@ function WorkspaceToolbar({
   publishedWithLaterChanges: boolean;
   requestError: string;
   returnTo: string;
+  sampleGenerating: boolean;
   showRevisionMarks: boolean;
   setMode: (mode: WorkspaceMode) => void;
   setShowRevisionMarks: (show: boolean) => void;
@@ -960,6 +1058,9 @@ function WorkspaceToolbar({
           <ModeButton active={mode === "revised"} onClick={() => setMode("revised")}>
             批改稿
           </ModeButton>
+          <ModeButton active={mode === "sample"} onClick={() => setMode("sample")}>
+            范文
+          </ModeButton>
         </div>
         {mode === "revised" ? (
           <button
@@ -972,7 +1073,7 @@ function WorkspaceToolbar({
         ) : null}
         <button
           className="teacher-button-secondary !min-h-8 !px-3 !py-1 text-xs"
-          disabled={operation !== null}
+          disabled={operation !== null || sampleGenerating}
           onClick={onRegenerate}
           type="button"
         >
@@ -1006,7 +1107,7 @@ function WorkspaceToolbar({
         </span>
         <button
           className="teacher-button-secondary !min-h-8 !px-3 !py-1 text-xs"
-          disabled={!dirty || operation !== null}
+          disabled={!dirty || operation !== null || sampleGenerating}
           onClick={() => void onPersist(false)}
           type="button"
         >
@@ -1014,7 +1115,7 @@ function WorkspaceToolbar({
         </button>
         <button
           className="teacher-button-primary !min-h-8 !px-3 !py-1 text-xs"
-          disabled={operation !== null}
+          disabled={operation !== null || sampleGenerating}
           onClick={() => void onPersist(true)}
           type="button"
         >
@@ -1068,6 +1169,72 @@ function FullscreenArticle({
       <article className="mx-auto w-[min(1400px,calc(100vw-100px))] max-w-full rounded-xl border border-student-border bg-white p-5 text-[16px] leading-7 text-student-text shadow-sm lg:p-6">
         <h2 className="mb-3 text-base font-bold">{title}</h2>
         <div className="whitespace-pre-wrap">{children}</div>
+      </article>
+    </div>
+  );
+}
+
+function SampleEssayWorkspace({
+  draft,
+  error,
+  generating,
+  instruction,
+  message,
+  onGenerate,
+  onInstructionChange
+}: {
+  draft: string | null;
+  error: string;
+  generating: boolean;
+  instruction: string;
+  message: string;
+  onGenerate: () => void;
+  onInstructionChange: (value: string) => void;
+}) {
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto bg-[#fbfaff] p-3 lg:p-5">
+      <article className="mx-auto w-[min(1400px,calc(100vw-100px))] max-w-full rounded-xl border border-student-border bg-white p-5 shadow-sm lg:p-6">
+        <div className="flex items-baseline justify-between gap-3">
+          <h2 className="text-base font-bold">范文</h2>
+          <span className="text-[11px] text-student-muted">
+            生成的范文先保存为草稿，点击右上角「发布」后学生才能看到
+          </span>
+        </div>
+        <div className="mt-3 flex flex-col gap-2">
+          <textarea
+            className="min-h-24 w-full resize-y rounded-lg border border-student-border bg-white p-2.5 text-sm leading-6 focus:border-student-primary"
+            disabled={generating}
+            onChange={(event) => onInstructionChange(event.target.value)}
+            placeholder="例如：保留学生原来的两个理由，生成 4 分水平范文"
+            value={instruction}
+          />
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              className="teacher-button-primary !min-h-8 !px-3 !py-1 text-xs"
+              disabled={generating}
+              onClick={onGenerate}
+              type="button"
+            >
+              <Sparkles aria-hidden="true" size={14} />
+              {generating ? "正在生成..." : "生成范文"}
+            </button>
+            <span
+              className={clsx(
+                "text-[11px]",
+                error ? "text-red-600" : "text-student-muted"
+              )}
+            >
+              {error || message || ""}
+            </span>
+          </div>
+        </div>
+        <div className="mt-5 text-[16px] leading-7 text-student-text">
+          {draft ? (
+            <p className="whitespace-pre-wrap">{draft}</p>
+          ) : (
+            <p className="text-sm text-student-muted">暂无范文。</p>
+          )}
+        </div>
       </article>
     </div>
   );
@@ -2377,6 +2544,34 @@ async function generateInitialReview(
     throw new Error(errorMessage(payload, "AI 初批失败，当前批改未改变。"));
   }
   return payload.review;
+}
+
+async function requestSampleEssayGeneration(attemptId: string, instruction: string) {
+  const response = await teacherFetch(
+    `/api/teacher/writing/reviews/${encodeURIComponent(attemptId)}/sample-essay/generate`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ instruction })
+    }
+  );
+  const payload = await readJson<{
+    instruction?: string;
+    draft?: string;
+    updated_at?: string | null;
+  } & ErrorPayload>(response);
+  if (
+    !response.ok ||
+    typeof payload.instruction !== "string" ||
+    typeof payload.draft !== "string"
+  ) {
+    throw new Error(errorMessage(payload, "范文生成失败，请稍后重试。"));
+  }
+  return {
+    instruction: payload.instruction,
+    draft: payload.draft,
+    updated_at: payload.updated_at ?? null
+  };
 }
 
 async function regenerateFeedback(attemptId: string, feedbackId: string, prompt: string) {

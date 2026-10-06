@@ -10,7 +10,8 @@ import type { OpenRouterTokenUsage } from "./openrouterWritingReview.ts";
 export type WritingReviewAiOperation =
   | "generate_ai"
   | "full_regenerate"
-  | "feedback_regenerate";
+  | "feedback_regenerate"
+  | "sample_essay_generate";
 export type WritingReviewAiStatus = "success" | "recovered" | "failed";
 export type WritingReviewAiPipelineStage =
   | "request_preparation"
@@ -298,6 +299,7 @@ export function classifyWritingReviewAiFailure(
     code === "REVIEW_NOT_FOUND" ||
     code === "QUESTION_NOT_FOUND" ||
     code === "INVALID_TEACHER_PROMPT" ||
+    code === "INVALID_TEACHER_INSTRUCTION" ||
     code === "FEEDBACK_NOT_FOUND" ||
     code === "TEACHER_FEEDBACK_UNSUPPORTED" ||
     code === "LEGACY_FEEDBACK_UNSUPPORTED" ||
@@ -386,6 +388,8 @@ export function classifyWritingReviewAiFailure(
   if (
     code === "REVIEW_SAVE_FAILED" ||
     code === "REVIEW_UPDATE_FAILED" ||
+    code === "SAMPLE_ESSAY_SAVE_FAILED" ||
+    code === "SAMPLE_ESSAY_CONFLICT" ||
     code === "DATABASE_READ_FAILED"
   ) {
     return failure(

@@ -9,7 +9,7 @@ import { readWritingQuestionForReview } from "./writingReviewSource.ts";
 const ATTEMPT_FIELDS =
   "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,overtime_ranges,submitted_at";
 const PUBLISHED_REVIEW_FIELDS =
-  "attempt_id,status,published_language_edits,published_scores,published_content_feedback,published_teacher_comment,published_at";
+  "attempt_id,status,published_language_edits,published_scores,published_content_feedback,published_teacher_comment,published_sample_essay,published_at";
 
 export type StudentPublishedReviewErrorCode =
   | "ATTEMPT_NOT_FOUND"
@@ -95,6 +95,7 @@ export async function loadStudentPublishedWritingReview(
       publishedScores: review.published_scores,
       publishedContentFeedback: review.published_content_feedback,
       publishedTeacherComment: review.published_teacher_comment,
+      publishedSampleEssay: review.published_sample_essay,
       publishedAt: review.published_at
     });
     return {

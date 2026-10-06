@@ -15,6 +15,8 @@ export type OpenRouterWritingReviewInput = {
   taskType: "email" | "academic_discussion";
   question: Record<string, unknown>;
   responseText: string;
+  /** Authoritative attempt word count, used only by the C3 AD under-length rule. */
+  wordCount?: number | null;
 };
 
 export type OpenRouterWritingReviewOptions = {
@@ -178,7 +180,7 @@ export async function requestOpenRouterWithTimeout<T>(
   }
 }
 
-const EMAIL_SCORING_GUIDE = `Official TOEFL Write an Email Scoring Guide (holistic 0-5)
+export const EMAIL_SCORING_GUIDE = `Official TOEFL Write an Email Scoring Guide (holistic 0-5)
 Score 5 — Fully successful:
 - Elaboration effectively supports communicative purpose.
 - Effective syntactic variety and precise, idiomatic word choice.
@@ -205,7 +207,7 @@ Score 1 — Unsuccessful:
 Score 0:
 - Blank, rejects the topic, is not in English, is entirely copied, entirely unrelated, or arbitrary keystrokes.`;
 
-const ACADEMIC_DISCUSSION_SCORING_GUIDE = `Official TOEFL Write for an Academic Discussion Scoring Guide (holistic 0-5)
+export const ACADEMIC_DISCUSSION_SCORING_GUIDE = `Official TOEFL Write for an Academic Discussion Scoring Guide (holistic 0-5)
 Score 5 — Fully successful:
 - Relevant and well-elaborated explanations, examples, and/or details.
 - Effective variety of syntactic structures and precise, idiomatic word choice.
@@ -446,6 +448,115 @@ export async function requestOpenRouterStructuredOutput(
         provider: {
           require_parameters: true
         }
+      })
+    });
+  } catch {
+    throw new OpenRouterWritingReviewError(
+      "OPENROUTER_REQUEST_FAILED",
+      "OpenRouter could not be reached.",
+      502
+    );
+  }
+
+  if (!response.ok) {
+    const diagnostic = await readOpenRouterErrorDiagnostic(response);
+    throw new OpenRouterWritingReviewError(
+      "OPENROUTER_REQUEST_FAILED",
+      formatOpenRouterErrorMessage(diagnostic),
+      502,
+      diagnostic
+    );
+  }
+
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new OpenRouterWritingReviewError(
+      "AI_RESPONSE_INVALID",
+      "OpenRouter returned an unreadable response.",
+      502
+    );
+  }
+
+  const content = readAssistantContent(payload);
+  if (!content) {
+    throw new OpenRouterWritingReviewError(
+      "AI_RESPONSE_INVALID",
+      "OpenRouter response did not contain assistant message content.",
+      502
+    );
+  }
+
+  return {
+    content,
+    model,
+    usage: readOpenAICompatibleUsage(payload),
+    generationId: isRecord(payload) ? readNonEmptyString(payload.id) : null
+  };
+}
+
+export type OpenRouterTextOutputOptions = {
+  env?: Partial<Pick<NodeJS.ProcessEnv, "OPENROUTER_API_KEY" | "OPENROUTER_WRITING_MODEL">>;
+  fetchImpl?: typeof fetch;
+  modelOverride?: string;
+  signal?: AbortSignal;
+  timeoutMs?: number;
+  timeoutMessage?: string;
+  maxTokens?: number;
+};
+
+export async function requestOpenRouterTextOutput(
+  messages: OpenRouterMessage[],
+  options: OpenRouterTextOutputOptions
+): Promise<OpenRouterWritingReviewResponse> {
+  if (options.timeoutMs !== undefined) {
+    return requestOpenRouterWithTimeout(
+      (signal) =>
+        requestOpenRouterTextOutput(messages, {
+          ...options,
+          signal,
+          timeoutMs: undefined,
+          timeoutMessage: undefined
+        }),
+      {
+        timeoutMs: options.timeoutMs,
+        timeoutMessage: options.timeoutMessage ?? "AI 请求超时，请稍后重试。"
+      }
+    );
+  }
+  const env = options.env ?? process.env;
+  const apiKey = env.OPENROUTER_API_KEY?.trim();
+  const model = options.modelOverride?.trim() || env.OPENROUTER_WRITING_MODEL?.trim();
+
+  if (!apiKey) {
+    throw new OpenRouterWritingReviewError(
+      "OPENROUTER_API_KEY_MISSING",
+      "Server configuration is missing OPENROUTER_API_KEY."
+    );
+  }
+  if (!model) {
+    throw new OpenRouterWritingReviewError(
+      "OPENROUTER_MODEL_MISSING",
+      "Server configuration is missing OPENROUTER_WRITING_MODEL."
+    );
+  }
+
+  const fetchImpl = options.fetchImpl ?? fetch;
+  let response: Response;
+  try {
+    response = await fetchImpl(OPENROUTER_CHAT_COMPLETIONS_URL, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      ...(options.signal ? { signal: options.signal } : {}),
+      body: JSON.stringify({
+        model,
+        stream: false,
+        messages,
+        ...(options.maxTokens ? { max_tokens: options.maxTokens } : {})
       })
     });
   } catch {

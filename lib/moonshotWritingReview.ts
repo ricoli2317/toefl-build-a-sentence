@@ -167,6 +167,111 @@ export async function requestMoonshotStructuredOutput(
   };
 }
 
+export type MoonshotTextOutputOptions = {
+  env?: Partial<Pick<
+    NodeJS.ProcessEnv,
+    "MOONSHOT_API_KEY" | "MOONSHOT_API_BASE_URL" | "MOONSHOT_WRITING_MODEL"
+  >>;
+  fetchImpl?: typeof fetch;
+  modelOverride?: string;
+  signal?: AbortSignal;
+  timeoutMs?: number;
+  timeoutMessage?: string;
+  maxTokens?: number;
+};
+
+export async function requestMoonshotTextOutput(
+  messages: { role: "system" | "user"; content: string }[],
+  options: MoonshotTextOutputOptions
+): Promise<MoonshotWritingReviewResponse> {
+  if (options.timeoutMs !== undefined) {
+    return requestMoonshotWithTimeout(
+      (signal) =>
+        requestMoonshotTextOutput(messages, {
+          ...options,
+          signal,
+          timeoutMs: undefined,
+          timeoutMessage: undefined
+        }),
+      {
+        timeoutMs: options.timeoutMs,
+        timeoutMessage: options.timeoutMessage ?? "AI 请求超时，请稍后重试。"
+      }
+    );
+  }
+  const env = options.env ?? process.env;
+  const apiKey = env.MOONSHOT_API_KEY?.trim();
+  if (!apiKey) {
+    throw new MoonshotWritingReviewError(
+      "MOONSHOT_API_KEY_MISSING",
+      "MOONSHOT_API_KEY is not configured in .env.local"
+    );
+  }
+  const baseUrl = env.MOONSHOT_API_BASE_URL?.trim() || MOONSHOT_API_BASE_URL;
+  const model = options.modelOverride?.trim() ||
+    env.MOONSHOT_WRITING_MODEL?.trim() ||
+    MOONSHOT_WRITING_REVIEW_MODEL;
+
+  let response: Response;
+  try {
+    response = await (options.fetchImpl ?? fetch)(`${baseUrl.replace(/\/$/, "")}/chat/completions`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      ...(options.signal ? { signal: options.signal } : {}),
+      body: JSON.stringify({
+        model,
+        stream: false,
+        messages,
+        ...(options.maxTokens ? { max_tokens: options.maxTokens } : {})
+      })
+    });
+  } catch {
+    throw new MoonshotWritingReviewError(
+      "MOONSHOT_REQUEST_FAILED",
+      "Moonshot API could not be reached.",
+      502
+    );
+  }
+
+  if (!response.ok) {
+    throw new MoonshotWritingReviewError(
+      "MOONSHOT_REQUEST_FAILED",
+      `Moonshot API returned HTTP ${response.status}.`,
+      502
+    );
+  }
+
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new MoonshotWritingReviewError(
+      "MOONSHOT_RESPONSE_INVALID",
+      "Moonshot API returned an unreadable response.",
+      502
+    );
+  }
+  const content = readAssistantContent(payload);
+  if (!content) {
+    throw new MoonshotWritingReviewError(
+      "MOONSHOT_RESPONSE_INVALID",
+      "Moonshot API response did not contain final assistant content.",
+      502
+    );
+  }
+  return {
+    content,
+    model,
+    usage: readOpenAICompatibleUsage(payload),
+    generationId: isRecord(payload) && typeof payload.id === "string" && payload.id.trim()
+      ? payload.id.trim()
+      : null
+  };
+}
+
 export async function requestMoonshotWithTimeout<T>(
   request: (signal: AbortSignal) => Promise<T>,
   options: {

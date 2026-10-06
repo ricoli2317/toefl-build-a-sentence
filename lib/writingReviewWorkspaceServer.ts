@@ -19,7 +19,7 @@ import {
 } from "./writingReviewWorkspace.ts";
 
 const REVIEW_FIELDS =
-  "review_id,attempt_id,status,ai_model,ai_generated_at,ai_review_raw,language_edits,scores,content_feedback,teacher_comment,published_language_edits,published_scores,published_content_feedback,published_teacher_comment,published_at,updated_at";
+  "review_id,attempt_id,status,ai_model,ai_generated_at,ai_review_raw,language_edits,scores,content_feedback,teacher_comment,published_language_edits,published_scores,published_content_feedback,published_teacher_comment,published_sample_essay,sample_essay_instruction,sample_essay_draft,published_at,updated_at";
 
 export type WritingReviewWorkspaceErrorCode =
   | "UNAUTHORIZED"
@@ -219,7 +219,11 @@ export async function saveWritingReviewWorkspace(
     return loaded.review;
   }
   const mutation = publish
-    ? buildWritingReviewPublishUpdate(draft, publishedAt)
+    ? buildWritingReviewPublishUpdate(
+        draft,
+        publishedAt,
+        loaded.review.sample_essay_draft
+      )
     : {
         ...buildWritingReviewSaveUpdate(draft),
         // A real save on an ignored review starts the human review lifecycle;
@@ -308,12 +312,15 @@ export function publishedSnapshotMatchesDraft(
     published_scores?: unknown;
     published_content_feedback?: unknown;
     published_teacher_comment?: string | null;
+    published_sample_essay?: string | null;
+    sample_essay_draft?: string | null;
   },
   draft: WritingReviewWorkingDraft
 ) {
   const expected = buildWritingReviewPublishUpdate(
     draft,
-    "1970-01-01T00:00:00.000Z"
+    "1970-01-01T00:00:00.000Z",
+    review.sample_essay_draft ?? null
   );
   return (
     jsonValuesEqual(
@@ -325,7 +332,9 @@ export function publishedSnapshotMatchesDraft(
       review.published_content_feedback,
       expected.published_content_feedback
     ) &&
-    review.published_teacher_comment === expected.published_teacher_comment
+    review.published_teacher_comment === expected.published_teacher_comment &&
+    (expected.published_sample_essay === undefined ||
+      (review.published_sample_essay ?? null) === expected.published_sample_essay)
   );
 }
 
@@ -450,6 +459,16 @@ function normalizeReviewRow(
       typeof row.published_teacher_comment === "string"
         ? row.published_teacher_comment
         : null,
+    published_sample_essay:
+      typeof row.published_sample_essay === "string"
+        ? row.published_sample_essay
+        : null,
+    sample_essay_instruction:
+      typeof row.sample_essay_instruction === "string"
+        ? row.sample_essay_instruction
+        : null,
+    sample_essay_draft:
+      typeof row.sample_essay_draft === "string" ? row.sample_essay_draft : null,
     published_at: typeof row.published_at === "string" ? row.published_at : null,
     updated_at: typeof row.updated_at === "string" ? row.updated_at : null
   };
@@ -470,6 +489,9 @@ function buildUnsavedManualReview(
     published_scores: null,
     published_content_feedback: null,
     published_teacher_comment: null,
+    published_sample_essay: null,
+    sample_essay_instruction: null,
+    sample_essay_draft: null,
     published_at: null,
     updated_at: null
   };

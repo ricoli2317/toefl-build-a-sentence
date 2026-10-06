@@ -540,9 +540,14 @@ export function buildWritingReviewSaveUpdate(draft: WritingReviewWorkingDraft) {
 
 export function buildWritingReviewPublishUpdate(
   draft: WritingReviewWorkingDraft,
-  publishedAt: string
+  publishedAt: string,
+  sampleEssayDraft: string | null = null
 ) {
   const working = buildWritingReviewSaveUpdate(draft);
+  const normalizedSampleEssay =
+    typeof sampleEssayDraft === "string" && sampleEssayDraft.trim().length > 0
+      ? sampleEssayDraft
+      : null;
   return {
     ...working,
     published_language_edits: draft.language_edits
@@ -559,6 +564,11 @@ export function buildWritingReviewPublishUpdate(
         : {})
     },
     published_teacher_comment: draft.teacher_comment,
+    // A missing draft leaves any previously published sample essay untouched;
+    // publishing never manufactures an empty student-visible essay.
+    ...(normalizedSampleEssay === null
+      ? {}
+      : { published_sample_essay: normalizedSampleEssay }),
     status: "published" as const,
     published_at: publishedAt
   };

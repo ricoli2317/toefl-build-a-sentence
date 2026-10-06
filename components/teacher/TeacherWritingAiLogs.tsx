@@ -125,7 +125,7 @@ export function TeacherWritingAiLogs({ initialAttemptId }: { initialAttemptId: s
           <FilterInput label="错误类型" name="error_type" />
           <FilterInput label="错误代码" name="error_code" />
           <FilterSelect label="操作" name="operation" options={[
-            "generate_ai", "full_regenerate", "feedback_regenerate"
+            "generate_ai", "full_regenerate", "feedback_regenerate", "sample_essay_generate"
           ]} />
           <FilterSelect label="题型" name="task_type" options={["email", "academic_discussion"]} />
           <FilterInput label="模型" name="model" />
@@ -386,7 +386,7 @@ function statusLabel(log: AiLog) { return log.status === "failed" ? failedLabel(
 function failedLabel(type: unknown) { return type === "provider_error" ? "Provider 失败" : type === "timeout" ? "超时" : type === "localization_error" ? "定位失败" : type === "response_parse_error" ? "解析失败" : type === "persistence_error" ? "保存失败" : "校验失败"; }
 function actionLabel(value: unknown) { return ({ deduplicated: "已去重", kept_minimal_equivalent: "保留最小等价修改", merged_context_overlap: "已合并上下文冲突", merged_compatible: "已合并兼容修改", suppressed_conflict: "冲突项已抑制" } as Record<string, string>)[String(value)] ?? String(value ?? "未知处理"); }
 function taskLabel(value: unknown) { return value === "email" ? "Write an Email" : value === "academic_discussion" ? "Academic Discussion" : value ? String(value) : "—"; }
-function operationLabel(value: string) { return ({ generate_ai: "AI 初批", full_regenerate: "Full Regenerate", feedback_regenerate: "Feedback Regenerate" } as Record<string, string>)[value] ?? value; }
+function operationLabel(value: string) { return ({ generate_ai: "AI 初批", full_regenerate: "Full Regenerate", feedback_regenerate: "Feedback Regenerate", sample_essay_generate: "范文生成" } as Record<string, string>)[value] ?? value; }
 function stageLabel(value: string) { return ({ provider_request: "Provider 请求", response_parsing: "响应解析", schema_validation: "Schema 校验", localization: "原文定位", normalization: "自动修复", final_validation: "最终校验", review_persistence: "保存批改" } as Record<string, string>)[value] ?? value; }
 function errorTypeLabel(value: unknown) { return value ? failedLabel(value) : "—"; }
 function formatDate(value: string) { return new Intl.DateTimeFormat("zh-CN", { dateStyle: "short", timeStyle: "medium" }).format(new Date(value)); }

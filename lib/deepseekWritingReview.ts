@@ -185,6 +185,124 @@ export async function requestDeepSeekStructuredOutput(
   };
 }
 
+export type DeepSeekTextOutputOptions = {
+  env?: Partial<Pick<
+    NodeJS.ProcessEnv,
+    "DEEPSEEK_API_KEY" | "DEEPSEEK_API_BASE_URL" | "DEEPSEEK_WRITING_MODEL"
+  >>;
+  fetchImpl?: typeof fetch;
+  modelOverride?: string;
+  signal?: AbortSignal;
+  timeoutMs?: number;
+  timeoutMessage?: string;
+  maxTokens?: number;
+};
+
+export async function requestDeepSeekTextOutput(
+  messages: OpenRouterMessage[],
+  options: DeepSeekTextOutputOptions
+): Promise<DeepSeekWritingReviewResponse> {
+  if (options.timeoutMs !== undefined) {
+    return requestDeepSeekWithTimeout(
+      (signal) =>
+        requestDeepSeekTextOutput(messages, {
+          ...options,
+          signal,
+          timeoutMs: undefined,
+          timeoutMessage: undefined
+        }),
+      {
+        timeoutMs: options.timeoutMs,
+        timeoutMessage: options.timeoutMessage ?? "AI 请求超时，请稍后重试。"
+      }
+    );
+  }
+
+  const env = options.env ?? process.env;
+  const apiKey = env.DEEPSEEK_API_KEY?.trim();
+  if (!apiKey) {
+    throw new DeepSeekWritingReviewError(
+      "DEEPSEEK_API_KEY_MISSING",
+      "DEEPSEEK_API_KEY is not configured in .env.local"
+    );
+  }
+  const baseUrl = env.DEEPSEEK_API_BASE_URL?.trim() || DEEPSEEK_API_BASE_URL;
+  const model =
+    options.modelOverride?.trim() ||
+    env.DEEPSEEK_WRITING_MODEL?.trim() ||
+    DEEPSEEK_WRITING_REVIEW_MODEL;
+
+  let response: Response;
+  try {
+    response = await (options.fetchImpl ?? fetch)(
+      `${baseUrl.replace(/\/$/, "")}/chat/completions`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        ...(options.signal ? { signal: options.signal } : {}),
+        body: JSON.stringify({
+          model,
+          stream: false,
+          messages,
+          thinking: { type: "enabled" },
+          ...(options.maxTokens ? { max_tokens: options.maxTokens } : {})
+        })
+      }
+    );
+  } catch {
+    throw new DeepSeekWritingReviewError(
+      "DEEPSEEK_REQUEST_FAILED",
+      "DeepSeek API could not be reached.",
+      502
+    );
+  }
+
+  if (!response.ok) {
+    throw new DeepSeekWritingReviewError(
+      "DEEPSEEK_REQUEST_FAILED",
+      `DeepSeek API returned HTTP ${response.status}.`,
+      502,
+      response.status
+    );
+  }
+
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new DeepSeekWritingReviewError(
+      "DEEPSEEK_RESPONSE_INVALID",
+      "DeepSeek API returned an unreadable response.",
+      502,
+      response.status
+    );
+  }
+  const content = readAssistantContent(payload);
+  if (!content) {
+    throw new DeepSeekWritingReviewError(
+      "DEEPSEEK_RESPONSE_INVALID",
+      "DeepSeek API response did not contain final assistant content.",
+      502,
+      response.status
+    );
+  }
+  return {
+    content,
+    model:
+      isRecord(payload) && typeof payload.model === "string" && payload.model.trim()
+        ? payload.model.trim()
+        : model,
+    usage: readOpenAICompatibleUsage(payload),
+    generationId:
+      isRecord(payload) && typeof payload.id === "string" && payload.id.trim()
+        ? payload.id.trim()
+        : null
+  };
+}
+
 export async function requestDeepSeekWithTimeout<T>(
   request: (signal: AbortSignal) => Promise<T>,
   options: {

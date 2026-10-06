@@ -1,11 +1,13 @@
 import {
   requestMoonshotStructuredOutput,
+  requestMoonshotTextOutput,
   requestMoonshotWritingReview,
   MoonshotWritingReviewError,
   type MoonshotReasoningEffort
 } from "./moonshotWritingReview.ts";
 import {
   requestOpenRouterStructuredOutput,
+  requestOpenRouterTextOutput,
   requestOpenRouterWritingReview,
   OpenRouterWritingReviewError,
   type OpenRouterMessage,
@@ -14,6 +16,7 @@ import {
 } from "./openrouterWritingReview.ts";
 import {
   requestDeepSeekStructuredOutput,
+  requestDeepSeekTextOutput,
   requestDeepSeekWritingReview,
   DeepSeekWritingReviewError,
   type DeepSeekReasoningEffort
@@ -121,6 +124,47 @@ export async function requestWritingReview(
     reasoningEffort: options.reasoningEffort as OpenRouterReasoningEffort
   });
   { const enriched=enrichWritingReviewUsage(config.provider, config.model, response.usage, config.endpointHostname); return { ...response, usage: enriched.usage, costObservability: enriched.cost }; }
+}
+
+/**
+ * Plain-text generation sibling of requestWritingReviewStructuredOutput: it
+ * reuses each provider's auth, model resolution, timeout, and usage accounting
+ * without a JSON Schema, for outputs such as a model essay.
+ */
+export async function requestWritingReviewTextOutput(
+  config: WritingReviewProviderConfig,
+  messages: OpenRouterMessage[],
+  options: {
+    env?: WritingReviewProviderEnv;
+    fetchImpl?: typeof fetch;
+    signal?: AbortSignal;
+    timeoutMs?: number;
+    timeoutMessage?: string;
+    maxTokens?: number;
+  }
+) {
+  if (config.provider === "moonshot") {
+    const response = await requestMoonshotTextOutput(messages, {
+      ...options,
+      modelOverride: config.model
+    });
+    const enriched = enrichWritingReviewUsage(config.provider, config.model, response.usage, config.endpointHostname);
+    return { ...response, usage: enriched.usage, costObservability: enriched.cost };
+  }
+  if (config.provider === "deepseek_flash") {
+    const response = await requestDeepSeekTextOutput(messages, {
+      ...options,
+      modelOverride: config.model
+    });
+    const enriched = enrichWritingReviewUsage(config.provider, config.model, response.usage, config.endpointHostname);
+    return { ...response, usage: enriched.usage, costObservability: enriched.cost };
+  }
+  const response = await requestOpenRouterTextOutput(messages, {
+    ...options,
+    modelOverride: config.model === "unknown" ? undefined : config.model
+  });
+  const enriched = enrichWritingReviewUsage(config.provider, config.model, response.usage, config.endpointHostname);
+  return { ...response, usage: enriched.usage, costObservability: enriched.cost };
 }
 
 export async function requestWritingReviewStructuredOutput(

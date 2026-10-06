@@ -249,7 +249,8 @@ export async function requestProductionC3WritingReview(
     messages = buildWritingReviewSemanticC3Messages({
       taskType: input.taskType,
       question: input.question,
-      anchoredResponse: anchored.anchoredResponse
+      anchoredResponse: anchored.anchoredResponse,
+      wordCount: input.wordCount ?? null
     });
   } catch (error) {
     throw new WritingReviewC3Error(

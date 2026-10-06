@@ -21,7 +21,7 @@ import type {
 export type ReviewableWritingAttempt = Pick<
   WritingAttempt,
   "attempt_id" | "task_type" | "question_id" | "response_text" | "status"
-> & { assignment_id?: string | null };
+> & { assignment_id?: string | null; word_count?: number | null };
 
 export type ReviewQuestion = EmailQuestion | AcademicDiscussionQuestion;
 
@@ -87,6 +87,7 @@ export type WritingReviewGenerationDependencies = {
     taskType: WritingTaskType;
     question: Record<string, unknown>;
     responseText: string;
+    wordCount?: number | null;
   }): Promise<{ content: string; model: string }>;
   parseReview(
     value: unknown,
@@ -168,7 +169,9 @@ export async function generateAndSaveWritingReview(
   const aiResponse = await dependencies.requestAI({
     taskType: attempt.task_type,
     question: question as unknown as Record<string, unknown>,
-    responseText: attempt.response_text
+    responseText: attempt.response_text,
+    wordCount:
+      typeof attempt.word_count === "number" ? attempt.word_count : null
   });
 
   let parsedJson: unknown;
