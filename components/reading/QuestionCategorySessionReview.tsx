@@ -1,6 +1,7 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { withStudentReturnTo } from "@/lib/studentNavigation";
 import { useStudentCachedData, useStudentDataCache } from "@/components/StudentDataCache";
 import { ReadingFullSetReviewShell, type ReadingReviewSourceStatus } from "./ReadingPractice";
 import { ReadingSessionMessage, loadReadingSessionPractice } from "./ReadingMultiSourceSessionRunner";
@@ -11,7 +12,9 @@ import { buildSubmittedReadingAnswerState, buildSubmittedReadingReviewItems, typ
 import type { ReadingCorrectionAnswerPresentation } from "@/lib/reading/correctionResult";
 import { buildReadingWrongbookSessionReviewPayload, findReadingWrongbookSessionShapeIndex, type ReadingWrongbookSessionReviewGroup } from "@/lib/reading/wrongbookSession";
 
-export function QuestionCategorySessionReview({ sessionId, initialReviewIndex }: { sessionId: string; initialReviewIndex: number }) {
+export function QuestionCategorySessionReview({ sessionId, initialReviewIndex, returnTo }: {
+  sessionId: string; initialReviewIndex: number; returnTo?: string | null;
+}) {
   const router = useRouter();
   const cache = useStudentDataCache();
   const cacheRef = useRef(cache); cacheRef.current = cache;
@@ -64,16 +67,17 @@ export function QuestionCategorySessionReview({ sessionId, initialReviewIndex }:
     // Every other source waits for navigation, including hard refresh/direct links.
   }, [shape, initialReviewIndex, loadGroup]);
   const selfBase = categoryResultHref(sessionId);
+  const selfPath = withStudentReturnTo(selfBase, returnTo);
   if (state.error || (session && session.status !== "completed")) return <ReadingSessionMessage title="无法打开作答"
-    description={state.error || "这次练习还没有完成。"} onBack={() => router.push(selfBase)} />;
+    description={state.error || "这次练习还没有完成。"} onBack={() => router.push(selfPath)} />;
   if (!session) return <ReadingSessionMessage title="正在准备作答" description="正在加载练习结果..." />;
   const payload = buildReadingWrongbookSessionReviewPayload({
     groupReviews: session.groups.flatMap((group) => reviews[group.logicalItemId] ? [reviews[group.logicalItemId]] : []),
     shapes: shape, sessionId, title: categorySessionTitle(session.questionCategory), taskType: "rap",
-    totalElapsedSeconds: session.elapsedSeconds, reviewHref: (index) => `${selfBase}/questions/${index}`
+    totalElapsedSeconds: session.elapsedSeconds, reviewHref: (index) => withStudentReturnTo(`${selfBase}/questions/${index}`, returnTo)
   });
   return <ReadingFullSetReviewShell payload={payload} variant="session" initialSourceAnswerIndex={initialReviewIndex}
     lexicalAccess={{ kind: "reading_category", attemptId: sessionId }}
-    onBack={() => router.push(selfBase)} sourceStatus={statuses}
+    onBack={() => router.push(selfPath)} sourceStatus={statuses}
     onRequestItem={(item, options) => { void loadGroup(item.occurrenceId, options?.retry === true); }} />;
 }

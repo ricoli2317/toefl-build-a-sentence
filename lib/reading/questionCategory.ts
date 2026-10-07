@@ -29,10 +29,12 @@ export type CategoryAnswer = {
   questionTimeSeconds: number;
 };
 export type CategoryGroupProgress = {
+  /** Active progress is a replaceable saved snapshot, NOT final submission. */
   correctPoints: number;
   totalPoints: number;
   elapsedSeconds: number;
   submittedAt: string;
+  revision?: number;
 };
 export type CategorySession = {
   sessionId: string;
@@ -46,7 +48,7 @@ export type CategorySession = {
   correctPoints: number;
   createdAt: string;
   completedAt: string | null;
-  draft?: { logicalItemId?: string; workspace?: CategoryDraft };
+  draft?: { logicalItemId?: string; workspace?: CategoryDraft; workspaces?: Record<string, CategoryDraft> };
 };
 export type CategorySessionPayload = { session: CategorySession; answers: CategoryAnswer[] };
 export type CategoryHistoryRow = {
@@ -55,6 +57,7 @@ export type CategoryHistoryRow = {
 };
 export type CategorySubmitPayload = CategorySessionPayload & {
   alreadySubmitted: boolean;
+  completedNow: boolean;
   group: CategoryGroupProgress;
 };
 export type CategoryDraft = {
@@ -62,6 +65,7 @@ export type CategoryDraft = {
   questionTimes: Record<string, number>;
   currentIndex: number;
   elapsedSeconds: number;
+  revision?: number;
 };
 
 export function isReadingQuestionCategory(value: unknown): value is ReadingQuestionCategory {
@@ -77,6 +81,20 @@ export function categoryPracticeHref(category: string, amount: number, sessionId
 }
 export function categoryResultHref(sessionId: string) {
   return `${CATEGORY_ROUTE}/sessions/${encodeURIComponent(sessionId)}`;
+}
+
+export function categoryWorkspace(session: CategorySession, itemId: string) {
+  return session.draft?.workspaces?.[itemId]
+    ?? (session.draft?.logicalItemId === itemId ? session.draft.workspace : undefined);
+}
+
+/** Snapshot seconds per source, including unsaved revisits. Seed the runner
+ * once on resume; saved seconds must not be added again when a source hydrates. */
+export function categorySourceElapsedSeconds(session: CategorySession) {
+  return Object.fromEntries(session.groups.map((group) => [group.logicalItemId, Math.max(
+    session.progress[group.logicalItemId]?.elapsedSeconds ?? 0,
+    categoryWorkspace(session, group.logicalItemId)?.elapsedSeconds ?? 0
+  )]));
 }
 export function categoryRetakeHref(session: Pick<CategorySession, "questionCategory" | "amount">) {
   return categoryPracticeHref(session.questionCategory, nextWrongQuestionHistoryAmount(session.amount));

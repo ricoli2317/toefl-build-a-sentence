@@ -16,6 +16,7 @@ const { loadCategoryHistoryRows } = require("../lib/reading/questionCategoryHist
 const { createMockSupabase } = require("./fixtures/mockSupabase.js");
 const read = (file) => fs.readFileSync(path.join(__dirname, "..", file), "utf8");
 const sql = read("supabase/reading_question_category_sessions_20261007.sql");
+const editableSQL = read("supabase/reading_question_category_editable_20261007.sql");
 const runner = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
 const category = "推断题";
 const pool = Array.from({ length: 30 }, (_, i) => ({ question_id: `q-${i}`, logical_item_id: `item-${i % 6}`, question_order: i + 1 }));
@@ -95,8 +96,9 @@ test("normal wrong events include unanswered and never correct existing history"
   const normal = read("lib/reading/wrongQuestionEvents.server.ts");
   assert.match(normal, /applyReadingAttemptWrongEvents[\s\S]*await applyReadingGradedWrongEvents/);
   const submit = read("app/api/reading/question-category/sessions/[sessionId]/groups/[itemId]/route.ts");
-  assert.match(submit, /if \(!payload\.alreadySubmitted\)[\s\S]*applyReadingGradedWrongEvents/);
-  assert.match(submit, /wrongQuestionBusinessDate\(\)/);
+  assert.doesNotMatch(submit, /applyReadingGradedWrongEvents|createServiceSupabase/);
+  assert.match(editableSQL, /if p_finalize then[\s\S]*apply_student_wrong_question_events/);
+  assert.match(editableSQL, /Asia\/Shanghai/);
   assert.doesNotMatch(submit, /applyReadingCorrection|readingCorrectionEvents/);
   assert.doesNotMatch(sql, /apply_student_wrong_question_events/);
 });
@@ -108,7 +110,7 @@ test("twenty targets across six passages produce ONE normal RAP history record",
   assert.equal(payload.records[0].title, "题型分类练习·推断题");
   assert.equal(payload.records[0].kind, "question_category");
   assert.deepEqual(payload.tasks.rap, { attempts: 1, totalPoints: 20, correctPoints: 12, accuracy: 0.6 });
-  assert.equal(studentPracticeRecordResultTarget(payload.records[0]).href, categoryResultHref("s"));
+  assert.equal(studentPracticeRecordResultTarget(payload.records[0]).href, `${categoryResultHref("s")}?returnTo=%2Fstudent%2Fpractice-history`);
   assert.match(studentPracticeRecordRetakeTarget(payload.records[0]).href, /amount=20/);
   const range = buildTeacherStudentPracticeRange({ timeZone: "Asia/Shanghai", reading: { attempts: [], wrongbookAttempts: [], sessions: [], fullSetAttempts: [], fullSetModules: [], categorySessions: [historyRow] } });
   assert.equal(range.reading.tasks.rap.attempts, 1);
@@ -157,19 +159,18 @@ test("counts and draw use the exact RAP/category pool with no active or dedup fi
   const route = read("app/api/reading/question-category/route.ts");
   assert.match(route, /Object\.keys\(body\)\.some\(\(key\) => key !== "questionCategory" && key !== "amount"\)/);
 });
-test("submit locks owner row, uses current frozen targets, and retries before any writes", () => {
-  const submit = sql.slice(sql.indexOf("create function public.submit_reading_question_category_group"), sql.indexOf("revoke all on function public.get_reading"));
+test("editable submit locks owner row, uses frozen targets, and completed retry exits before writes", () => {
+  const submit = editableSQL.slice(editableSQL.indexOf("create function public.submit_reading_question_category_group"));
   assert.match(submit, /student_id = auth\.uid\(\) for update/);
   assert.ok(submit.indexOf("'alreadySubmitted',true") < submit.indexOf("insert into public.reading_question_category_session_answers"));
-  assert.match(submit, /v_current <> p_logical_item_id/);
+  assert.match(submit, /v_current is distinct from p_logical_item_id/);
   assert.match(submit, /jsonb_array_length\(p_answers\) <> v_total/);
   assert.match(submit, /group by a->>'questionId' having count\(\*\) > 1/);
   assert.match(submit, /q\.question_category is distinct from v_session\.question_category/);
   assert.match(submit, /from jsonb_array_elements\(v_group->'targets'\)/);
   assert.match(submit, /coalesce\(nullif\(a->>'studentAnswer',''\) = case q\.question_type/);
   for (const table of ["reading_question_options", "reading_rap_insertion_anchors", "reading_passage_sentences"]) assert.ok(submit.includes(table));
-  assert.match(submit, /elapsed_seconds = elapsed_seconds \+ p_elapsed_seconds/);
-  assert.match(submit, /total_points = total_points \+ v_total/);
+  assert.match(submit, /elapsed_seconds = v_elapsed,total_points = v_total/);
 });
 test("summary is one active->completed transition and rebuild includes completed sessions", () => {
   assert.match(sql, /when \(old\.status = 'active' and new\.status = 'completed'\)/);
@@ -177,27 +178,29 @@ test("summary is one active->completed transition and rebuild includes completed
   assert.match(sql, /union all select elapsed_seconds::bigint,completed_at from public\.reading_question_category_sessions[\s\S]*status = 'completed'/);
   assert.match(sql, /old\.status = 'completed'[\s\S]*READING_INVALID_COMPLETED_CATEGORY_MUTATION/);
 });
-test("wrongbook + category actually share runner/dialog, Previous cannot resubmit", () => {
+test("wrongbook + category share runner/dialog but adapter owns source editability", () => {
   for (const file of ["ReadingWrongbookBankPractice", "QuestionCategoryPractice"]) assert.match(read(`components/reading/${file}.tsx`), /<ReadingMultiSourceSessionRunner/);
   for (const file of ["components/WrongQuestionsHome.tsx", "components/reading/QuestionCategoryPracticeHome.tsx"]) assert.match(read(file), /<PracticeAmountDialog/);
   const submitBlock = runner.slice(runner.indexOf("const completeWorkspace"), runner.indexOf("const progressLabelResolver"));
-  assert.ok(submitBlock.indexOf('attempt.status === "submitted"') < submitBlock.indexOf("adapterRef.current.submit"));
+  assert.ok(submitBlock.indexOf('!adapterRef.current.isSourceEditable') < submitBlock.indexOf("adapterRef.current.submit"));
+  assert.match(read("components/reading/ReadingWrongbookBankPractice.tsx"), /isSourceEditable: \(source\) => source\.attempt\.status !== "submitted"/);
+  assert.match(read("components/reading/QuestionCategoryPractice.tsx"), /isSourceEditable: \(_source, session\) => session\.status === "active"/);
   assert.match(runner, /groups\[groupIndex \+ 1\]/);
   assert.doesNotMatch(runner, /Promise\.all\(groups|groups\.map\(.*fetch/);
   assert.doesNotMatch(read("components/reading/QuestionCategorySessionReview.tsx"), /backgroundPrefetch|Promise\.all\(session\.groups/);
 });
 test("refresh loads pinned identity and restores answers/index/time without a new draw", () => {
   const client = read("components/reading/QuestionCategoryPractice.tsx");
-  assert.match(client, /if \(pinned\) return loadCategorySession\(pinned, auth\)/);
+  assert.match(client, /if \(pinned\) \{[\s\S]*await loadCategorySession\(pinned, auth\)/);
   assert.match(client, /url\.searchParams\.set\("session", practiceSession\.sessionId\)/);
   assert.match(client, /sessionStorage\.setItem/);
-  assert.match(client, /session\.draft\?\.logicalItemId/);
-  assert.match(sql, /v_session\.progress \? p_logical_item_id then return/);
+  assert.match(client, /categoryWorkspace\(session, group.logicalItemId\)/);
+  assert.match(editableSQL, /if v_session.status = 'completed' then return/);
   assert.match(runner, /workspaces\.current/);
-  assert.match(runner, /groupReady\.workspace\?\.elapsedSeconds \?\? 0/);
+  assert.match(runner, /restored - \(groupReady\.persistedElapsedSeconds \?\? 0\)/);
 });
 
-test("post-migration API RPC names and named arguments match the applied SQL", () => {
+test("API RPC names and named arguments match the effective SQL after manual incremental migration", () => {
   const routes = [
     "app/api/reading/question-category/route.ts",
     "app/api/reading/question-category/sessions/[sessionId]/route.ts",
@@ -207,9 +210,10 @@ test("post-migration API RPC names and named arguments match the applied SQL", (
   let calls = 0;
   for (const route of routes) {
     for (const match of read(route).matchAll(/\.rpc\("([^"]+)"(?:,\s*\{([^}]+)\})?\)/g)) {
-      const signature = sql.match(new RegExp(`create function public\\.${match[1]}\\(([^)]*)\\)`));
+      const signature = (match[1] === "submit_reading_question_category_group" ? editableSQL : sql)
+        .match(new RegExp(`create function public\\.${match[1]}\\(([^)]*)\\)`));
       assert.ok(signature, `${route}: unknown RPC ${match[1]}`);
-      const expected = [...signature[1].matchAll(/\b(p_\w+)\s+(?:uuid|text|integer|jsonb)\b/g)].map((arg) => arg[1]).sort();
+      const expected = [...signature[1].matchAll(/\b(p_\w+)\s+(?:uuid|text|integer|jsonb|boolean|bigint)\b/g)].map((arg) => arg[1]).sort();
       const actual = [...(match[2] || "").matchAll(/\b(p_\w+)\s*:/g)].map((arg) => arg[1]).sort();
       assert.deepEqual(actual, expected, `${route}: RPC argument mismatch`);
       calls++;

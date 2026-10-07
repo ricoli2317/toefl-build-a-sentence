@@ -80,6 +80,7 @@ function ReadingWrongbookSessionPractice({ amount, mode, returnTo, sessionId, ta
     if (practiceSession?.status === "completed") router.replace(resultHref);
   }, [practiceSession?.status, resultHref, router]);
   const adapter = useMemo<ReadingSessionAdapter>(() => ({
+    isSourceEditable: (source) => source.attempt.status !== "submitted",
     sourceCacheKey: (id, itemId) => studentWrongQuestionsCacheKey(`reading-bank-attempt:${id}:${itemId}`),
     practiceCacheKey: (itemId) => studentWrongQuestionsCacheKey(`reading-correction-practice:${itemId}`),
     loadSource: async (id, group, auth) => {

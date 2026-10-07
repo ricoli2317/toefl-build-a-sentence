@@ -196,7 +196,9 @@ export function studentPracticeRecordResultTarget(
 ): StudentPracticeResultTarget | null {
   if (record.kind === "wrongbook") return null;
   const attemptId = record.attemptId;
-  if (record.kind === "question_category") return { href: categoryResultHref(attemptId), label: "查看结果" };
+  if (record.kind === "question_category") return {
+    href: withStudentReturnTo(categoryResultHref(attemptId), returnTo || STUDENT_ROUTES.practiceHistory), label: "查看结果"
+  };
   if (record.taskType === "full_set") {
     const fullSetId = record.source?.fullSetId;
     if (!fullSetId) return null;

@@ -134,6 +134,22 @@ export function getReadingResultNavigation(
   };
 }
 
+export function getReadingCategoryResultNavigation(returnTo?: string | string[] | null) {
+  const safeReturnTo = safeStudentReturnTo(returnTo ?? undefined);
+  if (safeReturnTo && isPracticeHistoryReturnTo(safeReturnTo)) {
+    const navigation = practiceHistoryReturnNavigation(safeReturnTo);
+    return { ...navigation, crumbs: [...navigation.crumbs.slice(0, -1), { label: STUDENT_UI_TEXT.result }] };
+  }
+  return {
+    backHref: safeReturnTo || STUDENT_ROUTES.questionCategoryPractice,
+    crumbs: [
+      { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
+      { label: STUDENT_UI_TEXT.questionCategoryPractice, href: STUDENT_ROUTES.questionCategoryPractice },
+      { label: STUDENT_UI_TEXT.result }
+    ]
+  };
+}
+
 export function getReadingFullSetResultNavigation(
   title: string,
   source?: ReadingResultSource,

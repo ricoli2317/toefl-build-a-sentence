@@ -140,7 +140,8 @@ test("3. session Previous crosses sources while normal in-source movement is unc
 
 test("3. a source re-entered through Previous never creates or re-submits attempts", () => {
   const bank = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
-  assert.match(bank, /if \(rendered\.ready\.attempt\.status === "submitted"\) \{/);
+  assert.match(bank, /if \(!adapterRef\.current\.isSourceEditable\(rendered\.ready, practiceSession\)\) \{/);
+  assert.match(read("components/reading/ReadingWrongbookBankPractice.tsx"), /isSourceEditable: \(source\) => source\.attempt\.status !== "submitted"/);
   // The read-only re-entry is shown with a notice, not by rebuilding a draft.
   const shell = read("components/reading/ReadingPractice.tsx");
   assert.match(shell, /data-testid="reading-session-workspace-submitted"/);

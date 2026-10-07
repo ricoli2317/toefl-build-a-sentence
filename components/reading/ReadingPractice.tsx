@@ -725,6 +725,8 @@ export function ReadingFullSetReviewShell({
 }
 
 export type ReadingPracticeSessionControl = {
+  /** Business adapter decides editability; wrongbook keeps submitted readonly. */
+  sourceReadOnly?: boolean;
   /** Controlled answer state for the active source of a multi-source session. */
   answers: ReadingAnswerState;
   /** End-of-workspace button: Next while more sources remain, Submit on the final one. */
@@ -815,9 +817,9 @@ export function ReadingPracticeShell({
   const attempt = initialAttempt;
   const [elapsedSeconds, setElapsedSeconds] = useState(initialAttempt.elapsedSeconds);
   const readOnly = mode === "submitted_review";
-  // Session mode re-enters already submitted sources read-only (Previous across
-  // materials); the answers stay visible and no new attempt is ever created.
-  const sourceSubmitted = Boolean(session) && attempt.status === "submitted";
+  // Adapter owns source editability: wrongbook replay stays read-only; category
+  // saved groups remain editable while the whole session is active.
+  const sourceSubmitted = Boolean(session) && (session?.sourceReadOnly ?? attempt.status === "submitted");
   const lookupEnabled = readingLookupEnabled(mode, practice.item.module);
   const wrongbookTargets = session ? session.targets : wrongbook?.targets;
   const editableSlotIds = useMemo(
@@ -843,6 +845,7 @@ export function ReadingPracticeShell({
   const questionTimesRef = useRef<Record<string, number>>(initialQuestionTimes);
   const activeQuestionIdRef = useRef(practice.questions[navigation.currentIndex]?.questionId ?? "");
   const questionStartedAtRef = useRef(Date.now());
+  const questionClockPausedRef = useRef(false);
   const updateElapsed = useCallback(() => {
     setElapsedSeconds(
       initialAttempt.elapsedSeconds
@@ -900,6 +903,10 @@ export function ReadingPracticeShell({
       ? readingCtwProgressLabel(navigation.scoringPointCount)
       : `Question ${navigation.currentIndex + 1} / ${navigation.workspaceCount}`;
   const captureCurrentQuestionTime = useCallback(() => {
+    if (questionClockPausedRef.current) {
+      questionStartedAtRef.current = Date.now();
+      return questionTimesRef.current;
+    }
     const questionId = activeQuestionIdRef.current;
     const elapsed = Math.max(0, Math.floor((Date.now() - questionStartedAtRef.current) / 1000));
     if (questionId) {
@@ -911,16 +918,22 @@ export function ReadingPracticeShell({
     questionStartedAtRef.current += elapsed * 1000;
     return questionTimesRef.current;
   }, []);
+  useEffect(() => {
+    if (!session) return;
+    const paused = Boolean(session.pending || session.submitting || sourceSubmitted);
+    if (paused !== questionClockPausedRef.current) questionStartedAtRef.current = Date.now();
+    questionClockPausedRef.current = paused;
+  }, [session, sourceSubmitted]);
   const checkpointRef = useRef(session?.onCheckpoint);
   checkpointRef.current = session?.onCheckpoint;
   useEffect(() => {
-    if (!checkpointRef.current || session?.pending || sourceSubmitted || navigationItemId !== practice.item.itemId) return;
+    if (!checkpointRef.current || session?.pending || session?.submitting || sourceSubmitted || navigationItemId !== practice.item.itemId) return;
     checkpointRef.current(navigation.currentIndex, captureCurrentQuestionTime());
     const timer = window.setInterval(() => {
       checkpointRef.current?.(navigation.currentIndex, captureCurrentQuestionTime());
     }, 2000);
     return () => window.clearInterval(timer);
-  }, [answers, captureCurrentQuestionTime, navigation.currentIndex, navigationItemId, practice.item.itemId, session?.pending, sourceSubmitted]);
+  }, [answers, captureCurrentQuestionTime, navigation.currentIndex, navigationItemId, practice.item.itemId, session?.pending, session?.submitting, sourceSubmitted]);
   const move = (direction: -1 | 1) => {
     captureCurrentQuestionTime();
     setNavigation((current) => {
@@ -945,8 +958,9 @@ export function ReadingPracticeShell({
   };
   const updateAnswer = useCallback((questionId: string, answer: ReadingAnswer) => {
     if (readOnly) return;
-    // A completed session source re-entered through Previous is a read-only
-    // replay: edits are never recorded into a submitted attempt.
+    if (session?.pending || session?.submitting) return;
+    // A business-frozen source (wrongbook correction or completed session) is
+    // replay only; merely saving an active category group does not freeze it.
     if (sourceSubmitted) return;
     if (session) {
       session.onAnswerChange(questionId, answer);
