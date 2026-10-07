@@ -179,7 +179,8 @@ test("wrong-question home is a lightweight summary surface with no history scan"
   assert.match(ui, /\/api\/wrong-questions\?view=summary/);
   assert.match(ui, /view: "history-count"/);
   assert.match(ui, /wrongQuestionAmountOptions/);
-  assert.match(ui, /WRONG_QUESTION_HISTORY_AMOUNTS/);
+  assert.match(ui, /PracticeAmountDialog/);
+  assert.match(fs.readFileSync(path.join(projectRoot, "components/student/PracticeAmountDialog.tsx"), "utf8"), /WRONG_QUESTION_HISTORY_AMOUNTS/);
   assert.match(ui, /道错题待订正/);
   assert.match(ui, /今日错题已全部订正/);
   assert.match(ui, /个题型已完成今日错题/);
@@ -880,12 +881,14 @@ test("Reading homepage item links keep the complete correction lifecycle and rea
   const historyPage = fs.readFileSync(path.join(projectRoot, "app/student/wrong-questions/history/reading/practice/page.tsx"), "utf8");
 
   assert.match(home, /taskType/);
-  assert.match(bank, /body: JSON\.stringify\(\{ itemId, sessionId \}\)/);
+  assert.match(bank, /wrongbookFetch<AttemptPayload>[\s\S]*\{ itemId, sessionId \}/);
   assert.match(bank, /<ReadingPracticeShell[\s\S]*wrongbook=\{\{/);
-  assert.match(bank, /loadPractice\(next\.logicalItemId, session\)/);
-  assert.match(bank, /progressLabelResolver/);
-  assert.match(bank, /readingWrongbookSessionProgressLabel/);
-  assert.match(bank, /elapsedSeconds: sessionElapsed/);
+  const runner = fs.readFileSync(path.join(projectRoot, "components/reading/ReadingMultiSourceSessionRunner.tsx"), "utf8");
+  assert.match(bank, /ReadingMultiSourceSessionRunner/);
+  assert.match(runner, /loadReadingSessionPractice\(next\.logicalItemId, auth\)/);
+  assert.match(runner, /progressLabelResolver/);
+  assert.match(runner, /readingWrongbookSessionProgressLabel/);
+  assert.match(runner, /elapsedSeconds: sessionElapsed/);
   assert.doesNotMatch(bank, /document\.(body|documentElement)\.style\.overflow/);
   assert.match(shell, /wrongbook[\s\S]*selectReadingWrongbookSubmissionAnswers/);
   assert.match(shell, /<ReadingQuestionViewport[\s\S]*onSubmit=\{session \? completeWorkspace : submit\}/);

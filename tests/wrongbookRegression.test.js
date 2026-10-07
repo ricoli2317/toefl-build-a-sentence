@@ -90,7 +90,7 @@ test("B. entry corrections carry returnTo through practice, submit, and result",
   assert.match(entryPage, /safeStudentReturnTo\(searchParams\.returnTo\)/);
 
   const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
-  assert.match(bank, /handleEntrySubmitted/);
+  assert.match(bank, /onSubmitted: \(submittedAttempt\) => router\.replace/);
   assert.match(bank, /withStudentReturnTo\(\n?\s*`\/student\/reading\/wrongbook-results\/\$\{encodeURIComponent\(submittedAttempt\.attemptId\)\}`/);
 
   const wrongbookResult = read("components/reading/ReadingWrongbookResult.tsx");
@@ -258,10 +258,9 @@ test("D. session steps keep one global 1..N order across sources", () => {
 // ---------------------------------------------------------------------------
 
 test("E. intermediate sources finish with Next; only the final workspace submits", () => {
-  const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
-  assert.match(bank, /const completionLabel = groupIndex !== null && groupIndex \+ 1 < groups\.length \? "Next" : "Submit"/);
-  assert.match(bank, /completionLabel,/);
-  assert.match(bank, /if \(groupIndex !== null && groupIndex \+ 1 < groups\.length\) \{\n\s+setGroupIndex\(groupIndex \+ 1\);/);
+  const bank = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
+  assert.match(bank, /completionLabel: groupIndex \+ 1 < groups\.length \? "Next" : "Submit"/);
+  assert.match(bank, /if \(groupIndex \+ 1 < groups\.length\) setGroupIndex\(groupIndex \+ 1\)/);
 
   const shell = read("components/reading/ReadingPractice.tsx");
   assert.match(shell, /submitLabel = "Submit"/);
@@ -293,18 +292,18 @@ test("E. unanswered targets submit as answered-empty rows instead of a rejected 
 // ---------------------------------------------------------------------------
 
 test("F. the session shell stays mounted; only the workspace shows local pending", () => {
-  const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
+  const bank = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
   const shell = read("components/reading/ReadingPractice.tsx");
 
   // One shell instance for the whole session, rendered from the last fully
   // loaded source while the next one loads.
   assert.match(bank, /const rendered = useState|const \[rendered, setRendered\] = useState/);
-  assert.match(bank, /const pending = !isEntry[\s\S]*rendered\.logicalItemId !== group\?\.logicalItemId/);
+  assert.match(bank, /const pending = !rendered \|\| rendered\.logicalItemId !== group\?\.logicalItemId/);
   assert.match(bank, /reviewTitle=\{sessionTitle\}/);
   assert.match(bank, /elapsedSeconds: sessionElapsed/);
   const sessionShell = bank.slice(
-    bank.indexOf("return (\n    <ReadingPracticeShell"),
-    bank.indexOf("function BankMessage")
+    bank.indexOf("return <ReadingPracticeShell"),
+    bank.indexOf("export function ReadingSessionMessage")
   );
   assert.doesNotMatch(sessionShell, /key=\{/);
 
@@ -317,7 +316,7 @@ test("F. the session shell stays mounted; only the workspace shows local pending
   assert.match(shell, /elapsedSeconds=\{session \? session\.elapsedSeconds : elapsedSeconds \+ elapsedOffsetSeconds\}/);
   assert.match(shell, /if \(readOnly \|\| session \|\| attempt\.status === "submitted"\) return;/);
   assert.match(bank, /flushElapsed\(\);/);
-  assert.match(bank, /elapsedRef\.current\.startedAt === null/);
+  assert.match(bank, /clock\.current\.startedAt === null/);
   // The workspace router remounts per source inside the stable shell.
   assert.match(shell, /key=\{practice\.item\.itemId\}/);
 });

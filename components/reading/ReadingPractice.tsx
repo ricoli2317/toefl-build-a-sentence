@@ -740,6 +740,8 @@ export type ReadingPracticeSessionControl = {
    * was left, and to 0 for forward progress.
    */
   sourceEntryIndex?: number;
+  sourceQuestionTimes?: Record<string, number>;
+  onCheckpoint?: (currentIndex: number, questionTimes: Record<string, number>) => void;
   submitError: string;
   submitting: boolean;
   /** Wrong scoring points of the active source (CTW editable slots). */
@@ -752,6 +754,7 @@ export function ReadingPracticeShell({
   headerAction,
   initialAnswers = {},
   initialQuestionIndex = 0,
+  initialQuestionTimes = {},
   initialReviewIndex = 0,
   mode = "active",
   onBack,
@@ -771,6 +774,7 @@ export function ReadingPracticeShell({
   headerAction?: ReactNode;
   initialAnswers?: ReadingAnswerState;
   initialQuestionIndex?: number;
+  initialQuestionTimes?: Record<string, number>;
   initialReviewIndex?: number;
   mode?: ReadingPracticeMode;
   onBack: () => void;
@@ -826,7 +830,7 @@ export function ReadingPracticeShell({
     };
   });
   const [navigationItemId, setNavigationItemId] = useState(practice.item.itemId);
-  const questionTimesRef = useRef<Record<string, number>>({});
+  const questionTimesRef = useRef<Record<string, number>>(initialQuestionTimes);
   const activeQuestionIdRef = useRef(practice.questions[navigation.currentIndex]?.questionId ?? "");
   const questionStartedAtRef = useRef(Date.now());
   const updateElapsed = useCallback(() => {
@@ -870,10 +874,10 @@ export function ReadingPracticeShell({
     );
     setNavigationItemId(itemId);
     setNavigation({ ...created, currentIndex: entryIndex });
-    questionTimesRef.current = {};
+    questionTimesRef.current = session?.sourceQuestionTimes ?? {};
     activeQuestionIdRef.current = practice.questions[entryIndex]?.questionId ?? "";
     questionStartedAtRef.current = Date.now();
-  }, [navigationItemId, practice, session?.sourceEntryIndex]);
+  }, [navigationItemId, practice, session?.sourceEntryIndex, session?.sourceQuestionTimes]);
 
   const currentQuestion = practice.questions[navigation.currentIndex] ?? practice.questions[0];
   const progressLabel = progressLabelResolver
@@ -887,16 +891,26 @@ export function ReadingPracticeShell({
       : `Question ${navigation.currentIndex + 1} / ${navigation.workspaceCount}`;
   const captureCurrentQuestionTime = useCallback(() => {
     const questionId = activeQuestionIdRef.current;
-    const elapsed = Math.max(0, Math.round((Date.now() - questionStartedAtRef.current) / 1000));
+    const elapsed = Math.max(0, Math.floor((Date.now() - questionStartedAtRef.current) / 1000));
     if (questionId) {
       questionTimesRef.current = {
         ...questionTimesRef.current,
         [questionId]: (questionTimesRef.current[questionId] ?? 0) + elapsed
       };
     }
-    questionStartedAtRef.current = Date.now();
+    questionStartedAtRef.current += elapsed * 1000;
     return questionTimesRef.current;
   }, []);
+  const checkpointRef = useRef(session?.onCheckpoint);
+  checkpointRef.current = session?.onCheckpoint;
+  useEffect(() => {
+    if (!checkpointRef.current || session?.pending || sourceSubmitted || navigationItemId !== practice.item.itemId) return;
+    checkpointRef.current(navigation.currentIndex, captureCurrentQuestionTime());
+    const timer = window.setInterval(() => {
+      checkpointRef.current?.(navigation.currentIndex, captureCurrentQuestionTime());
+    }, 2000);
+    return () => window.clearInterval(timer);
+  }, [answers, captureCurrentQuestionTime, navigation.currentIndex, navigationItemId, practice.item.itemId, session?.pending, sourceSubmitted]);
   const move = (direction: -1 | 1) => {
     captureCurrentQuestionTime();
     setNavigation((current) => {
@@ -915,6 +929,7 @@ export function ReadingPracticeShell({
       return;
     }
     if (session?.hasPreviousSource && !session.pending && !session.submitting) {
+      session.onCheckpoint?.(navigation.currentIndex, captureCurrentQuestionTime());
       session.onPreviousSource?.();
     }
   };

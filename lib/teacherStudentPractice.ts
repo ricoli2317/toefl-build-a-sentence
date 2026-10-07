@@ -4,6 +4,8 @@ import type { ReadingAnswerState } from "./reading/practiceState.ts";
 import type { SubmittedReadingReviewItem } from "./reading/review.ts";
 import type { StudentReadingPracticePayload } from "./reading/studentPractice.ts";
 import type { ReadingModule } from "./reading/types.ts";
+import { categorySessionTitle } from "./reading/questionCategory.ts";
+import type { CategoryHistoryRow } from "./reading/questionCategory.ts";
 
 export const TEACHER_PRACTICE_TASK_TYPES = [
   "ctw",
@@ -121,7 +123,7 @@ export type TeacherPracticeRecordMetric =
   | { kind: "objective"; correct: number; total: number; accuracy: number }
   | { kind: "writing"; hasScore: boolean; score: number | null; wordCount: number };
 
-export type TeacherPracticeRecordKind = "practice" | "wrongbook" | "full_set";
+export type TeacherPracticeRecordKind = "practice" | "wrongbook" | "full_set" | "question_category";
 
 /**
  * Source ids the student result / retake routes need. The teacher student page
@@ -136,6 +138,8 @@ export type TeacherPracticeRecordSource = {
   /** Writing question/assignment ids for the student retake entry. */
   writingAssignmentId?: string | null;
   writingQuestionId?: string;
+  questionCategory?: string;
+  categoryAmount?: number;
 };
 
 export type TeacherPracticeRecord = {
@@ -228,6 +232,7 @@ export function teacherReadingAttemptHref(input: {
   if (input.kind === "full_set") {
     return `${base}/full-set-attempts/${encodeURIComponent(input.attemptId)}`;
   }
+  if (input.kind === "question_category") return `${base}/category-sessions/${encodeURIComponent(input.attemptId)}`;
   if (input.kind === "wrongbook") {
     return `${base}/wrongbook-attempts/${encodeURIComponent(input.attemptId)}`;
   }
@@ -383,6 +388,7 @@ export function buildTeacherStudentReadingPractice(input: {
   attempts: TeacherReadingAttemptRow[];
   wrongbookAttempts?: TeacherReadingWrongbookAttemptRow[];
   wrongbookSessions?: TeacherReadingWrongbookSessionRow[];
+  categorySessions?: CategoryHistoryRow[];
   fullSetAttempts?: TeacherFullSetAttemptRow[];
   fullSetModules?: TeacherFullSetModuleRow[];
   fullSetAnswers?: TeacherFullSetAnswerRow[];
@@ -420,6 +426,22 @@ export function buildTeacherStudentReadingPractice(input: {
         kind: "practice",
         attemptId: String(attempt.attempt_id)
       })
+    });
+  }
+
+  for (const session of input.categorySessions ?? []) {
+    const submittedAt = validSubmittedAt(session.completed_at);
+    if (session.status !== "completed" || !submittedAt) continue;
+    const total = nonNegativeInteger(session.total_points);
+    const correct = Math.min(total, nonNegativeInteger(session.correct_points));
+    accumulateReadingTask(tasks.rap, correct, total);
+    records.push({
+      recordId: `question-category:${session.session_id}`, attemptId: session.session_id,
+      domain: "reading", taskType: "rap", kind: "question_category", title: categorySessionTitle(session.question_category),
+      submittedAt, durationSeconds: nonNegativeInteger(session.elapsed_seconds), scope: null,
+      metric: { kind: "objective", correct, total, accuracy: ratio(correct, total) },
+      href: teacherReadingAttemptHref({ studentId: input.studentId, kind: "question_category", attemptId: session.session_id }),
+      source: { questionCategory: session.question_category, categoryAmount: session.amount }
     });
   }
 

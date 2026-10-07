@@ -235,7 +235,8 @@ test("wrongbook home only issues the lightweight summary and modal count request
   assert.match(home, /\/api\/wrong-questions\?view=summary/);
   assert.match(home, /view: "history-count"/);
   assert.match(home, /wrongQuestionAmountOptions/);
-  assert.match(home, /WRONG_QUESTION_HISTORY_AMOUNTS/);
+  assert.match(home, /PracticeAmountDialog/);
+  assert.match(read("components/student/PracticeAmountDialog.tsx"), /WRONG_QUESTION_HISTORY_AMOUNTS/);
   assert.match(home, /道错题待订正/);
   assert.match(home, /今日错题已全部订正/);
   assert.match(home, /个题型已完成今日错题/);
@@ -252,10 +253,12 @@ test("wrong-question sessions freeze the draw and never bulk-load content", () =
   assert.match(sessionRoute, /loadWrongQuestionPracticeSession/);
 
   const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
-  assert.match(bank, /preloadedRef/);
-  assert.match(bank, /loadPractice\(next\.logicalItemId, session\)/);
-  assert.match(bank, /progressLabelResolver/);
-  assert.match(bank, /setSessionElapsed/);
+  const runner = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
+  assert.match(bank, /ReadingMultiSourceSessionRunner/);
+  assert.match(runner, /preloadedRef/);
+  assert.match(runner, /loadReadingSessionPractice\(next\.logicalItemId, auth\)/);
+  assert.match(runner, /progressLabelResolver/);
+  assert.match(runner, /setSessionElapsed/);
   assert.match(bank, /url\.searchParams\.set\("session", serverSessionId\)/);
 
   const server = read("lib/wrongQuestionBank.server.ts");

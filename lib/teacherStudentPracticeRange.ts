@@ -4,6 +4,7 @@ import type {
   TeacherWritingScoreTaskSummary
 } from "./teacherStudentPractice.ts";
 import type { ReadingModule } from "./reading/types.ts";
+import type { CategoryHistoryRow } from "./reading/questionCategory.ts";
 
 /**
  * Lightweight range statistics for the teacher student detail page.
@@ -140,6 +141,7 @@ export type TeacherRangeWritingAttemptRow = {
 };
 
 export type TeacherPracticeRangeReadingInput = {
+  categorySessions?: CategoryHistoryRow[];
   attempts: TeacherRangeReadingAttemptRow[];
   wrongbookAttempts: TeacherRangeWrongbookAttemptRow[];
   sessions: TeacherRangeWrongbookSessionRow[];
@@ -272,6 +274,16 @@ function buildReadingRange(
     const correctPoints = Math.min(totalPoints, nonNegativeInteger(attempt.correct_points));
     accumulateReadingTask(tasks[attempt.task_type], correctPoints, totalPoints);
     addCount(submittedAt, attempt.task_type);
+  }
+
+  for (const session of reading.categorySessions ?? []) {
+    const completedAt = validSubmittedAt(session.completed_at);
+    if (session.status !== "completed" || !completedAt) continue;
+    const completed = Date.parse(completedAt);
+    if (bounds.startAt !== null && completed < bounds.startAt || bounds.endAt !== null && completed >= bounds.endAt) continue;
+    const total = nonNegativeInteger(session.total_points);
+    accumulateReadingTask(tasks.rap, Math.min(total, nonNegativeInteger(session.correct_points)), total);
+    addCount(completedAt, "rap");
   }
 
   if (includeWrongbook) {

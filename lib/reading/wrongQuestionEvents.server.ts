@@ -36,11 +36,24 @@ export async function applyReadingAttemptWrongEvents(
   }
 ) {
   const answers = await readAnswers(db, "reading_attempt_answers", { attemptId: input.attemptId });
-  await applyStudentWrongQuestionEvents(db, input.studentId, input.practiceDate, readingWrongAnswerEvents({
+  await applyReadingGradedWrongEvents(db, {
+    ...input,
     answers,
-    logicalItemId: input.logicalItemId,
-    taskType: input.taskType
-  }));
+  });
+}
+
+/** Shared normal-practice event path: persisted ordinary attempts or authoritative partial grading. */
+export async function applyReadingGradedWrongEvents(
+  db: SupabaseClient,
+  input: {
+    studentId: string;
+    practiceDate: string;
+    logicalItemId: string;
+    taskType: ReadingModule;
+    answers: Array<{ questionId: string; slotId: string | null; isCorrect: boolean }>;
+  }
+) {
+  await applyStudentWrongQuestionEvents(db, input.studentId, input.practiceDate, readingWrongAnswerEvents(input));
 }
 
 /**

@@ -37,6 +37,7 @@ export const STUDENT_READING_CATALOG_CACHE_PREFIX = "reading:catalog";
 export const STUDENT_READING_CATALOG_SEARCH_INDEX_CACHE_PREFIX = "reading-search-index";
 export const STUDENT_READING_FULL_SET_CACHE_PREFIX = "reading:full-sets";
 export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
+export const STUDENT_READING_CATEGORY_COUNTS_CACHE_KEY = "reading:category-counts";
 export const STUDENT_WRITING_CACHE_PREFIX = "writing";
 export const STUDENT_WRITING_CATALOG_CACHE_PREFIX = "writing:catalog";
 export const STUDENT_WRITING_OVERVIEW_CACHE_KEY = "writing:overview";
@@ -570,6 +571,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
               invalidate(STUDENT_SETS_CACHE_PREFIX);
               invalidate(STUDENT_QUESTIONS_CACHE_PREFIX);
               invalidate(STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX);
+              invalidate(STUDENT_READING_CATEGORY_COUNTS_CACHE_KEY);
               invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY);
               break;
             case "studentPracticeState":
