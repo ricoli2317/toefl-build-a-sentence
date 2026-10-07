@@ -30,6 +30,8 @@
     "backfill:reading-catalog-search": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/backfill-reading-catalog-search.ts",
     "verify:wrongbook-performance": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-wrongbook-performance.ts",
     "verify:student-practice-summary": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/verify-student-practice-summary.ts",
+    "lexical:production-finalize": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-production-finalize.ts",
+    "lexical:production-import": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/lexical-production-import.ts",
     "generate:lexical-v1": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/generate-lexical-v1.ts",
     "lexical:quarantine-semantic": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/quarantine-lexical-semantic-cache.ts",
     "lexical:agent-next": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/lexical-agent-next.ts",

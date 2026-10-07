@@ -1,4 +1,5 @@
 "use client";
+import { LexicalText } from "@/components/lexical/LexicalLookup";
 
 import {
   formatOptionChunk,
@@ -19,6 +20,7 @@ export function QuestionDisplay({
   disabled = false,
   hideQuestionNumber = false,
   locale = "en",
+  lexicalPrompt = false,
   onDropChunk,
   onRemoveAnswer,
   options,
@@ -31,6 +33,7 @@ export function QuestionDisplay({
   disabled?: boolean;
   hideQuestionNumber?: boolean;
   locale?: "en" | "zh-CN";
+  lexicalPrompt?: boolean;
   onDropChunk?: (blankIndex: number, chunkId: string) => void;
   onRemoveAnswer?: (blankIndex: number) => void;
   options: QuestionWordBlock[];
@@ -48,7 +51,7 @@ export function QuestionDisplay({
           {locale === "zh-CN" ? `第 ${questionNumber} 题` : `Question ${questionNumber}`}
         </p>
       ) : null}
-      <h2 className="mt-1 text-xl font-bold">{prompt}</h2>
+      <h2 className="mt-1 text-xl font-bold">{lexicalPrompt ? <LexicalText blockId="prompt" text={prompt} /> : prompt}</h2>
       <div className="mt-6 text-lg leading-10">
         <SentenceTemplateDisplay
           answers={answers}

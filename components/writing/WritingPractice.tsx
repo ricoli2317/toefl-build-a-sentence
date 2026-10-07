@@ -1,4 +1,5 @@
 "use client";
+import { LexicalLookupProvider, LexicalText } from "@/components/lexical/LexicalLookup";
 
 import {
   ClipboardPaste,
@@ -920,6 +921,8 @@ function WritingPracticeSession({
   ) : null;
 
   return (
+    <LexicalLookupProvider access={{ kind: "writing", attemptId: attempt.attempt_id }}
+      enabled={assignmentQuestionSource !== "custom"} sourceType={taskType === "email" ? "write_email" : "academic_discussion"}>
     <div className="writing-practice min-h-[100dvh] bg-[#fbfbfe] text-student-text lg:h-[100dvh] lg:overflow-hidden">
       <WritingPracticeHeader
         answerMode={answerMode}
@@ -996,6 +999,7 @@ function WritingPracticeSession({
         />
       ) : null}
     </div>
+    </LexicalLookupProvider>
   );
 }
 
@@ -1087,7 +1091,7 @@ function EmailResponsePanel({
       <div className="shrink-0 rounded-2xl border border-student-border bg-white px-5 py-3 shadow-[0_1px_2px_rgba(23,32,51,0.025)]">
         <h2 className="font-bold text-student-primary">Your Response:</h2>
         <p className="mt-3 text-[15px] leading-[1.45]"><strong className="mr-3">To:</strong>{question.recipient}</p>
-        <p className="mt-2 text-[15px] leading-[1.45]"><strong className="mr-3">Subject:</strong>{question.subject}</p>
+        <p className="mt-2 text-[15px] leading-[1.45]"><strong className="mr-3">Subject:</strong><LexicalText blockId="subject" text={question.subject} /></p>
       </div>
       <WritingEditor
         actions={actions}
@@ -1148,6 +1152,7 @@ function AcademicResponsePanel({
     <div className="flex h-full min-h-0 flex-col gap-2 overflow-hidden">
       <div className="max-h-[55%] min-h-0 shrink-0 overflow-y-auto rounded-2xl border border-student-border bg-white px-6">
         <AcademicStudentPost
+          lexicalBlockId="student-response:1"
           avatarMap={avatarMap}
           avatarMapReady={avatarMapReady}
           avatarPathOverride={customAvatars
@@ -1158,6 +1163,7 @@ function AcademicResponsePanel({
         />
         <div className="h-px bg-student-border" />
         <AcademicStudentPost
+          lexicalBlockId="student-response:2"
           avatarMap={avatarMap}
           avatarMapReady={avatarMapReady}
           avatarPathOverride={customAvatars
