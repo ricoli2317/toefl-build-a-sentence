@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { canonicalSourceTextHash } from "./hash.ts";
-import { matchLexicalSelection, type LexicalLookupRequest, type LexicalLookupOccurrence } from "./lookup.ts";
+import { lexicalSelectionBounds, matchLexicalSelection, type LexicalLookupRequest, type LexicalLookupOccurrence } from "./lookup.ts";
 import { rapSentenceInsertionInstruction, rapSentenceSelectionStem } from "../reading/rapInteraction.ts";
 
 type Row = Record<string, any>;
@@ -56,8 +56,12 @@ export async function authorizeLexicalSource(client: SupabaseClient, db: Supabas
     }
     const item = await one(db.from("reading_logical_items").select("module").eq("logical_item_id", r.sourceItemId!).maybeSingle());
     reject(item.module === r.sourceType);
-    return { sourceItemId: r.sourceItemId!, contentBlockId: r.contentBlockId,
-      text: await readingBlockText(db, r) };
+    const block = await readingBlockText(db, r);
+    if (typeof block === "string") return { sourceItemId: r.sourceItemId!, contentBlockId: r.contentBlockId, text: block };
+    reject(block.visibleText === r.blockText);
+    return { sourceItemId: r.sourceItemId!, contentBlockId: r.contentBlockId, text: block.text,
+      selection: { blockText: block.text, startOffset: block.baseOffset + r.startOffset, endOffset: block.baseOffset + r.endOffset,
+        selectedText: r.selectedText } };
   }
   if (r.access.kind === "writing") {
     const result = await readers.writingAttempt(r.access.attemptId);
@@ -99,7 +103,7 @@ export async function authorizeLexicalSource(client: SupabaseClient, db: Supabas
     text: r.contentBlockId === "prompt" ? raw.prompt : raw.final_sentence };
 }
 
-async function readingBlockText(db: SupabaseClient, r: LexicalLookupRequest): Promise<string> {
+async function readingBlockText(db: SupabaseClient, r: LexicalLookupRequest): Promise<string | { text: string; visibleText: string; baseOffset: number }> {
   const id = r.contentBlockId;
   if (r.sourceType === "ctw" && id.startsWith("paragraph:")) {
     const paragraphId = id.slice(10);
@@ -111,7 +115,15 @@ async function readingBlockText(db: SupabaseClient, r: LexicalLookupRequest): Pr
     ]);
     if (segments.error || slots.error) throw new Error("CTW block query failed");
     const answers = new Map((slots.data ?? []).map(s => [s.slot_id, s.answer]));
-    return (segments.data ?? []).map(s => s.segment_type === "text" ? s.text_content : answers.get(s.slot_id)).join("");
+    let text = ""; let projection: { visibleText: string; baseOffset: number } | undefined;
+    (segments.data ?? []).forEach((s, segmentIndex) => {
+      const value = String(s.segment_type === "text" ? s.text_content ?? "" : answers.get(s.slot_id) ?? "");
+      if (r.ctwAnchor && (r.ctwAnchor.kind === "text" ? s.segment_type === "text" && segmentIndex === r.ctwAnchor.segmentIndex
+        : s.segment_type === "blank" && s.slot_id === r.ctwAnchor.slotId)) projection = { visibleText: value, baseOffset: text.length };
+      text += value;
+    });
+    if (r.ctwAnchor) { reject(projection); return { text, ...projection! }; }
+    return text;
   }
   if (r.sourceType === "rdl" && id.startsWith("material:")) {
     const materialId = id.slice(9);
@@ -146,19 +158,22 @@ async function readingBlockText(db: SupabaseClient, r: LexicalLookupRequest): Pr
 }
 
 export async function lookupAuthorizedSelection(db: SupabaseClient, r: LexicalLookupRequest,
-  authorized: { sourceItemId: string; contentBlockId: string; text: string }) {
-  if (authorized.text !== r.blockText) return { status: "unavailable" as const };
+  authorized: { sourceItemId: string; contentBlockId: string; text: string;
+    selection?: Pick<LexicalLookupRequest, "blockText" | "startOffset" | "endOffset" | "selectedText"> }) {
+  const selection = { ...r, ...authorized.selection };
+  if (authorized.text !== selection.blockText || selection.blockText.slice(selection.startOffset, selection.endOffset) !== selection.selectedText) return { status: "unavailable" as const };
   const block = await db.from("lexical_source_blocks").select("source_text_hash,generation_status")
     .eq("source_type", r.sourceType).eq("source_item_id", authorized.sourceItemId).eq("content_block_id", authorized.contentBlockId).maybeSingle();
   if (block.error) throw new Error("Lexical block query failed");
   if (!block.data || block.data.generation_status !== "generated" || block.data.source_text_hash !== canonicalSourceTextHash(authorized.text)) return { status: "unavailable" as const };
   // One bounded join for overlapping candidate spans, not all occurrences or N+1 entry reads.
+  const bounds = lexicalSelectionBounds(selection.selectedText);
   const { data, error } = await db.from("lexical_occurrences")
-    .select("occurrence_id,entry_id,source_type,source_item_id,content_block_id,start_offset,end_offset,surface_text,context_pos,context_meaning_zh,context_definition_en,lexical_entries!inner(entry_id,canonical_expression,expression_type,lemma)")
+    .select("occurrence_id,entry_id,source_type,source_item_id,content_block_id,start_offset,end_offset,surface_text,context_pos,context_meaning_zh,context_definition_en,lexical_entries!inner(entry_id,canonical_expression,normalized_expression,expression_type,lemma)")
     .eq("source_type", r.sourceType).eq("source_item_id", authorized.sourceItemId).eq("content_block_id", authorized.contentBlockId)
-    .lte("start_offset", r.startOffset).gte("end_offset", r.endOffset)
+    .lte("start_offset", selection.startOffset + bounds.start).gte("end_offset", selection.startOffset + bounds.end)
     .neq("review_status", "disabled").neq("lexical_entries.review_status", "disabled")
     .order("start_offset", { ascending: false }).order("end_offset", { ascending: true }).limit(32);
   if (error) throw new Error("Lexical occurrence query failed");
-  return matchLexicalSelection((data ?? []) as unknown as LexicalLookupOccurrence[], { ...r, sourceItemId: authorized.sourceItemId, contentBlockId: authorized.contentBlockId });
+  return matchLexicalSelection((data ?? []) as unknown as LexicalLookupOccurrence[], { ...selection, sourceItemId: authorized.sourceItemId, contentBlockId: authorized.contentBlockId });
 }

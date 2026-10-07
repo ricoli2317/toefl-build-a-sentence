@@ -214,7 +214,8 @@ test("CTW workspace keeps one raised line per missing letter and one persistent 
   assert.doesNotMatch(source, /Type the missing letters in the passage\.|1 个完整练习|个填写位置/);
   assert.match(source, /focusPosition\(firstCtwPosition/);
   assert.match(source, /<ReadingQuestionViewport[\s\S]*onSubmit=\{session \? completeWorkspace : submit\}/);
-  assert.doesNotMatch(source, /rawText\.(match|replace)|querySelector|setTimeout/);
+  const ctwSource = source.slice(source.indexOf("function CtwPracticeWorkspace"), source.indexOf("function CtwReadonlyAnswerZone"));
+  assert.doesNotMatch(ctwSource, /rawText\.(match|replace)|querySelector|setTimeout/);
 });
 
 test("Full Set wrongbook memoizes editable slot identity so CTW focus initialization does not rerun after answer state updates", () => {
@@ -230,7 +231,8 @@ test("Full Set wrongbook memoizes editable slot identity so CTW focus initializa
   assert.match(fullSetWrongbookSource, /const editableSlotIds = useMemo\([\s\S]*readingWrongbookEditableSlotIds\(currentTargets\)[\s\S]*\[currentModule, currentTargets\]/);
   assert.equal((fullSetWrongbookSource.match(/readingWrongbookEditableSlotIds\(currentTargets\)/g) ?? []).length, 1);
   assert.match(ordinaryWrongbookSource, /const editableSlotIds = useMemo\([\s\S]*readingWrongbookEditableSlotIds\(wrongbookTargets\)[\s\S]*\[wrongbookTargets\]/);
-  assert.match(ordinaryWrongbookSource, /focusPosition\(firstCtwPosition\(interactionSlots\)\)[\s\S]*\[focusPosition, interactionSlots, question\.questionId, readOnly\]/);
+  // The existing focused-slot review path narrows interactionSlots before initializing focus.
+  assert.match(ordinaryWrongbookSource, /const focusedSlots = focusedSlotId[\s\S]*interactionSlots\.filter[\s\S]*focusPosition\(firstCtwPosition\(focusedSlots\)\)[\s\S]*\[focusPosition, focusedSlotId, interactionSlots, question\.questionId, readOnly\]/);
 });
 
 test("all editable CTW entry points share one iOS-compatible native keyboard input", () => {

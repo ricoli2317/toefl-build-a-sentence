@@ -124,7 +124,7 @@ import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import { LexicalLookupProvider, lexicalBlockAttributes, useLexicalLookup } from "@/components/lexical/LexicalLookup";
 import type { LexicalAccess } from "@/lib/lexical/lookup";
-import { rdlLexicalSelection } from "@/lib/lexical/selection";
+import { rdlLexicalSelection, rdlLexicalSelectionRect } from "@/lib/lexical/selection";
 
 type PracticeResponse = { practice?: StudentReadingPracticePayload; error?: string };
 type AttemptResponse = { attempt?: ReadingAttemptSummary; error?: string };
@@ -1341,11 +1341,6 @@ function CtwPracticeWorkspace({
   selectedReviewItem: SubmittedReadingReviewItem | null;
 }) {
   const emptySlots = useMemo(() => createCtwSlotAnswers(question.slots), [question.slots]);
-  const correctSlotText = (slotId: string) => {
-    const item = reviewItems.find(item => item.slotId === slotId);
-    const value = item ? reviewPresentations?.[item.answerId]?.correctAnswer : undefined;
-    return value?.kind === "ctw_word" ? value.parts.map(part => part.text).join("") : value?.kind === "text" ? value.text : null;
-  };
   const slotAnswers = answer?.kind === "ctw" ? answer.slots : emptySlots;
   // Narrow screens render the answer table, which makes the whole review flow:
   // the paragraph keeps its natural height and the page scrolls, so the answer
@@ -1499,7 +1494,7 @@ function CtwPracticeWorkspace({
           type="text"
         />
       ) : null}
-      <h1 className="text-center font-extrabold text-student-text" style={readingTitleTypographyStyle}>Fill in the missing letters in the paragraph.</h1>
+      <h1 {...(question.stem === "Fill in the missing letters in the paragraph." ? lexicalBlockAttributes(`question:${question.questionId}:stem`) : {})} className="text-center font-extrabold text-student-text" style={readingTitleTypographyStyle}>Fill in the missing letters in the paragraph.</h1>
       {/* Read-only review: the paragraph scrolls inside its own area instead of
           being clipped, so a short viewport can never push the passage under
           the answer card. In the narrow-screen answer-table layout the whole
@@ -1521,24 +1516,17 @@ function CtwPracticeWorkspace({
             .sort((left, right) => left.paragraphOrder - right.paragraphOrder)
             .map((paragraph, paragraphIndex, paragraphs) => (
               <p
-                {...lexicalBlockAttributes(`paragraph:${paragraph.paragraphId}`)}
                 key={paragraph.paragraphId}
                 style={{ marginBottom: paragraphIndex === paragraphs.length - 1 ? 0 : `${20 / 19}em` }}
               >
                 {paragraph.segments.map((segment, segmentIndex) => {
                   if (segment.kind === "text") {
-                    return <span key={`${paragraph.paragraphId}:text:${segmentIndex}`}>{segment.text}</span>;
+                    return <span {...lexicalBlockAttributes(`paragraph:${paragraph.paragraphId}`, segment.text, 0, { kind: "text", segmentIndex })}
+                      className={lookupEnabled ? "select-text" : undefined} key={`${paragraph.paragraphId}:text:${segmentIndex}`}>{segment.text}</span>;
                   }
                   const slot = slotById.get(segment.slotId);
                   if (!slot) return null;
                   const reviewItem = reviewItems.find((item) => item.slotId === slot.slotId);
-                  if (readOnly && lookupEnabled) {
-                    const canonical = correctSlotText(slot.slotId);
-                    return <span data-ctw-slot={slot.slotId} key={`${paragraph.paragraphId}:blank:${slot.slotId}`}
-                      className={selectedReviewItem?.slotId === slot.slotId ? "rounded bg-amber-100 ring-2 ring-amber-400" : "font-semibold"}>
-                      {canonical ?? slot.prefix}
-                    </span>;
-                  }
                   return (
                     <CtwBlankWord
                       characters={slotAnswers[slot.slotId] ?? emptySlots[slot.slotId]}
@@ -1608,6 +1596,7 @@ function CtwBlankWord({
     <span
       className={`inline whitespace-nowrap rounded-[0.2em] ${selected ? "bg-amber-100 ring-2 ring-amber-400 ring-offset-1" : ""}`}
       data-ctw-slot={slotId}
+      data-lexical-exclude="true"
       data-current-slot={selected ? "true" : undefined}
     >
       <span>{prefix}</span>
@@ -1845,7 +1834,8 @@ function CtwReadonlyAnswerZone({
                 </span>
               )}
               <span
-                className="whitespace-nowrap font-medium text-student-text"
+                {...lexicalBlockAttributes(`paragraph:${slot.paragraphId}`, undefined, 0, { kind: "slot", slotId: slot.slotId })}
+                className="select-text whitespace-nowrap font-medium text-student-text"
                 data-slot-order={slot.slotOrder}
                 data-testid="ctw-readonly-correct-word"
               >
@@ -2253,7 +2243,12 @@ function RdlPracticeWorkspace({
     if (!selectionMap) return;
     setSelectionRange(range);
     setSelectionCommitted(true);
-    if (lookupEnabled && lexical) lexical.lookup(`material:${material.materialId}`, rdlLexicalSelection(selectionMap, range));
+    if (lookupEnabled && lexical) lexical.lookup(`material:${material.materialId}`, rdlLexicalSelection(selectionMap, range), () => {
+      // The image has no DOM text Range: use its already-verified canonical character hitboxes.
+      const surface = imageStageRef.current?.querySelector<HTMLElement>('[data-testid="rdl-selection-surface"]');
+      if (!surface?.isConnected) return null;
+      return rdlLexicalSelectionRect(selectionMap, range, surface.getBoundingClientRect());
+    });
   };
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -2392,7 +2387,7 @@ function RdlPracticeWorkspace({
         labelledBy="rdl-question-stem"
         naturalFlow={naturalFlow}
       >
-        <h2 {...lexicalBlockAttributes(`question:${question.questionId}:stem`)} className="font-bold text-student-text" id="rdl-question-stem" style={readingQuestionTextStyle}>
+        <h2 {...lexicalBlockAttributes(`question:${question.questionId}:stem`)} className={`font-bold text-student-text ${lookupEnabled ? "select-text" : ""}`} id="rdl-question-stem" style={readingQuestionTextStyle}>
           {question.stem}
         </h2>
         <ChoiceOptionList
@@ -2696,7 +2691,7 @@ function RapPracticeWorkspace({
       >
         {question.questionType === "rap_multiple_choice" ? (
           <>
-            <h2 {...lexicalBlockAttributes(`question:${question.questionId}:stem`)} className="font-bold text-student-text" id="rap-question-stem" style={readingQuestionTextStyle}>
+            <h2 {...lexicalBlockAttributes(`question:${question.questionId}:stem`)} className={`font-bold text-student-text ${lookupEnabled ? "select-text" : ""}`} id="rap-question-stem" style={readingQuestionTextStyle}>
               {question.stem}
             </h2>
             <ChoiceOptionList
@@ -2820,17 +2815,18 @@ function ChoiceOptionList({
           : correctionState === "incorrect"
             ? "font-bold text-student-error"
             : "font-normal text-inherit";
+        const OptionRow = readOnly ? "div" : "button";
         return (
-          <button
+          <OptionRow
             aria-checked={selected}
-            className="flex w-full items-start rounded-lg text-left font-normal text-student-text transition-colors hover:bg-student-primary-soft/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-student-primary"
+            aria-disabled={readOnly || undefined}
+            className={`flex w-full items-start rounded-lg text-left font-normal text-student-text transition-colors ${readOnly ? "cursor-text select-text" : "hover:bg-student-primary-soft/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-student-primary"}`}
             data-correction-state={correctionState ?? undefined}
-            disabled={readOnly}
             key={option.optionId}
             onClick={readOnly ? undefined : () => onSelect(option.optionId)}
             role="radio"
             style={{ ...readingQuestionTextStyle, ...readingChoiceStyle }}
-            type="button"
+            type={readOnly ? undefined : "button"}
           >
             <span
               aria-hidden="true"
@@ -2840,7 +2836,7 @@ function ChoiceOptionList({
               {selected ? <span className="rounded-full bg-student-primary" style={readingRadioDotStyle} /> : null}
             </span>
             <span {...lexicalBlockAttributes(`question:${questionId}:option:${option.optionId}`)} className={optionTextClassName} data-option-text-state={correctionState ?? undefined}>{option.text}</span>
-          </button>
+          </OptionRow>
         );
       })}
     </div>

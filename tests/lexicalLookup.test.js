@@ -2,7 +2,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
-const { matchLexicalSelection, parseLookupRequest } = require('../lib/lexical/lookup.ts');
+const { matchLexicalSelection, parseLookupRequest, normalizeLookupQuery } = require('../lib/lexical/lookup.ts');
 const { authorizeLexicalSource, lookupAuthorizedSelection, LexicalAccessError } = require('../lib/lexical/lookup.server.ts');
 const { canonicalSourceTextHash } = require('../lib/lexical/hash.ts');
 const { rdlLexicalSelection } = require('../lib/lexical/selection.ts');
@@ -211,4 +211,133 @@ test('runtime API/browser boundary contains no direct client corpus access or se
   assert.match(api,/requireReadingAttemptStudent/); assert.ok(api.indexOf('authorizeLexicalSource(client') < api.indexOf('lookupAuthorizedSelection(db'));
   assert.match(client,/\/api\/lexical\/lookup/); assert.doesNotMatch(client,/\.from\("lexical_|common_senses|derived_words|useful_patterns|生词本/);
   assert.doesNotMatch(api+server,/deepseek|openai|generateSemantic|provider\.server|\.insert\(|\.upsert\(/i);
+});
+
+test('emerged surface and its unique entry emerge match locally, but arbitrary substrings and edits do not', async () => {
+  const blockText = 'Tap dance emerged in the United States.';
+  const start = blockText.indexOf('emerged');
+  const row = occurrence({ start_offset:start,end_offset:start+7,surface_text:'emerged',
+    lexical_entries:{ ...occurrence().lexical_entries,canonical_expression:'emerge',normalized_expression:'emerge',lemma:'emerge' } });
+  const select = (text, delta = 0, extra = {}) => request({ blockText,startOffset:start+delta,endOffset:start+delta+text.length,selectedText:text,...extra });
+  assert.equal(matchLexicalSelection([row], select('emerged')).match,'exact_token');
+  assert.equal(matchLexicalSelection([row], select('emerge')).match,'entry_expression');
+  for (const [text,delta] of [['merg',1],['erge',2],['merge',1]]) assert.equal(matchLexicalSelection([row],select(text,delta)).status,'unmatched');
+  assert.equal(matchLexicalSelection([row],select('emerged',0,{ query:'other' })).status,'unmatched');
+  assert.equal(matchLexicalSelection([row,{ ...row,occurrence_id:'ambiguous' }],select('emerge')).status,'unmatched');
+  for (const extra of [{ sourceItemId:'other' },{ contentBlockId:'other' },{ sourceType:'rdl' }]) assert.equal(matchLexicalSelection([row],select('emerge',0,extra)).status,'unmatched');
+  const db = database({ lexical_source_blocks:[{ source_type:'rap',source_item_id:'item',content_block_id:'question:q:stem',generation_status:'generated',source_text_hash:canonicalSourceTextHash(blockText) }],lexical_occurrences:[row] });
+  assert.equal((await lookupAuthorizedSelection(db,select('emerge'),{ sourceItemId:'item',contentBlockId:'question:q:stem',text:blockText })).entry.canonical_expression,'emerge');
+  assert.match(db.calls.find(c => c.table === 'lexical_occurrences').columns,/normalized_expression/);
+});
+
+test('boundary punctuation adjusts only the local span; internal hyphens/apostrophes and original request text survive', async () => {
+  for (const [blockText,start,end] of [['Center!',0,6],['(Center)',1,7],['“Center”',1,7],['word,',0,4],["don't",0,5],['well-known',0,10]]) {
+    const surface = blockText.slice(start,end);
+    const r = request({ blockText,selectedText:blockText,startOffset:0,endOffset:blockText.length });
+    assert.ok(parseLookupRequest(r));
+    assert.equal(normalizeLookupQuery(blockText),surface.toLowerCase());
+    const row = occurrence({ start_offset:start,end_offset:end,surface_text:surface });
+    const db = database({ lexical_source_blocks:[{ source_type:'rap',source_item_id:'item',content_block_id:r.contentBlockId,generation_status:'generated',source_text_hash:canonicalSourceTextHash(blockText) }],lexical_occurrences:[row] });
+    assert.equal((await lookupAuthorizedSelection(db,r,{ sourceItemId:'item',contentBlockId:r.contentBlockId,text:blockText })).status,'matched');
+    assert.equal(r.selectedText,blockText);
+    assert.equal(matchLexicalSelection([row],{ ...r,query:surface }).status,'matched');
+    assert.equal(matchLexicalSelection([row],{ ...r,query:'arbitrary' }).status,'unmatched');
+  }
+  assert.equal(normalizeLookupQuery('!(),“”'),'');
+  for (const surface of ['U.S.', "students'"]) {
+    const row = occurrence({ surface_text:surface,end_offset:surface.length });
+    assert.equal(matchLexicalSelection([row],request({ selectedText:surface,endOffset:surface.length })).match,'exact_token');
+  }
+  const phrase = occurrence({ surface_text:'well-known phrase',end_offset:17,lexical_entries:{ ...occurrence().lexical_entries,expression_type:'phrase' } });
+  assert.equal(matchLexicalSelection([phrase],request({ selectedText:'well',endOffset:4 })).status,'unmatched');
+});
+
+test('containing phrases use the whole matched token occurrence, not substring searches, with stable deduplication and a three-phrase cap', () => {
+  const blockText = 'They take part in a project today.';
+  const start = blockText.indexOf('take');
+  const r = request({ blockText,selectedText:'take',startOffset:start,endOffset:start+4 });
+  const word = occurrence({ start_offset:start,end_offset:start+4,surface_text:'take',lexical_entries:{ ...occurrence().lexical_entries,canonical_expression:'take',normalized_expression:'take' } });
+  const phrase = (id,text,extra = {}) => occurrence({ occurrence_id:id,entry_id:id,start_offset:start,end_offset:start+text.length,surface_text:text,
+    lexical_entries:{ entry_id:id,canonical_expression:text,expression_type:'phrase',lemma:text },...extra });
+  const rows = [phrase('long','take part in a project'),phrase('direct','take part in'),phrase('duplicate','take part in'),
+    phrase('short','take part'),phrase('fourth','take part in a project today'),word,
+    phrase('other-block','take part in',{ content_block_id:'question:other:stem' }),phrase('other-item','take part in',{ source_item_id:'other' }),
+    phrase('not-containing','take part in',{ start_offset:start+1,end_offset:start+13 }),
+    phrase('wrong-surface','fake part in')];
+  for (const order of [rows,[...rows].reverse()]) {
+    const result = matchLexicalSelection(order,r);
+    assert.equal(result.entry.canonical_expression,'take');
+    assert.deepEqual(result.containingPhrases.map(p => p.entry.canonical_expression),['take part','take part in','take part in a project']);
+    assert.deepEqual(result.containingPhrases.map(p => p.occurrence.occurrence_id),['short','direct','long']);
+  }
+  assert.equal(matchLexicalSelection([word],r).containingPhrases,undefined);
+  const full = matchLexicalSelection(rows,{ ...r,selectedText:'take part in',endOffset:start+12 });
+  assert.equal(full.match,'exact_phrase'); assert.equal(full.entry.canonical_expression,'take part in'); assert.equal(full.containingPhrases,undefined);
+  // Even when the lemma selection is shorter than its inflected occurrence, the MWE must contain the entire occurrence.
+  const inflected = { ...word,end_offset:start+7,surface_text:'taking!',lexical_entries:{ ...word.lexical_entries,normalized_expression:'take' } };
+  assert.equal(matchLexicalSelection([inflected,phrase('partial','taking')],{ ...r,selectedText:'tak',endOffset:start+3,query:'take' }).containingPhrases,undefined);
+});
+
+test('CTW visible text/correct-answer projections bind existing anchors and canonical UTF-16 offsets without submitted slots', async () => {
+  const canonical = 'A 😀 green world. A clean world.';
+  const tables = { reading_attempts:[{ attempt_id:attemptId,student_id:'student',logical_item_id:'item',task_type:'ctw',status:'submitted',submitted_at:'now' }],
+    reading_logical_items:[{ logical_item_id:'item',module:'ctw' }],reading_questions:[{ question_id:'q',logical_item_id:'item',module:'ctw' }],
+    reading_ctw_paragraphs:[{ paragraph_id:'p',question_id:'q' }],reading_ctw_segments:[
+      { paragraph_id:'p',segment_type:'text',text_content:'A 😀 ' },{ paragraph_id:'p',segment_type:'blank',slot_id:'s1' },
+      { paragraph_id:'p',segment_type:'text',text_content:' world. A ' },{ paragraph_id:'p',segment_type:'blank',slot_id:'s2' },
+      { paragraph_id:'p',segment_type:'text',text_content:' world.' }],
+    reading_ctw_slots:[{ paragraph_id:'p',slot_id:'s1',answer:'green' },{ paragraph_id:'p',slot_id:'s2',answer:'clean' }],
+    lexical_source_blocks:[{ source_type:'ctw',source_item_id:'item',content_block_id:'paragraph:p',generation_status:'generated',source_text_hash:canonicalSourceTextHash(canonical) }],
+    lexical_occurrences:[occurrence({ source_type:'ctw',content_block_id:'paragraph:p',start_offset:11,end_offset:16,surface_text:'world' }),
+      occurrence({ source_type:'ctw',content_block_id:'paragraph:p',start_offset:5,end_offset:10,surface_text:'green' }),
+      occurrence({ source_type:'ctw',content_block_id:'paragraph:p',start_offset:20,end_offset:25,surface_text:'clean' })] };
+  const db = database(tables);
+  const r = request({ sourceType:'ctw',contentBlockId:'paragraph:p',blockText:'green',selectedText:'green',ctwAnchor:{ kind:'slot',slotId:'s1' } });
+  const source = await authorizeLexicalSource(db,db,'student',r,readers);
+  assert.equal(source.text,canonical); assert.equal(source.selection.startOffset,5);
+  assert.equal((await lookupAuthorizedSelection(db,r,source)).occurrence.start_offset,5);
+  const text = { ...r,blockText:' world. A ',selectedText:'world',startOffset:1,endOffset:6,ctwAnchor:{ kind:'text',segmentIndex:2 } };
+  const normal = await authorizeLexicalSource(db,db,'student',text,readers);
+  assert.equal(normal.selection.startOffset,11);
+  assert.equal((await lookupAuthorizedSelection(db,text,normal)).status,'matched');
+  // A later slot maps correctly even if a wrongbook only discloses that one answer to the client.
+  const later = { ...r,blockText:'clean',selectedText:'clean',ctwAnchor:{ kind:'slot',slotId:'s2' } };
+  assert.equal((await authorizeLexicalSource(db,db,'student',later,readers)).selection.startOffset,20);
+  for (const bad of [{ ...r,blockText:'wrong',selectedText:'wrong' },{ ...r,ctwAnchor:{ kind:'slot',slotId:'outside' } },
+    { ...r,ctwAnchor:{ kind:'text',segmentIndex:1 } }]) await assert.rejects(authorizeLexicalSource(db,db,'student',bad,readers),LexicalAccessError);
+  assert.equal(parseLookupRequest({ ...r,sourceType:'rap' }),null);
+});
+
+test('Reading passage/stem/option canonical blocks all hit through authorization and the bounded runtime lookup', async () => {
+  for (const type of ['rdl','rap']) for (const area of ['material','stem','option']) {
+    const tables = readingTables(); tables.reading_attempts[0].task_type = type; tables.reading_logical_items[0].module = type;
+    tables.reading_questions[0] = { ...tables.reading_questions[0],module:type,question_type:type === 'rdl' ? 'rdl' : 'rap_multiple_choice',material_id:'m' };
+    tables.reading_materials = [{ material_id:'m',binding_status:'bound',image_asset_path:'registered.png',hitbox_data_path:'registered.json' }];
+    tables.reading_passages = [{ passage_id:'p',logical_item_id:'item' }];
+    tables.reading_passage_paragraphs = [{ passage_id:'p',paragraph_id:'para',paragraph_text:'green energy' }];
+    tables.reading_question_options = [{ question_id:'q',option_id:'opt',option_text:'green energy' }];
+    const contentBlockId = area === 'material' ? type === 'rdl' ? 'material:m' : 'passage:p:paragraph:para' : area === 'stem' ? 'question:q:stem' : 'question:q:option:opt';
+    tables.lexical_source_blocks = [{ source_type:type,source_item_id:'item',content_block_id:contentBlockId,generation_status:'generated',source_text_hash:canonicalSourceTextHash('green energy') }];
+    tables.lexical_occurrences = [occurrence({ source_type:type,content_block_id:contentBlockId })];
+    tables.reading_full_set_module_attempts = [{ attempt_id:attemptId,module_attempt_id:'m1' },{ attempt_id:attemptId,module_attempt_id:'m2' }];
+    tables.reading_full_set_answers = [{ module_attempt_id:'m1',logical_item_id:'item',question_id:'q',answer_id:'answer' }];
+    tables.reading_wrongbook_attempts = [{ attempt_id:attemptId,student_id:'student',logical_item_id:'item',task_type:type,status:'submitted',submitted_at:'now',targets:[{ questionId:'q' }] }];
+    for (const kind of ['reading','full_set','reading_wrongbook']) {
+      const db = database(tables); const r = request({ sourceType:type,contentBlockId,access:{ kind,attemptId } });
+      assert.equal((await lookupAuthorizedSelection(db,r,await authorizeLexicalSource(db,db,'student',r,readers))).status,'matched',`${kind} ${type} ${area}`);
+    }
+  }
+});
+
+test('the existing single bounded corpus join returns word plus its contextual containing phrase without extra phrase searches', async () => {
+  const tables = readingTables();
+  tables.lexical_source_blocks = [{ source_type:'rap',source_item_id:'item',content_block_id:'question:q:stem',generation_status:'generated',source_text_hash:canonicalSourceTextHash('green energy') }];
+  tables.lexical_occurrences = [occurrence(),occurrence({ occurrence_id:'phrase',end_offset:12,surface_text:'green energy',context_meaning_zh:'绿色能源',
+    lexical_entries:{ entry_id:'phrase',canonical_expression:'green energy',normalized_expression:'green energy',expression_type:'phrase',lemma:'green energy' } })];
+  const db = database(tables);
+  const result = await lookupAuthorizedSelection(db,request(),await authorizeLexicalSource(db,db,'student',request(),readers));
+  assert.equal(result.entry.canonical_expression,'green'); assert.equal(result.containingPhrases[0].entry.canonical_expression,'green energy');
+  assert.equal(result.containingPhrases[0].occurrence.context_meaning_zh,'绿色能源');
+  assert.equal(db.calls.filter(c => c.table === 'lexical_occurrences').length,1);
+  assert.equal(db.calls.filter(c => c.table === 'lexical_entries').length,0);
 });
