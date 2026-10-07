@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
-import { useStudentCachedData } from "@/components/StudentDataCache";
+import { useRef } from "react";
+import { useStudentCachedData, useStudentDataCache } from "@/components/StudentDataCache";
+import { loadCategoryCompletedReview, sessionReviewBundleCacheKey } from "@/lib/reading/sessionReviewBundle";
 import { PracticeResultSummary } from "@/components/PracticeResult";
 import { StudentNavigation, StudentLoadingState, StudentErrorState } from "@/components/student/StudentUI";
 import { ReadingResultDetailCard } from "./ReadingResult";
@@ -10,6 +12,10 @@ import { getReadingCategoryResultNavigation, withStudentReturnTo } from "@/lib/s
 
 export function QuestionCategorySessionResult({ sessionId, returnTo }: { sessionId: string; returnTo?: string | null }) {
   const state = useStudentCachedData(categorySessionCacheKey(sessionId), (auth) => loadCategorySession(sessionId, auth));
+  const cache = useStudentDataCache();
+  const cacheRef = useRef(cache); cacheRef.current = cache;
+  const review = useStudentCachedData(sessionReviewBundleCacheKey("category", sessionId),
+    (auth) => loadCategoryCompletedReview(sessionId, cacheRef.current, auth), { enabled: state.data?.session.status === "completed" });
   if (state.loading) return <StudentLoadingState text="正在加载练习结果..." />;
   if (state.error || !state.data) return <StudentErrorState text={state.error || "没有找到这次练习。"} />;
   const { session, answers } = state.data;
@@ -20,6 +26,8 @@ export function QuestionCategorySessionResult({ sessionId, returnTo }: { session
     <Link className="student-button-secondary" href={navigation.backHref}>返回</Link>
   </section>;
   const selfBase = categoryResultHref(sessionId);
+  if (review.error) return <StudentErrorState text={review.error} />;
+  if (!review.data) return <StudentLoadingState text="正在准备完整练习结果..." />;
   let ordered;
   try { ordered = categoryResultAnswers(session, answers); }
   catch { return <StudentErrorState text="练习结果不完整，请稍后重试。" />; }

@@ -305,11 +305,12 @@ test("4. multi-source session aggregation distinguishes per-source totals and lo
 
 test("4. the session result distinguishes unfinished, failed, and unaggregatable sources", () => {
   const result = read("components/reading/ReadingWrongbookSessionResult.tsx");
-  assert.match(result, /第 \$\{group\.title\} 篇材料尚未提交，暂时无法显示完整结果。/);
-  assert.match(result, /篇材料结果加载失败：|篇材料结果暂时无法加载，请稍后重试。/);
+  assert.match(result, /这次练习还没有完成/);
+  assert.match(result, /if \(review\.error\) return <StudentErrorState/);
   assert.match(result, /练习结果数据暂时无法聚合，请稍后重试。/);
-  assert.match(result, /reason: "source-not-completed"/);
-  assert.match(result, /reason: payload\.error \?\? "invalid-payload"/);
+  const loader = read("lib/reading/sessionReviewBundle.ts");
+  assert.match(loader, /session\.groups\.some\(\(group\) => !session\.progress\[group\.logicalItemId\]\)/);
+  assert.match(loader, /订正作答详情不完整，请重试/);
   // No production record is ever created from the result surface.
   assert.doesNotMatch(result, /method: "POST"/);
   const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
@@ -437,32 +438,13 @@ test("5. placeholder items reserve exact global positions until a source loads",
   assert.equal(readingQuestionNavigationTargets(keys, 1).previousIndex, 0);
 });
 
-test("5. the review loads the opened source first, prefetches neighbours, and defers the rest", () => {
-  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
-  assert.match(review, /const groupIndex = findReadingWrongbookSessionShapeIndex\(shape, initialReviewIndex\);/);
-  assert.match(review, /shape\[groupIndex\],\n\s+shape\[groupIndex - 1\],\n\s+shape\[groupIndex \+ 1\]/);
-  assert.match(review, /for \(const entry of requested\) \{\n\s+if \(entry\) void loadGroup\(entry\.logicalItemId\);/);
-  // On-demand loading for every other source plus per-source retry.
-  assert.match(review, /onRequestItem=\{\(item, options\) => \{\n\s+void loadGroup\(item\.occurrenceId, options\?\.retry === true\);/);
-  // Per-source failures never blank the session.
-  assert.match(review, /sourceStatus\[group\.logicalItemId\] = "error"/);
-  // The manifest is reused from the result page cache instead of refetched.
-  assert.match(review, /studentWrongQuestionsCacheKey\(`reading-bank-result:\$\{sessionId\}`\)/);
-  assert.match(review, /useStudentCachedValue<ReadingWrongbookSessionReviewShape\[\]>/);
-  // A loaded source review is immutable and reused from cache on later entries.
-  assert.match(review, /studentWrongQuestionsCacheKey\(`reading-bank-review:\$\{progress\.attemptId\}`\)/);
-  assert.match(review, /cacheRef\.current\.load<ReviewPayload>/);
-
+test("5. result and review share a whole completed-session bundle; no per-source request callbacks", () => {
+  const review = read("components/reading/ReadingSessionBundleReview.tsx");
   const result = read("components/reading/ReadingWrongbookSessionResult.tsx");
-  assert.match(result, /readingWrongbookSessionShapeCacheKey\(sessionId\)/);
-  assert.match(result, /itemCount: Array\.isArray\(payload\.answers\) \? payload\.answers\.length : 0/);
-
-  // The shell shows a local pending panel for a not-yet-loaded source and can
-  // request it automatically when it becomes current.
-  const shell = read("components/reading/ReadingPractice.tsx");
-  assert.match(shell, /data-testid="reading-session-review-source-pending"/);
-  assert.match(shell, /if \(!currentItemPlaceholder \|\| !currentItemOccurrenceId\) return;/);
-  assert.match(shell, /onClick=\{\(\) => onRequestItem\?\.\(currentItem, \{ retry: true \}\)\}/);
+  assert.match(review, /sessionReviewBundleCacheKey\(kind, sessionId\)/);
+  assert.match(result, /sessionReviewBundleCacheKey\("wrongbook", sessionId\)/);
+  assert.match(review, /resolveSessionReviewBundle/);
+  assert.doesNotMatch(review, /onRequestItem=|loadGroup|lite=1/);
 });
 
 test("5. the shape cache only exists inside the student wrong-question namespace", () => {
@@ -489,7 +471,7 @@ test("6. the session review route uses the immersive shell without the sidebar",
     /^\/student\/wrong-questions\/sessions\/[^/]+\/questions\/[^/]+/
   );
 
-  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
+  const review = read("components/reading/ReadingSessionBundleReview.tsx");
   // No StudentPage / StudentNavigation wrapper: the reading shell owns layout.
   assert.doesNotMatch(review, /StudentPage/);
   assert.doesNotMatch(review, /StudentNavigation/);
@@ -834,7 +816,7 @@ test("12. session-switch state is local-only: no session creation or redraw on n
   assert.doesNotMatch(navigationBlock, /fetch\(|createBankSession|readingSessionCreations/);
   assert.match(bank, /if \(!rendered\) \{[\s\S]*ReadingPracticePendingShell/);
   // One shell stays mounted for the whole session; only its workspace swaps.
-  assert.match(bank, /const \[rendered, setRendered\] = useState/);
+  assert.match(bank, /const \[retained, setRendered\] = useState/);
 });
 
 // ---------------------------------------------------------------------------
@@ -894,15 +876,15 @@ test("13. the review restores the practice's read-only context for untargeted CT
   assert.match(route, /const wantsContext = new URL\(request\.url\)\.searchParams\.get\("context"\) === "1"/);
   assert.match(route, /wantsContext && attempt\.task_type === "ctw" && attempt\.scope === "history"/);
   assert.match(route, /tolerateMissingCtwSlots: true,\s*\n\s+contextAnswers/);
-  const sessionReview = read("components/reading/ReadingWrongbookSessionReview.tsx");
-  assert.match(sessionReview, /\/review\?context=1/);
+  const resultRoute = read("app/api/reading/wrongbook-attempts/[attemptId]/result/route.ts");
+  assert.match(resultRoute, /wantsReview && attempt\.task_type === "ctw" && attempt\.scope === "history"/);
+  assert.match(resultRoute, /loadReadingCtwContextAnswers/);
 });
 
 test("13. the result page hands per-item statuses to the review so chips colour immediately", () => {
   const result = read("components/reading/ReadingWrongbookSessionResult.tsx");
-  assert.match(result, /items: Array\.isArray\(payload\.answers\)/);
-  assert.match(result, /isAnswered: answer\.isAnswered/);
-  assert.match(result, /isCorrect: answer\.isCorrect/);
+  assert.match(result, /loadWrongbookCompletedReview/);
+  assert.match(result, /if \(!review\.data\) return <StudentLoadingState/);
 
   // Cached shapes are reused (including their statuses) for every task type
   // whose cached count agrees with the drawn targets.
@@ -944,24 +926,13 @@ test("13. the result page hands per-item statuses to the review so chips colour 
   );
 });
 
-test("13. the session review reuses the practice's cached material and prefetches every source", () => {
-  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
-  // Lite review: answers only; the paragraph and assets come from the
-  // practice's own cache, so switching never re-downloads material content.
-  assert.match(review, /reading-correction-practice:\$\{logicalItemId\}/);
-  assert.match(review, /review\?context=1&lite=1/);
-  assert.match(review, /selectReadingWrongbookPractice\(cachedPractice, group\.targets\)/);
-  assert.match(review, /reviewItems: buildSubmittedReadingReviewItems\(practice, correctionRows\)/);
-  // A missing cache (refresh / direct link) falls back to the full review.
-  assert.match(review, /return loadGroupReviewFull\(attemptId, session\)/);
-
-  // Every remaining source is prefetched sequentially after the opened one —
-  // for every task type, since the lite request carries no material/assets.
-  assert.match(review, /if \(!session \|\| !taskType \|\| !shape\?\.length\) return;/);
-  assert.match(review, /for \(const logicalItemId of order\) \{\s*\n\s+if \(cancelled\) return;\s*\n\s+await loadGroup\(logicalItemId\);/);
-  assert.match(review, /shape\.slice\(groupIndex \+ 1\),\s*\n\s+\.\.\.shape\.slice\(0, groupIndex\)/);
-  assert.doesNotMatch(review, /taskType === "rdl"/);
-
+test("13. result bundle reuses practice cache; legacy lite endpoint remains available to other callers", () => {
+  const review = read("components/reading/ReadingSessionBundleReview.tsx");
+  const loader = read("lib/reading/sessionReviewBundle.ts");
+  assert.doesNotMatch(review, /lite=1|loadGroup|prefetch/);
+  assert.match(loader, /const cached = readReadingSessionPractice\(cache, key\)/);
+  assert.match(loader, /if \(cached\) return cached/);
+  assert.match(loader, /result\?review=1/);
   // The server's lite branch returns only the answer data.
   const route = read("app/api/reading/wrongbook-attempts/[attemptId]/review/route.ts");
   assert.match(route, /const lite = new URL\(request\.url\)\.searchParams\.get\("lite"\) === "1"/);
@@ -1083,12 +1054,9 @@ test("16. an unfinished session resumes as the same frozen session", () => {
   assert.match(result, /继续练习/);
   assert.match(result, /这次练习还没有完成/);
   assert.doesNotMatch(result, /这次练习还没有完成，请回到练习继续作答。/);
-  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
-  assert.match(
-    review,
-    /\(session\.groups \?\? \[\]\)\.some\(\(group\) => !session\.progress\?\.\[group\.logicalItemId\]\)/
-  );
-  assert.match(review, /description="这次练习还没有完成。"/);
+  const loader = read("lib/reading/sessionReviewBundle.ts");
+  assert.match(loader, /session\.groups\.some\(\(group\) => !session\.progress\[group\.logicalItemId\]\)/);
+  assert.match(loader, /throw new Error\("这次练习还没有完成。"\)/);
 });
 
 // ---------------------------------------------------------------------------
@@ -1169,8 +1137,8 @@ test("17. session review shows one session-wide elapsed time on every item", () 
   assert.doesNotMatch(shell, /questionTimeSeconds: payload\.totalElapsedSeconds \?\? item\.questionTimeSeconds/);
   assert.match(shell, /A session is timed as one practice/);
   // The student review reads it with the session manifest (first-screen data).
-  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
-  assert.match(review, /totalElapsedSeconds: typeof session\.elapsedSeconds === "number" \? session\.elapsedSeconds : null/);
+  const review = read("lib/reading/sessionReviewBundle.ts");
+  assert.match(review, /totalElapsedSeconds: bundle\.elapsedSeconds/);
   // …and the server computes it together with the manifest.
   const sessionRoute = read("app/api/wrong-questions/sessions/[sessionId]/route.ts");
   assert.match(sessionRoute, /loadWrongQuestionSessionElapsedSeconds\(auth\.db, session\)/);

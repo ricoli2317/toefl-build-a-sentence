@@ -9,6 +9,7 @@ import {
 } from "@/lib/reading/history";
 import {
   buildReadingCorrectionResultAnswers,
+  buildReadingCorrectionAnswerPresentations,
   type ReadingCorrectionAnchorRow,
   type ReadingCorrectionCtwSlotRow,
   type ReadingCorrectionOptionRow,
@@ -16,7 +17,7 @@ import {
   type ReadingCorrectionSentenceRow
 } from "@/lib/reading/correctionResult";
 import { readingAttemptJson, requireReadingAttemptStudent } from "@/lib/reading/attemptServer";
-import { loadReadingWrongbookPreservedAnswers } from "@/lib/reading/wrongbook.server";
+import { loadReadingCtwContextAnswers, loadReadingWrongbookPreservedAnswers } from "@/lib/reading/wrongbook.server";
 import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import {
@@ -78,6 +79,7 @@ export async function GET(
     }
   }
   let base;
+  const wantsReview = new URL(request.url).searchParams.get("review") === "1";
   try {
     base = await Promise.all([
       db.from("reading_logical_items")
@@ -109,6 +111,15 @@ export async function GET(
     ...(correctionAnswerResult.data ?? []),
     ...preservedAnswers
   ] as ReadingAnswerRow[];
+  let contextAnswers: Awaited<ReturnType<typeof loadReadingCtwContextAnswers>> = [];
+  if (wantsReview && attempt.task_type === "ctw" && attempt.scope === "history") {
+    try {
+      contextAnswers = await loadReadingCtwContextAnswers({ db, logicalItemId: attempt.logical_item_id,
+        targets: attempt.targets as ReadingWrongbookTarget[] });
+    } catch (error) {
+      return serverError("correction result review context", asError(error));
+    }
+  }
   const questionIds = Array.from(new Set(answers.map((answer) => answer.question_id)));
   if (questionIds.length === 0) return serverError("correction result answers", null);
   const questionResult = await db.from("reading_questions")
@@ -186,6 +197,14 @@ export async function GET(
     });
     return readingAttemptJson({
       ...payload,
+      ...(wantsReview ? { review: {
+        correctionRows: correctionAnswerResult.data ?? [], preservedRows: preservedAnswers, contextAnswers,
+        disclosures: buildReadingCorrectionAnswerPresentations({
+          correctionRows: answers, anchors: (anchorResult.data ?? []) as ReadingCorrectionAnchorRow[],
+          ctwSlots: correctionCtwSlots, options: (optionResult.data ?? []) as ReadingCorrectionOptionRow[],
+          questions, sentences: (sentenceResult.data ?? []) as ReadingCorrectionSentenceRow[]
+        })
+      } } : {}),
       answers: buildReadingCorrectionResultAnswers({
         allResultAnswers: payload.answers,
         anchors: (anchorResult.data ?? []) as ReadingCorrectionAnchorRow[],

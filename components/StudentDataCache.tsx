@@ -249,6 +249,10 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
       let changed = false;
       entries.current.forEach((entry, key) => {
         if (key !== prefixWithStudent && !key.startsWith(`${prefixWithStudent}:`)) return;
+        // WRONGBOOK_CHANGED invalidates progress/catalogs, not immutable
+        // reading material. Visited sources are the completed review's content.
+        if (keyPrefix === STUDENT_WRONG_QUESTIONS_CACHE_PREFIX
+          && key.startsWith(`${prefixWithStudent}:reading-correction-practice:`)) return;
         const nextGeneration = (generations.current.get(key) ?? 0) + 1;
         generations.current.set(key, nextGeneration);
         if (entry.status === "success" || entry.status === "refreshing" || entry.status === "stale") {

@@ -1077,7 +1077,7 @@ export function ReadingPracticeShell({
           canGoNext={navigation.currentIndex < navigation.workspaceCount - 1}
           canGoPrevious={navigation.currentIndex > 0 || Boolean(session?.hasPreviousSource)}
           module={practice.item.module}
-          navigationDisabled={Boolean(session?.pending)}
+          navigationDisabled={Boolean(session?.navigationDisabled || session?.pending)}
           onNext={() => move(1)}
           onPrevious={goPrevious}
           onSubmit={session ? completeWorkspace : submit}

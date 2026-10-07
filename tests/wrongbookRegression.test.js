@@ -138,10 +138,9 @@ test("B. session result and session review both restore each other through retur
 
   const reviewPage = read("app/student/wrong-questions/sessions/[sessionId]/questions/[questionIndex]/page.tsx");
   assert.match(reviewPage, /safeStudentReturnTo\(searchParams\.returnTo\)/);
-  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
-  assert.match(review, /const resultHref = withStudentReturnTo\(selfBase, returnTo\)/);
-  assert.match(review, /onBack=\{\(\) => router\.push\(resultHref\)\}/);
-  assert.match(review, /reviewHref: \(globalIndex\) => withStudentReturnTo\(`\$\{selfBase\}\/questions\/\$\{globalIndex\}`, returnTo\)/);
+  const review = read("components/reading/ReadingSessionBundleReview.tsx");
+  assert.match(review, /router\.push\(withStudentReturnTo\(base, returnTo\)\)/);
+  assert.match(review, /withStudentReturnTo\(`\$\{base\}\/questions\/\$\{index\}`, returnTo\)/);
   // The session review never offers an entry correction: entry corrections are
   // only offered from a single-item practice result / read-only review.
   assert.doesNotMatch(review, /correctionReturnTo|ReadingCorrectionEntryButton/);
@@ -297,7 +296,7 @@ test("F. the session shell stays mounted; only the workspace shows local pending
 
   // One shell instance for the whole session, rendered from the last fully
   // loaded source while the next one loads.
-  assert.match(bank, /const rendered = useState|const \[rendered, setRendered\] = useState/);
+  assert.match(bank, /const \[retained, setRendered\] = useState/);
   assert.match(bank, /const pending = !rendered \|\| rendered\.logicalItemId !== group\?\.logicalItemId/);
   assert.match(bank, /reviewTitle=\{sessionTitle\}/);
   assert.match(bank, /elapsedSeconds: sessionElapsed/);
@@ -310,7 +309,7 @@ test("F. the session shell stays mounted; only the workspace shows local pending
   // The in-shell pending replaces only the workspace, not the header/timer.
   assert.match(shell, /data-testid="reading-session-workspace-pending"/);
   assert.match(shell, /session\?\.pending \? \([\s\S]*reading-session-workspace-pending[\s\S]*\) : \(\n\s+<ReadingWorkspaceRouter/);
-  assert.match(shell, /navigationDisabled=\{Boolean\(session\?\.pending\)\}/);
+  assert.match(shell, /navigationDisabled=\{Boolean\(session\?\.navigationDisabled \|\| session\?\.pending\)\}/);
 
   // The elapsed timer is session-owned and pauses while a source is loading.
   assert.match(shell, /elapsedSeconds=\{session \? session\.elapsedSeconds : elapsedSeconds \+ elapsedOffsetSeconds\}/);
@@ -451,7 +450,7 @@ test("G. session result and review pages are wired to the session", () => {
   assert.match(resultPage, /safeStudentReturnTo\(searchParams\.returnTo\)/);
   const reviewPage = read("app/student/wrong-questions/sessions/[sessionId]/questions/[questionIndex]/page.tsx");
   assert.match(reviewPage, /ReadingWrongbookSessionReview/);
-  const review = read("components/reading/ReadingWrongbookSessionReview.tsx");
+  const review = read("components/reading/ReadingSessionBundleReview.tsx");
   assert.match(review, /ReadingFullSetReviewShell/);
   assert.match(review, /variant="session"/);
 });

@@ -72,7 +72,7 @@ test('finishing does not publish a submitted source frame; category/wrongbook ed
   const finishing=runner.slice(runner.indexOf('if (source.sessionCompleted'),runner.indexOf('const initialAnswers = source.prepareAnswers'));
   assert.match(finishing,/finished.current = true;[\s\S]*onCompleted\(\);[\s\S]*return;/);
   assert.doesNotMatch(finishing,/setRendered|setSubmitting\(false\)/);
-  assert.match(runner,/pending: pending \|\| submitting/);
+  assert.match(runner,/pending: activity.pending/);
   const shell=read('components/reading/ReadingPractice.tsx');
   assert.match(shell,/session\?\.sourceReadOnly \?\? attempt.status === "submitted"/);
   assert.match(shell,/questionClockPausedRef/);

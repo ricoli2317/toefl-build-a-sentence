@@ -11,6 +11,7 @@ import { setReadingAnswer, type ReadingAnswer, type ReadingAnswerState } from "@
 import type { StudentReadingPracticePayload } from "@/lib/reading/studentPractice";
 import type { WrongQuestionSessionGroup } from "@/lib/wrongQuestionBank";
 import { readingWrongbookSessionGroupStarts, readingWrongbookSessionProgressLabel } from "@/lib/reading/wrongbookSession";
+import { acquireReadingSessionWrite, readingSessionActivity } from "@/lib/reading/sessionExperience";
 
 export type ReadingSessionSource = {
   /** A renderer summary, not necessarily a database attempt (category has none). */
@@ -110,13 +111,19 @@ export function ReadingMultiSourceSessionRunner({
       initialAnswers: attemptState.data.prepareAnswers?.(practice) ?? attemptState.data.initialAnswers
     };
   }, [attemptState.data, group, practiceState.data]);
-  const [rendered, setRendered] = useState<{ logicalItemId: string; ready: GroupReady } | null>(null);
+  const [retained, setRendered] = useState<{ logicalItemId: string; ready: GroupReady } | null>(null);
+  // A prefetched/cached source is renderable in the switch's first frame, not
+  // one effect later. Retain the old source only while genuinely loading.
+  const rendered = useMemo(() => groupReady && group && retained?.logicalItemId !== group.logicalItemId
+    ? { logicalItemId: group.logicalItemId, ready: groupReady } : retained, [group, groupReady, retained]);
   const [answersByGroup, setAnswersByGroup] = useState<Record<string, ReadingAnswerState>>({});
   const sourceTimes = useRef<Record<string, number>>({ ...practiceSession.sourceElapsedSeconds });
   const workspaces = useRef<Record<string, { currentIndex: number; questionTimes: Record<string, number> }>>({});
   const clock = useRef({ total: practiceSession.elapsedSeconds ?? 0, startedAt: null as number | null, itemId: "" });
   const [sessionElapsed, setSessionElapsed] = useState(practiceSession.elapsedSeconds ?? 0);
   const [submitting, setSubmitting] = useState(false);
+  const [finalizing, setFinalizing] = useState(false);
+  const writeLock = useRef(false);
   const [submitError, setSubmitError] = useState("");
   const finished = useRef(false);
   const sourceReadOnly = rendered ? !adapter.isSourceEditable(rendered.ready, practiceSession) : false;
@@ -178,18 +185,20 @@ export function ReadingMultiSourceSessionRunner({
   }, [answersByGroup, currentElapsed, pending, rendered, serverSessionId, sourceReadOnly, submitting]);
 
   const handlePreviousSource = useCallback(async () => {
-    if (groupIndex <= 0 || pending || submitting) return;
+    if (groupIndex <= 0 || pending || submitting || !acquireReadingSessionWrite(writeLock, finished.current)) return;
     flushElapsed();
+    setSubmitError("");
     if (adapterRef.current.flushDraft && group) {
       setSubmitting(true);
       try { await adapterRef.current.flushDraft(group.logicalItemId); }
-      catch (error) { setSubmitError(error instanceof Error ? error.message : "进度保存失败，请重试。"); setSubmitting(false); return; }
+      catch (error) { setSubmitError(error instanceof Error ? error.message : "进度保存失败，请重试。"); setSubmitting(false); writeLock.current = false; return; }
       setSubmitting(false);
     }
     const target = groups[groupIndex - 1];
     setSourcePendingText("正在加载上一篇材料...");
     setSourceEntryIndex(Math.max(0, target.targets.length - 1));
     setGroupIndex(groupIndex - 1);
+    writeLock.current = false;
   }, [flushElapsed, group, groupIndex, groups, pending, submitting]);
 
   // Content AND source state of ONE next group only. Never wait for all sources.
@@ -227,11 +236,13 @@ export function ReadingMultiSourceSessionRunner({
     else onCompleted();
   }, [groupIndex, groups.length, onCompleted]);
   const completeWorkspace = useCallback(async (questionTimes: Record<string, number>) => {
-    if (finished.current || submitting || !group || !rendered || pending) return;
+    if (finished.current || submitting || !group || !rendered || pending || writeLock.current) return;
     // Wrongbook adapter keeps submitted sources read-only. Category saves remain
     // editable until the WHOLE session completes.
     if (!adapterRef.current.isSourceEditable(rendered.ready, practiceSession)) { advance(); return; }
+    if (!acquireReadingSessionWrite(writeLock, finished.current)) return;
     flushElapsed();
+    setFinalizing(groupIndex + 1 === groups.length);
     setSubmitting(true); setSubmitError("");
     try {
       const auth = cacheRef.current.getSession();
@@ -255,10 +266,13 @@ export function ReadingMultiSourceSessionRunner({
       cacheRef.current.setData(adapterRef.current.sourceCacheKey(serverSessionId, group.logicalItemId), { ...source, initialAnswers });
       setAnswersByGroup((map) => ({ ...map, [group.logicalItemId]: initialAnswers }));
       setRendered({ logicalItemId: group.logicalItemId, ready: { ...rendered.ready, ...source, initialAnswers } });
+      writeLock.current = false;
       setSubmitting(false); advance();
     } catch (failure) {
       setSubmitError(failure instanceof Error ? failure.message : "阅读答案提交失败，请稍后重试。");
       setSubmitting(false);
+      setFinalizing(false);
+      writeLock.current = false;
     }
   }, [advance, answersByGroup, flushElapsed, group, groupIndex, groups.length, onCompleted, pending, practiceSession, rendered, serverSessionId, submitting]);
 
@@ -267,6 +281,7 @@ export function ReadingMultiSourceSessionRunner({
     targetCount: group?.targets.length ?? 0, totalPoints
   }), [group, groupIndex, groupStarts, rendered, totalPoints]);
   const loadError = attemptState.error || practiceState.error;
+  const activity = readingSessionActivity(pending, submitting, finalizing);
   if (!rendered) {
     if (loadError) return <ReadingSessionMessage title="无法进入练习" description={loadError} onBack={onBack} />;
     if (practiceState.data?.practice) return <ReadingPracticePendingShell practice={practiceState.data.practice} onBack={onBack} reviewTitle={sessionTitle} />;
@@ -282,11 +297,11 @@ export function ReadingMultiSourceSessionRunner({
     session={{
       answers: answersByGroup[rendered.logicalItemId] ?? rendered.ready.initialAnswers,
       completionLabel: groupIndex + 1 < groups.length ? "Next" : "Submit",
-      elapsedSeconds: sessionElapsed, hasPreviousSource, navigationDisabled: pending,
+      elapsedSeconds: sessionElapsed, hasPreviousSource, navigationDisabled: activity.navigationDisabled,
       sourceReadOnly,
       onAnswerChange: handleAnswerChange, onCompleteWorkspace: (times) => { void completeWorkspace(times); },
       onPreviousSource: handlePreviousSource, onCheckpoint: saveCheckpoint,
-      pending: pending || submitting, pendingText: submitting ? "正在保存练习..." : loadError || sourcePendingText,
+      pending: activity.pending, pendingText: finalizing ? "正在提交练习..." : loadError || sourcePendingText,
       sourceEntryIndex: workspace?.currentIndex ?? sourceEntryIndex,
       sourceQuestionTimes: workspace?.questionTimes,
       submitError: submitError || saveError || "", submitting, targets: group?.targets ?? []

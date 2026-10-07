@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import {
   studentWrongQuestionsCacheKey,
   useStudentCachedData,
@@ -10,13 +10,10 @@ import {
 } from "@/components/StudentDataCache";
 import { PracticeResultSummary } from "@/components/PracticeResult";
 import { StudentErrorState, StudentLoadingState, StudentNavigation } from "@/components/student/StudentUI";
-import { createBrowserSupabase } from "@/lib/supabase/client";
-import type { ReadingCorrectionResultPayload } from "@/lib/reading/correctionResult";
+import { loadWrongbookCompletedReview, sessionReviewBundleCacheKey } from "@/lib/reading/sessionReviewBundle";
 import {
   mergeReadingWrongbookSessionResults,
   readingWrongbookSessionResumeHref,
-  readingWrongbookSessionShapeCacheKey,
-  type ReadingWrongbookSessionGroupResult
 } from "@/lib/reading/wrongbookSession";
 import { nextWrongQuestionHistoryAmount } from "@/lib/wrongQuestionBank";
 import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
@@ -24,10 +21,6 @@ import type { WrongQuestionPracticeSession } from "@/lib/wrongQuestionBank";
 import { ReadingResultDetailCard } from "./ReadingResult";
 
 type SessionPayload = { error?: string; session?: WrongQuestionPracticeSession };
-type GroupResultsState =
-  | { status: "error"; error: string }
-  | { status: "ready"; groups: ReadingWrongbookSessionGroupResult[] }
-  | null;
 
 /**
  * History / today Reading wrong-question session result: the normal Reading
@@ -51,79 +44,11 @@ export function ReadingWrongbookSessionResult({
   const cacheRef = useRef(cache);
   cacheRef.current = cache;
   const session = state.data?.session ?? null;
-  const [results, setResults] = useState<GroupResultsState>(null);
-
-  useEffect(() => {
-    if (!session) return;
-    let cancelled = false;
-    const groups = session.groups ?? [];
-    void (async () => {
-      try {
-        const { data: { session: authSession } } = await createBrowserSupabase().auth.getSession();
-        if (!authSession) throw new Error("请先登录后再查看练习结果。");
-        const groupResults = await Promise.all(groups.map(async (group) => {
-          const progress = session.progress[group.logicalItemId];
-          if (!progress) {
-            console.error("Reading session result source not completed", {
-              sessionId,
-              logicalItemId: group.logicalItemId,
-              reason: "source-not-completed"
-            });
-            throw new Error(`第 ${group.title} 篇材料尚未提交，暂时无法显示完整结果。`);
-          }
-          const response = await fetch(
-            `/api/reading/wrongbook-attempts/${encodeURIComponent(progress.attemptId)}/result`,
-            { cache: "no-store", headers: { Authorization: `Bearer ${authSession.access_token}` } }
-          );
-          const payload = await response.json().catch(() => ({})) as
-            ReadingCorrectionResultPayload & { error?: string };
-          if (!response.ok || payload.error || !payload.answers || !payload.attempt) {
-            console.error("Reading session result source failed", {
-              sessionId,
-              logicalItemId: group.logicalItemId,
-              attemptId: progress.attemptId,
-              status: response.status,
-              reason: payload.error ?? "invalid-payload"
-            });
-            throw new Error(payload.error
-              ? `第 ${group.title} 篇材料结果加载失败：${payload.error}`
-              : `第 ${group.title} 篇材料结果暂时无法加载，请稍后重试。`);
-          }
-          return { group, payload };
-        }));
-        if (!cancelled) setResults({ status: "ready", groups: groupResults });
-      } catch (failure) {
-        if (!cancelled) {
-          setResults({
-            status: "error",
-            error: failure instanceof Error ? failure.message : "练习结果加载失败，请稍后重试。"
-          });
-        }
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [session, sessionId]);
-
-  // The read-only session review reuses these exact per-source item counts and
-  // statuses to position and colour every global question before its own source
-  // requests return.
-  useEffect(() => {
-    if (results?.status !== "ready") return;
-    cacheRef.current.setData(
-      studentWrongQuestionsCacheKey(readingWrongbookSessionShapeCacheKey(sessionId)),
-      results.groups.map(({ group, payload }) => ({
-        logicalItemId: group.logicalItemId,
-        itemCount: Array.isArray(payload.answers) ? payload.answers.length : 0,
-        items: Array.isArray(payload.answers)
-          ? payload.answers.map((answer) => ({
-              isAnswered: answer.isAnswered,
-              isCorrect: answer.isCorrect,
-              questionTimeSeconds: answer.questionTimeSeconds
-            }))
-          : []
-      }))
-    );
-  }, [results, sessionId]);
+  // Completed result is the authoritative hydration point. The same key and
+  // loader also recover a direct review link; question clicks never load groups.
+  const review = useStudentCachedData(sessionReviewBundleCacheKey("wrongbook", sessionId),
+    (auth) => loadWrongbookCompletedReview(sessionId, cacheRef.current, auth, session ?? undefined),
+    { enabled: session?.status === "completed" });
 
   if (state.loading) return <StudentLoadingState text="正在加载练习结果..." />;
   if (state.error) {
@@ -181,12 +106,12 @@ export function ReadingWrongbookSessionResult({
       status: session.status
     });
   }
-  if (!results) return <StudentLoadingState text="正在加载练习结果..." />;
-  if (results.status === "error") return <StudentErrorState text={results.error} />;
+  if (review.error) return <StudentErrorState text={review.error} />;
+  if (!review.data) return <StudentLoadingState text="正在准备完整练习结果..." />;
 
   let merged;
   try {
-    merged = mergeReadingWrongbookSessionResults(results.groups);
+    merged = mergeReadingWrongbookSessionResults(review.data.results);
   } catch (failure) {
     console.error("Reading session result aggregation failed", {
       sessionId,
@@ -206,7 +131,7 @@ export function ReadingWrongbookSessionResult({
         taskType: session.taskType
       }).toString()}`
     : null;
-  const submittedAt = results.groups.at(-1)?.payload.attempt.submittedAt ?? session.createdAt;
+  const submittedAt = review.data.results.at(-1)?.payload.attempt.submittedAt ?? session.createdAt;
 
   return (
     <div className="reading-theme student-result-overview-layout">
