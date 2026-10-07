@@ -52,17 +52,32 @@ export type ClassStudentCandidate = {
 };
 
 /**
+ * One teacher already bound to a class, for the 绑定学生/班级 class result
+ * display: the class owner (from teacher_classes) and every linked teacher
+ * (from teacher_class_bindings), de-duplicated by teacher so an owner with a
+ * link row appears once. `domains` is that teacher's own subjects.
+ */
+export type TeacherClassTeacherBinding = {
+  teacherId: string;
+  teacherName: string;
+  isOwner: boolean;
+  domains: StudentBindingDomain[];
+};
+
+/**
  * One row of the 绑定学生/班级 class search result. Deliberately minimal: a
  * class name match never exposes the member list, only the count and whether
  * the searching teacher can already manage the class. `subjects` is the
  * class-wide union (info only); `bound_subjects` is what the SEARCHING teacher
- * already teaches in this class and therefore cannot bind again.
+ * already teaches in this class and therefore cannot bind again; `teachers`
+ * lists every already-bound teacher (owner included) for display only.
  */
 export type TeacherClassSearchResult = {
   class_id: string;
   name: string;
   subjects: StudentBindingDomain[];
   bound_subjects: StudentBindingDomain[];
+  teachers: TeacherClassTeacherBinding[];
   member_count: number;
   bound: boolean;
 };

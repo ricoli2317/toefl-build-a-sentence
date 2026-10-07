@@ -4,8 +4,10 @@ import { type StudentBindingDomain } from "./studentBindings.ts";
 import {
   normalizeClassSubjects,
   type TeacherClassSearchResult,
-  type TeacherClassSummary
+  type TeacherClassSummary,
+  type TeacherClassTeacherBinding
 } from "./teacherClasses.ts";
+import { getPreferredUserDisplayName } from "./userDisplayName.ts";
 
 /**
  * Teacher <-> class sharing helpers, kept in a relative-import module so the
@@ -251,12 +253,53 @@ export async function loadTeacherClassRow(
   return null;
 }
 
+type TeacherProfileLite = {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+};
+
+/**
+ * Display names for every teacher bound to the matched classes (owner +
+ * linked). Missing profiles degrade to 未命名教师, matching the student search
+ * display.
+ */
+async function loadTeacherDisplayNames(
+  db: SupabaseClient,
+  teacherIds: readonly string[]
+): Promise<Map<string, string>> {
+  const names = new Map<string, string>();
+  const ids = Array.from(new Set(teacherIds.map((id) => String(id))));
+  for (const batch of chunkValues(ids)) {
+    const result = await readAllSupabaseRows<TeacherProfileLite>((from, to) =>
+      db
+        .from("profiles")
+        .select("id,email,full_name")
+        .in("id", batch)
+        .order("id", { ascending: true })
+        .range(from, to)
+    );
+    if (result.error) throw result.error;
+    for (const row of result.data ?? []) {
+      names.set(
+        String(row.id),
+        getPreferredUserDisplayName({
+          email: row.email,
+          profileFullName: row.full_name
+        }) || "未命名教师"
+      );
+    }
+  }
+  return names;
+}
+
 /**
  * Name search for the 绑定学生/班级 page. Deliberately minimal output: the
  * class id, name, the class-wide subject union (info only), the CURRENT
- * teacher's already-bound subjects (they cannot be bound again), member count
- * and whether the current teacher already manages the class. The member list
- * is never exposed here.
+ * teacher's already-bound subjects (they cannot be bound again), every teacher
+ * already bound to the class (owner included, de-duplicated by teacher),
+ * member count and whether the current teacher already manages the class. The
+ * member list is never exposed here.
  */
 export async function searchTeacherClasses(
   db: SupabaseClient,
@@ -283,7 +326,13 @@ export async function searchTeacherClasses(
   });
   const viewerSubjects = new Map<string, StudentBindingDomain[]>();
   const linkDomains = new Map<string, string[]>();
+  const linksByClass = new Map<string, TeacherClassLinkRow[]>();
+  const teacherIds = new Set<string>(rows.map((row) => String(row.teacher_id)));
   for (const link of links) {
+    teacherIds.add(link.teacher_id);
+    const classLinks = linksByClass.get(link.class_id) ?? [];
+    classLinks.push(link);
+    linksByClass.set(link.class_id, classLinks);
     if (link.teacher_id === teacherId) {
       viewerSubjects.set(link.class_id, normalizeClassSubjects(link.subjects));
     }
@@ -294,10 +343,57 @@ export async function searchTeacherClasses(
       ]);
     }
   }
+  const teacherNames = await loadTeacherDisplayNames(db, Array.from(teacherIds));
 
   return rows.map((row) => {
     const classId = String(row.class_id);
-    const isOwner = String(row.teacher_id) === teacherId;
+    const ownerId = String(row.teacher_id);
+    const isOwner = ownerId === teacherId;
+
+    // 所有已绑定教师（含创建者）：owner 行与 link 行重叠时按 teacher 去重并
+    // 合并科目，保证同一教师只显示一次。
+    const bindingsByTeacher = new Map<
+      string,
+      { domains: Set<StudentBindingDomain>; isOwner: boolean }
+    >();
+    const addTeacherBinding = (
+      bindingTeacherId: string,
+      domains: readonly StudentBindingDomain[],
+      owner: boolean
+    ) => {
+      const entry = bindingsByTeacher.get(bindingTeacherId) ?? {
+        domains: new Set<StudentBindingDomain>(),
+        isOwner: owner
+      };
+      for (const domain of domains) entry.domains.add(domain);
+      entry.isOwner = entry.isOwner || owner;
+      bindingsByTeacher.set(bindingTeacherId, entry);
+    };
+    addTeacherBinding(ownerId, normalizeClassSubjects(row.subjects), true);
+    for (const link of linksByClass.get(classId) ?? []) {
+      addTeacherBinding(
+        link.teacher_id,
+        normalizeClassSubjects(link.subjects),
+        link.teacher_id === ownerId
+      );
+    }
+    const teachers: TeacherClassTeacherBinding[] = Array.from(
+      bindingsByTeacher,
+      ([bindingTeacherId, entry]) => ({
+        teacherId: bindingTeacherId,
+        teacherName: teacherNames.get(bindingTeacherId) ?? "未命名教师",
+        isOwner: entry.isOwner,
+        domains: normalizeClassSubjects(Array.from(entry.domains))
+      })
+    ).sort((left, right) =>
+      left.isOwner === right.isOwner
+        ? left.teacherName.localeCompare(right.teacherName, "zh-Hans-CN") ||
+          left.teacherId.localeCompare(right.teacherId)
+        : left.isOwner
+          ? -1
+          : 1
+    );
+
     return {
       class_id: classId,
       name: String(row.name).trim() || "未命名班级",
@@ -310,6 +406,7 @@ export async function searchTeacherClasses(
       bound_subjects: isOwner
         ? normalizeClassSubjects(row.subjects)
         : viewerSubjects.get(classId) ?? [],
+      teachers,
       member_count: Number(row.class_members?.[0]?.count ?? 0),
       bound: isOwner || viewerSubjects.has(classId)
     };

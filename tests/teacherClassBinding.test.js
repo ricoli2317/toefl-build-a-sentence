@@ -11,6 +11,7 @@ import {
   resolveAvailableStudentAccount
 } from "../lib/studentAccountAvailability.server.ts";
 import { createTeacherStudentAccount } from "../lib/teacherStudentAccount.server.ts";
+import { selectableClassSubjects } from "../lib/teacherClasses.ts";
 import {
   bindTeacherToClass,
   listTeacherClasses,
@@ -73,6 +74,10 @@ function accountTables(extraProfiles = []) {
 
 function classTables() {
   return {
+    profiles: [
+      { id: "teacher-a", email: "teachera@bas.com", full_name: "栗科" },
+      { id: "teacher-b", email: "teacherb@bas.com", full_name: "曾焱" }
+    ],
     teacher_classes: [
       {
         class_id: "class-a",
@@ -508,16 +513,29 @@ test("class search reports the real class id, count, subjects and bound state", 
     name: "周六托福阅读A班",
     subjects: ["reading"],
     bound_subjects: ["reading"],
+    teachers: [
+      { teacherId: "teacher-a", teacherName: "栗科", isOwner: true, domains: ["reading"] }
+    ],
     member_count: 3,
     bound: true
   });
   // class-b: teacher-a is only linked with Writing. The class-wide union stays
-  // visible, while the CURRENT teacher's bound subjects are only Writing.
+  // visible, while the CURRENT teacher's bound subjects are only Writing, and
+  // BOTH already-bound teachers (owner 曾焱 + linked 栗科) are listed.
   assert.deepEqual(byId.get("class-b"), {
     class_id: "class-b",
     name: "周六托福写作B班",
     subjects: ["reading", "writing"],
     bound_subjects: ["writing"],
+    teachers: [
+      {
+        teacherId: "teacher-b",
+        teacherName: "曾焱",
+        isOwner: true,
+        domains: ["reading", "writing"]
+      },
+      { teacherId: "teacher-a", teacherName: "栗科", isOwner: false, domains: ["writing"] }
+    ],
     member_count: 0,
     bound: true
   });
@@ -526,9 +544,68 @@ test("class search reports the real class id, count, subjects and bound state", 
     name: "周日雅思班",
     subjects: ["reading"],
     bound_subjects: [],
+    teachers: [
+      { teacherId: "teacher-b", teacherName: "曾焱", isOwner: true, domains: ["reading"] }
+    ],
     member_count: 5,
     bound: false
   });
+});
+
+test("class search de-duplicates an owner that also holds a link row", async () => {
+  const tables = classTables();
+  // The owner gets a link row too (legacy data / direct API): the teacher must
+  // still be displayed exactly once, with the union of both subject sources.
+  tables.teacher_class_bindings.push({
+    class_id: "class-a",
+    teacher_id: "teacher-a",
+    subjects: ["writing"]
+  });
+  const db = createMockSupabase(tables);
+  const results = await searchTeacherClasses(db, "teacher-b", "阅读A班");
+  assert.equal(results.length, 1);
+  const [entry] = results;
+  const ownerRows = entry.teachers.filter((teacher) => teacher.teacherId === "teacher-a");
+  assert.equal(ownerRows.length, 1);
+  assert.deepEqual(ownerRows[0], {
+    teacherId: "teacher-a",
+    teacherName: "栗科",
+    isOwner: true,
+    domains: ["reading", "writing"]
+  });
+});
+
+test("displaying the bound teachers never changes which subjects the viewer can bind", async () => {
+  const tables = sharedClassTables();
+  const db = createMockSupabase(tables, { rpc: bindRpcStub() });
+
+  // A owns Reading. B searches: A is displayed, yet B can still choose BOTH
+  // subjects (no subject is disabled just because another teacher holds it).
+  await bindTeacherToClass(db, "teacher-a", "class-0417", ["reading"]);
+  const [viewerB] = await searchTeacherClasses(db, "teacher-b", "0417");
+  assert.deepEqual(
+    viewerB.teachers.map((teacher) => `${teacher.teacherName}:${teacher.domains.join("+")}`),
+    ["栗科:reading"]
+  );
+  assert.deepEqual(viewerB.bound_subjects, []);
+  assert.deepEqual(selectableClassSubjects(viewerB.bound_subjects), ["reading", "writing"]);
+
+  // A (Reading) + B (Writing) are both displayed to a fresh teacher C, and C
+  // still has both subjects selectable.
+  await bindTeacherToClass(db, "teacher-b", "class-0417", ["writing"]);
+  const [viewerC] = await searchTeacherClasses(db, "teacher-c", "0417");
+  assert.deepEqual(
+    viewerC.teachers.map((teacher) => `${teacher.teacherName}:${teacher.domains.join("+")}`),
+    ["栗科:reading", "曾焱:writing"]
+  );
+  assert.deepEqual(viewerC.bound_subjects, []);
+  assert.deepEqual(selectableClassSubjects(viewerC.bound_subjects), ["reading", "writing"]);
+
+  // The current teacher only disables what THEY already hold: B holds Writing,
+  // so Writing is not selectable again while Reading stays available.
+  const [viewerBAfter] = await searchTeacherClasses(db, "teacher-b", "0417");
+  assert.deepEqual(viewerBAfter.bound_subjects, ["writing"]);
+  assert.deepEqual(selectableClassSubjects(viewerBAfter.bound_subjects), ["reading"]);
 });
 
 test("shared classes appear in the teacher class list without disturbing owned classes", async () => {
@@ -762,7 +839,14 @@ test("bind page exposes one search box and reuses the student result card for cl
   assert.match(component, /没有找到匹配的学生或班级。/);
   assert.match(component, /\/api\/teacher\/class-bindings/);
   assert.match(component, /formatBindingDomainList\(entry\.subjects\)/);
-  assert.match(component, /entry\.bound_subjects/);
+  // The class result now shows every bound teacher (owner + links) through the
+  // same 当前绑定 block the student result uses.
+  assert.match(component, /function BoundTeacherList/);
+  assert.match(component, /<BoundTeacherList bindings=\{student\.bindings\} \/>/);
+  assert.match(component, /<BoundTeacherList bindings=\{entry\.teachers\} \/>/);
+  assert.match(component, /当前绑定：/);
+  assert.match(component, /entry\.teachers/);
+  assert.match(component, /selectedClass\?\.bound_subjects/);
   assert.match(component, /key=\{`class:\$\{entry\.class_id\}`\}/);
   assert.match(component, /classId: selectedClass\.class_id, subjects: domains/);
   assert.match(component, /publishCacheInvalidation\(\{ type: "TEACHER_BINDING_UPDATED" \}\)/);

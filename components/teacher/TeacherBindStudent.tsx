@@ -60,6 +60,39 @@ async function authorizedFetch(input: string, init?: RequestInit) {
 }
 
 /**
+ * The shared 当前绑定 block used by both student and class search results:
+ * one line per bound teacher with their subjects. Classes pass the owner plus
+ * every linked teacher (already de-duplicated server-side); students pass the
+ * teacher bindings of that student. Zero bindings show 暂无.
+ */
+function BoundTeacherList({
+  bindings
+}: {
+  bindings: ReadonlyArray<{
+    teacherId: string;
+    teacherName: string;
+    domains: StudentBindingDomain[];
+  }>;
+}) {
+  return (
+    <span className="mt-3 block text-sm text-student-muted">
+      <span className="font-semibold text-student-text">当前绑定：</span>
+      {bindings.length === 0 ? (
+        "暂无"
+      ) : (
+        <span className="mt-1 grid gap-1">
+          {bindings.map((binding) => (
+            <span className="block" key={binding.teacherId}>
+              {binding.teacherName} · {formatBindingDomainList(binding.domains)}
+            </span>
+          ))}
+        </span>
+      )}
+    </span>
+  );
+}
+
+/**
  * Teacher self-service binding for an existing student or class. The current
  * binding teachers and subjects shown here come exclusively from
  * teacher_student_bindings joined to the teacher profile; the legacy account
@@ -392,20 +425,7 @@ export function TeacherBindStudent({
                     </span>
                   </span>
                 </span>
-                <span className="mt-3 block text-sm text-student-muted">
-                  <span className="font-semibold text-student-text">当前绑定：</span>
-                  {student.bindings.length === 0 ? (
-                    "暂无"
-                  ) : (
-                    <span className="mt-1 grid gap-1">
-                      {student.bindings.map((binding) => (
-                        <span className="block" key={binding.teacherId}>
-                          {binding.teacherName} · {formatBindingDomainList(binding.domains)}
-                        </span>
-                      ))}
-                    </span>
-                  )}
-                </span>
+                <BoundTeacherList bindings={student.bindings} />
               </button>
             ))}
 
@@ -432,12 +452,7 @@ export function TeacherBindStudent({
                     </span>
                   </span>
                 </span>
-                <span className="mt-3 block text-sm text-student-muted">
-                  <span className="font-semibold text-student-text">当前状态：</span>
-                  {entry.bound
-                    ? `已绑定${entry.bound_subjects.length > 0 ? `（${formatBindingDomainList(entry.bound_subjects)}）` : ""}`
-                    : "未绑定"}
-                </span>
+                <BoundTeacherList bindings={entry.teachers} />
               </button>
             ))}
           </div>
