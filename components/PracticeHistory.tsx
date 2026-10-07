@@ -1,4 +1,5 @@
 "use client";
+import { LexicalLookupProvider, LexicalText } from "@/components/lexical/LexicalLookup";
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
@@ -375,9 +376,10 @@ function WrongAnswerCard({
   number: number;
 }) {
   return (
+    <LexicalLookupProvider access={{ kind: "bas", attemptId: answer.attemptId, questionId: answer.questionId }} sourceType="bas">
     <article className="student-card p-4 sm:p-5">
       <p className="text-sm font-bold text-student-error">第 {number} 题</p>
-      <p className="mt-2 text-lg font-bold text-student-text">{answer.prompt || "无题目内容"}</p>
+      <p className="mt-2 text-lg font-bold text-student-text"><LexicalText blockId="prompt" text={answer.prompt || "无题目内容"} /></p>
       <div className="mt-3 text-base leading-8">
         <ReadOnlySentenceTemplate template={answer.sentenceTemplate} />
       </div>
@@ -398,6 +400,7 @@ function WrongAnswerCard({
         </p>
       </div>
     </article>
+    </LexicalLookupProvider>
   );
 }
 

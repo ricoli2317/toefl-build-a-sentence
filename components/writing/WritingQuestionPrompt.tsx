@@ -3,6 +3,7 @@
 import { GraduationCap } from "lucide-react";
 import Image from "next/image";
 import { useEffect } from "react";
+import { LexicalText } from "@/components/lexical/LexicalLookup";
 import {
   resolveAcademicDiscussionAvatar,
   resolveCustomAcademicDiscussionAvatar,
@@ -54,6 +55,7 @@ export function WritingQuestionReview({
             ? resolveCustomAcademicDiscussionAvatar(academicQuestion.student_1_avatar_type, "student")
             : undefined}
           name={academicQuestion.student_1_name}
+          lexicalBlockId="student-response:1"
           response={academicQuestion.student_1_response}
         />
         <AcademicStudentPost
@@ -63,6 +65,7 @@ export function WritingQuestionReview({
             ? resolveCustomAcademicDiscussionAvatar(academicQuestion.student_2_avatar_type, "student")
             : undefined}
           name={academicQuestion.student_2_name}
+          lexicalBlockId="student-response:2"
           response={academicQuestion.student_2_response}
         />
       </section>
@@ -73,16 +76,16 @@ export function WritingQuestionReview({
 export function EmailPrompt({ question }: { question: EmailQuestion }) {
   return (
     <section className="writing-prompt-panel min-h-0 overflow-y-auto !px-5 !py-4 !text-[15px] !leading-[1.45]">
-      <p>{question.scenario}</p>
-      <p className="mt-4 font-bold">{question.task_instruction}</p>
+      <p><LexicalText blockId="scenario" text={question.scenario} /></p>
+      <p className="mt-4 font-bold"><LexicalText blockId="task-instruction" text={question.task_instruction} /></p>
       <ul className="mt-2 grid gap-2.5 pl-5">
         {[question.requirement_1, question.requirement_2, question.requirement_3].map(
-          (requirement) => (
+          (requirement, index) => (
             <li
               className="relative pl-1.5 before:absolute before:-left-3.5 before:top-[0.65em] before:h-2 before:w-2 before:rounded-full before:bg-student-primary"
               key={requirement}
             >
-              {requirement}
+              <LexicalText blockId={`requirement:${index + 1}`} text={requirement} />
             </li>
           )
         )}
@@ -128,7 +131,7 @@ export function AcademicPrompt({
         professor
       />
       <p className="mt-2 min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap">
-        {question.professor_prompt}
+        <LexicalText blockId="professor-prompt" text={question.professor_prompt} />
       </p>
     </section>
   );
@@ -138,12 +141,14 @@ export function AcademicStudentPost({
   avatarMap,
   avatarMapReady,
   avatarPathOverride,
+  lexicalBlockId,
   name,
   response
 }: {
   avatarMap: AcademicDiscussionAvatarMap;
   avatarMapReady: boolean;
   avatarPathOverride?: string | null;
+  lexicalBlockId?: string;
   name: string;
   response: string;
 }) {
@@ -157,7 +162,7 @@ export function AcademicStudentPost({
         avatarPath={avatarPath}
         label={name}
       />
-      <p className="whitespace-pre-wrap">{response}</p>
+      <p className="whitespace-pre-wrap">{lexicalBlockId ? <LexicalText blockId={lexicalBlockId} text={response} /> : response}</p>
     </article>
   );
 }

@@ -1,4 +1,5 @@
 "use client";
+import { LexicalLookupProvider } from "@/components/lexical/LexicalLookup";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -490,7 +491,9 @@ export function PracticeSession({
           onSelect={jumpToQuestion}
         />
       ) : (
+        <LexicalLookupProvider access={{ kind: "bas_prompt", setId, questionId: currentQuestion.question_id }} sourceType="bas">
         <QuestionDisplay
+          lexicalPrompt
           answers={currentAnswer}
           disabled={Boolean(result) || submitting}
           hideQuestionNumber={hideQuestionCardNumber}
@@ -501,6 +504,7 @@ export function PracticeSession({
           questionNumber={currentQuestion.question_order}
           template={currentQuestion.sentence_template}
         />
+        </LexicalLookupProvider>
       )}
 
       <div className="flex flex-wrap justify-end gap-3">

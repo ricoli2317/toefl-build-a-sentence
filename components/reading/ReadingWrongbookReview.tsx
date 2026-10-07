@@ -129,6 +129,7 @@ export function ReadingWrongbookReview({
   }
   return (
     <ReadingPracticeShell
+      lexicalAccess={{ kind: "reading_wrongbook", attemptId }}
       attempt={review.attempt}
       initialAnswers={review.answers}
       initialQuestionIndex={initialQuestionIndex}
@@ -209,6 +210,7 @@ function ReadingFullSetWrongbookReviewShell({
           readOnly
         >
           <ReadingWorkspaceRouter
+            lexicalAccess={{ kind: "reading_wrongbook", attemptId: review.attempt.attemptId }}
             answers={occurrence.answers}
             currentQuestion={question}
             lookupEnabled={readingLookupEnabled("submitted_review", occurrence.practice.item.module)}

@@ -1,4 +1,5 @@
 "use client";
+import { LexicalLookupProvider } from "@/components/lexical/LexicalLookup";
 
 import clsx from "clsx";
 import { ArrowLeft, ArrowRight, FileCheck2 } from "lucide-react";
@@ -276,6 +277,8 @@ export function StudentWritingReviewResult({
                   <p className="text-sm text-student-muted">暂无范文。</p>
                 )
               ) : (
+                <LexicalLookupProvider access={{ kind: "writing", attemptId: attemptId }}
+                  enabled={state.data.question_source !== "custom"} sourceType={attempt.task_type === "email" ? "write_email" : "academic_discussion"}>
                 <WritingQuestionReview
                   academicDiscussionAvatarSource={state.data.question_source}
                   avatarMap={avatarState.data?.avatars ?? EMPTY_ACADEMIC_DISCUSSION_AVATAR_MAP}
@@ -283,6 +286,7 @@ export function StudentWritingReviewResult({
                   question={question}
                   taskType={attempt.task_type}
                 />
+                </LexicalLookupProvider>
               )}
             </article>
           </section>

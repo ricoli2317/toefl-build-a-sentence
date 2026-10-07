@@ -1,4 +1,5 @@
 "use client";
+import { LexicalLookupProvider, LexicalText } from "@/components/lexical/LexicalLookup";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -285,6 +286,8 @@ export function PracticeResultView({
             })}
           </div>
           {activeAnswer && activeReadonlyState ? (
+            <LexicalLookupProvider key={activeAnswer.question_id}
+              access={{ kind: "bas", attemptId: attempt.attempt_id, questionId: activeAnswer.question_id }} sourceType="bas">
             <div
               className="mt-5 grid gap-5 border-t border-student-border pt-5"
               data-testid="practice-result-readonly-question"
@@ -318,6 +321,7 @@ export function PracticeResultView({
                 </div>
               </div>
               <QuestionDisplay
+                lexicalPrompt
                 answers={activeReadonlyState.placedChunks}
                 hideQuestionNumber
                 locale="zh-CN"
@@ -331,12 +335,12 @@ export function PracticeResultView({
               <section className="teacher-card border-student-primary-border bg-student-primary-soft/55 p-5">
                 <p className="text-sm font-semibold text-student-primary">正确答案</p>
                 <p className="mt-2 text-lg font-semibold leading-7 text-student-text">
-                  {activeAnswer.final_sentence ||
+                  <LexicalText blockId="final-sentence" text={activeAnswer.final_sentence ||
                     buildSentenceDisplay(
                       activeAnswer.sentence_template,
                       activeAnswer.correct_order_text
                     ) ||
-                    splitTextItems(activeAnswer.correct_order_text).join(" ")}
+                    splitTextItems(activeAnswer.correct_order_text).join(" ")} />
                 </p>
               </section>
               <div className="flex flex-wrap justify-end gap-3">
@@ -362,6 +366,7 @@ export function PracticeResultView({
                 </button>
               </div>
             </div>
+            </LexicalLookupProvider>
           ) : null}
         </section>
       </div>

@@ -66,12 +66,9 @@ import type {
 } from "@/lib/reading/studentPractice";
 import {
   calculateRdlContainRect,
-  createRdlLookupRequest,
-  flattenRdlCharacters,
   hitTestRdlCharacter,
   normalizeRdlSelectionRange,
   rdlSelectedCharacters,
-  rdlSelectedText,
   rdlWordRangeAt,
   validateRdlImageBinding,
   type RdlContainRect,
@@ -84,6 +81,7 @@ import {
   insertionAnchorAtBoundary,
   isRapSentenceSelectable,
   rapSentenceSelectionInstruction,
+  rapSentenceInsertionInstruction,
   rapSentenceSelectionStem,
   rapVisibleHighlightRanges,
   validateRapInsertionAnchors,
@@ -124,6 +122,9 @@ import {
 } from "@/lib/reading/wrongbook";
 import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
+import { LexicalLookupProvider, lexicalBlockAttributes, useLexicalLookup } from "@/components/lexical/LexicalLookup";
+import type { LexicalAccess } from "@/lib/lexical/lookup";
+import { rdlLexicalSelection } from "@/lib/lexical/selection";
 
 type PracticeResponse = { practice?: StudentReadingPracticePayload; error?: string };
 type AttemptResponse = { attempt?: ReadingAttemptSummary; error?: string };
@@ -699,6 +700,11 @@ export function ReadingFullSetReviewShell({
           ) : (
             <ReadingWorkspaceRouter
               answers={currentOccurrence!.answers}
+              lexicalAccess={variant === "session"
+                ? currentOccurrence!.attemptId
+                  ? { kind: "reading_wrongbook", attemptId: currentOccurrence!.attemptId }
+                  : undefined
+                : { kind: "full_set", attemptId: payload.attempt.attemptId }}
               currentQuestion={currentQuestion!}
               lookupEnabled={readingLookupEnabled("submitted_review", currentOccurrence!.practice.item.module)}
               onAnswerChange={() => undefined}
@@ -754,6 +760,7 @@ export function ReadingPracticeShell({
   initialQuestionIndex = 0,
   initialReviewIndex = 0,
   mode = "active",
+  lexicalAccess,
   onBack,
   practice,
   progressLabelResolver,
@@ -773,6 +780,7 @@ export function ReadingPracticeShell({
   initialQuestionIndex?: number;
   initialReviewIndex?: number;
   mode?: ReadingPracticeMode;
+  lexicalAccess?: LexicalAccess;
   onBack: () => void;
   practice: StudentReadingPracticePayload;
   /** Global 1/N numbering for multi-source wrong-question practice. */
@@ -1003,6 +1011,7 @@ export function ReadingPracticeShell({
   if (readOnly) {
     return (
       <ReadingReadonlyReviewShell
+        lexicalAccess={lexicalAccess ?? { kind: "reading", attemptId: attempt.attemptId }}
         answers={answers}
         headerAction={headerAction}
         initialReviewIndex={initialReviewIndex}
@@ -1075,6 +1084,7 @@ export function ReadingPracticeShell({
               answers={answers}
               currentQuestion={currentQuestion}
               editableSlotIds={editableSlotIds}
+              lexicalAccess={{ kind: "reading", attemptId: attempt.attemptId }}
               key={practice.item.itemId}
               lookupEnabled={lookupEnabled}
               onAnswerChange={updateAnswer}
@@ -1204,7 +1214,14 @@ export function ReadingPracticeHeader({
   );
 }
 
-export function ReadingWorkspaceRouter({
+export function ReadingWorkspaceRouter(props: Parameters<typeof ReadingWorkspaceContent>[0] & { lexicalAccess?: LexicalAccess }) {
+  return <LexicalLookupProvider key={props.currentQuestion.questionId} access={props.lexicalAccess} enabled={props.lookupEnabled && props.readOnly}
+    sourceType={props.practice.item.module} sourceItemId={props.practice.item.itemId}>
+    <ReadingWorkspaceContent {...props} />
+  </LexicalLookupProvider>;
+}
+
+function ReadingWorkspaceContent({
   answerKeyOnly = false,
   answers,
   currentQuestion,
@@ -1293,105 +1310,7 @@ export function ReadingWorkspaceRouter({
 }
 
 function DomTextLookupRegion({ children, enabled }: { children: ReactNode; enabled: boolean }) {
-  const [lookupQuery, setLookupQuery] = useState("");
-  const [lookupAttempted, setLookupAttempted] = useState(false);
-  const [open, setOpen] = useState(false);
-  const regionRef = useRef<HTMLDivElement | null>(null);
-  const panelRef = useRef<HTMLDivElement | null>(null);
-
-  const close = useCallback(() => {
-    setOpen(false);
-    setLookupQuery("");
-    setLookupAttempted(false);
-  }, []);
-
-  useEffect(() => {
-    if (!enabled) close();
-  }, [close, enabled]);
-
-  useEffect(() => {
-    if (!enabled || !open) return;
-    const closeOnOutsidePointer = (event: PointerEvent) => {
-      const target = event.target;
-      if (!(target instanceof Node)) return;
-      if (panelRef.current?.contains(target) || regionRef.current?.contains(target)) return;
-      close();
-    };
-    document.addEventListener("pointerdown", closeOnOutsidePointer, true);
-    return () => document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
-  }, [close, enabled, open]);
-
-  const captureSelection = () => {
-    if (!enabled) return;
-    const selection = window.getSelection();
-    const region = regionRef.current;
-    if (!selection || selection.isCollapsed || !selection.rangeCount || !region) {
-      close();
-      return;
-    }
-    const range = selection.getRangeAt(0);
-    if (!region.contains(range.startContainer) || !region.contains(range.endContainer)) {
-      close();
-      return;
-    }
-    const query = selection.toString().replace(/\s+/g, " ").trim();
-    if (!query) {
-      close();
-      return;
-    }
-    setLookupQuery(query);
-    setLookupAttempted(false);
-    setOpen(true);
-  };
-  const lookupRequest = createRdlLookupRequest(lookupQuery);
-
-  return (
-    <div
-      className="contents"
-      data-dom-lookup-enabled={enabled ? "true" : "false"}
-      onMouseUp={(event) => {
-        if (event.target instanceof Node && panelRef.current?.contains(event.target)) return;
-        captureSelection();
-      }}
-      ref={regionRef}
-    >
-      {children}
-      {enabled && open ? (
-        <div
-          className="fixed bottom-6 left-1/2 z-50 w-[min(28rem,calc(100vw-2rem))] -translate-x-1/2 rounded-xl border border-student-primary-border bg-white/95 p-3 shadow-lg backdrop-blur-sm"
-          data-testid="dom-lookup-panel"
-          ref={panelRef}
-        >
-          <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-student-primary">Selected text</p>
-          <div className="mt-2 flex items-center gap-2">
-            <label className="sr-only" htmlFor="dom-lookup-query">Lookup query</label>
-            <input
-              className="min-w-0 flex-1 rounded-lg border border-student-border bg-white px-3 py-2 text-sm text-student-text outline-none focus:border-student-primary focus:ring-2 focus:ring-student-primary-soft"
-              id="dom-lookup-query"
-              onChange={(event) => {
-                setLookupQuery(event.target.value);
-                setLookupAttempted(false);
-              }}
-              value={lookupQuery}
-            />
-            <button
-              className="student-button-primary shrink-0"
-              disabled={!lookupRequest}
-              onClick={() => setLookupAttempted(Boolean(lookupRequest))}
-              type="button"
-            >
-              Look Up
-            </button>
-          </div>
-          {lookupAttempted ? (
-            <p className="mt-2 text-xs leading-5 text-student-muted" role="status">
-              Dictionary lookup is not configured yet. Your edited query is ready.
-            </p>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  );
+  return <div className="contents" data-dom-lookup-enabled={enabled ? "true" : "false"}>{children}</div>;
 }
 
 function CtwPracticeWorkspace({
@@ -1422,6 +1341,11 @@ function CtwPracticeWorkspace({
   selectedReviewItem: SubmittedReadingReviewItem | null;
 }) {
   const emptySlots = useMemo(() => createCtwSlotAnswers(question.slots), [question.slots]);
+  const correctSlotText = (slotId: string) => {
+    const item = reviewItems.find(item => item.slotId === slotId);
+    const value = item ? reviewPresentations?.[item.answerId]?.correctAnswer : undefined;
+    return value?.kind === "ctw_word" ? value.parts.map(part => part.text).join("") : value?.kind === "text" ? value.text : null;
+  };
   const slotAnswers = answer?.kind === "ctw" ? answer.slots : emptySlots;
   // Narrow screens render the answer table, which makes the whole review flow:
   // the paragraph keeps its natural height and the page scrolls, so the answer
@@ -1597,6 +1521,7 @@ function CtwPracticeWorkspace({
             .sort((left, right) => left.paragraphOrder - right.paragraphOrder)
             .map((paragraph, paragraphIndex, paragraphs) => (
               <p
+                {...lexicalBlockAttributes(`paragraph:${paragraph.paragraphId}`)}
                 key={paragraph.paragraphId}
                 style={{ marginBottom: paragraphIndex === paragraphs.length - 1 ? 0 : `${20 / 19}em` }}
               >
@@ -1607,6 +1532,13 @@ function CtwPracticeWorkspace({
                   const slot = slotById.get(segment.slotId);
                   if (!slot) return null;
                   const reviewItem = reviewItems.find((item) => item.slotId === slot.slotId);
+                  if (readOnly && lookupEnabled) {
+                    const canonical = correctSlotText(slot.slotId);
+                    return <span data-ctw-slot={slot.slotId} key={`${paragraph.paragraphId}:blank:${slot.slotId}`}
+                      className={selectedReviewItem?.slotId === slot.slotId ? "rounded bg-amber-100 ring-2 ring-amber-400" : "font-semibold"}>
+                      {canonical ?? slot.prefix}
+                    </span>;
+                  }
                   return (
                     <CtwBlankWord
                       characters={slotAnswers[slot.slotId] ?? emptySlots[slot.slotId]}
@@ -2174,17 +2106,15 @@ function RdlPracticeWorkspace({
   reviewItem?: SubmittedReadingReviewItem;
   reviewPresentation?: ReadingCorrectionAnswerPresentation;
 }) {
+  const lexical = useLexicalLookup();
   const [assetStatus, setAssetStatus] = useState<"loading" | "ready" | "error">("loading");
   const [selectionMap, setSelectionMap] = useState<RdlSelectionMap | null>(null);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
   const [selectionRect, setSelectionRect] = useState<RdlContainRect | null>(null);
   const [selectionRange, setSelectionRange] = useState<RdlSelectionRange | null>(null);
   const [selectionCommitted, setSelectionCommitted] = useState(false);
-  const [lookupQuery, setLookupQuery] = useState("");
-  const [lookupAttempted, setLookupAttempted] = useState(false);
   const imageStageRef = useRef<HTMLDivElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
-  const lookupPanelRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef<{
     pointerId: number;
     anchorIndex: number;
@@ -2236,8 +2166,6 @@ function RdlPracticeWorkspace({
   useEffect(() => {
     setSelectionRange(null);
     setSelectionCommitted(false);
-    setLookupQuery("");
-    setLookupAttempted(false);
     dragRef.current = null;
   }, [question.questionId]);
 
@@ -2245,11 +2173,9 @@ function RdlPracticeWorkspace({
     if (!selectionCommitted) return;
     const closeOnOutsidePointer = (event: PointerEvent) => {
       const target = event.target;
-      if (target instanceof Node && lookupPanelRef.current?.contains(target)) return;
+      if (target instanceof Element && target.closest('[data-testid="lexical-lookup-card"]')) return;
       setSelectionRange(null);
       setSelectionCommitted(false);
-      setLookupQuery("");
-      setLookupAttempted(false);
     };
     document.addEventListener("pointerdown", closeOnOutsidePointer, true);
     return () => document.removeEventListener("pointerdown", closeOnOutsidePointer, true);
@@ -2310,10 +2236,6 @@ function RdlPracticeWorkspace({
     () => selectionMap ? rdlSelectedCharacters(selectionMap, selectionRange) : [],
     [selectionMap, selectionRange]
   );
-  const selectedText = useMemo(
-    () => selectionMap ? rdlSelectedText(selectionMap, selectionRange) : "",
-    [selectionMap, selectionRange]
-  );
 
   const pointerCharacter = (
     event: ReactPointerEvent<HTMLDivElement>,
@@ -2331,8 +2253,7 @@ function RdlPracticeWorkspace({
     if (!selectionMap) return;
     setSelectionRange(range);
     setSelectionCommitted(true);
-    setLookupQuery(rdlSelectedText(selectionMap, range));
-    setLookupAttempted(false);
+    if (lookupEnabled && lexical) lexical.lookup(`material:${material.materialId}`, rdlLexicalSelection(selectionMap, range));
   };
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -2350,7 +2271,6 @@ function RdlPracticeWorkspace({
     };
     setSelectionRange(normalizeRdlSelectionRange(characterIndex, characterIndex));
     setSelectionCommitted(false);
-    setLookupAttempted(false);
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -2385,10 +2305,8 @@ function RdlPracticeWorkspace({
     dragRef.current = null;
     setSelectionRange(null);
     setSelectionCommitted(false);
-    setLookupQuery("");
+    lexical?.close();
   };
-
-  const lookupRequest = createRdlLookupRequest(lookupQuery);
 
   return (
     <ReadingTwoColumnPracticeShell
@@ -2460,37 +2378,6 @@ function RdlPracticeWorkspace({
               ))}
             </div>
           ) : null}
-          {lookupEnabled && selectionCommitted && selectedText ? (
-            <div className="absolute bottom-3 left-3 right-3 z-20 max-w-md rounded-xl border border-student-primary-border bg-white/95 p-3 shadow-lg backdrop-blur-sm" data-testid="rdl-lookup-panel" ref={lookupPanelRef}>
-              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-student-primary">Selected text</p>
-              <p className="mt-1 line-clamp-2 text-sm font-semibold leading-5 text-student-text" data-testid="rdl-selected-text">{selectedText}</p>
-              <div className="mt-2 flex items-center gap-2">
-                <label className="sr-only" htmlFor="rdl-lookup-query">Lookup query</label>
-                <input
-                  className="min-w-0 flex-1 rounded-lg border border-student-border bg-white px-3 py-2 text-sm text-student-text outline-none focus:border-student-primary focus:ring-2 focus:ring-student-primary-soft"
-                  id="rdl-lookup-query"
-                  onChange={(event) => {
-                    setLookupQuery(event.target.value);
-                    setLookupAttempted(false);
-                  }}
-                  value={lookupQuery}
-                />
-                <button
-                  className="student-button-primary shrink-0"
-                  disabled={!lookupRequest}
-                  onClick={() => setLookupAttempted(Boolean(lookupRequest))}
-                  type="button"
-                >
-                  Look Up
-                </button>
-              </div>
-              {lookupAttempted ? (
-                <p className="mt-2 text-xs leading-5 text-student-muted" role="status">
-                  Dictionary lookup is not configured yet. Your edited query is ready.
-                </p>
-              ) : null}
-            </div>
-          ) : null}
         </div>
       </figure>
       )}
@@ -2505,10 +2392,11 @@ function RdlPracticeWorkspace({
         labelledBy="rdl-question-stem"
         naturalFlow={naturalFlow}
       >
-        <h2 className="font-bold text-student-text" id="rdl-question-stem" style={readingQuestionTextStyle}>
+        <h2 {...lexicalBlockAttributes(`question:${question.questionId}:stem`)} className="font-bold text-student-text" id="rdl-question-stem" style={readingQuestionTextStyle}>
           {question.stem}
         </h2>
         <ChoiceOptionList
+          questionId={question.questionId}
           labelledBy="rdl-question-stem"
           onSelect={(optionId) => onAnswerChange(question.questionId, { kind: "choice", optionId })}
           options={question.options}
@@ -2652,6 +2540,7 @@ function RapPracticeWorkspace({
             />
             {boundaryIndex > 0 ? " " : null}
             <strong
+              {...lexicalBlockAttributes(`question:${question.questionId}:insert-sentence`)}
               className={insertedClassName}
               data-correction-state={correctionState ?? undefined}
               data-strikethrough={correctionState === "incorrect" ? "true" : undefined}
@@ -2684,6 +2573,11 @@ function RapPracticeWorkspace({
     paragraph: (typeof orderedParagraphs)[number],
     sentence: (typeof orderedParagraphs)[number]["sentences"][number]
   ) => {
+    const ordered = paragraph.sentences;
+    const index = ordered.findIndex(s => s.sentenceId === sentence.sentenceId);
+    const canonicalOffset = ordered.slice(0, index).reduce((offset, s) => offset + s.text.length + 1, 0);
+    const lexicalAttributes = lexicalBlockAttributes(`passage:${passage.passageId}:paragraph:${paragraph.paragraphId}`,
+      ordered.map(s => s.text).join(" "), canonicalOffset);
     const selectable = question.questionType === "rap_sentence_selection"
       && sentenceTargetValidation !== null
       && isRapSentenceSelectable(sentenceTargetValidation, paragraph.paragraphId, sentence.sentenceId);
@@ -2708,6 +2602,7 @@ function RapPracticeWorkspace({
     if (selectable) {
       return (
         <span
+          {...lexicalAttributes}
           aria-checked={readOnly ? undefined : selected}
           className={`inline leading-[inherit] ${readOnly ? "cursor-text select-text" : "cursor-pointer"} ${sentenceClassName}`}
           data-correction-state={correctionState ?? undefined}
@@ -2729,7 +2624,7 @@ function RapPracticeWorkspace({
       );
     }
     return (
-      <span data-sentence-id={sentence.sentenceId} data-sentence-order={sentence.sentenceOrder}>
+      <span {...lexicalAttributes} data-sentence-id={sentence.sentenceId} data-sentence-order={sentence.sentenceOrder}>
         {highlightedText}
       </span>
     );
@@ -2801,10 +2696,11 @@ function RapPracticeWorkspace({
       >
         {question.questionType === "rap_multiple_choice" ? (
           <>
-            <h2 className="font-bold text-student-text" id="rap-question-stem" style={readingQuestionTextStyle}>
+            <h2 {...lexicalBlockAttributes(`question:${question.questionId}:stem`)} className="font-bold text-student-text" id="rap-question-stem" style={readingQuestionTextStyle}>
               {question.stem}
             </h2>
             <ChoiceOptionList
+              questionId={question.questionId}
               labelledBy="rap-question-stem"
               onSelect={(optionId) => onAnswerChange(question.questionId, { kind: "choice", optionId })}
               options={question.options}
@@ -2816,18 +2712,22 @@ function RapPracticeWorkspace({
         ) : question.questionType === "rap_sentence_insertion" && insertionValidation?.valid ? (
           <div className="font-normal text-student-text" data-testid="rap-insertion-instructions" style={readingQuestionTextStyle}>
             <p className="font-bold" id="rap-question-stem">
-              {RAP_INSERTION_INTRODUCTION.split("■")[0]}<RapInsertionMarker bracketed />{RAP_INSERTION_INTRODUCTION.split("■")[1]}
+              <span {...lexicalBlockAttributes(`question:${question.questionId}:instruction`, rapSentenceInsertionInstruction())}>{RAP_INSERTION_INTRODUCTION.split("■")[0]}</span>
+              <RapInsertionMarker bracketed />
+              <span {...lexicalBlockAttributes(`question:${question.questionId}:instruction`, rapSentenceInsertionInstruction(), RAP_INSERTION_INTRODUCTION.indexOf("■") + 1)}>{RAP_INSERTION_INTRODUCTION.split("■")[1]}</span>
             </p>
-            <p data-testid="rap-insertion-prompt" style={{ marginTop: "1.75em" }}>
+            <p {...lexicalBlockAttributes(`question:${question.questionId}:insert-sentence`)} data-testid="rap-insertion-prompt" style={{ marginTop: "1.75em" }}>
               {question.insertSentence}
             </p>
             <p style={{ marginTop: "1.75em" }}>
-              {RAP_INSERTION_SELECTION_PROMPT.split("■")[0]}<RapInsertionMarker bracketed />{RAP_INSERTION_SELECTION_PROMPT.split("■")[1]}
+              <span {...lexicalBlockAttributes(`question:${question.questionId}:instruction`, rapSentenceInsertionInstruction(), RAP_INSERTION_INTRODUCTION.length + 2)}>{RAP_INSERTION_SELECTION_PROMPT.split("■")[0]}</span>
+              <RapInsertionMarker bracketed />
+              <span {...lexicalBlockAttributes(`question:${question.questionId}:instruction`, rapSentenceInsertionInstruction(), RAP_INSERTION_INTRODUCTION.length + 3 + RAP_INSERTION_SELECTION_PROMPT.indexOf("■"))}>{RAP_INSERTION_SELECTION_PROMPT.split("■")[1]}</span>
             </p>
           </div>
         ) : question.questionType === "rap_sentence_selection" && sentenceTargetValidation?.valid ? (
           <div className="font-bold text-student-text" data-testid="rap-sentence-selection-instructions" style={readingQuestionTextStyle}>
-            <p id="rap-question-stem">{rapSentenceSelectionStem(question.stem)}</p>
+            <p {...lexicalBlockAttributes(`question:${question.questionId}:stem`)} id="rap-question-stem">{rapSentenceSelectionStem(question.stem)}</p>
             <p style={{ marginTop: "1.75em" }}>{rapSentenceSelectionInstruction()}</p>
           </div>
         ) : (
@@ -2887,6 +2787,7 @@ function RapInsertionMarker({ bracketed = false }: { bracketed?: boolean }) {
 }
 
 function ChoiceOptionList({
+  questionId,
   labelledBy,
   onSelect,
   options,
@@ -2894,6 +2795,7 @@ function ChoiceOptionList({
   reviewPresentation,
   selectedOptionId
 }: {
+  questionId: string;
   labelledBy: string;
   onSelect: (optionId: string) => void;
   options: StudentChoiceOption[];
@@ -2937,7 +2839,7 @@ function ChoiceOptionList({
             >
               {selected ? <span className="rounded-full bg-student-primary" style={readingRadioDotStyle} /> : null}
             </span>
-            <span className={optionTextClassName} data-option-text-state={correctionState ?? undefined}>{option.text}</span>
+            <span {...lexicalBlockAttributes(`question:${questionId}:option:${option.optionId}`)} className={optionTextClassName} data-option-text-state={correctionState ?? undefined}>{option.text}</span>
           </button>
         );
       })}
@@ -3177,6 +3079,7 @@ export function ReadingReadonlyReviewShell({
   answers = {},
   headerAction,
   initialReviewIndex = 0,
+  lexicalAccess,
   lookupEnabled,
   onBack,
   practice,
@@ -3190,6 +3093,7 @@ export function ReadingReadonlyReviewShell({
   /** Optional header action (entry correction) forwarded to the shared header. */
   headerAction?: ReactNode;
   initialReviewIndex?: number;
+  lexicalAccess?: LexicalAccess;
   lookupEnabled: boolean;
   onBack?: () => void;
   practice: StudentReadingPracticePayload;
@@ -3281,6 +3185,7 @@ export function ReadingReadonlyReviewShell({
         >
           <ReadingWorkspaceRouter
             answerKeyOnly={answerKeyOnly}
+            lexicalAccess={lexicalAccess}
             answers={answers}
             currentQuestion={currentQuestion}
             lookupEnabled={lookupEnabled}
