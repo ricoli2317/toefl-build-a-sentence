@@ -145,7 +145,10 @@ export function wrongQuestionBankEvent(input: {
  *   * plus the smallest amount above the history count (practice uses min(amount, count))
  *   * X = 0 disables everything
  */
-export function wrongQuestionAmountOptions(historyCount: number): WrongQuestionAmountOption[] {
+export function wrongQuestionAmountOptions(
+  historyCount: number,
+  shortfallLabel = "当前历史错题共"
+): WrongQuestionAmountOption[] {
   const count = Math.max(0, Math.floor(historyCount));
   const nextAbove = count > 0
     ? WRONG_QUESTION_HISTORY_AMOUNTS.find((amount) => amount > count) ?? null
@@ -154,7 +157,7 @@ export function wrongQuestionAmountOptions(historyCount: number): WrongQuestionA
     amount,
     enabled: amount <= count || amount === nextAbove,
     shortfallHint: amount === nextAbove && amount > count
-      ? `当前历史错题共 ${count} 道`
+      ? `${shortfallLabel} ${count} 道`
       : null
   }));
 }

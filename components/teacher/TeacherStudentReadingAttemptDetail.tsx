@@ -28,7 +28,7 @@ import type {
   TeacherReadingResultSummary
 } from "@/lib/teacherStudentPractice";
 
-export type TeacherReadingAttemptDetailKind = "attempt" | "wrongbook" | "full-set";
+export type TeacherReadingAttemptDetailKind = "attempt" | "wrongbook" | "full-set" | "category";
 
 type ReadingAttemptDetailPayload =
   | TeacherReadingAttemptReviewPayload
@@ -62,8 +62,8 @@ export function TeacherStudentReadingAttemptDetail({
   const router = useRouter();
   const backHref = safeTeacherReturnTo(returnTo, teacherStudentDetailHref(studentId));
   const state = useTeacherCachedData<ReadingAttemptDetailPayload>(
-    `${TEACHER_STUDENT_READING_CACHE_PREFIX}:${kind}:${studentId}:${attemptId}`,
-    () => loadReadingAttemptDetail(kind, studentId, attemptId)
+    `${TEACHER_STUDENT_READING_CACHE_PREFIX}:${kind}:${studentId}:${attemptId}${kind === "category" ? `:${questionIndex ?? "result"}` : ""}`,
+    () => loadReadingAttemptDetail(kind, studentId, attemptId, questionIndex)
   );
   const selfHref = teacherReturnToHref(readingDetailHref(kind, studentId, attemptId), returnTo);
 
@@ -125,6 +125,9 @@ export function TeacherStudentReadingAttemptDetail({
         onBack={onBackToResult}
         payload={view.review}
         variant={view.mode === "session" ? "session" : "full_set"}
+        onRequestItem={kind === "category" ? (item) => router.push(teacherReturnToHref(
+          `${readingDetailHref(kind, studentId, attemptId)}?question=${item.sourceAnswerIndex}`, returnTo
+        )) : undefined}
       />
     );
   }
@@ -154,7 +157,7 @@ function resolveReadingDetailView(
   kind: TeacherReadingAttemptDetailKind,
   payload: ReadingAttemptDetailPayload
 ): TeacherReadingDetailView {
-  if (kind === "wrongbook" && "sessionDetail" in payload) {
+  if ((kind === "wrongbook" || kind === "category") && "sessionDetail" in payload) {
     return {
       mode: "session",
       review: payload.sessionDetail.review,
@@ -271,7 +274,7 @@ function readingDetailHref(
   studentId: string,
   attemptId: string
 ) {
-  const segment = kind === "wrongbook"
+  const segment = kind === "category" ? "category-sessions" : kind === "wrongbook"
     ? "wrongbook-attempts"
     : kind === "full-set"
       ? "full-set-attempts"
@@ -282,16 +285,17 @@ function readingDetailHref(
 function loadReadingAttemptDetail(
   kind: TeacherReadingAttemptDetailKind,
   studentId: string,
-  attemptId: string
+  attemptId: string,
+  questionIndex?: number
 ) {
   if (kind === "full-set") {
     return loadTeacherStudentReadingJson<ReadingAttemptDetailPayload>(
       `/api/teacher/students/${encodeURIComponent(studentId)}/reading/full-set-attempts/${encodeURIComponent(attemptId)}`
     );
   }
-  const segment = kind === "wrongbook" ? "wrongbook-attempts" : "attempts";
+  const segment = kind === "category" ? "category-sessions" : kind === "wrongbook" ? "wrongbook-attempts" : "attempts";
   return loadTeacherStudentReadingJson<ReadingAttemptDetailPayload>(
-    `/api/teacher/students/${encodeURIComponent(studentId)}/reading/${segment}/${encodeURIComponent(attemptId)}`
+    `/api/teacher/students/${encodeURIComponent(studentId)}/reading/${segment}/${encodeURIComponent(attemptId)}${kind === "category" && questionIndex !== undefined ? `?question=${questionIndex}` : ""}`
   );
 }
 

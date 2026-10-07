@@ -69,7 +69,8 @@ test('latest main integrations retain question-chip results, session-scoped revi
   assert.match(result, /LexicalText blockId="final-sentence"/);
   assert.match(result, /CorrectionEntryButton/);
   const reading = read('components/reading/ReadingPractice.tsx');
-  assert.match(reading, /lexicalAccess=\{variant === "session"[\s\S]*kind: "reading_wrongbook", attemptId: currentOccurrence!.attemptId/);
+  assert.match(reading, /lexicalAccess=\{lexicalAccess \?\? \(variant === "session"[\s\S]*kind: "reading_wrongbook", attemptId: currentOccurrence!.attemptId/);
+  assert.match(read('components/reading/QuestionCategorySessionReview.tsx'), /lexicalAccess=\{\{ kind: "reading_category", attemptId: sessionId \}\}/);
   assert.match(reading, /const parsedMap = material.selectionMap/);
   assert.match(reading, /parsedMap.imageSha256 !== material.imageSha256/);
   assert.match(reading, /focusedCtwSlotId/);

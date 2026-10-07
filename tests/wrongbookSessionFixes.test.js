@@ -91,7 +91,7 @@ test("2. only the drawn targets of a material are editable, never its other slot
   assert.equal(editable.has("slot-3"), false);
   assert.equal(editable.has("slot-4"), false);
 
-  const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
+  const bank = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
   // The session workspace is gated by the frozen group targets only.
   assert.match(bank, /targets: group\?\.targets \?\? \[\]/);
   const shell = read("components/reading/ReadingPractice.tsx");
@@ -118,11 +118,11 @@ test("2. a partially drawn CTW material numbers only its drawn points", () => {
 
 test("3. session Previous crosses sources while normal in-source movement is unchanged", () => {
   const shell = read("components/reading/ReadingPractice.tsx");
-  const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
+  const bank = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
 
   // Previous stays enabled on the first workspace while a previous source exists.
   assert.match(shell, /canGoPrevious=\{navigation\.currentIndex > 0 \|\| Boolean\(session\?\.hasPreviousSource\)\}/);
-  assert.match(shell, /if \(session\?\.hasPreviousSource && !session\.pending && !session\.submitting\) \{\n\s+session\.onPreviousSource\?\.\(\);/);
+  assert.match(shell, /if \(session\?\.hasPreviousSource && !session\.pending && !session\.submitting\) \{\n\s+session\.onCheckpoint\?\.\(navigation\.currentIndex, captureCurrentQuestionTime\(\)\);\n\s+session\.onPreviousSource\?\.\(\);/);
 
   // The session moves to the previous group and re-opens it at its last
   // workspace; forward progress always re-enters at the first workspace.
@@ -139,7 +139,7 @@ test("3. session Previous crosses sources while normal in-source movement is unc
 });
 
 test("3. a source re-entered through Previous never creates or re-submits attempts", () => {
-  const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
+  const bank = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
   assert.match(bank, /if \(rendered\.ready\.attempt\.status === "submitted"\) \{/);
   // The read-only re-entry is shown with a notice, not by rebuilding a draft.
   const shell = read("components/reading/ReadingPractice.tsx");
@@ -689,8 +689,8 @@ test("9. the context loader returns only untargeted CTW slot answers", () => {
 
   const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
   assert.match(bank, /contextAnswers: payload\.contextAnswers \?\? \[\]/);
-  assert.match(bank, /attemptState\.data\?\.contextAnswers \?\? \[\]/);
-  assert.match(bank, /entryUnit\.contextAnswers/);
+  assert.match(bank, /buildReadingWrongbookInitialAnswers\(practice, payload\.preservedAnswers, payload\.contextAnswers\)/);
+  assert.match(bank, /entry\.contextAnswers/);
 });
 
 test("9. entry corrections are only offered from a single-item practice result and its read-only review", () => {
@@ -825,10 +825,10 @@ test("11. a retake asks for the smallest valid 5 / 10 / 15 / 20 amount", () => {
 // ---------------------------------------------------------------------------
 
 test("12. session-switch state is local-only: no session creation or redraw on navigation", () => {
-  const bank = read("components/reading/ReadingWrongbookBankPractice.tsx");
+  const bank = read("components/reading/ReadingMultiSourceSessionRunner.tsx");
   const navigationBlock = bank.slice(
     bank.indexOf("const handlePreviousSource"),
-    bank.indexOf("// A finished session jumps straight back to its result page")
+    bank.indexOf("// Content AND source state")
   );
   assert.doesNotMatch(navigationBlock, /fetch\(|createBankSession|readingSessionCreations/);
   assert.match(bank, /if \(!rendered\) \{[\s\S]*ReadingPracticePendingShell/);

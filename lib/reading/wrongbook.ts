@@ -173,7 +173,7 @@ export function isReadingFullSetWrongbookQueuePayload(
     ));
 }
 
-export function selectReadingWrongbookPractice(
+export function selectReadingTargetPractice(
   practice: StudentReadingPracticePayload,
   targets: ReadingWrongbookTarget[]
 ): StudentReadingPracticePayload {
@@ -191,6 +191,9 @@ export function selectReadingWrongbookPractice(
     questions
   };
 }
+
+// Compatibility name for existing correction callers; the selector is business-neutral.
+export const selectReadingWrongbookPractice = selectReadingTargetPractice;
 
 /**
  * The correction RPC requires one submission row per target. Unanswered

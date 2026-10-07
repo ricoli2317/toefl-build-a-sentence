@@ -1,4 +1,6 @@
 import { WRITING_TASK_CONFIG } from "./writing.ts";
+import { categoryResultHref, categoryPracticeHref } from "./reading/questionCategory.ts";
+import { nextWrongQuestionHistoryAmount } from "./wrongQuestionBank.ts";
 import {
   STUDENT_ROUTES,
   readingFullSetResultHref,
@@ -194,6 +196,7 @@ export function studentPracticeRecordResultTarget(
 ): StudentPracticeResultTarget | null {
   if (record.kind === "wrongbook") return null;
   const attemptId = record.attemptId;
+  if (record.kind === "question_category") return { href: categoryResultHref(attemptId), label: "查看结果" };
   if (record.taskType === "full_set") {
     const fullSetId = record.source?.fullSetId;
     if (!fullSetId) return null;
@@ -246,6 +249,9 @@ export function studentPracticeRecordRetakeTarget(
   record: TeacherPracticeRecord
 ): StudentPracticeRetakeTarget {
   if (record.kind === "wrongbook") return null;
+  if (record.kind === "question_category") return record.source?.questionCategory && record.source.categoryAmount
+    ? { kind: "link", href: categoryPracticeHref(record.source.questionCategory, nextWrongQuestionHistoryAmount(record.source.categoryAmount)), label: "重新练习" }
+    : null;
   if (record.taskType === "full_set") {
     const fullSetId = record.source?.fullSetId;
     return fullSetId ? { kind: "full_set", fullSetId } : null;

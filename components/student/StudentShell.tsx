@@ -8,6 +8,7 @@ import {
   Clock3,
   ClipboardList,
   ClipboardX,
+  ListChecks,
   Home,
   Menu,
   X
@@ -121,6 +122,12 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
         match: (path) => path.startsWith(STUDENT_ROUTES.grammarPractice)
       },
       {
+        href: STUDENT_ROUTES.questionCategoryPractice,
+        icon: ListChecks,
+        label: STUDENT_UI_TEXT.questionCategoryPractice,
+        match: (path) => path.startsWith(STUDENT_ROUTES.questionCategoryPractice)
+      },
+      {
         href: STUDENT_ROUTES.practiceHistory,
         icon: Clock3,
         label: STUDENT_UI_TEXT.practiceHistory,
@@ -149,6 +156,8 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/student/academic-discussion/practice/") ||
     pathname.startsWith("/student/academic-discussion/submission/") ||
     pathname.startsWith("/student/reading/practice/") ||
+    pathname.startsWith(`${STUDENT_ROUTES.questionCategoryPractice}/practice`) ||
+    /^\/student\/question-category-practice\/sessions\/[^/]+\/questions\/[^/]+/.test(pathname) ||
     /^\/student\/reading\/full-sets\/[^/]+\/attempt\/[^/]+/.test(pathname) ||
     /^\/student\/reading\/full-sets\/[^/]+\/result\/[^/]+\/questions\/[^/]+/.test(pathname) ||
     /^\/student\/reading\/(?:results|wrongbook-results)\/[^/]+\/questions\/[^/]+/.test(pathname) ||

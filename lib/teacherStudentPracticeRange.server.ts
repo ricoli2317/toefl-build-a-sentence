@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { loadCategoryHistoryRows } from "./reading/questionCategoryHistory.server.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import { loadTeacherWritingReviewScores } from "./teacherStudentPractice.server.ts";
 import type { PracticeHistoryLoadScope } from "./teacherStudentPractice.ts";
@@ -63,7 +64,7 @@ async function loadReadingRange(
   // The student practice history never shows Entry / 今日错题 / 历史错题
   // counters, so it skips the wrong-question attempt and session queries
   // entirely instead of loading rows the day list will not display.
-  const [attemptsResult, wrongbookResult, sessionsResult, fullSetResult] = await Promise.all([
+  const [attemptsResult, wrongbookResult, sessionsResult, fullSetResult, categorySessions] = await Promise.all([
     readAllSupabaseRows<TeacherRangeReadingAttemptRow>((from, to) =>
       db
         .from("reading_attempts")
@@ -119,7 +120,8 @@ async function loadReadingRange(
         .lt("completed_at", endAt)
         .order("completed_at", { ascending: false })
         .range(from, to)
-    )
+    ),
+    loadCategoryHistoryRows(db, studentId, startAt, endAt)
   ]);
   const queryError = attemptsResult.error
     ?? wrongbookResult.error
@@ -143,6 +145,7 @@ async function loadReadingRange(
 
   return {
     attempts: attemptsResult.data ?? [],
+    categorySessions,
     wrongbookAttempts: wrongbookResult.data ?? [],
     sessions: sessionsResult.data ?? [],
     fullSetAttempts: fullSetResult.data ?? [],

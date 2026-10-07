@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { loadCategoryHistoryRows } from "./reading/questionCategoryHistory.server.ts";
 import {
   compareReadingCatalogIdentityOrder,
   type ReadingCatalogItemRow,
@@ -376,7 +377,7 @@ export async function loadTeacherStudentReadingPractice(
   // The student practice history loads only the seven public task types, so
   // wrong-question attempts and their sessions are never queried for it.
   const includeWrongbook = scope?.includeWrongbook !== false;
-  const [attemptsResult, wrongbookResult, fullSetResult] = await Promise.all([
+  const [attemptsResult, wrongbookResult, fullSetResult, categorySessions] = await Promise.all([
     readAllSupabaseRows<TeacherReadingAttemptRow>((from, to) =>
       db
         .from("reading_attempts")
@@ -421,7 +422,8 @@ export async function loadTeacherStudentReadingPractice(
         .order("completed_at", { ascending: false })
         .order("attempt_id", { ascending: false })
         .range(from, to)
-    )
+    ),
+    loadCategoryHistoryRows(db, studentId, startAt, endAt)
   ]);
   const queryError = attemptsResult.error
     ?? wrongbookResult.error
@@ -512,6 +514,7 @@ export async function loadTeacherStudentReadingPractice(
     attempts: attemptsResult.data ?? [],
     wrongbookAttempts: wrongbookResult.data ?? [],
     wrongbookSessions: wrongbookSessionsResult.data ?? [],
+    categorySessions,
     fullSetAttempts,
     fullSetModules: modulesResult.data ?? [],
     fullSetAnswers: answersResult.data ?? [],

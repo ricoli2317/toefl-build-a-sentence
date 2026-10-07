@@ -1,0 +1,33 @@
+{
+  "mode": "offline API/auth fixtures against real localhost UI",
+  "productionRequests": 0,
+  "checks": [
+    "10 fixed rows",
+    "sidebar active",
+    "shared shortage chooser",
+    "mobile",
+    "20-question multi-source",
+    "current+next prefetch",
+    "refresh exact frozen session/index/answers",
+    "cross-source Previous no resubmit",
+    "aggregate result",
+    "global question 14 review",
+    "review hard-refresh lazy content",
+    "new retake session"
+  ],
+  "answers": 20,
+  "correctPoints": 1,
+  "totalPoints": 20,
+  "elapsedSeconds": 2,
+  "pageErrors": [],
+  "blockedExternalOrigins": [],
+  "screenshots": [
+    "amount-shortfall.png",
+    "home-desktop.png",
+    "home-mobile.png",
+    "practice-cross-source.png",
+    "practice-resumed.png",
+    "result-20.png",
+    "review-question-14.png"
+  ]
+}
