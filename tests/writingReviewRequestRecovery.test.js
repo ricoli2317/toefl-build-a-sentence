@@ -74,6 +74,78 @@ test("unknown Save outcome recovers only when GET matches the submitted draft", 
   );
 });
 
+test("unknown Save / Publish outcomes also verify a hand-edited sample essay", async () => {
+  const submitted = draft();
+
+  // Save carried V2 and the reloaded row already holds V2.
+  assert.equal(
+    await recoverWritingReviewAfterUnknownOutcome(
+      "save",
+      submitted,
+      async () => review({ sample_essay_draft: "V2 essay" }),
+      "V2 essay"
+    ) instanceof Object,
+    true
+  );
+  // The row still holds V1 → the Save did not persist the textarea value.
+  assert.equal(
+    await recoverWritingReviewAfterUnknownOutcome(
+      "save",
+      submitted,
+      async () => review({ sample_essay_draft: "V1 essay" }),
+      "V2 essay"
+    ),
+    null
+  );
+  // Blank text is compared as "no draft", exactly like the server stores it.
+  assert.equal(
+    await recoverWritingReviewAfterUnknownOutcome(
+      "save",
+      submitted,
+      async () => review({ sample_essay_draft: null }),
+      "   "
+    ) instanceof Object,
+    true
+  );
+
+  const publishedV2 = review({
+    ...buildWritingReviewPublishUpdate(
+      submitted,
+      "2026-08-18T08:00:00.000Z",
+      "V2 essay"
+    ),
+    sample_essay_draft: "V2 essay"
+  });
+  assert.equal(
+    await recoverWritingReviewAfterUnknownOutcome(
+      "publish",
+      submitted,
+      async () => publishedV2,
+      "V2 essay"
+    ) instanceof Object,
+    true
+  );
+
+  // Status published but the student would still see V1: not a recovery.
+  const stalePublished = review({
+    ...buildWritingReviewPublishUpdate(
+      submitted,
+      "2026-08-18T08:00:00.000Z",
+      "V1 essay"
+    ),
+    sample_essay_draft: "V1 essay"
+  });
+  assert.equal(
+    await recoverWritingReviewAfterUnknownOutcome(
+      "publish",
+      submitted,
+      async () => stalePublished,
+      "V2 essay"
+    ),
+    null
+  );
+});
+
 test("unknown initial generation outcome recovers only for a usable AI review", async () => {
   assert.equal(
     await recoverWritingReviewAfterUnknownOutcome(

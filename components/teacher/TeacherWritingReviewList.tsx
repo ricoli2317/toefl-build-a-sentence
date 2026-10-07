@@ -116,8 +116,9 @@ type ReviewTableActions = {
  *
  * Each tab also owns one 退回/忽略 selection state: clicking a row (or
  * checkboxes, or a desktop drag rectangle) selects it, the filter bar's spare
- * area grows the two batch buttons, and every row always renders the same
- * three compact 查看 | 退回 | 忽略 buttons so the action column never moves.
+ * area grows the batch buttons (退回 | 忽略 | 取消), and every row always
+ * renders the same three compact 查看 | 退回 | 忽略 buttons so the action
+ * column never moves. 取消 only clears the selection.
  */
 export function TeacherWritingReviewList({
   initialClassId,
@@ -556,11 +557,13 @@ function useWritingReviewModeration(options: {
 function WritingReviewBulkActions({
   busy,
   count,
+  onCancel,
   onIgnore,
   onReturn
 }: {
   busy: boolean;
   count: number;
+  onCancel: () => void;
   onIgnore: () => void;
   onReturn: () => void;
 }) {
@@ -582,6 +585,15 @@ function WritingReviewBulkActions({
         type="button"
       >
         忽略
+      </button>
+      {/* 取消 only drops the current selection: no API, no list refresh and no
+          filter / page / search change. It is not a review action. */}
+      <button
+        className="teacher-button-secondary !min-h-10 !px-4 !py-1.5 text-sm"
+        onClick={onCancel}
+        type="button"
+      >
+        取消
       </button>
     </div>
   );
@@ -670,6 +682,7 @@ function StudentReviewSection({
             <WritingReviewBulkActions
               busy={moderation.busy}
               count={selectedCount}
+              onCancel={() => selection.clear()}
               onIgnore={() => moderation.requestIgnore(Array.from(selection.selectedIds))}
               onReturn={() => moderation.requestReturn(Array.from(selection.selectedIds))}
             />
@@ -914,6 +927,7 @@ function ClassReviewList({
             <WritingReviewBulkActions
               busy={moderation.busy}
               count={selectedCount}
+              onCancel={() => selection.clear()}
               onIgnore={() => moderation.requestIgnore(Array.from(selection.selectedIds))}
               onReturn={() => moderation.requestReturn(Array.from(selection.selectedIds))}
             />

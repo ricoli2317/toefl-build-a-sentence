@@ -57,6 +57,11 @@ export type WritingReviewListEntry = {
 /**
  * 学生/班级 ∩ 批改状态 ∩ 题型. Every supplied filter is optional so the tabs
  * can reuse the same predicate; an empty student/class id means 全部.
+ *
+ * 全部 is the working list and never includes 已忽略 rows: an ignored review
+ * only reappears through the explicit 忽略 filter, so every count derived from
+ * the visible list (badges, totals, pagination) stays consistent with what the
+ * teacher actually sees.
  */
 export function filterWritingReviewListEntries<T extends WritingReviewListEntry>(
   entries: readonly T[],
@@ -72,9 +77,17 @@ export function filterWritingReviewListEntries<T extends WritingReviewListEntry>
   return entries.filter(
     (entry) =>
       (studentId === "" || entry.studentId === studentId) &&
-      (status === "all" || entry.reviewStatus === status) &&
-      (taskType === "all" || entry.taskType === taskType)
+      (taskType === "all" || entry.taskType === taskType) &&
+      matchesWritingReviewStatusFilter(entry.reviewStatus, status)
   );
+}
+
+export function matchesWritingReviewStatusFilter(
+  reviewStatus: WritingReviewListStatus,
+  status: WritingReviewStatusFilter
+) {
+  if (status === "all") return reviewStatus !== "ignored";
+  return reviewStatus === status;
 }
 
 /**

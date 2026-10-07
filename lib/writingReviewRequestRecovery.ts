@@ -24,7 +24,8 @@ export type WritingReviewUnknownOutcomeOperation =
 export async function recoverWritingReviewAfterUnknownOutcome(
   operation: WritingReviewUnknownOutcomeOperation,
   draft: WritingReviewWorkingDraft | null,
-  reload: () => Promise<RecoverableWritingReview>
+  reload: () => Promise<RecoverableWritingReview>,
+  sampleEssayDraft?: string | null
 ) {
   const review = await reload();
   if (operation === "generate") {
@@ -40,7 +41,17 @@ export async function recoverWritingReviewAfterUnknownOutcome(
       : null;
   }
   if (!draft || !review.review_id) return null;
+  // undefined means the request never carried a sample essay; a present value
+  // must have reached the row for the mutation to count as persisted.
+  const requestedSampleEssay =
+    sampleEssayDraft === undefined
+      ? undefined
+      : comparableSampleEssayDraft(sampleEssayDraft);
+  const sampleEssayPersisted =
+    requestedSampleEssay === undefined ||
+    (review.sample_essay_draft ?? null) === requestedSampleEssay;
   if (operation === "save") {
+    if (!sampleEssayPersisted) return null;
     const expected = buildWritingReviewSaveUpdate(draft);
     return (
       jsonValuesEqual(review.language_edits, expected.language_edits) &&
@@ -58,7 +69,9 @@ export async function recoverWritingReviewAfterUnknownOutcome(
   const expected = buildWritingReviewPublishUpdate(
     draft,
     "1970-01-01T00:00:00.000Z",
-    review.sample_essay_draft ?? null
+    requestedSampleEssay === undefined
+      ? review.sample_essay_draft ?? null
+      : requestedSampleEssay
   );
   return (
     jsonValuesEqual(
@@ -72,10 +85,15 @@ export async function recoverWritingReviewAfterUnknownOutcome(
     ) &&
     review.published_teacher_comment === expected.published_teacher_comment &&
     (expected.published_sample_essay === undefined ||
-      (review.published_sample_essay ?? null) === expected.published_sample_essay)
+      (review.published_sample_essay ?? null) === expected.published_sample_essay) &&
+    sampleEssayPersisted
   )
     ? review
     : null;
+}
+
+function comparableSampleEssayDraft(value: string | null) {
+  return typeof value === "string" && value.trim().length > 0 ? value : null;
 }
 
 function comparableContentFeedback(review: WritingReviewWorkingDraft) {

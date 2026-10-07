@@ -221,8 +221,21 @@ test("both AI routes expose the same explicit preserve or overwrite mode", () =>
     assert.match(source, /teacher_content/);
     assert.match(source, /=== "overwrite"/);
   }
-  assert.match(generate, /overwriteTeacherContent[\s\S]*language_edits: input\.language_edits/);
-  assert.match(generate, /overall_feedback: input\.content_feedback\.overall_feedback/);
+  // Overwrite stores only the AI payload prepared for persistence: its own
+  // language edits / feedback items and its own overall feedback, with no
+  // teacher merge.
+  assert.match(
+    generate,
+    /overwriteTeacherContent\s*\?[\s\S]*language_edits: persistenceInput\.language_edits[\s\S]*content_feedback: persistenceInput\.content_feedback\.items[\s\S]{0,80}:\s*mergeRegeneratedWritingReviewItems/
+  );
+  assert.match(
+    generate,
+    /overwriteTeacherContent\s*\?[\s\S]*overall_feedback: persistenceInput\.content_feedback\.overall_feedback[\s\S]{0,80}:\s*mergeRegeneratedWritingReviewTeacherState/
+  );
+  // Preserve keeps the teacher's manual items by merging against the existing
+  // review instead.
+  assert.match(generate, /mergeRegeneratedWritingReviewItems\([\s\S]*manualReview/);
+  assert.match(generate, /mergeRegeneratedWritingReviewTeacherState\([\s\S]*manualReview/);
   assert.match(regenerate, /preserveTeacherContent: !overwriteTeacherContent/);
 });
 

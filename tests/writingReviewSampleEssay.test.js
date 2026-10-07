@@ -742,6 +742,164 @@ test("Save never writes any published sample field", async () => {
 });
 
 // ---------------------------------------------------------------------------
+// Hand-edited sample essay through the shared Save / Publish
+// ---------------------------------------------------------------------------
+
+test("manual Save of a hand-edited sample essay never reaches the student before Publish", async () => {
+  const draft = manualEmailDraft();
+  const tables = fakeFamilyTables();
+  const db = fakeDb(tables);
+  await generateInto(db, tables, "生成 V1", "V1 essay");
+  await saveWritingReviewWorkspace(db, "attempt-1", draft, {
+    publish: true,
+    now: () => new Date("2026-08-14T08:00:00.000Z")
+  });
+
+  // draft V1 → teacher edits V2 → Save (not Publish)
+  await saveWritingReviewWorkspace(
+    db,
+    "attempt-1",
+    { ...draft, sample_essay_draft: "V2 essay" }
+  );
+
+  const workspace = await loadWritingReviewWorkspace(db, "attempt-1");
+  assert.equal(workspace.review.sample_essay_draft, "V2 essay");
+  assert.equal(workspace.review.published_sample_essay, "V1 essay");
+  const student = await loadStudentPublishedWritingReview(db, "student-1", "attempt-1");
+  assert.equal(student.review.sample_essay, "V1 essay");
+  assert.equal(JSON.stringify(student).includes("V2 essay"), false);
+});
+
+test("direct Publish copies the unsaved textarea sample essay instead of the stored V1", async () => {
+  const draft = manualEmailDraft();
+  const tables = fakeFamilyTables();
+  const db = fakeDb(tables);
+  await generateInto(db, tables, "生成 V1", "V1 essay");
+  await saveWritingReviewWorkspace(db, "attempt-1", draft, {
+    publish: true,
+    now: () => new Date("2026-08-14T08:00:00.000Z")
+  });
+
+  // draft V1 → teacher edits V2 → Publish without pressing Save first.
+  await saveWritingReviewWorkspace(
+    db,
+    "attempt-1",
+    { ...draft, sample_essay_draft: "V2 essay" },
+    { publish: true, now: () => new Date("2026-08-15T08:00:00.000Z") }
+  );
+
+  const workspace = await loadWritingReviewWorkspace(db, "attempt-1");
+  assert.equal(workspace.review.sample_essay_draft, "V2 essay");
+  assert.equal(workspace.review.published_sample_essay, "V2 essay");
+  const student = await loadStudentPublishedWritingReview(db, "student-1", "attempt-1");
+  assert.equal(student.review.sample_essay, "V2 essay");
+});
+
+test("an already published review republishes its saved hand-edited draft", async () => {
+  const draft = manualEmailDraft();
+  const firstPublished = buildWritingReviewPublishUpdate(
+    draft,
+    "2026-08-13T12:00:00.000Z",
+    "V1 essay"
+  );
+  const tables = fakeFamilyTables({
+    status: "published",
+    ...firstPublished,
+    published_sample_essay: "V1 essay",
+    sample_essay_draft: "V1 essay",
+    published_at: "2026-08-13T12:00:00.000Z"
+  });
+  const db = fakeDb(tables);
+  const publishedContentBefore = structuredClone(
+    tables.writing_reviews[0].published_content_feedback
+  );
+
+  // published V1 → edit V2 → Save, then Publish after the Save already stored
+  // V2 (the client then sends no sample field at all).
+  await saveWritingReviewWorkspace(
+    db,
+    "attempt-1",
+    { ...draft, sample_essay_draft: "V2 essay" }
+  );
+  await saveWritingReviewWorkspace(db, "attempt-1", draft, {
+    publish: true,
+    now: () => new Date("2026-08-16T08:00:00.000Z")
+  });
+
+  assert.equal(tables.writing_reviews[0].sample_essay_draft, "V2 essay");
+  assert.equal(tables.writing_reviews[0].published_sample_essay, "V2 essay");
+  assert.deepEqual(
+    tables.writing_reviews[0].published_content_feedback,
+    publishedContentBefore
+  );
+  const student = await loadStudentPublishedWritingReview(db, "student-1", "attempt-1");
+  assert.equal(student.review.sample_essay, "V2 essay");
+});
+
+test("regenerating the sample essay overwrites a hand-edited draft without touching the published snapshot", async () => {
+  const draft = manualEmailDraft();
+  const tables = fakeFamilyTables();
+  const db = fakeDb(tables);
+  await generateInto(db, tables, "生成 V1", "V1 essay");
+  await saveWritingReviewWorkspace(db, "attempt-1", draft, {
+    publish: true,
+    now: () => new Date("2026-08-14T08:00:00.000Z")
+  });
+  await saveWritingReviewWorkspace(
+    db,
+    "attempt-1",
+    { ...draft, sample_essay_draft: "V2 manual essay" }
+  );
+
+  // A new generation replaces the working draft and keeps 发布 untouched.
+  await generateInto(db, tables, "语言更简单", "V3 generated essay");
+  const workspace = await loadWritingReviewWorkspace(db, "attempt-1");
+  assert.equal(workspace.review.sample_essay_draft, "V3 generated essay");
+  assert.equal(workspace.review.published_sample_essay, "V1 essay");
+  const student = await loadStudentPublishedWritingReview(db, "student-1", "attempt-1");
+  assert.equal(student.review.sample_essay, "V1 essay");
+});
+
+test("a blank hand-edited draft is stored as no draft and hides nothing from the student", async () => {
+  const draft = manualEmailDraft();
+  const tables = fakeFamilyTables();
+  const db = fakeDb(tables);
+  await generateInto(db, tables, "生成 V1", "V1 essay");
+  await saveWritingReviewWorkspace(db, "attempt-1", draft, {
+    publish: true,
+    now: () => new Date("2026-08-14T08:00:00.000Z")
+  });
+
+  await saveWritingReviewWorkspace(
+    db,
+    "attempt-1",
+    { ...draft, sample_essay_draft: "   " },
+    { publish: true, now: () => new Date("2026-08-15T08:00:00.000Z") }
+  );
+  assert.equal(tables.writing_reviews[0].sample_essay_draft, null);
+  // Clearing the teacher draft never erases the already published essay.
+  assert.equal(tables.writing_reviews[0].published_sample_essay, "V1 essay");
+  const student = await loadStudentPublishedWritingReview(db, "student-1", "attempt-1");
+  assert.equal(student.review.sample_essay, "V1 essay");
+});
+
+test("the essay request field is optional and rejects non-string values", async () => {
+  const tables = fakeFamilyTables();
+  const db = fakeDb(tables);
+  const draft = manualEmailDraft();
+
+  // Legacy request without the field keeps the stored draft untouched.
+  await saveWritingReviewWorkspace(db, "attempt-1", draft);
+  const untouched = await loadWritingReviewWorkspace(db, "attempt-1");
+  assert.equal(untouched.review.sample_essay_draft, null);
+
+  await assert.rejects(
+    saveWritingReviewWorkspace(db, "attempt-1", { ...draft, sample_essay_draft: 42 }),
+    (error) => error.code === "WORKSPACE_INVALID" && error.status === 400
+  );
+});
+
+// ---------------------------------------------------------------------------
 // Source wiring: tabs, isolation, and AI log operation
 // ---------------------------------------------------------------------------
 
@@ -756,6 +914,41 @@ test("teacher workspace exposes the 范文 mode with an isolated sample-essay ac
   assert.match(teacher, /sample_essay_draft/);
   // Sample generation must never be routed through the review regeneration calls.
   assert.doesNotMatch(teacher, /generateSampleEssay[\s\S]{0,400}regenerate-ai/);
+});
+
+test("teacher workspace 范文 body is editable and flows through the shared Save / Publish", () => {
+  const teacher = read("components/teacher/TeacherWritingReviewWorkspace.tsx");
+
+  // The former read-only body is now an editable textarea. No rich text
+  // editor, no format toolbar and no extra Save button were introduced.
+  assert.match(teacher, /范文正文（可编辑）/);
+  assert.match(teacher, /onChange=\{\(event\) => onDraftChange\(event\.target\.value\)\}/);
+  assert.match(teacher, /value=\{draft \?\? ""\}/);
+  assert.match(teacher, /placeholder="暂无范文。可点击「生成范文」，或在此直接撰写范文。"/);
+  assert.doesNotMatch(teacher, /contentEditable|contenteditable/);
+
+  // Editing the essay marks the workspace dirty and enables the existing Save
+  // while Publish stays available for already published reviews.
+  assert.match(teacher, /const \[sampleEssayDirty, setSampleEssayDirty\] = useState\(false\)/);
+  assert.match(teacher, /const hasUnsavedChanges = dirty \|\| sampleEssayDirty/);
+  assert.match(teacher, /dirty=\{hasUnsavedChanges\}/);
+  assert.match(teacher, /disabled=\{!dirty \|\| operation !== null \|\| sampleGenerating\}/);
+  assert.match(teacher, /disabled=\{operation !== null \|\| sampleGenerating\}/);
+  assert.match(teacher, /setSampleEssayDirty\(normalized !== \(sampleServerRef\.current\?\.draft \?\? null\)\)/);
+
+  // Save / Publish send the latest textarea content only when it changed, and
+  // unknown-outcome recovery verifies the hand-edited essay too.
+  assert.match(teacher, /const sampleEssayDraft = sampleEssayDirty \? sampleDraft : undefined/);
+  assert.match(teacher, /mutateWorkspace\(attemptId, draft, publish, sampleEssayDraft\)/);
+  assert.match(teacher, /sample_essay_draft: sampleEssayDraft/);
+  assert.match(
+    teacher,
+    /confirmUnknownWritingReviewOutcome\(\s*publish \? "publish" : "save",\s*attemptId,\s*draft,\s*sampleEssayDraft\s*\)/
+  );
+
+  // A new AI generation still overwrites the current draft (no version UI),
+  // and keeping it marks the workspace clean again.
+  assert.match(teacher, /setSampleDraft\(saved\.draft\);\s*setSampleEssayDirty\(false\);/);
 });
 
 test("student review renders the 范文 tab only from the published snapshot", () => {

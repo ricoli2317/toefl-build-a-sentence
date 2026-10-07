@@ -203,6 +203,9 @@ export function TeacherWritingReviewWorkspace({
   const [requestError, setRequestError] = useState("");
   const [sampleInstruction, setSampleInstruction] = useState("");
   const [sampleDraft, setSampleDraft] = useState<string | null>(null);
+  // The hand-edited sample essay is part of the workspace dirty state: Save
+  // stays enabled and Publish always carries the latest text.
+  const [sampleEssayDirty, setSampleEssayDirty] = useState(false);
   const [sampleGenerating, setSampleGenerating] = useState(false);
   const [sampleMessage, setSampleMessage] = useState("");
   const [sampleError, setSampleError] = useState("");
@@ -246,6 +249,8 @@ export function TeacherWritingReviewWorkspace({
     };
     setSampleInstruction(serverInstruction ?? "");
     setSampleDraft(serverDraft);
+    // The local textarea now mirrors the server snapshot again.
+    setSampleEssayDirty(false);
   }, [data]);
   useEffect(() => {
     function closeOnOutsidePointer(event: MouseEvent) {
@@ -628,10 +633,13 @@ export function TeacherWritingReviewWorkspace({
     setOperation(nextOperation);
     setMessage("");
     setRequestError("");
+    // Publish must include the latest textarea content even when the teacher
+    // never pressed Save; an untouched essay sends no field at all.
+    const sampleEssayDraft = sampleEssayDirty ? sampleDraft : undefined;
     try {
       let review: WorkspaceReview;
       try {
-        review = await mutateWorkspace(attemptId, draft, publish);
+        review = await mutateWorkspace(attemptId, draft, publish, sampleEssayDraft);
       } catch (mutationError) {
         if (!(mutationError instanceof WritingReviewNetworkOutcomeUnknownError)) {
           throw mutationError;
@@ -639,7 +647,8 @@ export function TeacherWritingReviewWorkspace({
         const recovered = await confirmUnknownWritingReviewOutcome(
           publish ? "publish" : "save",
           attemptId,
-          draft
+          draft,
+          sampleEssayDraft
         );
         if (!recovered) throw mutationError;
         review = recovered;
@@ -657,6 +666,8 @@ export function TeacherWritingReviewWorkspace({
       });
       setDraft(toDraft(review));
       setDirty(false);
+      setSampleDraft(review.sample_essay_draft ?? null);
+      setSampleEssayDirty(false);
       setMessage(publish ? "已发布" : "已保存");
     } catch (mutationError) {
       setRequestError(
@@ -670,6 +681,16 @@ export function TeacherWritingReviewWorkspace({
       operationRef.current = null;
       setOperation(null);
     }
+  }
+
+  function changeSampleDraft(value: string) {
+    setSampleDraft(value);
+    // Compare against the last server snapshot so reverting the text clears
+    // the unsaved state again; the server stores a blank draft as null.
+    const normalized = value.trim().length > 0 ? value : null;
+    setSampleEssayDirty(normalized !== (sampleServerRef.current?.draft ?? null));
+    setSampleMessage("");
+    setSampleError("");
   }
 
   async function generateSampleEssay() {
@@ -701,6 +722,7 @@ export function TeacherWritingReviewWorkspace({
       };
       setSampleInstruction(saved.instruction);
       setSampleDraft(saved.draft);
+      setSampleEssayDirty(false);
       setSampleMessage("范文已生成并保存");
     } catch (generationError) {
       // A failed generation never clears the last saved draft or instruction.
@@ -722,9 +744,12 @@ export function TeacherWritingReviewWorkspace({
     (edit) => workingReviewItemSource(edit) === "ai"
   ).length;
   const teacherEditCount = draft.language_edits.length - aiEditCount;
+  // Save / Publish feedback and dirty hints cover both the review draft and a
+  // hand-edited sample essay.
+  const hasUnsavedChanges = dirty || sampleEssayDirty;
   const publishedWithLaterChanges =
     data.review.status === "published" &&
-    (dirty || isLater(data.review.updated_at, data.review.published_at));
+    (hasUnsavedChanges || isLater(data.review.updated_at, data.review.published_at));
   function changeMode(nextMode: WorkspaceMode) {
     setMode(nextMode);
     setInspectorPosition(null);
@@ -735,7 +760,7 @@ export function TeacherWritingReviewWorkspace({
     <div className="flex h-[calc(100dvh-24px)] min-h-0 flex-col overflow-hidden rounded-xl border border-student-border bg-white shadow-[0_2px_14px_rgba(60,47,119,0.06)]">
       <WorkspaceToolbar
         data={data}
-        dirty={dirty}
+        dirty={hasUnsavedChanges}
         message={message}
         mode={mode}
         operation={operation}
@@ -777,6 +802,7 @@ export function TeacherWritingReviewWorkspace({
           generating={sampleGenerating}
           instruction={sampleInstruction}
           message={sampleMessage}
+          onDraftChange={changeSampleDraft}
           onGenerate={() => void generateSampleEssay()}
           onInstructionChange={(value) => {
             setSampleInstruction(value);
@@ -1180,6 +1206,7 @@ function SampleEssayWorkspace({
   generating,
   instruction,
   message,
+  onDraftChange,
   onGenerate,
   onInstructionChange
 }: {
@@ -1188,6 +1215,7 @@ function SampleEssayWorkspace({
   generating: boolean;
   instruction: string;
   message: string;
+  onDraftChange: (value: string) => void;
   onGenerate: () => void;
   onInstructionChange: (value: string) => void;
 }) {
@@ -1197,7 +1225,7 @@ function SampleEssayWorkspace({
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="text-base font-bold">范文</h2>
           <span className="text-[11px] text-student-muted">
-            生成的范文先保存为草稿，点击右上角「发布」后学生才能看到
+            范文正文可直接编辑；「保存」只保存草稿，点击右上角「发布」后学生才能看到
           </span>
         </div>
         <div className="mt-3 flex flex-col gap-2">
@@ -1228,13 +1256,18 @@ function SampleEssayWorkspace({
             </span>
           </div>
         </div>
-        <div className="mt-5 text-[16px] leading-7 text-student-text">
-          {draft ? (
-            <p className="whitespace-pre-wrap">{draft}</p>
-          ) : (
-            <p className="text-sm text-student-muted">暂无范文。</p>
-          )}
-        </div>
+        <label className="mt-5 block">
+          <span className="text-[11px] font-semibold text-student-muted">
+            范文正文（可编辑）
+          </span>
+          <textarea
+            className="mt-2 min-h-[420px] w-full resize-y whitespace-pre-wrap rounded-lg border border-student-border bg-white p-4 text-[16px] leading-7 text-student-text focus:border-student-primary"
+            disabled={generating}
+            onChange={(event) => onDraftChange(event.target.value)}
+            placeholder="暂无范文。可点击「生成范文」，或在此直接撰写范文。"
+            value={draft ?? ""}
+          />
+        </label>
       </article>
     </div>
   );
@@ -2501,13 +2534,18 @@ async function loadWorkspace(attemptId: string): Promise<WorkspacePayload> {
 async function mutateWorkspace(
   attemptId: string,
   draft: WritingReviewWorkingDraft,
-  publish: boolean
+  publish: boolean,
+  sampleEssayDraft?: string | null
 ): Promise<WorkspaceReview> {
   const suffix = publish ? "/publish" : "";
   const response = await teacherFetch(`/api/teacher/writing/reviews/${encodeURIComponent(attemptId)}${suffix}`, {
     method: publish ? "POST" : "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(draft)
+    body: JSON.stringify(
+      sampleEssayDraft === undefined
+        ? draft
+        : { ...draft, sample_essay_draft: sampleEssayDraft }
+    )
   });
   const payload = await readJson<{ review?: WorkspaceReview } & ErrorPayload>(response);
   if (!response.ok || !payload.review) throw new Error(errorMessage(payload, publish ? "发布失败，请稍后重试。" : "保存失败，请稍后重试。"));
@@ -2641,13 +2679,15 @@ class WritingReviewNetworkOutcomeUnknownError extends Error {
 async function confirmUnknownWritingReviewOutcome(
   operation: "generate" | "save" | "publish",
   attemptId: string,
-  draft: WritingReviewWorkingDraft | null
+  draft: WritingReviewWorkingDraft | null,
+  sampleEssayDraft?: string | null
 ) {
   try {
     return await recoverWritingReviewAfterUnknownOutcome(
       operation,
       draft,
-      async () => (await loadWorkspace(attemptId)).review
+      async () => (await loadWorkspace(attemptId)).review,
+      sampleEssayDraft
     ) as WorkspaceReview | null;
   } catch {
     return null;

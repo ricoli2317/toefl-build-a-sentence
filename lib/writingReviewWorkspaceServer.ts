@@ -209,23 +209,43 @@ export async function saveWritingReviewWorkspace(
     loaded.attempt.task_type,
     loaded.attempt.response_text
   );
+  // The teacher may hand-edit the sample essay in the workspace. The field is
+  // only sent when it actually changed, so a Save / Publish that never touched
+  // the essay keeps the exact old behavior.
+  const sampleEssayRequest = normalizeRequestSampleEssayDraft(body);
+  const storedSampleEssayDraft = loaded.review.sample_essay_draft ?? null;
   const publish = options?.publish === true;
   const publishedAt = (options?.now ?? (() => new Date()))().toISOString();
   if (
     publish &&
     loaded.review.status === "published" &&
+    (!sampleEssayRequest.present ||
+      sampleEssayRequest.value === storedSampleEssayDraft) &&
     publishedSnapshotMatchesDraft(loaded.review, draft)
   ) {
     return loaded.review;
   }
+  // Publish must copy the latest hand-edited draft (even when the Save button
+  // was never pressed) into the student-visible snapshot.
+  const publishSampleEssayDraft = sampleEssayRequest.present
+    ? sampleEssayRequest.value
+    : storedSampleEssayDraft;
   const mutation = publish
-    ? buildWritingReviewPublishUpdate(
-        draft,
-        publishedAt,
-        loaded.review.sample_essay_draft
-      )
+    ? {
+        ...buildWritingReviewPublishUpdate(
+          draft,
+          publishedAt,
+          publishSampleEssayDraft
+        ),
+        ...(sampleEssayRequest.present
+          ? { sample_essay_draft: sampleEssayRequest.value }
+          : {})
+      }
     : {
         ...buildWritingReviewSaveUpdate(draft),
+        ...(sampleEssayRequest.present
+          ? { sample_essay_draft: sampleEssayRequest.value }
+          : {}),
         // A real save on an ignored review starts the human review lifecycle;
         // merely opening the workspace never changes it (see 已忽略 rules).
         ...(loaded.review.status === "ignored"
@@ -265,10 +285,20 @@ export async function saveWritingReviewWorkspace(
       const current = await loadWritingReviewWorkspace(supabase, attemptId, {
         source: options?.source
       });
+      const sampleEssayPersisted =
+        !sampleEssayRequest.present ||
+        (current.review.sample_essay_draft ?? null) === sampleEssayRequest.value;
       const mutationReachedServer = publish
         ? current.review.status === "published" &&
-          publishedSnapshotMatchesDraft(current.review, draft)
-        : workingDraftMatchesReview(current.review, draft);
+          sampleEssayPersisted &&
+          publishedSnapshotMatchesDraft(
+            current.review,
+            draft,
+            sampleEssayRequest.present
+              ? sampleEssayRequest.value
+              : current.review.sample_essay_draft ?? null
+          )
+        : sampleEssayPersisted && workingDraftMatchesReview(current.review, draft);
       if (mutationReachedServer) return current.review;
     }
     throw new WritingReviewWorkspaceServerError(
@@ -315,12 +345,13 @@ export function publishedSnapshotMatchesDraft(
     published_sample_essay?: string | null;
     sample_essay_draft?: string | null;
   },
-  draft: WritingReviewWorkingDraft
+  draft: WritingReviewWorkingDraft,
+  sampleEssayDraft: string | null = review.sample_essay_draft ?? null
 ) {
   const expected = buildWritingReviewPublishUpdate(
     draft,
     "1970-01-01T00:00:00.000Z",
-    review.sample_essay_draft ?? null
+    sampleEssayDraft
   );
   return (
     jsonValuesEqual(
@@ -391,6 +422,40 @@ function normalizeRequestDraft(
     }
     throw error;
   }
+}
+
+type RequestedSampleEssayDraft = {
+  present: boolean;
+  value: string | null;
+};
+
+/**
+ * An optional hand-edited sample essay on Save / Publish. Absent means "leave
+ * the stored draft untouched" (the old request shape and every AI-only flow),
+ * while a present value replaces it. Blank text is stored as no draft, exactly
+ * like the publish snapshot normalization.
+ */
+function normalizeRequestSampleEssayDraft(
+  body: unknown
+): RequestedSampleEssayDraft {
+  if (!isRecord(body) || !("sample_essay_draft" in body)) {
+    return { present: false, value: null };
+  }
+  const value = body.sample_essay_draft;
+  if (value === null || value === undefined) {
+    return { present: true, value: null };
+  }
+  if (typeof value !== "string") {
+    throw new WritingReviewWorkspaceServerError(
+      "WORKSPACE_INVALID",
+      "范文草稿格式无效。",
+      400
+    );
+  }
+  return {
+    present: true,
+    value: value.trim().length > 0 ? value : null
+  };
 }
 
 function normalizeReviewRow(

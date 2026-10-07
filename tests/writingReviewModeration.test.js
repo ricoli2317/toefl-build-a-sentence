@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 import {
   applyWritingReviewModerationToEntries,
@@ -30,6 +33,9 @@ const ATTEMPT_A = "11111111-1111-4111-8111-111111111111";
 const ATTEMPT_B = "22222222-2222-4222-8222-222222222222";
 const ATTEMPT_C = "33333333-3333-4333-8333-333333333333";
 
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const read = (relativePath) => readFileSync(resolve(projectRoot, relativePath), "utf8");
+
 test("ignored is a first-class review list status and filter", () => {
   assert.equal(isWritingReviewListStatus("ignored"), true);
   assert.equal(isWritingReviewListStatus("banana"), false);
@@ -43,9 +49,11 @@ test("ignored is a first-class review list status and filter", () => {
     filterWritingReviewListEntries(entries, { status: "ignored" }).map((entry) => entry.attemptId),
     [ATTEMPT_B]
   );
+  // 全部 is the working list: 已忽略 rows only come back through the explicit
+  // 忽略 filter, so the visible list and every count derived from it agree.
   assert.deepEqual(
     filterWritingReviewListEntries(entries, { status: "all" }).map((entry) => entry.attemptId),
-    [ATTEMPT_A, ATTEMPT_B, ATTEMPT_C]
+    [ATTEMPT_A, ATTEMPT_C]
   );
   assert.deepEqual(
     filterWritingReviewListEntries(entries, { status: "pending", taskType: "email" }).map(
@@ -53,6 +61,34 @@ test("ignored is a first-class review list status and filter", () => {
     ),
     [ATTEMPT_A]
   );
+});
+
+test("全部 excludes ignored from rows, counts and other status filters", () => {
+  const entries = [
+    { attemptId: "p1", studentId: "s1", studentName: "甲", taskType: "email", reviewStatus: "pending" },
+    { attemptId: "p2", studentId: "s2", studentName: "乙", taskType: "email", reviewStatus: "pending" },
+    { attemptId: "r1", studentId: "s2", studentName: "乙", taskType: "email", reviewStatus: "reviewing" },
+    { attemptId: "g1", studentId: "s3", studentName: "丙", taskType: "academic_discussion", reviewStatus: "published" },
+    { attemptId: "g2", studentId: "s3", studentName: "丙", taskType: "academic_discussion", reviewStatus: "published" },
+    { attemptId: "i1", studentId: "s4", studentName: "丁", taskType: "email", reviewStatus: "ignored" },
+    { attemptId: "i2", studentId: "s4", studentName: "丁", taskType: "academic_discussion", reviewStatus: "ignored" }
+  ];
+  const ids = (filters) =>
+    filterWritingReviewListEntries(entries, filters).map((entry) => entry.attemptId);
+
+  // 待批改 2, 批改中 1, 已发布 2, 忽略 2 → 全部 = 5, never 7.
+  assert.deepEqual(ids({ status: "all" }), ["p1", "p2", "r1", "g1", "g2"]);
+  assert.equal(ids({ status: "all" }).length, entries.length - 2);
+  assert.deepEqual(ids({ status: "all", taskType: "email" }), ["p1", "p2", "r1"]);
+  assert.deepEqual(ids({ status: "all", studentId: "s4" }), []);
+  assert.deepEqual(ids({ status: "ignored" }), ["i1", "i2"]);
+  assert.equal(ids({ status: "ignored" }).length, 2);
+  // Other status filters keep their exact old meaning.
+  assert.deepEqual(ids({ status: "pending" }), ["p1", "p2"]);
+  assert.deepEqual(ids({ status: "reviewing" }), ["r1"]);
+  assert.deepEqual(ids({ status: "published" }), ["g1", "g2"]);
+  // A page count computed from the filtered list therefore matches the rows.
+  assert.equal(ids({ status: "all" }).length + ids({ status: "ignored" }).length, entries.length);
 });
 
 test("the ignored status survives the URL round trip", () => {
@@ -240,4 +276,67 @@ test("return invalidation splits assignment / standalone student caches", () => 
     "teacherWritingReviewWorkspace",
     "teacherClassReviews"
   ]);
+});
+
+test("批量取消 clears every selected id without API, refresh or filter changes", () => {
+  const list = read("components/teacher/TeacherWritingReviewList.tsx");
+  const bulkStart = list.indexOf("function WritingReviewBulkActions");
+  const bulkEnd = list.indexOf("function WritingReviewReturnDialog");
+  assert.ok(bulkStart > 0 && bulkEnd > bulkStart);
+  const bulk = list.slice(bulkStart, bulkEnd);
+
+  // The button sits beside 退回 / 忽略 and only calls onCancel.
+  assert.match(bulk, /onCancel: \(\) => void/);
+  assert.match(bulk, /onClick=\{onCancel\}/);
+  assert.match(bulk, />\s*取消\s*</);
+  assert.match(bulk, /teacher-button-secondary/);
+  // Not a danger action: no red styling.
+  assert.doesNotMatch(bulk, /red-|rose-/);
+  // 取消 never sends a moderation request, never refreshes the list/filters
+  // and never touches navigation or cached data.
+  assert.doesNotMatch(bulk, /teacherFetch|requestIgnore|requestReturn|router\.|cache\.|invalidate/);
+
+  // Both tabs wire 取消 to the selection reset only.
+  const cancelWiring = list.match(/onCancel=\{\(\) => selection\.clear\(\)\}/g) ?? [];
+  assert.equal(cancelWiring.length, 2);
+  // selection.clear drops every id (including a full Select All / marquee
+  // state) without any side effect.
+  assert.match(list, /const clear = useCallback\(\(\) => \{/);
+  assert.match(list, /setSelectedIds\(\(current\) => \(current\.size === 0 \? current : new Set\(\)\)\)/);
+  // The whole bulk bar (and its 取消) disappears once nothing is selected,
+  // which is what "exit the selection state" means here.
+  const gatedBars = list.match(/selectedCount > 0 \? \(\s*<WritingReviewBulkActions/g) ?? [];
+  assert.equal(gatedBars.length, 2);
+});
+
+test("the list keeps every 全部 consumer consistent with the ignored exclusion", () => {
+  const list = read("components/teacher/TeacherWritingReviewList.tsx");
+  // Both tabs derive the visible rows (and any count shown for them) from the
+  // same shared predicate, so no client-side count can include ignored rows in
+  // the 全部 view.
+  assert.match(
+    list,
+    /filterWritingReviewListEntries\(attempts, \{\s*studentId: activeStudentId,\s*status: statusFilter,\s*taskType: taskFilter\s*\}\)/
+  );
+  assert.match(
+    list,
+    /filterWritingReviewListEntries\(attempts, \{\s*status: statusFilter,\s*taskType: taskFilter\s*\}\)/
+  );
+  // 全部 has no summary count badge that could drift from the filtered rows:
+  // the shared filter bar renders labels only, and the bar's only count is
+  // 已选 for the current selection.
+  assert.match(list, /已选 \{count\} 条/);
+  const filters = read("components/teacher/TeacherListFilters.tsx");
+  assert.doesNotMatch(filters, /count/i);
+
+  // The class overview counts already classify 已忽略 into no bucket, so
+  // 全部 = 待批改 + 批改中 + 已发布 stays true there as well.
+  const classServer = read("lib/teacherClasses.server.ts");
+  assert.match(
+    classServer,
+    /else if \(review\.status !== "ignored"\) counts\.reviewing \+= 1;/
+  );
+  // The dashboard 待批改 count also subtracts ignored reviews.
+  const dashboardServer = read("lib/teacherDashboardServer.ts");
+  assert.match(dashboardServer, /selfIgnored -[\s\S]{0,20}assignmentIgnored/);
 });

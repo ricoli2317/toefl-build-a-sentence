@@ -900,7 +900,12 @@ test("workspace mutations use a synchronous click lock and confirm unknown outco
   );
   assert.match(source, /operationRef\.current = "regenerate";[\s\S]*setOperation\("regenerate"\)/);
   assert.match(source, /operationRef\.current = nextOperation;[\s\S]*setOperation\(nextOperation\)/);
-  assert.match(source, /disabled=\{operation !== null\}[\s\S]*onClick=\{onRegenerate\}[\s\S]*type="button"/);
+  // The synchronous click lock covers an in-flight review operation and
+  // sample-essay generation alike: Regenerate / Publish lock on either, Save
+  // additionally requires unsaved changes.
+  assert.match(source, /disabled=\{operation !== null \|\| sampleGenerating\}[\s\S]*onClick=\{onRegenerate\}[\s\S]*type="button"/);
+  assert.match(source, /disabled=\{!dirty \|\| operation !== null \|\| sampleGenerating\}[\s\S]*void onPersist\(false\)/);
+  assert.match(source, /disabled=\{operation !== null \|\| sampleGenerating\}[\s\S]*void onPersist\(true\)/);
   assert.match(source, /confirmUnknownWritingReviewOutcome\([\s\S]*"generate"/);
   assert.match(source, /publish \? "publish" : "save"/);
   assert.match(source, /WritingReviewNetworkOutcomeUnknownError/);
