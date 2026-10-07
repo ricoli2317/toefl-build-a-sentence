@@ -17,6 +17,7 @@ import {
   isClassWritingAssignment,
   normalizeClassSubjects,
   parseClassMemberInputs,
+  selectableClassSubjects,
   validateClassName,
   writingClassesOnly
 } from "../lib/teacherClasses.ts";
@@ -38,8 +39,11 @@ const sql = read("supabase/teacher_classes.sql");
 // the class / membership RPCs stay in supabase/teacher_classes.sql.
 const assignmentSql = read("supabase/assignment_subjects_and_item_types.sql");
 // Multi-teacher class sharing: supersedes the class RPCs above with the
-// owner-or-bound-teacher authorization and cross-teacher binding backfill.
+// owner-or-bound-teacher authorization and per-teacher subject sets.
 const multiTeacherSql = read("supabase/teacher_class_multi_teacher_binding_20261003.sql");
+// 教师 × 班级 × 科目 per-teacher subject binding fix: the newest definition of
+// every class RPC and the source of truth for the class binding rules.
+const classSubjectSql = read("supabase/teacher_class_binding_subjects_20261007.sql");
 
 function rpcBlock(name, signatureHint = "") {
   const pattern = new RegExp(
@@ -47,6 +51,7 @@ function rpcBlock(name, signatureHint = "") {
     "g"
   );
   const matches = [
+    ...(classSubjectSql.match(pattern) ?? []),
     ...(multiTeacherSql.match(pattern) ?? []),
     ...(assignmentSql.match(pattern) ?? []),
     ...(sql.match(pattern) ?? [])
@@ -96,20 +101,25 @@ test("classes and members support many students per class and many classes per s
 test("adding members ensures the subject relations the class requires for every class teacher", () => {
   const sync = rpcBlock("sync_class_members");
   assert.match(sync, /select subjects into class_subjects/);
+  // 新增成员按“每位教师自己的科目”补齐：owner 用班级科目，绑定教师用 link.subjects。
   assert.match(
     sync,
-    /insert into public\.teacher_student_bindings \(teacher_id, student_id, domain\)[\s\S]{0,240}cross join unnest\(class_subjects\)/
+    /insert into public\.teacher_student_bindings \(teacher_id, student_id, domain\)[\s\S]{0,160}select class_teacher\.teacher_id, students\.id, subject\.domain/
   );
+  assert.match(sync, /select link\.teacher_id, link\.subjects\s*\n\s*from public\.teacher_class_bindings link/);
+  assert.match(sync, /cross join unnest\(coalesce\(class_teacher\.subjects, array\[\]::text\[\]\)\) as subject\(domain\)/);
   assert.match(sync, /on conflict \(teacher_id, student_id, domain\) do nothing/);
   assert.match(
     sync,
     /insert into public\.class_members \(class_id, student_id\)[\s\S]{0,160}on conflict \(class_id, student_id\) do nothing/
   );
   // New members are backfilled for every teacher of the class (owner union
-  // sharing links), so a later join never leaves a bound teacher behind.
-  assert.match(sync, /from public\.teacher_classes class_row[\s\S]{0,120}union[\s\S]{0,160}from public\.teacher_class_bindings link/);
+  // sharing links), each with their OWN subjects.
+  assert.match(sync, /from public\.teacher_classes owner_class[\s\S]{0,160}union all[\s\S]{0,200}from public\.teacher_class_bindings link/);
   const update = rpcBlock("update_class_subjects");
-  assert.match(update, /from public\.teacher_class_bindings link/);
+  // 科目更新只写调用教师自己的集合：owner 更新班级科目，绑定教师更新自己的行。
+  assert.match(update, /update public\.teacher_class_bindings[\s\S]{0,160}set subjects = effective_subjects/);
+  assert.match(update, /teacher_id = p_teacher_id/);
 });
 
 // 5: pinyin account suggestion, editable, unique suffix
@@ -153,7 +163,10 @@ test("auto suffix keeps account candidates unique and respects manual edits", ()
 test("class assignments accept exactly one Writing class", () => {
   const assignRpc = rpcBlock("create_writing_assignment_group");
   assert.match(assignRpc, /p_class_id uuid/);
-  assert.match(assignRpc, /if not \(p_subject = any\(class_row\.subjects\)\)/);
+  // 科目校验按“调用教师自己的科目集合”：owner 用班级科目，绑定教师用 link.subjects。
+  assert.match(assignRpc, /where class_row\.teacher_id = p_teacher_id/);
+  assert.match(assignRpc, /from public\.teacher_class_bindings link/);
+  assert.doesNotMatch(assignRpc, /if not \(p_subject = any\(class_row\.subjects\)\)/);
   assert.match(assignRpc, /raise exception 'CLASS_NOT_WRITING_CLASS'/);
   assert.match(assignRpc, /raise exception 'CLASS_NOT_READING_CLASS'/);
   assert.match(assignRpc, /raise exception 'CLASS_NOT_FOUND'/);
@@ -377,8 +390,9 @@ test("only a class teacher (owner or bound) can read or operate a class", () => 
   assert.match(sharing, /if \(String\(row\.teacher_id\) === teacherId\) return row/);
   assert.match(sharing, /await teacherHasClassLink\(db, teacherId, classId\)/);
   assert.match(sharing, /\.from\("teacher_class_bindings"\)/);
-  // The list merges owner classes with classes shared to the teacher.
-  assert.match(sharing, /await listLinkedClassIds\(db, teacherId\)/);
+  // The list merges owner classes with classes shared to the teacher, using
+  // each class's per-teacher link subjects.
+  assert.match(sharing, /await readLinkRows\(db, \{ teacherId \}\)/);
   const helper = rpcBlock("is_class_teacher");
   assert.match(helper, /class_row\.teacher_id = p_teacher_id/);
   assert.match(helper, /from public\.teacher_class_bindings link/);
@@ -394,6 +408,11 @@ test("class helpers keep the business representations consistent", () => {
   ]);
   assert.deepEqual(normalizeClassSubjects(["unknown"]), []);
   assert.equal(classSubjectsLabel(["writing", "reading"]), "阅读、写作");
+  // 绑定班级的科目选择规则：已绑定的科目不再可选，另一科目始终可选。
+  assert.deepEqual(selectableClassSubjects([]), ["reading", "writing"]);
+  assert.deepEqual(selectableClassSubjects(["reading"]), ["writing"]);
+  assert.deepEqual(selectableClassSubjects(["writing"]), ["reading"]);
+  assert.deepEqual(selectableClassSubjects(["reading", "writing"]), []);
   assert.equal(validateClassName("  周六 写作班 ").ok, true);
   assert.equal(validateClassName("").ok, false);
   assert.equal(validateClassName("x".repeat(61)).ok, false);

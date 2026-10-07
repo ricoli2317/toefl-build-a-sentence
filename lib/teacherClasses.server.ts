@@ -2,7 +2,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
   computeClassCompletions,
-  normalizeClassSubjects,
   type ClassCompletionCounts,
   type ClassDuplicateMemberIssue,
   type ClassMemberInput,
@@ -20,6 +19,7 @@ import { loadTeacherScope } from "@/lib/teacherScope.server";
 import {
   chunkValues,
   listTeacherClasses,
+  loadClassSubjectsForTeacher,
   loadTeacherClassRow,
   searchTeacherClasses,
   toTeacherClassSummary,
@@ -87,7 +87,8 @@ const mapClassSummary = toTeacherClassSummary;
 /**
  * Class detail: members + per-student completion over the class's own
  * assignment items. Direct (one-to-one) assignments and other classes are
- * never part of the query set.
+ * never part of the query set. The class subjects are the VIEWING teacher's
+ * own subjects for the class.
  */
 export async function loadTeacherClassDetail(
   db: Db,
@@ -96,6 +97,7 @@ export async function loadTeacherClassDetail(
 ): Promise<TeacherClassDetail | null> {
   const classRow = await loadTeacherClassRow(db, teacherId, classId);
   if (!classRow) return null;
+  const viewerSubjects = await loadClassSubjectsForTeacher(db, teacherId, classRow);
 
   const membersResult = await readAllSupabaseRows<{ student_id: string; joined_at: string }>(
     (from, to) =>
@@ -141,7 +143,7 @@ export async function loadTeacherClassDetail(
   });
 
   return {
-    class: mapClassSummary(classRow, members.length),
+    class: mapClassSummary(classRow, members.length, viewerSubjects),
     members
   };
 }
@@ -422,7 +424,9 @@ export async function addTeacherClassMembers(
 ): Promise<TeacherClassActionResult> {
   const classRow = await loadTeacherClassRow(db, teacherId, classId);
   if (!classRow) return { ok: false, status: 404, error: "班级不存在或无权操作。" };
-  const subjects = normalizeClassSubjects(classRow.subjects);
+  // New accounts are created with the ACTING teacher's own subjects; every
+  // other class teacher is backfilled per-teacher by sync_class_members.
+  const subjects = await loadClassSubjectsForTeacher(db, teacherId, classRow);
 
   const duplicateIssues = await collectDuplicateMemberIssues(db, members);
   if (duplicateIssues.length > 0) {
@@ -512,7 +516,14 @@ export async function renameTeacherClass(
   if (result.error) throw result.error;
   if (!result.data) return { ok: false, status: 404, error: "班级不存在或无权操作。" };
   const row = result.data as ClassRow;
-  return { ok: true, class: mapClassSummary(row, await classMemberCount(db, classId)) };
+  return {
+    ok: true,
+    class: mapClassSummary(
+      row,
+      await classMemberCount(db, classId),
+      await loadClassSubjectsForTeacher(db, teacherId, row)
+    )
+  };
 }
 
 /**
@@ -544,7 +555,14 @@ export async function updateTeacherClassSubjects(
 
   const classRow = await loadTeacherClassRow(db, teacherId, classId);
   if (!classRow) return { ok: false, status: 404, error: "班级不存在或无权操作。" };
-  return { ok: true, class: mapClassSummary(classRow, await classMemberCount(db, classId)) };
+  return {
+    ok: true,
+    class: mapClassSummary(
+      classRow,
+      await classMemberCount(db, classId),
+      await loadClassSubjectsForTeacher(db, teacherId, classRow)
+    )
+  };
 }
 
 /**
@@ -578,7 +596,14 @@ export async function removeTeacherClassMember(
 
   const classRow = await loadTeacherClassRow(db, teacherId, classId);
   if (!classRow) return { ok: false, status: 404, error: "班级不存在或无权操作。" };
-  return { ok: true, class: mapClassSummary(classRow, await classMemberCount(db, classId)) };
+  return {
+    ok: true,
+    class: mapClassSummary(
+      classRow,
+      await classMemberCount(db, classId),
+      await loadClassSubjectsForTeacher(db, teacherId, classRow)
+    )
+  };
 }
 
 async function classMemberCount(db: Db, classId: string) {
@@ -591,8 +616,9 @@ async function classMemberCount(db: Db, classId: string) {
 }
 
 /**
- * Assignment creation guard: the class must belong to the teacher and include
- * the Assignment subject (写作 / 阅读). Returns null when either check fails.
+ * Assignment creation guard: the class must belong to the teacher and the
+ * ACTING teacher must teach the Assignment subject (写作 / 阅读) in that class.
+ * Returns null when either check fails.
  */
 export async function loadWritingClassForAssignment(db: Db, teacherId: string, classId: string) {
   return loadTeacherClassForAssignment(db, teacherId, classId, "writing");
@@ -606,9 +632,9 @@ export async function loadTeacherClassForAssignment(
 ) {
   const row = await loadTeacherClassRow(db, teacherId, classId);
   if (!row) return null;
-  const subjects = normalizeClassSubjects(row.subjects);
+  const subjects = await loadClassSubjectsForTeacher(db, teacherId, row);
   if (!subjects.includes(subject)) return null;
-  return mapClassSummary(row, 0);
+  return mapClassSummary(row, 0, subjects);
 }
 
 /**

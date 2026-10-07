@@ -31,8 +31,9 @@ type ClassListResponse = { classes: TeacherClassSummary[] };
 /**
  * 班级列表 of the home list card. One row per class with the minimum the card
  * needs; member counts come from the list payload and never trigger per-class
- * requests. The 授课科目 column edits the CLASS subject set only (removing a
- * subject never releases a member's binding).
+ * requests. The 授课科目 column edits the VIEWING teacher's own subject set
+ * (owner: the class row; bound teacher: their own link row); removing a
+ * subject never releases a member's binding.
  */
 export function TeacherClassList({ query }: { query: string }) {
   const cache = useTeacherDataCache();

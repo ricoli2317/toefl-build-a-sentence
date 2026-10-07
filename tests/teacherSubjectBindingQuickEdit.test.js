@@ -152,24 +152,32 @@ test("losing the last binding never leaves a cached student view readable", asyn
   assert.doesNotMatch(detail, /if \(noDomains\) \{[\s\S]{0,400\}payload\.reading/);
 });
 
-test("new classes and added members gain the bindings the class subjects require", async () => {  const server = await read("lib/teacherClasses.server.ts");
-  const sql = await read("supabase/teacher_classes.sql");
+test("new classes and added members gain the bindings each teacher's own subjects require", async () =>  {
+  const server = await read("lib/teacherClasses.server.ts");
+  const sql = await read("supabase/teacher_class_binding_subjects_20261007.sql");
+  const rpcBlock = (name) =>
+    sql.match(
+      new RegExp(`create or replace function public\\.${name}\\([\\s\\S]*?\\n\\$\\$;`)
+    )?.[0] ?? "";
 
-  // New class: accounts are created with the class subjects and every member
-  // is synced through the class-subject binding backfill.
+  // New class: accounts are created with the owner's subjects and every member
+  // is synced through the per-teacher subject backfill.
   assert.match(server, /createNewClassMembers\(db, teacherId, input\.subjects/);
   assert.match(server, /syncClassMembers\(db, teacherId, classId, memberIds\)/);
-  assert.match(server, /subjects = normalizeClassSubjects\(classRow\.subjects\)/);
+  // Added members follow the ACTING teacher's own subjects, never the class's.
+  assert.match(server, /loadClassSubjectsForTeacher\(db, teacherId, classRow\)/);
+  assert.doesNotMatch(server, /subjects = normalizeClassSubjects\(classRow\.subjects\)/);
 
-  const syncRpc = sql.match(/create or replace function public\.sync_class_members[\s\S]*?\n\$\$;/)?.[0] ?? "";
+  const syncRpc = rpcBlock("sync_class_members");
   assert.match(
     syncRpc,
-    /insert into public\.teacher_student_bindings \(teacher_id, student_id, domain\)[\s\S]{0,240}cross join unnest\(class_subjects\)/
+    /select link\.teacher_id, link\.subjects\s*\n\s*from public\.teacher_class_bindings link/
   );
+  assert.match(syncRpc, /cross join unnest\(coalesce\(class_teacher\.subjects, array\[\]::text\[\]\)\)/);
   assert.match(syncRpc, /on conflict \(teacher_id, student_id, domain\) do nothing/);
 
-  // Adding a class subject backfills the missing member bindings.
-  const updateRpc = sql.match(/create or replace function public\.update_class_subjects[\s\S]*?\n\$\$;/)?.[0] ?? "";
-  assert.match(updateRpc, /cross join unnest\(p_subjects\)/);
+  // Adding a subject backfills the acting teacher's missing member bindings.
+  const updateRpc = rpcBlock("update_class_subjects");
+  assert.match(updateRpc, /cross join unnest\(effective_subjects\)/);
   assert.match(updateRpc, /on conflict \(teacher_id, student_id, domain\) do nothing/);
 });

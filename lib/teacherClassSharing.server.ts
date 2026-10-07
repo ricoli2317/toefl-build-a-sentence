@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
+import { type StudentBindingDomain } from "./studentBindings.ts";
 import {
   normalizeClassSubjects,
   type TeacherClassSearchResult,
@@ -14,6 +15,12 @@ import {
  * teacher holding a teacher_class_bindings link may manage the class. All
  * checks funnel through loadTeacherClassRow; the SQL RPCs use the matching
  * public.is_class_teacher helper.
+ *
+ * Subject model: each teacher has their own subject set for the class. The
+ * owner's set is teacher_classes.subjects; a bound teacher's set is
+ * teacher_class_bindings.subjects. Teacher-facing class summaries expose the
+ * VIEWING teacher's own subjects; teacher_student_bindings is only ever
+ * backfilled from a teacher's own set.
  */
 
 export type TeacherClassRow = {
@@ -22,6 +29,13 @@ export type TeacherClassRow = {
   name: string;
   subjects: string[] | null;
   created_at: string;
+};
+
+export type TeacherClassLinkRow = {
+  class_id: string;
+  teacher_id: string;
+  /** Null only while the deployment window predates the subjects column. */
+  subjects: string[] | null;
 };
 
 type ClassMembersCount = Array<{ count: number }> | null;
@@ -36,11 +50,15 @@ export function chunkValues<T>(values: T[], size = QUERY_BATCH_SIZE) {
   return chunks;
 }
 
-export function toTeacherClassSummary(row: TeacherClassRow, memberCount: number): TeacherClassSummary {
+export function toTeacherClassSummary(
+  row: TeacherClassRow,
+  memberCount: number,
+  subjects: readonly StudentBindingDomain[] = normalizeClassSubjects(row.subjects)
+): TeacherClassSummary {
   return {
     class_id: String(row.class_id),
     name: String(row.name).trim() || "未命名班级",
-    subjects: normalizeClassSubjects(row.subjects),
+    subjects: Array.from(subjects),
     member_count: memberCount,
     created_at: row.created_at
   };
@@ -49,7 +67,8 @@ export function toTeacherClassSummary(row: TeacherClassRow, memberCount: number)
 /**
  * Home / tab list: the teacher's own classes plus classes shared with them
  * through teacher_class_bindings. Minimal fields only; member counts come from
- * the FK count.
+ * the FK count. Each entry carries the VIEWING teacher's own subjects for the
+ * class (owner: class row; bound teacher: their own link row).
  */
 export async function listTeacherClasses(
   db: SupabaseClient,
@@ -71,9 +90,12 @@ export async function listTeacherClasses(
   const rows: Array<TeacherClassRow & { class_members: ClassMembersCount }> =
     ownedResult.data ?? [];
   const knownIds = new Set(rows.map((row) => String(row.class_id)));
-  const linkedIds = (await listLinkedClassIds(db, teacherId)).filter(
-    (classId) => !knownIds.has(classId)
-  );
+  const linkSubjectsByClass = new Map<string, StudentBindingDomain[]>();
+  for (const link of await readLinkRows(db, { teacherId })) {
+    if (knownIds.has(link.class_id)) continue;
+    linkSubjectsByClass.set(link.class_id, normalizeClassSubjects(link.subjects));
+  }
+  const linkedIds = Array.from(linkSubjectsByClass.keys());
 
   for (const batch of chunkValues(linkedIds)) {
     const linkedResult = await readAllSupabaseRows<
@@ -102,52 +124,93 @@ export async function listTeacherClasses(
         String(right.created_at).localeCompare(String(left.created_at)) ||
         String(right.class_id).localeCompare(String(left.class_id))
     )
-    .map((row) => toTeacherClassSummary(row, Number(row.class_members?.[0]?.count ?? 0)));
+    .map((row) => {
+      const classId = String(row.class_id);
+      const subjects =
+        String(row.teacher_id) === teacherId
+          ? normalizeClassSubjects(row.subjects)
+          : linkSubjectsByClass.get(classId) ?? [];
+      return toTeacherClassSummary(row, Number(row.class_members?.[0]?.count ?? 0), subjects);
+    });
 }
 
 /**
- * Class ids shared with the teacher through teacher_class_bindings. Before the
- * sharing migration is applied the table is missing; the read then degrades to
- * an empty list so class management keeps working for the owner.
+ * teacher_class_bindings rows for the given class ids and/or teacher. Selects
+ * the subjects column; before the subjects migration is applied the read
+ * degrades to the legacy rows with subjects=null so owner flows keep working
+ * until the SQL runs.
  */
-export async function listLinkedClassIds(db: SupabaseClient, teacherId: string) {
-  const result = await readAllSupabaseRows<{ class_id: string }>((from, to) =>
-    db
-      .from("teacher_class_bindings")
-      .select("class_id")
-      .eq("teacher_id", teacherId)
-      .order("class_id", { ascending: true })
-      .range(from, to)
-  );
-  if (result.error) {
-    if (isMissingRelationError(result.error.message, "teacher_class_bindings")) return [];
-    throw result.error;
-  }
-  return (result.data ?? []).map((row) => String(row.class_id));
-}
+async function readLinkRows(
+  db: SupabaseClient,
+  options: { classIds?: readonly string[]; teacherId?: string }
+): Promise<TeacherClassLinkRow[]> {
+  const classIds = options.classIds
+    ? Array.from(new Set(options.classIds.map((classId) => String(classId))))
+    : null;
+  if (classIds && classIds.length === 0) return [];
+  const batches: Array<string[] | null> = classIds ? chunkValues(classIds) : [null];
+  const rows: TeacherClassLinkRow[] = [];
 
-async function loadLinkedClassIdSet(db: SupabaseClient, teacherId: string, classIds: string[]) {
-  if (classIds.length === 0) return new Set<string>();
-  const linked = new Set<string>();
-  for (const batch of chunkValues(classIds)) {
-    const result = await readAllSupabaseRows<{ class_id: string }>((from, to) =>
-      db
-        .from("teacher_class_bindings")
-        .select("class_id")
-        .eq("teacher_id", teacherId)
-        .in("class_id", batch)
-        .order("class_id", { ascending: true })
-        .range(from, to)
-    );
-    if (result.error) {
-      if (isMissingRelationError(result.error.message, "teacher_class_bindings")) {
-        return new Set<string>();
+  for (const batch of batches) {
+    const query = (columns: string) => {
+      const base = db.from("teacher_class_bindings").select(columns);
+      const scoped = options.teacherId ? base.eq("teacher_id", options.teacherId) : base;
+      const filtered = batch ? scoped.in("class_id", batch) : scoped;
+      return filtered.order("class_id", { ascending: true });
+    };
+    const run = (columns: string) =>
+      readAllSupabaseRows<TeacherClassLinkRow>(
+        (from, to) =>
+          query(columns).range(from, to) as unknown as PromiseLike<{
+            data: TeacherClassLinkRow[] | null;
+            error: { message: string } | null;
+          }>
+      );
+
+    let result = await run("class_id,teacher_id,subjects");
+    if (result.error && isMissingRelationError(result.error.message, "teacher_class_bindings")) {
+      return rows;
+    }
+    if (result.error && isMissingColumnError(result.error.message, "subjects")) {
+      result = await run("class_id,teacher_id");
+      if (result.error) {
+        if (isMissingRelationError(result.error.message, "teacher_class_bindings")) return rows;
+        throw result.error;
       }
+    } else if (result.error) {
       throw result.error;
     }
-    for (const row of result.data ?? []) linked.add(String(row.class_id));
+
+    for (const row of result.data ?? []) {
+      rows.push({
+        class_id: String(row.class_id),
+        teacher_id: String(row.teacher_id),
+        subjects: Array.isArray(row.subjects)
+          ? row.subjects.map((domain) => String(domain))
+          : null
+      });
+    }
   }
-  return linked;
+  return rows;
+}
+
+/**
+ * The acting teacher's own subject set for one class: the class row for the
+ * owner, the teacher's teacher_class_bindings row for a bound teacher.
+ */
+export async function loadClassSubjectsForTeacher(
+  db: SupabaseClient,
+  teacherId: string,
+  classRow: TeacherClassRow
+): Promise<StudentBindingDomain[]> {
+  if (String(classRow.teacher_id) === teacherId) {
+    return normalizeClassSubjects(classRow.subjects);
+  }
+  const links = await readLinkRows(db, {
+    classIds: [String(classRow.class_id)],
+    teacherId
+  });
+  return normalizeClassSubjects(links[0]?.subjects ?? []);
 }
 
 async function teacherHasClassLink(db: SupabaseClient, teacherId: string, classId: string) {
@@ -190,8 +253,10 @@ export async function loadTeacherClassRow(
 
 /**
  * Name search for the 绑定学生/班级 page. Deliberately minimal output: the
- * class id, name, subjects, member count and whether the current teacher
- * already manages the class. The member list is never exposed here.
+ * class id, name, the class-wide subject union (info only), the CURRENT
+ * teacher's already-bound subjects (they cannot be bound again), member count
+ * and whether the current teacher already manages the class. The member list
+ * is never exposed here.
  */
 export async function searchTeacherClasses(
   db: SupabaseClient,
@@ -212,34 +277,63 @@ export async function searchTeacherClasses(
 
   const rows = (result.data ?? []) as Array<TeacherClassRow & { class_members: ClassMembersCount }>;
   if (rows.length === 0) return [];
-  const linked = await loadLinkedClassIdSet(
-    db,
-    teacherId,
-    rows.map((row) => String(row.class_id))
-  );
-  return rows.map((row) => ({
-    class_id: String(row.class_id),
-    name: String(row.name).trim() || "未命名班级",
-    subjects: normalizeClassSubjects(row.subjects),
-    member_count: Number(row.class_members?.[0]?.count ?? 0),
-    bound: String(row.teacher_id) === teacherId || linked.has(String(row.class_id))
-  }));
+
+  const links = await readLinkRows(db, {
+    classIds: rows.map((row) => String(row.class_id))
+  });
+  const viewerSubjects = new Map<string, StudentBindingDomain[]>();
+  const linkDomains = new Map<string, string[]>();
+  for (const link of links) {
+    if (link.teacher_id === teacherId) {
+      viewerSubjects.set(link.class_id, normalizeClassSubjects(link.subjects));
+    }
+    if (link.subjects) {
+      linkDomains.set(link.class_id, [
+        ...(linkDomains.get(link.class_id) ?? []),
+        ...link.subjects
+      ]);
+    }
+  }
+
+  return rows.map((row) => {
+    const classId = String(row.class_id);
+    const isOwner = String(row.teacher_id) === teacherId;
+    return {
+      class_id: classId,
+      name: String(row.name).trim() || "未命名班级",
+      // 班级整体科目 = 创建者科目 ∪ 所有绑定教师的科目（信息展示用）。
+      subjects: normalizeClassSubjects([
+        ...(Array.isArray(row.subjects) ? row.subjects : []),
+        ...(linkDomains.get(classId) ?? [])
+      ]),
+      // 当前搜索教师已绑定的科目：不能重复创建，另一科目仍可选择。
+      bound_subjects: isOwner
+        ? normalizeClassSubjects(row.subjects)
+        : viewerSubjects.get(classId) ?? [],
+      member_count: Number(row.class_members?.[0]?.count ?? 0),
+      bound: isOwner || viewerSubjects.has(classId)
+    };
+  });
 }
 
 /**
- * Binds an existing class to the acting teacher: adds the sharing link and
- * backfills exactly the missing member bindings for the class's current
- * subjects through the bind_teacher_to_class RPC. Idempotent by construction;
- * never transfers assignments, attempts, reviews or another teacher's data.
+ * Binds an existing class to the acting teacher for exactly the selected
+ * subjects: adds the sharing link and backfills only the CALLER's missing
+ * member bindings through the subject-scoped bind_teacher_to_class RPC. Never
+ * touches another teacher's link, subjects or teacher_student_bindings, and
+ * never changes teacher_classes.subjects for a non-owner. Idempotent by
+ * construction: repeating a submission creates no duplicate rows.
  */
 export async function bindTeacherToClass(
   db: SupabaseClient,
   teacherId: string,
-  classId: string
+  classId: string,
+  subjects: readonly StudentBindingDomain[]
 ): Promise<
   | {
       ok: true;
       class: TeacherClassSummary;
+      subjects: StudentBindingDomain[];
       alreadyBound: boolean;
       createdBindingCount: number;
     }
@@ -247,7 +341,8 @@ export async function bindTeacherToClass(
 > {
   const { data, error } = await db.rpc("bind_teacher_to_class", {
     p_teacher_id: teacherId,
-    p_class_id: classId
+    p_class_id: classId,
+    p_subjects: subjects
   });
   if (error) {
     if (/CLASS_NOT_FOUND/.test(error.message)) {
@@ -255,6 +350,9 @@ export async function bindTeacherToClass(
     }
     if (/INVALID_TEACHER/.test(error.message)) {
       return { ok: false, status: 403, error: "仅普通教师可以绑定班级。" };
+    }
+    if (/INVALID_SUBJECTS/.test(error.message)) {
+      return { ok: false, status: 400, error: "授课科目无效，请重新选择。" };
     }
     console.error("[teacher-classes] bind_failed", error.message);
     return { ok: false, status: 500, error: "绑定班级失败，请稍后重试。" };
@@ -264,15 +362,20 @@ export async function bindTeacherToClass(
   if (!classRow) return { ok: false, status: 404, error: "班级不存在或无权操作。" };
   const payload = (data ?? {}) as Record<string, unknown>;
   const payloadMemberCount = Number(payload.member_count);
+  const boundSubjects = normalizeClassSubjects(
+    Array.isArray(payload.subjects) ? payload.subjects : subjects
+  );
   return {
     ok: true,
+    subjects: boundSubjects,
     alreadyBound: payload.linked === false,
     createdBindingCount: Number(payload.bindings_inserted ?? 0),
     class: toTeacherClassSummary(
       classRow,
       Number.isFinite(payloadMemberCount) && payloadMemberCount >= 0
         ? payloadMemberCount
-        : await classMemberCount(db, classId)
+        : await classMemberCount(db, classId),
+      boundSubjects
     )
   };
 }
@@ -294,4 +397,10 @@ function isMissingRelationError(message: string | undefined, relation: string) {
   const text = message ?? "";
   return text.includes(relation)
     && /(does not exist|schema cache|could not find the table)/i.test(text);
+}
+
+function isMissingColumnError(message: string | undefined, column: string) {
+  const text = message ?? "";
+  return text.includes(column)
+    && /(does not exist|could not find|schema cache)/i.test(text);
 }

@@ -9,9 +9,12 @@ import {
 /**
  * Shared Teacher-Class model (client + server safe).
  *
- * A class organizes students for one teacher. Teaching access to a student's
- * learning data still comes exclusively from teacher_student_bindings; the
- * class subjects reuse the same reading/writing values as the binding domains.
+ * A class organizes students across one or more teachers. Each teacher has
+ * their OWN subject set for the class: the owner's set lives on
+ * teacher_classes.subjects, a bound teacher's set on
+ * teacher_class_bindings.subjects. Teaching access to a student's learning
+ * data still comes exclusively from teacher_student_bindings, backfilled only
+ * from the acting teacher's own subjects.
  */
 
 export const MAX_TEACHER_CLASS_NAME_LENGTH = 60;
@@ -22,6 +25,7 @@ export const DEFAULT_STUDENT_PASSWORD = "123456";
 export type TeacherClassSummary = {
   class_id: string;
   name: string;
+  /** 当前查看教师在这个班级负责的科目（owner: 班级科目；绑定教师: 自己的科目）。 */
   subjects: StudentBindingDomain[];
   member_count: number;
   created_at: string;
@@ -50,12 +54,15 @@ export type ClassStudentCandidate = {
 /**
  * One row of the 绑定学生/班级 class search result. Deliberately minimal: a
  * class name match never exposes the member list, only the count and whether
- * the searching teacher can already manage the class.
+ * the searching teacher can already manage the class. `subjects` is the
+ * class-wide union (info only); `bound_subjects` is what the SEARCHING teacher
+ * already teaches in this class and therefore cannot bind again.
  */
 export type TeacherClassSearchResult = {
   class_id: string;
   name: string;
   subjects: StudentBindingDomain[];
+  bound_subjects: StudentBindingDomain[];
   member_count: number;
   bound: boolean;
 };
@@ -117,6 +124,18 @@ export function classSubjectsLabel(subjects: readonly StudentBindingDomain[]) {
 
 export function normalizeClassSubjects(input: unknown): StudentBindingDomain[] {
   return normalizeBindingDomains(input);
+}
+
+/**
+ * The subjects the acting teacher can still bind for a class: every subject
+ * they have NOT already bound there. The 绑定班级 picker uses this so a
+ * teacher already bound to Reading can still add Writing, and vice versa; a
+ * subject already bound by the teacher is never offered for a duplicate.
+ */
+export function selectableClassSubjects(
+  boundSubjects: readonly StudentBindingDomain[]
+): StudentBindingDomain[] {
+  return STUDENT_BINDING_DOMAINS.filter((domain) => !boundSubjects.includes(domain));
 }
 
 export function validateClassName(

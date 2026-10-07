@@ -20,7 +20,7 @@ import {
   normalizeBindingDomains,
   type StudentBindingDomain
 } from "@/lib/studentBindings";
-import type { TeacherClassSearchResult } from "@/lib/teacherClasses";
+import { selectableClassSubjects, type TeacherClassSearchResult } from "@/lib/teacherClasses";
 import type { StudentBindingCandidate } from "@/lib/teacherStudentBindings";
 
 type SearchResponse = {
@@ -38,6 +38,7 @@ type ClassBindResponse = {
   classId?: string;
   alreadyBound?: boolean;
   createdBindingCount?: number;
+  subjects?: StudentBindingDomain[];
   message?: string;
   code?: string;
 };
@@ -85,6 +86,7 @@ export function TeacherBindStudent({
   const [selectedDomains, setSelectedDomains] = useState<StudentBindingDomain[]>(
     normalizeBindingDomains(initialDomains)
   );
+  const [selectedClassDomains, setSelectedClassDomains] = useState<StudentBindingDomain[]>([]);
   const [searching, setSearching] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -126,6 +128,19 @@ export function TeacherBindStudent({
     return STUDENT_BINDING_DOMAINS.filter((domain) => bound.has(domain));
   }, [selectedStudent, userId]);
 
+  // The class subject picker is scoped to the CURRENT teacher: a subject the
+  // teacher already teaches in this class can never be bound again, while the
+  // other subject stays selectable even when the class (or another teacher)
+  // already covers it.
+  const classBoundDomains = useMemo(
+    () => normalizeBindingDomains(selectedClass?.bound_subjects ?? []),
+    [selectedClass]
+  );
+  const classSelectableDomains = selectableClassSubjects(classBoundDomains);
+  const classPendingDomains = selectedClassDomains.filter((domain) =>
+    classSelectableDomains.includes(domain)
+  );
+
   const clearSelection = useCallback(() => {
     selectionRef.current = null;
     setSelection(null);
@@ -153,6 +168,7 @@ export function TeacherBindStudent({
     setSelection(next);
     setNotice("");
     setError("");
+    setSelectedClassDomains([]);
   }, []);
 
   const search = useCallback(async (request: { q: string; studentId: string }, keepSelection = false) => {
@@ -254,26 +270,27 @@ export function TeacherBindStudent({
   }
 
   async function submitClassBinding() {
-    if (!selectedClass || selectedClass.bound || submitting) return;
+    if (!selectedClass || submitting) return;
+    const domains = classPendingDomains;
+    if (domains.length === 0) return;
     setSubmitting(true);
     setError("");
     setNotice("");
     try {
       const response = await authorizedFetch("/api/teacher/class-bindings", {
         method: "POST",
-        body: JSON.stringify({ classId: selectedClass.class_id })
+        body: JSON.stringify({ classId: selectedClass.class_id, subjects: domains })
       });
       const payload = await response.json().catch(() => ({})) as ClassBindResponse;
       if (!response.ok) {
         setError(payload.message ?? "绑定失败，请稍后重试。");
         return;
       }
-      setNotice(
-        payload.alreadyBound
-          ? `班级「${selectedClass.name}」已绑定。`
-          : `已为班级「${selectedClass.name}」建立授课绑定。`
-      );
+      setNotice(`已为班级「${selectedClass.name}」绑定${formatBindingDomainList(domains)}。`);
+      // The class list / class detail / review lists all derive from the class
+      // and binding caches, so both domains are invalidated.
       publishCacheInvalidation({ type: "TEACHER_BINDING_UPDATED" });
+      publishCacheInvalidation({ type: "CLASS_UPDATED" });
       await search(lastSearchRef.current, true);
     } catch {
       setError("绑定失败，请稍后重试。");
@@ -286,6 +303,10 @@ export function TeacherBindStudent({
   const pendingDomains = selectedDomains.filter((domain) => !boundDomains.includes(domain));
   const canSubmitStudent =
     Boolean(selectedStudent) && !allDomainsBound && pendingDomains.length > 0 && !submitting;
+  const allClassDomainsBound =
+    Boolean(selectedClass) && classSelectableDomains.length === 0;
+  const canSubmitClass =
+    Boolean(selectedClass) && classPendingDomains.length > 0 && !submitting;
   const resultCount = students.length + classes.length;
 
   return (
@@ -413,7 +434,9 @@ export function TeacherBindStudent({
                 </span>
                 <span className="mt-3 block text-sm text-student-muted">
                   <span className="font-semibold text-student-text">当前状态：</span>
-                  {entry.bound ? "已绑定" : "未绑定"}
+                  {entry.bound
+                    ? `已绑定${entry.bound_subjects.length > 0 ? `（${formatBindingDomainList(entry.bound_subjects)}）` : ""}`
+                    : "未绑定"}
                 </span>
               </button>
             ))}
@@ -491,33 +514,55 @@ export function TeacherBindStudent({
         <TeacherCard className="p-5 sm:p-6">
           <TeacherSectionTitle>授课科目</TeacherSectionTitle>
           <p className="mt-2 text-sm text-student-muted">
-            绑定班级「{selectedClass.name}」后，将按班级当前授课科目为该班全部成员建立授课绑定；已有绑定不会重复创建。
+            为班级「{selectedClass.name}」选择你负责的授课科目。已绑定的科目不会重复创建，也不会影响班级其他教师的授课绑定。
           </p>
           <div className="mt-5 grid gap-2.5">
             {STUDENT_BINDING_DOMAINS.map((domain) => {
-              if (!selectedClass.subjects.includes(domain)) return null;
+              const bound = classBoundDomains.includes(domain);
+              const checked = bound || selectedClassDomains.includes(domain);
               return (
                 <label
-                  className="flex items-center gap-3 rounded-xl border border-student-primary-border bg-student-primary-soft/50 px-4 py-3 text-sm font-semibold text-student-primary"
+                  className={clsx(
+                    "flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold",
+                    bound
+                      ? "border-student-primary-border bg-student-primary-soft/50 text-student-primary"
+                      : "border-student-border bg-white text-student-text"
+                  )}
                   key={domain}
                 >
-                  <input checked disabled readOnly type="checkbox" />
-                  ✓ {STUDENT_BINDING_DOMAIN_LABELS[domain]}（班级授课科目）
+                  <input
+                    checked={checked}
+                    disabled={bound || submitting}
+                    onChange={(event) => {
+                      setSelectedClassDomains((current) => {
+                        const next = new Set(current);
+                        if (event.target.checked) next.add(domain);
+                        else next.delete(domain);
+                        return STUDENT_BINDING_DOMAINS.filter((item) => next.has(item));
+                      });
+                    }}
+                    type="checkbox"
+                  />
+                  {bound
+                    ? `✓ ${STUDENT_BINDING_DOMAIN_LABELS[domain]}（已绑定）`
+                    : STUDENT_BINDING_DOMAIN_LABELS[domain]}
                 </label>
               );
             })}
           </div>
 
-          {selectedClass.bound ? (
+          {allClassDomainsBound ? (
             <p className="mt-4 text-sm font-semibold text-student-primary">
-              该班级已绑定。
+              该班级的全部授课科目都已绑定。
             </p>
+          ) : classPendingDomains.length === 0 ? (
+            <p className="mt-4 text-sm text-student-muted">请至少选择一个授课科目。</p>
           ) : null}
 
           <div className="mt-6 flex flex-wrap gap-3">
             <button
               className="teacher-button-primary min-w-32"
-              disabled={selectedClass.bound || submitting}
+              disabled={!canSubmitClass}
               onClick={() => void submitClassBinding()}
               type="button"
             >

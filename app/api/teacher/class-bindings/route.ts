@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
+import { validateClassSubjects } from "@/lib/teacherClasses";
 import { bindTeacherToClass } from "@/lib/teacherClasses.server";
 
 export const dynamic = "force-dynamic";
@@ -11,11 +12,12 @@ const json = (data: unknown, init?: ResponseInit) => NextResponse.json(data, {
 });
 
 /**
- * Binds one existing class to the authenticated teacher. The teacher id is
- * never read from the body; the server links the caller and backfills only the
- * caller's missing teacher_student_bindings for the class subjects. Repeated
- * calls are idempotent and reported with alreadyBound=true. Nothing about the
- * class owner, other teachers, assignments or reviews is modified.
+ * Binds one existing class to the authenticated teacher for exactly the
+ * selected subjects. The teacher id is never read from the body; the server
+ * links the caller and backfills only the caller's missing
+ * teacher_student_bindings for the selected subjects. Other teachers' links,
+ * subjects and bindings are never touched. Repeated calls are idempotent and
+ * reported with alreadyBound=true when the link already existed.
  */
 export async function POST(request: Request) {
   const auth = await requireTeacherOnly(bearerToken(request));
@@ -28,11 +30,24 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = (await request.json().catch(() => ({}))) as { classId?: unknown };
+    const body = (await request.json().catch(() => ({}))) as {
+      classId?: unknown;
+      subjects?: unknown;
+    };
     const classId = typeof body.classId === "string" ? body.classId.trim() : "";
     if (!classId) return json({ message: "请选择班级。" }, { status: 400 });
 
-    const result = await bindTeacherToClass(createServiceSupabase(), auth.userId, classId);
+    const subjects = validateClassSubjects(body.subjects);
+    if (!subjects.ok) {
+      return json({ code: "INVALID_SUBJECTS", message: subjects.error }, { status: 400 });
+    }
+
+    const result = await bindTeacherToClass(
+      createServiceSupabase(),
+      auth.userId,
+      classId,
+      subjects.subjects
+    );
     if (!result.ok) {
       return json({ code: result.code, message: result.error }, { status: result.status });
     }
@@ -42,6 +57,7 @@ export async function POST(request: Request) {
         classId,
         alreadyBound: result.alreadyBound,
         createdBindingCount: result.createdBindingCount,
+        subjects: result.subjects,
         class: result.class
       },
       { status: result.alreadyBound ? 200 : 201 }

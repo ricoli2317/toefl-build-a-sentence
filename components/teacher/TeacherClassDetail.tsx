@@ -416,7 +416,7 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
         <p className="text-base font-bold text-student-text">修改授课科目</p>
         <div className="mt-4">
           <TeacherSubjectFieldset
-            helpText="可同时选择阅读和写作；取消某个科目只修改本班级的授课科目，不会解除学生已绑定的科目。"
+            helpText="可同时选择阅读和写作；这里只修改你在这个班级的授课科目，不会解除学生已绑定的科目。"
             onChange={setSubjectsDraft}
             value={subjectsDraft}
           />
@@ -433,7 +433,7 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
       <ModalShell open={dialog === "add"} onClose={closeDialog} size="wide">
         <p className="text-base font-bold text-student-text">添加学生</p>
         <p className="mt-2 text-sm text-student-muted">
-          可以添加新学生，也可以选择已经绑定的学生；需要时会自动补齐班级科目的访问权限。
+          可以添加新学生，也可以选择已经绑定的学生；需要时会自动补齐你在本班级的授课科目访问权限。
         </p>
         <div className="mt-4">
           <TeacherClassMemberEditor

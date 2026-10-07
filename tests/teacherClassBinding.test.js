@@ -99,8 +99,150 @@ function classTables() {
         class_members: [{ count: 5 }]
       }
     ],
-    teacher_class_bindings: [{ class_id: "class-b", teacher_id: "teacher-a" }]
+    teacher_class_bindings: [
+      { class_id: "class-b", teacher_id: "teacher-a", subjects: ["writing"] }
+    ]
   };
+}
+
+// ---------------------------------------------------------------------------
+// 教师 × 班级 × 科目：共享班级 fixture + 与 SQL 语义一致的 RPC stub
+// ---------------------------------------------------------------------------
+
+/** 班级 0417 场景：A(栗科) owner 教阅读，B(曾焱) 是写作教师。 */
+function sharedClassTables({ ownerSubject = "reading", memberIds = ["s1", "s2", "s3"] } = {}) {
+  return {
+    profiles: [
+      { id: "teacher-a", role: "teacher", is_active: true, email: "a@bas.com", full_name: "栗科" },
+      { id: "teacher-b", role: "teacher", is_active: true, email: "b@bas.com", full_name: "曾焱" },
+      ...memberIds.map((id, index) => ({
+        id,
+        role: "student",
+        is_active: true,
+        email: `${id}@bas.com`,
+        full_name: `学生${index + 1}`
+      }))
+    ],
+    teacher_classes: [
+      {
+        class_id: "class-0417",
+        teacher_id: "teacher-a",
+        name: "TFQ0417 中级提高班",
+        subjects: [ownerSubject],
+        created_at: "2026-10-01T00:00:00.000Z",
+        class_members: [{ count: memberIds.length }]
+      }
+    ],
+    teacher_class_bindings: [],
+    teacher_student_bindings: memberIds.map((studentId) => ({
+      teacher_id: "teacher-a",
+      student_id: studentId,
+      domain: ownerSubject
+    })),
+    class_members: memberIds.map((studentId) => ({
+      class_id: "class-0417",
+      student_id: studentId
+    }))
+  };
+}
+
+/**
+ * In-memory emulation of the fixed bind_teacher_to_class RPC:
+ *   * non-owner link: union the caller's own subjects, insert link if new;
+ *   * backfill ONLY the caller's teacher_student_bindings;
+ *   * owner: union the class subjects without touching links.
+ * Mirrors the migration, so the helper-level cases exercise the same rules.
+ */
+function bindRpcStub(calls = []) {
+  return (fn, args, tables) => {
+    if (fn !== "bind_teacher_to_class") {
+      return { data: null, error: { message: `rpc ${fn} is not stubbed` } };
+    }
+    calls.push(args);
+    const classRow = (tables.teacher_classes ?? []).find(
+      (row) => row.class_id === args.p_class_id
+    );
+    if (!classRow) return { data: null, error: { message: "CLASS_NOT_FOUND" } };
+    const subjects = Array.from(new Set(args.p_subjects ?? [])).sort();
+    if (
+      subjects.length === 0 ||
+      subjects.length > 2 ||
+      subjects.some((domain) => domain !== "reading" && domain !== "writing")
+    ) {
+      return { data: null, error: { message: "INVALID_SUBJECTS" } };
+    }
+
+    let linked = false;
+    let effectiveSubjects = subjects;
+    if (classRow.teacher_id === args.p_teacher_id) {
+      classRow.subjects = Array.from(
+        new Set([...(classRow.subjects ?? []), ...subjects])
+      ).sort();
+      effectiveSubjects = classRow.subjects;
+    } else {
+      const links =
+        tables.teacher_class_bindings ?? (tables.teacher_class_bindings = []);
+      const existing = links.find(
+        (row) => row.class_id === args.p_class_id && row.teacher_id === args.p_teacher_id
+      );
+      if (existing) {
+        existing.subjects = Array.from(
+          new Set([...(existing.subjects ?? []), ...subjects])
+        ).sort();
+        effectiveSubjects = existing.subjects;
+      } else {
+        links.push({
+          class_id: args.p_class_id,
+          teacher_id: args.p_teacher_id,
+          subjects
+        });
+        linked = true;
+      }
+    }
+
+    const bindings =
+      tables.teacher_student_bindings ?? (tables.teacher_student_bindings = []);
+    const members = (tables.class_members ?? []).filter(
+      (row) => row.class_id === args.p_class_id
+    );
+    let bindingsInserted = 0;
+    for (const member of members) {
+      for (const domain of subjects) {
+        const exists = bindings.some(
+          (row) =>
+            row.teacher_id === args.p_teacher_id &&
+            row.student_id === member.student_id &&
+            row.domain === domain
+        );
+        if (!exists) {
+          bindings.push({
+            teacher_id: args.p_teacher_id,
+            student_id: member.student_id,
+            domain
+          });
+          bindingsInserted += 1;
+        }
+      }
+    }
+
+    return {
+      data: {
+        class_id: args.p_class_id,
+        linked,
+        bindings_inserted: bindingsInserted,
+        subjects: effectiveSubjects,
+        member_count: members.length
+      },
+      error: null
+    };
+  };
+}
+
+function callerBindings(tables, teacherId) {
+  return (tables.teacher_student_bindings ?? [])
+    .filter((row) => row.teacher_id === teacherId)
+    .map((row) => `${row.student_id}:${row.domain}`)
+    .sort();
 }
 
 function rpcBlock(sql, name) {
@@ -110,6 +252,14 @@ function rpcBlock(sql, name) {
   const match = sql.match(pattern);
   assert.ok(match, `${name} must be defined in the migration`);
   return match[0];
+}
+
+function functionOverload(sql, name, signatureFragment) {
+  const blocks =
+    sql.match(new RegExp(`create or replace function public\\.${name}\\([\\s\\S]*?\\n\\$\\$;`, "g")) ?? [];
+  const match = blocks.find((block) => signatureFragment.test(block));
+  assert.ok(match, `${name} overload ${signatureFragment} must be defined`);
+  return match;
 }
 
 // ---------------------------------------------------------------------------
@@ -357,12 +507,28 @@ test("class search reports the real class id, count, subjects and bound state", 
     class_id: "class-a",
     name: "周六托福阅读A班",
     subjects: ["reading"],
+    bound_subjects: ["reading"],
     member_count: 3,
     bound: true
   });
-  assert.equal(byId.get("class-b").bound, true);
-  assert.equal(byId.get("class-b").member_count, 0);
-  assert.equal(byId.get("class-c").bound, false);
+  // class-b: teacher-a is only linked with Writing. The class-wide union stays
+  // visible, while the CURRENT teacher's bound subjects are only Writing.
+  assert.deepEqual(byId.get("class-b"), {
+    class_id: "class-b",
+    name: "周六托福写作B班",
+    subjects: ["reading", "writing"],
+    bound_subjects: ["writing"],
+    member_count: 0,
+    bound: true
+  });
+  assert.deepEqual(byId.get("class-c"), {
+    class_id: "class-c",
+    name: "周日雅思班",
+    subjects: ["reading"],
+    bound_subjects: [],
+    member_count: 5,
+    bound: false
+  });
 });
 
 test("shared classes appear in the teacher class list without disturbing owned classes", async () => {
@@ -382,45 +548,186 @@ test("loadTeacherClassRow accepts the owner and a linked teacher, nobody else", 
 });
 
 test("binding a class is idempotent and reports the created binding count", async () => {
-  const tables = classTables();
-  const db = createMockSupabase(tables, {
-    rpc: (fn, args, currentTables) => {
-      assert.equal(fn, "bind_teacher_to_class");
-      const links = currentTables.teacher_class_bindings ?? (currentTables.teacher_class_bindings = []);
-      const exists = links.some(
-        (row) => row.class_id === args.p_class_id && row.teacher_id === args.p_teacher_id
-      );
-      if (!exists) links.push({ class_id: args.p_class_id, teacher_id: args.p_teacher_id });
-      return {
-        data: {
-          class_id: args.p_class_id,
-          linked: !exists,
-          bindings_inserted: exists ? 0 : 2,
-          member_count: 5,
-          subjects: ["reading"]
-        },
-        error: null
-      };
-    }
-  });
+  const tables = sharedClassTables();
+  const calls = [];
+  const db = createMockSupabase(tables, { rpc: bindRpcStub(calls) });
 
-  const first = await bindTeacherToClass(db, "teacher-a", "class-c");
+  const first = await bindTeacherToClass(db, "teacher-b", "class-0417", ["writing"]);
   assert.equal(first.ok, true);
   assert.equal(first.alreadyBound, false);
-  assert.equal(first.createdBindingCount, 2);
-  assert.equal(first.class.class_id, "class-c");
-  assert.equal(first.class.member_count, 5);
+  assert.equal(first.createdBindingCount, 3);
+  assert.deepEqual(first.subjects, ["writing"]);
+  assert.equal(first.class.class_id, "class-0417");
+  assert.equal(first.class.member_count, 3);
+  assert.deepEqual(calls[0].p_subjects, ["writing"]);
 
-  const repeated = await bindTeacherToClass(db, "teacher-a", "class-c");
+  const repeated = await bindTeacherToClass(db, "teacher-b", "class-0417", ["writing"]);
   assert.equal(repeated.ok, true);
   assert.equal(repeated.alreadyBound, true);
   assert.equal(repeated.createdBindingCount, 0);
+  assert.deepEqual(repeated.subjects, ["writing"]);
+  assert.deepEqual(
+    tables.teacher_student_bindings.filter((row) => row.teacher_id === "teacher-b").length,
+    3
+  );
   assert.equal(
     tables.teacher_class_bindings.filter(
-      (row) => row.class_id === "class-c" && row.teacher_id === "teacher-a"
+      (row) => row.class_id === "class-0417" && row.teacher_id === "teacher-b"
     ).length,
     1
   );
+});
+
+// ---------------------------------------------------------------------------
+// Case 1–5：教师 × 班级 × 科目 绑定回归
+// ---------------------------------------------------------------------------
+
+test("Case 1: teacher B binds Writing on an A-Reading class without touching A", async () => {
+  const tables = sharedClassTables();
+  const db = createMockSupabase(tables, { rpc: bindRpcStub() });
+
+  // B searches 0417 first: the class shows Reading (owner) but B has nothing.
+  const [before] = await searchTeacherClasses(db, "teacher-b", "0417");
+  assert.equal(before.bound, false);
+  assert.deepEqual(before.subjects, ["reading"]);
+  assert.deepEqual(before.bound_subjects, []);
+
+  const bound = await bindTeacherToClass(db, "teacher-b", "class-0417", ["writing"]);
+  assert.equal(bound.ok, true);
+  assert.deepEqual(bound.subjects, ["writing"]);
+
+  // A keeps exactly Reading: no link row, no class subject change, no Writing.
+  assert.equal(
+    tables.teacher_class_bindings.some((row) => row.teacher_id === "teacher-a"),
+    false
+  );
+  assert.deepEqual(tables.teacher_classes[0].subjects, ["reading"]);
+  assert.deepEqual(callerBindings(tables, "teacher-a"), [
+    "s1:reading",
+    "s2:reading",
+    "s3:reading"
+  ]);
+  // B holds exactly the Writing bindings for every member.
+  assert.deepEqual(callerBindings(tables, "teacher-b"), [
+    "s1:writing",
+    "s2:writing",
+    "s3:writing"
+  ]);
+
+  // After binding, B's own search shows Writing as bound, class union includes both.
+  const [after] = await searchTeacherClasses(db, "teacher-b", "0417");
+  assert.equal(after.bound, true);
+  assert.deepEqual(after.bound_subjects, ["writing"]);
+  assert.deepEqual(after.subjects, ["reading", "writing"]);
+  // The owner's view never gained Writing as THEIR subject (bound); the
+  // class-wide union does list both because B teaches Writing in this class.
+  const [ownerView] = await searchTeacherClasses(db, "teacher-a", "0417");
+  assert.deepEqual(ownerView.bound_subjects, ["reading"]);
+  assert.deepEqual(ownerView.subjects, ["reading", "writing"]);
+});
+
+test("Case 2: teacher B binds Reading on an A-Writing class (roles swapped)", async () => {
+  const tables = sharedClassTables({ ownerSubject: "writing" });
+  const db = createMockSupabase(tables, { rpc: bindRpcStub() });
+
+  const bound = await bindTeacherToClass(db, "teacher-b", "class-0417", ["reading"]);
+  assert.equal(bound.ok, true);
+  assert.deepEqual(bound.subjects, ["reading"]);
+  assert.deepEqual(tables.teacher_classes[0].subjects, ["writing"]);
+  assert.deepEqual(callerBindings(tables, "teacher-a"), [
+    "s1:writing",
+    "s2:writing",
+    "s3:writing"
+  ]);
+  assert.deepEqual(callerBindings(tables, "teacher-b"), [
+    "s1:reading",
+    "s2:reading",
+    "s3:reading"
+  ]);
+});
+
+test("Case 3: a teacher already bound to Reading can still add Writing exactly once", async () => {
+  const tables = sharedClassTables();
+  const db = createMockSupabase(tables, { rpc: bindRpcStub() });
+
+  const first = await bindTeacherToClass(db, "teacher-b", "class-0417", ["reading"]);
+  assert.equal(first.ok, true);
+  assert.deepEqual(first.subjects, ["reading"]);
+
+  const second = await bindTeacherToClass(db, "teacher-b", "class-0417", ["writing"]);
+  assert.equal(second.ok, true);
+  assert.deepEqual(second.subjects, ["reading", "writing"]);
+  assert.equal(second.createdBindingCount, 3);
+
+  // Re-submitting Reading neither creates a second link nor duplicate rows.
+  const repeated = await bindTeacherToClass(db, "teacher-b", "class-0417", ["reading"]);
+  assert.equal(repeated.alreadyBound, true);
+  assert.deepEqual(repeated.subjects, ["reading", "writing"]);
+  assert.equal(
+    tables.teacher_class_bindings.filter((row) => row.teacher_id === "teacher-b").length,
+    1
+  );
+  assert.deepEqual(callerBindings(tables, "teacher-b"), [
+    "s1:reading",
+    "s1:writing",
+    "s2:reading",
+    "s2:writing",
+    "s3:reading",
+    "s3:writing"
+  ]);
+});
+
+test("Case 4: one teacher's binding state never hides or pollutes another teacher", async () => {
+  const tables = sharedClassTables();
+  const db = createMockSupabase(tables, { rpc: bindRpcStub() });
+
+  await bindTeacherToClass(db, "teacher-b", "class-0417", ["writing"]);
+
+  // A still sees both subjects as selectable info, but only Reading bound.
+  const [ownerView] = await searchTeacherClasses(db, "teacher-a", "0417");
+  assert.deepEqual(ownerView.bound_subjects, ["reading"]);
+  // A brand-new teacher C sees no bound subjects in either direction.
+  const [freshView] = await searchTeacherClasses(db, "teacher-c", "0417");
+  assert.deepEqual(freshView.bound_subjects, []);
+  assert.equal(freshView.bound, false);
+  assert.deepEqual(freshView.subjects, ["reading", "writing"]);
+
+  // B's binding stays Writing-only; A never received Writing.
+  assert.deepEqual(
+    Array.from(new Set(callerBindings(tables, "teacher-b").map((row) => row.split(":")[1]))),
+    ["writing"]
+  );
+  assert.deepEqual(
+    Array.from(new Set(callerBindings(tables, "teacher-a").map((row) => row.split(":")[1]))),
+    ["reading"]
+  );
+});
+
+test("Case 5: repeated submissions are idempotent with no duplicate bindings", async () => {
+  const tables = sharedClassTables();
+  const db = createMockSupabase(tables, { rpc: bindRpcStub() });
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const result = await bindTeacherToClass(db, "teacher-b", "class-0417", [
+      "reading",
+      "writing"
+    ]);
+    assert.equal(result.ok, true);
+  }
+
+  assert.equal(
+    tables.teacher_class_bindings.filter((row) => row.teacher_id === "teacher-b").length,
+    1
+  );
+  assert.equal(
+    tables.teacher_student_bindings.filter((row) => row.teacher_id === "teacher-b").length,
+    6
+  );
+  assert.deepEqual(callerBindings(tables, "teacher-a"), [
+    "s1:reading",
+    "s2:reading",
+    "s3:reading"
+  ]);
 });
 
 test("class binding maps RPC failures to safe responses", async () => {
@@ -455,10 +762,21 @@ test("bind page exposes one search box and reuses the student result card for cl
   assert.match(component, /没有找到匹配的学生或班级。/);
   assert.match(component, /\/api\/teacher\/class-bindings/);
   assert.match(component, /formatBindingDomainList\(entry\.subjects\)/);
+  assert.match(component, /entry\.bound_subjects/);
   assert.match(component, /key=\{`class:\$\{entry\.class_id\}`\}/);
-  assert.match(component, /该班级已绑定。/);
-  assert.match(component, /classId: selectedClass\.class_id/);
+  assert.match(component, /classId: selectedClass\.class_id, subjects: domains/);
   assert.match(component, /publishCacheInvalidation\(\{ type: "TEACHER_BINDING_UPDATED" \}\)/);
+  // The class subject picker is scoped to the CURRENT teacher: every domain is
+  // rendered, the ones already bound by this teacher are disabled, and the
+  // submit button depends on pending (not-yet-bound) subjects — not on
+  // selectedClass.bound.
+  assert.match(component, /classBoundDomains/);
+  assert.match(component, /classPendingDomains/);
+  assert.match(component, /disabled=\{bound \|\| submitting\}/);
+  assert.match(component, /allClassDomainsBound/);
+  assert.match(component, /该班级的全部授课科目都已绑定。/);
+  assert.doesNotMatch(component, /disabled=\{selectedClass\.bound \|\| submitting\}/);
+  assert.doesNotMatch(component, /✓ \{STUDENT_BINDING_DOMAIN_LABELS\[domain\]\}（班级授课科目）/);
   // Exactly one search input: no extra box, no tab switch, no new card.
   assert.equal((component.match(/id="bind-student-query"/g) ?? []).length, 1);
   assert.doesNotMatch(component, /placeholder="输入学生姓名或学生账号"/);
@@ -468,7 +786,11 @@ test("bind page exposes one search box and reuses the student result card for cl
 test("class binding API binds the session teacher and never a client teacher id", async () => {
   const route = await read("app/api/teacher/class-bindings/route.ts");
   assert.match(route, /requireTeacherOnly\(bearerToken\(request\)\)/);
-  assert.match(route, /bindTeacherToClass\(createServiceSupabase\(\), auth\.userId, classId\)/);
+  assert.match(
+    route,
+    /bindTeacherToClass\(\s*createServiceSupabase\(\),\s*auth\.userId,\s*classId,\s*subjects\.subjects\s*\)/
+  );
+  assert.match(route, /validateClassSubjects\(body\.subjects\)/);
   assert.match(route, /alreadyBound/);
   assert.doesNotMatch(route, /body\.teacherId/);
   assert.doesNotMatch(route, /student_account_limit|owner_id/);
@@ -581,6 +903,164 @@ test("multi-teacher class migration is additive and idempotent", async () => {
   assert.match(editRpc, /where class_id = p_class_id\s*\n\s*and public\.is_class_teacher\(p_class_id, p_teacher_id\)/);
 });
 
+test("subject-scoped class binding migration is additive, idempotent and teacher-isolated", async () => {
+  const sql = await read("supabase/teacher_class_binding_subjects_20261007.sql");
+
+  // One transaction; no DROP and no DELETE anywhere.
+  assert.match(sql, /^begin;$/m);
+  assert.match(sql, /^commit;$/m);
+  assert.ok(
+    sql.indexOf("begin;") < sql.indexOf("add column if not exists subjects"),
+    "BEGIN must precede the first schema statement"
+  );
+  assert.ok(
+    sql.indexOf("commit;") > sql.lastIndexOf("grant execute"),
+    "COMMIT must follow every grant statement"
+  );
+
+  // The per-teacher subject column + constraints + backfill.
+  assert.match(sql, /alter table public\.teacher_class_bindings\s*\n\s*add column if not exists subjects text\[\]/);
+  assert.match(sql, /alter column subjects set not null/);
+  assert.match(sql, /teacher_class_bindings_subjects_check/);
+  assert.match(sql, /coalesce\(array_length\(subjects, 1\), 0\) between 1 and 2/);
+  assert.match(sql, /subjects <@ array\['reading', 'writing'\]::text\[\]/);
+  assert.match(sql, /update public\.teacher_class_bindings link\s*\n\s*set subjects = coalesce\(/);
+
+  // Backward-compatible rollout: the 3-arg RPC is the official implementation
+  // and takes the selected subjects, backfilling ONLY the caller. The legacy
+  // 2-arg overload is NOT dropped; the compatibility wrapper is asserted in the
+  // dedicated test below.
+  assert.doesNotMatch(sql, /drop function[^;]*bind_teacher_to_class/i);
+  assert.match(
+    sql,
+    /create or replace function public\.bind_teacher_to_class\(\s*\n\s*p_teacher_id uuid,\s*\n\s*p_class_id uuid,\s*\n\s*p_subjects text\[\]\s*\n\)/
+  );
+  const bind = functionOverload(sql, "bind_teacher_to_class", /p_subjects text\[\]/);
+  assert.match(bind, /array_agg\(distinct domain order by domain\)/);
+  assert.match(bind, /on conflict \(teacher_id, student_id, domain\) do nothing/);
+  assert.match(bind, /where member\.class_id = p_class_id/);
+  // The caller-only backfill must not join other teachers' links.
+  const bindBackfill = bind.slice(bind.indexOf("insert into public.teacher_student_bindings"));
+  assert.doesNotMatch(bindBackfill, /teacher_class_bindings link/);
+  assert.doesNotMatch(bind, /unnest\(class_row\.subjects\) as subject/);
+  assert.match(
+    sql,
+    /revoke all on function public\.bind_teacher_to_class\(uuid, uuid, text\[\]\)\s*\n\s*from public, anon, authenticated/
+  );
+
+  // sync_class_members backfills per teacher from that teacher's OWN subjects.
+  const sync = rpcBlock(sql, "sync_class_members");
+  assert.match(sync, /select link\.teacher_id, link\.subjects\s*\n\s*from public\.teacher_class_bindings link/);
+  assert.match(sync, /cross join unnest\(coalesce\(class_teacher\.subjects, array\[\]::text\[\]\)\)/);
+  assert.doesNotMatch(sync, /cross join unnest\(class_subjects\)/);
+
+  // update_class_subjects only writes the ACTING teacher's own set.
+  const update = rpcBlock(sql, "update_class_subjects");
+  assert.match(update, /if class_row\.teacher_id = p_teacher_id then/);
+  assert.match(update, /update public\.teacher_class_bindings\s*\n\s*set subjects = effective_subjects/);
+  assert.match(update, /where class_id = p_class_id\s*\n\s*and teacher_id = p_teacher_id/);
+  assert.doesNotMatch(update, /delete from public\.teacher_student_bindings/);
+  assert.doesNotMatch(update, /class_teacher_ids/);
+
+  // Assignment subject guards use the ACTING teacher's own subjects.
+  const assign = rpcBlock(sql, "create_writing_assignment_group");
+  assert.match(assign, /where class_row\.teacher_id = p_teacher_id/);
+  assert.match(assign, /from public\.teacher_class_bindings link/);
+  assert.doesNotMatch(assign, /if not \(p_subject = any\(class_row\.subjects\)\)/);
+  const edit = rpcBlock(sql, "update_withdrawn_writing_assignment_group");
+  assert.doesNotMatch(edit, /if not \(derived_subject = any\(class_row\.subjects\)\)/);
+  assert.match(edit, /where acting_subject\.domain = derived_subject/);
+
+  // Class changes still never release a member binding.
+  assert.doesNotMatch(sql, /delete from public\.teacher_student_bindings/);
+  assert.match(sql, /'removed_writing_count', removed_writing_count/);
+  // Verification lives in its own read-only file, not in a commented block.
+  assert.match(sql, /teacher_class_binding_subjects_verify_20261007\.sql/);
+});
+
+test("read-only verification SQL is a standalone file that only selects", async () => {
+  const verify = await read("supabase/teacher_class_binding_subjects_verify_20261007.sql");
+  const migration = await read("supabase/teacher_class_binding_subjects_20261007.sql");
+
+  // The migration points at the standalone verification file.
+  assert.match(migration, /supabase\/teacher_class_binding_subjects_verify_20261007\.sql/);
+
+  // QUERY 1 gates both overloads, the column/constraint and the wrapper
+  // delegation; the student-mode assignment overload must stay intact.
+  assert.match(verify, /to_regprocedure\('public\.bind_teacher_to_class\(uuid,uuid\)'\)/);
+  assert.match(verify, /to_regprocedure\('public\.bind_teacher_to_class\(uuid,uuid,text\[\]\)'\)/);
+  assert.match(verify, /teacher_class_bindings_subjects_check/);
+  assert.match(verify, /bind_teacher_to_class\(p_teacher_id, p_class_id, class_subjects\)/);
+  assert.match(verify, /学生模式 6 参签名未被破坏/);
+  assert.match(verify, /恰好两个重载/);
+
+  // QUERY 4 must run safely before the <CLASS_ID> placeholder is replaced:
+  // there is exactly one executable placeholder (single edit point) and the
+  // comparison is text-based, so an unreplaced placeholder can never raise an
+  // invalid-uuid cast error.
+  assert.equal((verify.match(/'<CLASS_ID>'/g) ?? []).length, 1);
+  assert.match(verify, /select '<CLASS_ID>'::text as class_id_text/);
+  assert.match(verify, /where owner_row\.class_id::text = \(select class_id_text from target\)/);
+  assert.match(verify, /where link\.class_id::text = \(select class_id_text from target\)/);
+  assert.doesNotMatch(verify, /'<CLASS_ID>'::uuid/);
+
+  // Read-only: no write or DDL keyword appears anywhere in the file.
+  assert.doesNotMatch(
+    verify,
+    /\b(insert|update|delete|create|alter|drop|grant|revoke|truncate)\b/i
+  );
+});
+
+test("执行新 migration 后，2 参数和 3 参数 bind_teacher_to_class 同时存在；旧版本仍兼容，新版本支持教师独立科目", async () => {
+  const sql = await read("supabase/teacher_class_binding_subjects_20261007.sql");
+  const blocks =
+    sql.match(/create or replace function public\.bind_teacher_to_class\([\s\S]*?\n\$\$;/g) ?? [];
+  assert.equal(blocks.length, 2, "3 参正式实现与 2 参 compatibility wrapper 必须同时存在");
+  const core = blocks.find((block) => /p_subjects text\[\]/.test(block));
+  const legacy = blocks.find((block) => !/p_subjects text\[\]/.test(block));
+  assert.ok(core, "3 参数 bind_teacher_to_class(p_subjects text[]) 必须存在");
+  assert.ok(legacy, "旧 2 参数 bind_teacher_to_class(uuid, uuid) 必须仍然可调用");
+
+  // 旧 wrapper 保持旧调用签名与旧语义：读取班级当前科目并转交 3 参实现，
+  // 但自身没有任何独立写入逻辑（不直接写 link / binding / 班级行）。
+  assert.match(legacy, /p_teacher_id uuid,\s*\n\s*p_class_id uuid\s*\n\)/);
+  assert.match(
+    legacy,
+    /select subjects into class_subjects\s*\n\s*from public\.teacher_classes\s*\n\s*where class_id = p_class_id/
+  );
+  assert.match(legacy, /raise exception 'CLASS_NOT_FOUND'/);
+  assert.match(
+    legacy,
+    /return public\.bind_teacher_to_class\(p_teacher_id, p_class_id, class_subjects\)/
+  );
+  assert.doesNotMatch(legacy, /insert into public\.teacher_student_bindings/);
+  assert.doesNotMatch(legacy, /insert into public\.teacher_class_bindings/);
+  assert.doesNotMatch(legacy, /update public\.teacher_classes/);
+  assert.doesNotMatch(legacy, /delete from public\./);
+
+  // 新实现只写调用教师自己的行（不读取其他教师的 link）。
+  assert.match(core, /select p_teacher_id, member\.student_id, subject\.domain/);
+  assert.match(core, /cross join unnest\(effective_subjects\)/);
+  assert.doesNotMatch(core, /teacher_class_bindings link/);
+
+  // 两个重载都保留 service_role-only 授权。
+  assert.match(
+    sql,
+    /revoke all on function public\.bind_teacher_to_class\(uuid, uuid\)\s*\n\s*from public, anon, authenticated/
+  );
+  assert.match(
+    sql,
+    /grant execute on function public\.bind_teacher_to_class\(uuid, uuid\)\s*\n\s*to service_role/
+  );
+  assert.match(
+    sql,
+    /grant execute on function public\.bind_teacher_to_class\(uuid, uuid, text\[\]\)\s*\n\s*to service_role/
+  );
+
+  // 迁移整体可重复执行：没有任何 DROP 函数语句。
+  assert.doesNotMatch(sql, /drop function/i);
+});
+
 test("class RPCs never shadow a class_row variable with a class_row table alias", async () => {
   // plpgsql.variable_conflict defaults to error: when a function declares
   // `class_row public.teacher_classes%rowtype` and also aliases the table as
@@ -590,6 +1070,7 @@ test("class RPCs never shadow a class_row variable with a class_row table alias"
   // "column reference \"class_row.teacher_id\" is ambiguous".
   for (const file of [
     "supabase/teacher_class_multi_teacher_binding_20261003.sql",
+    "supabase/teacher_class_binding_subjects_20261007.sql",
     "supabase/teacher_classes.sql"
   ]) {
     const sql = await read(file);
