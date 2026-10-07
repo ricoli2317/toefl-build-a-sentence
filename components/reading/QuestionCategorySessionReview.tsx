@@ -73,6 +73,7 @@ export function QuestionCategorySessionReview({ sessionId, initialReviewIndex }:
     totalElapsedSeconds: session.elapsedSeconds, reviewHref: (index) => `${selfBase}/questions/${index}`
   });
   return <ReadingFullSetReviewShell payload={payload} variant="session" initialSourceAnswerIndex={initialReviewIndex}
+    lexicalAccess={{ kind: "reading_category", attemptId: sessionId }}
     onBack={() => router.push(selfBase)} sourceStatus={statuses}
     onRequestItem={(item, options) => { void loadGroup(item.occurrenceId, options?.retry === true); }} />;
 }

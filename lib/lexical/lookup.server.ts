@@ -24,7 +24,7 @@ const reject = (ok: unknown) => { if (!ok) throw new LexicalAccessError(); };
 
 /** All service-role corpus reads happen only after this owned-page authorization. */
 export async function authorizeLexicalSource(client: SupabaseClient, db: SupabaseClient, userId: string, r: LexicalLookupRequest, readers: LexicalPageReaders) {
-  if (r.access.kind === "reading" || r.access.kind === "reading_wrongbook" || r.access.kind === "full_set") {
+  if (r.access.kind === "reading" || r.access.kind === "reading_wrongbook" || r.access.kind === "reading_category" || r.access.kind === "full_set") {
     reject(["ctw", "rdl", "rap"].includes(r.sourceType) && r.sourceItemId);
     if (r.access.kind === "reading") {
       const a = await one(client.from("reading_attempts").select("logical_item_id,task_type,status,submitted_at")
@@ -41,6 +41,18 @@ export async function authorizeLexicalSource(client: SupabaseClient, db: Supabas
         && (!questionBlock || t.questionId === questionBlock[1])));
       else reject(a.logical_item_id === r.sourceItemId && a.task_type === r.sourceType
         && (!questionBlock || targets.some(t => t.questionId === questionBlock[1])));
+    } else if (r.access.kind === "reading_category") {
+      // Category has no ordinary/wrongbook attempt. The existing owner SELECT
+      // policy authorizes its completed session, then its frozen source/targets.
+      const a = await one(client.from("reading_question_category_sessions").select("status,completed_at,manifest,progress")
+        .eq("session_id", r.access.attemptId).eq("student_id", userId).maybeSingle());
+      if (a.status !== "completed" || !a.completed_at) throw new LexicalAccessError(409);
+      reject(r.sourceType === "rap");
+      const groups = Array.isArray(a.manifest?.groups) ? a.manifest.groups as Row[] : [];
+      const group = groups.find(g => g.logicalItemId === r.sourceItemId);
+      reject(group && a.progress?.[r.sourceItemId!]);
+      const questionBlock = /^question:([^:]+):/.exec(r.contentBlockId);
+      reject(!questionBlock || (Array.isArray(group!.targets) && group!.targets.some((t: Row) => t.questionId === questionBlock[1])));
     } else {
       const owned = await readers.fullSetAttempt(r.access.attemptId);
       reject(!owned.error && owned.attempt);

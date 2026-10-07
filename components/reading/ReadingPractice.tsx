@@ -504,6 +504,7 @@ function readingCtwProgressLabel(scoringPointCount: number) {
 }
 
 export function ReadingFullSetReviewShell({
+  lexicalAccess,
   initialSourceAnswerIndex,
   onBack,
   onRequestItem,
@@ -512,6 +513,7 @@ export function ReadingFullSetReviewShell({
   sourceStatus,
   variant = "full_set"
 }: {
+  lexicalAccess?: LexicalAccess;
   initialSourceAnswerIndex: number;
   onBack: () => void;
   /** Session review lazy loading: request one item's source on demand. */
@@ -700,11 +702,11 @@ export function ReadingFullSetReviewShell({
           ) : (
             <ReadingWorkspaceRouter
               answers={currentOccurrence!.answers}
-              lexicalAccess={variant === "session"
+              lexicalAccess={lexicalAccess ?? (variant === "session"
                 ? currentOccurrence!.attemptId
                   ? { kind: "reading_wrongbook", attemptId: currentOccurrence!.attemptId }
                   : undefined
-                : { kind: "full_set", attemptId: payload.attempt.attemptId }}
+                : { kind: "full_set", attemptId: payload.attempt.attemptId })}
               currentQuestion={currentQuestion!}
               lookupEnabled={readingLookupEnabled("submitted_review", currentOccurrence!.practice.item.module)}
               onAnswerChange={() => undefined}

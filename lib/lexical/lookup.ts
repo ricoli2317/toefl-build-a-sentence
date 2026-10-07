@@ -1,6 +1,6 @@
 import type { CanonicalLexicalSourceType } from "./types.ts";
 
-export type LexicalAccess = { kind: "reading" | "reading_wrongbook" | "full_set" | "writing" | "bas"; attemptId: string; questionId?: string; setId?: never }
+export type LexicalAccess = { kind: "reading" | "reading_wrongbook" | "reading_category" | "full_set" | "writing" | "bas"; attemptId: string; questionId?: string; setId?: never }
   | { kind: "bas_prompt"; questionId: string; setId: string; attemptId?: never };
 export type LexicalLookupRequest = {
   access: LexicalAccess;
@@ -30,7 +30,7 @@ export function parseLookupRequest(value: unknown): LexicalLookupRequest | null 
   if (!value || typeof value !== "object") return null;
   const v = value as LexicalLookupRequest;
   if (!["ctw", "rdl", "rap", "bas", "write_email", "academic_discussion"].includes(v.sourceType)
-    || !v.access || !["reading", "reading_wrongbook", "full_set", "writing", "bas", "bas_prompt"].includes(v.access.kind)
+    || !v.access || !["reading", "reading_wrongbook", "reading_category", "full_set", "writing", "bas", "bas_prompt"].includes(v.access.kind)
     || (v.access.kind === "bas_prompt"
       ? typeof v.access.setId !== "string" || !v.access.setId || v.access.setId.length > 180 || !v.access.questionId
       : typeof v.access.attemptId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v.access.attemptId))
