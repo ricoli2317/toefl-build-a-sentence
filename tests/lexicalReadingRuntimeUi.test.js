@@ -62,6 +62,9 @@ test('actual CTW result renderer restores wrong, empty and correct submitted slo
   assert.equal((bottom.match(/data-lexical-ctw-anchor=/g) ?? []).length,3);
   for (const word of answers) assert.ok(bottom.includes(`>${word}</span>`));
   assert.ok(strip(bottom).includes('wrong')); assert.ok(strip(bottom).includes('未作答'));
+  const heading = html.match(/<h1\b[^>]*>[\s\S]*?<\/h1>/)?.[0];
+  assert.ok(heading);
+  assert.doesNotMatch(heading,/data-lexical-/);
 });
 
 test('readonly choice rows are selectable non-button radios; active choice rows retain their original buttons/handlers', () => {
@@ -73,10 +76,11 @@ test('readonly choice rows are selectable non-button radios; active choice rows 
   assert.match(active,/<button/); assert.doesNotMatch(active,/select-text|aria-disabled/);
 });
 
-test('RAP and RDL actual workspaces annotate the real canonical stem/options and RAP passage, without UI chrome in blocks', () => {
+test('RAP and RDL actual workspaces annotate the real canonical stem/options, RAP passage and passage title, without UI chrome in blocks', () => {
   const base = { answerKeyOnly:false,lookupEnabled:true,naturalFlow:true,readOnly:true,onAnswerChange:() => {},question:{ questionId:'q',questionType:'rap_multiple_choice',stem:'Choose green energy.',highlightRanges:[],options:[{ optionId:'opt',optionOrder:1,text:'green energy' }] } };
-  const rap = render(reading.RapPracticeWorkspace,{ ...base,passage:{ passageId:'p',paragraphs:[{ paragraphId:'para',paragraphOrder:1,text:'A green world.',sentences:[{ sentenceId:'s',sentenceOrder:1,text:'A green world.' }] }] } });
-  for (const block of ['passage:p:paragraph:para','question:q:stem','question:q:option:opt']) assert.ok(rap.includes(`data-lexical-block="${block}"`));
+  const rap = render(reading.RapPracticeWorkspace,{ ...base,passage:{ passageId:'p',title:'Green World',paragraphs:[{ paragraphId:'para',paragraphOrder:1,text:'A green world.',sentences:[{ sentenceId:'s',sentenceOrder:1,text:'A green world.' }] }] } });
+  for (const block of ['passage:p:title','passage:p:paragraph:para','question:q:stem','question:q:option:opt']) assert.ok(rap.includes(`data-lexical-block="${block}"`));
+  assert.match(rap,/data-lexical-text="Green World"/);
   const rdl = render(reading.RdlPracticeWorkspace,{ ...base,question:{ ...base.question,questionType:'rdl' },material:{ materialId:'m',title:'Notice',materialType:'notice',imageUrl:'https://example.invalid/registered.png' } });
   for (const block of ['question:q:stem','question:q:option:opt']) assert.ok(rdl.includes(`data-lexical-block="${block}"`));
   assert.doesNotMatch(rap+rdl,/<button[^>]*disabled/);

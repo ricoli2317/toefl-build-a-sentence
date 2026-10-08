@@ -134,6 +134,7 @@ test("RAP uses paragraph_text UTF-16 sentence anchors and independent insertion 
   const blocks = enumerateRapBlocks({
     sourceItemId: "reading-rap-item",
     passageId: "passage-1",
+    passageTitle: "Canonical RAP Title",
     paragraphs: [{
       paragraphId: "p1", paragraphOrder: 1, paragraphText: "A😀. B.",
       sentences: [{ sentenceId: "s1", sentenceOrder: 1, sentenceText: "A😀." }, { sentenceId: "s2", sentenceOrder: 2, sentenceText: "B." }]
@@ -152,12 +153,17 @@ test("RAP uses paragraph_text UTF-16 sentence anchors and independent insertion 
       ] }
     ]
   });
+  const title = blocks.find((block) => block.contentBlockId === "passage:passage-1:title");
+  assert.equal(title.blockKind, "rap_title");
+  assert.equal(title.text, "Canonical RAP Title");
+  assert.equal(title.anchors, undefined);
   const paragraph = blocks.find((block) => block.contentBlockId === "passage:passage-1:paragraph:p1");
   assert.equal(paragraph.anchors[1].startOffset, 5);
   assert.equal(blocks.find((block) => block.contentBlockId === "question:selection:stem").text, "Choose it.");
   assert.match(blocks.find((block) => block.contentBlockId === "question:insert:instruction").text, /■/);
   assert.equal(blocks.find((block) => block.contentBlockId === "question:insert:insert-sentence").text, "Insert this.");
-  assert.throws(() => enumerateRapBlocks({ sourceItemId: "x", passageId: "p", paragraphs: [{ paragraphId: "p", paragraphOrder: 1, paragraphText: "different", sentences: [{ sentenceId: "s", sentenceOrder: 1, sentenceText: "text" }] }], questions: [] }), /does not equal/);
+  assert.throws(() => enumerateRapBlocks({ sourceItemId: "x", passageId: "p", passageTitle: "T", paragraphs: [{ paragraphId: "p", paragraphOrder: 1, paragraphText: "different", sentences: [{ sentenceId: "s", sentenceOrder: 1, sentenceText: "text" }] }], questions: [] }), /does not equal/);
+  assert.throws(() => enumerateRapBlocks({ sourceItemId: "x", passageId: "p", passageTitle: "   ", paragraphs: [], questions: [] }), /empty canonical displayed title/);
 });
 
 test("BAS only accepts canonical Q01-Q10 sources and preserves canonical final_sentence on reconstruction mismatch", () => {

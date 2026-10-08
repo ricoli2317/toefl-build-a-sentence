@@ -122,16 +122,34 @@ test('RDL uses existing flattened selection-map character identities to produce 
 test('RAP sentence-selection visible stem transformation matches production block, not raw hidden text', async () => {
   const raw = 'Select the sentence in the passage that best expresses the main idea.';
   const transformed = rapSentenceSelectionStem(raw);
-  const blocks = enumerateRapBlocks({ sourceItemId:'item',passageId:'p',paragraphs:[{ paragraphId:'paragraph',paragraphOrder:1,paragraphText:'A 😀 green world. It thrives.',sentences:[
+  const blocks = enumerateRapBlocks({ sourceItemId:'item',passageId:'p',passageTitle:'Green World',paragraphs:[{ paragraphId:'paragraph',paragraphOrder:1,paragraphText:'A 😀 green world. It thrives.',sentences:[
     { sentenceId:'s1',sentenceOrder:1,sentenceText:'A 😀 green world.' }, { sentenceId:'s2',sentenceOrder:2,sentenceText:'It thrives.' }] }],
     questions:[{ questionId:'q',questionOrder:1,questionType:'rap_sentence_selection',stem:raw,options:[] }] });
   assert.equal(blocks.find(b => b.contentBlockId === 'question:q:stem').text, transformed);
-  assert.equal(blocks[0].anchors[1].startOffset, 'A 😀 green world. '.length);
+  assert.equal(blocks.find(b => b.contentBlockId === 'passage:p:paragraph:paragraph').anchors[1].startOffset, 'A 😀 green world. '.length);
+  assert.equal(blocks.find(b => b.contentBlockId === 'passage:p:title').text, 'Green World');
   const tables = readingTables(); tables.reading_questions[0] = { ...tables.reading_questions[0], question_type:'rap_sentence_selection',stem:raw };
   const db = database(tables);
   assert.equal((await authorizeLexicalSource(db,db,'student',request(),readers)).text, transformed);
   await assert.rejects(authorizeLexicalSource(db,db,'student',request({ contentBlockId:'question:q:option:hidden' }),readers),LexicalAccessError);
   assert.ok(rapSentenceInsertionInstruction().includes('\n\n'));
+});
+test('RAP title block authorizes the exact canonical passage title shown to students', async () => {
+  const titleText = 'A green world.';
+  const tables = readingTables();
+  tables.reading_passages = [{ passage_id: 'p', logical_item_id: 'item', title: titleText }];
+  const db = database(tables);
+  const r = request({ contentBlockId: 'passage:p:title', blockText: titleText, startOffset: 2, endOffset: 7, selectedText: 'green' });
+  const authorized = await authorizeLexicalSource(db,db,'student',r,readers);
+  assert.equal(authorized.text, titleText);
+  assert.equal(authorized.contentBlockId, 'passage:p:title');
+  tables.reading_passages = [];
+  await assert.rejects(authorizeLexicalSource(db,db,'student',r,readers),LexicalAccessError);
+  tables.reading_passages = [{ passage_id: 'p', logical_item_id: 'other-item', title: titleText }];
+  await assert.rejects(authorizeLexicalSource(db,db,'student',r,readers),LexicalAccessError);
+  tables.reading_passages = [{ passage_id: 'p', logical_item_id: 'item', title: titleText }];
+  tables.reading_passage_paragraphs = [{ passage_id: 'p', paragraph_id: 'paragraph', paragraph_text: 'A green world.' }];
+  assert.equal((await authorizeLexicalSource(db,db,'student',request({ contentBlockId: 'passage:p:paragraph:paragraph' }),readers)).text, 'A green world.');
 });
 test('RDL/RAP stems and visible option blocks resolve by question and option identity, not text search', async () => {
   for (const type of ['rdl','rap']) {
