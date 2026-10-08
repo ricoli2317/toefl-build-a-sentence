@@ -23,3 +23,10 @@ export function twoLinePrefix(text: string, fits: (prefix: string, toggle: boole
   }
   return prefix(low);
 }
+
+// Keep a source grapheme beside the atomic button, so the ellipsis cannot wrap
+// onto a line of its own. Both the probe and visible DOM use this exact split.
+export function wordbookExampleTail(text: string) {
+  const last = Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text)).at(-1);
+  return last ? [text.slice(0, last.index), last.segment] as const : ["", ""] as const;
+}

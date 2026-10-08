@@ -79,12 +79,12 @@ const helper = vm.runInNewContext(source.slice(0, source.indexOf("test('API")) +
     });
     await page.getByRole('button',{name:'重试',exact:true}).click();
     await page.locator('tbody[data-wordbook-entry]').waitFor();
-    assert.deepEqual(await page.locator('thead th').allTextContents(),['单词','词性','语境义','例句','派生']);
+    assert.deepEqual(await page.locator('thead th').allTextContents(),['序号','词条','词性','语境义','例句','派生']);
     assert.equal(await page.locator('tbody[data-wordbook-entry]').count(),1);
     assert.equal(await page.locator('td[data-label="语境义"]').count(),2);
     assert.equal(await page.locator('td[data-label="例句"]').count(),3);
     assert.equal(await page.locator('td[data-label="派生"]').first().innerText(),'—');
-    const wordAlignment=await page.locator('td[data-label="单词"]').evaluate(e=>getComputedStyle(e).verticalAlign);assert.equal(wordAlignment,'middle');
+    const wordAlignment=await page.locator('td[data-label="词条"]').evaluate(e=>getComputedStyle(e).verticalAlign);assert.equal(wordAlignment,'middle');
     const expand=page.getByRole('button',{name:'展开全文',exact:true}).first();await expand.waitFor();
     const paragraph=page.locator('td[data-label="例句"] p').filter({hasText:long}).first();assert.ok(await paragraph.evaluate(e=>e.clientHeight<=48));
     await expand.click();assert.ok(await paragraph.evaluate(e=>e.clientHeight>48));assert.equal(await paragraph.textContent(),long);
@@ -105,7 +105,7 @@ const helper = vm.runInNewContext(source.slice(0, source.indexOf("test('API")) +
     await page.getByLabel('生词本排序').selectOption('oldest');await page.locator('tbody[data-wordbook-entry]').waitFor();
     report.checks.push('month dots from domain/month SQL, month switching no list reload, day/range selection retains all contexts, dedupe, sort request');
     await page.getByRole('tab',{name:'Writing',exact:true}).click();await page.getByRole('table',{name:'Writing 生词表'}).waitFor();await page.locator('tbody[data-wordbook-entry]').waitFor();
-    assert.deepEqual(await page.locator('thead th').allTextContents(),['单词','词性','语境义','例句','常见搭配']);
+    assert.deepEqual(await page.locator('thead th').allTextContents(),['序号','词条','词性','语境义','例句','常见搭配']);
     for(const label of ['BAS','WE','AD']) assert.ok(await page.getByText(label,{exact:true}).first().isVisible());
     assert.ok(await page.getByText('run a business',{exact:true}).first().isVisible());
     const badge=await page.getByText('BAS',{exact:true}).first().evaluate(e=>getComputedStyle(e).color);assert.notEqual(badge,'rgb(52, 127, 220)');

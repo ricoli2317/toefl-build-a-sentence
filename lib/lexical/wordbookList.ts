@@ -12,8 +12,8 @@ export type WordbookItem = {
 export type WordbookList = { items: WordbookItem[]; total: number; page: number; pageSize: number };
 
 export const WORDBOOK_HEADERS = {
-  reading: ["单词", "词性", "语境义", "例句", "派生"],
-  writing: ["单词", "词性", "语境义", "例句", "常见搭配"]
+  reading: ["序号", "词条", "词性", "语境义", "例句", "派生"],
+  writing: ["序号", "词条", "词性", "语境义", "例句", "常见搭配"]
 } as const;
 
 // Keep each POS/meaning next to ONLY its linked examples, never zip independent

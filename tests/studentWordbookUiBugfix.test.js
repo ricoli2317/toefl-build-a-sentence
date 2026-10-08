@@ -40,9 +40,10 @@ test('Reading calendar primary-button shadow follows its theme without modifying
 });
 test('actual wordbook tab handler clears applied single/range and unsubmitted dates in both domains while preserving sort',()=>{
   const hooks=[];let cursor=0;
-  const hookReact={...React,useEffect(){},useMemo:fn=>fn(),useState(initial){const i=cursor++;if(!(i in hooks))hooks[i]=typeof initial==='function'?initial():initial;return[hooks[i],value=>{hooks[i]=typeof value==='function'?value(hooks[i]):value;}];}};
+  const hookReact={...React,useRef:value=>({current:value}),useEffect(){},useMemo:fn=>fn(),useState(initial){const i=cursor++;if(!(i in hooks))hooks[i]=typeof initial==='function'?initial():initial;return[hooks[i],value=>{hooks[i]=typeof value==='function'?value(hooks[i]):value;}];}};
   const {StudentWordbook}=compile('components/student/StudentWordbook.tsx',{
     react:hookReact,'@/components/StudentDataCache':{useStudentDataCache:()=>({getSession:()=>null,sessionReady:false,studentId:null})},
+    '@/components/shared/ConfirmDialog':{ConfirmDialog:()=>null},'@/lib/lexical/wordbookManagement':require('../lib/lexical/wordbookManagement.ts'),
     '@/components/student/StudentUI':{StudentNavigation:()=>null},'@/components/student/StudentDateSelection':{StudentDateSelection:()=>null},
     './WordbookExample':{WordbookExample:()=>null},'@/lib/lexical/wordbookPresentation':{wordbookPos},
     '@/lib/studentNavigation':{STUDENT_ROUTES:{home:'/student/sets'}},'@/lib/studentDates':dates,

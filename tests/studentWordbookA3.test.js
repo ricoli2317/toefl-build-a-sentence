@@ -64,9 +64,9 @@ test('server performs one scoped paginated RPC or light month RPC, surfaces miss
   assert.equal(calls[1].args.p_month,'2026-10-01');
   await assert.rejects(readWordbookList({rpc:async()=>({error:{code:'PGRST202'},data:null})},U,q),/A3_UNAVAILABLE/);
 });
-test('five headers and context row association preserve all senses and exact example strings',()=>{
-  assert.deepEqual(WORDBOOK_HEADERS.reading,['单词','词性','语境义','例句','派生']);
-  assert.deepEqual(WORDBOOK_HEADERS.writing,['单词','词性','语境义','例句','常见搭配']);
+test('six headers and context row association preserve all senses and exact example strings',()=>{
+  assert.deepEqual(WORDBOOK_HEADERS.reading,['序号','词条','词性','语境义','例句','派生']);
+  assert.deepEqual(WORDBOOK_HEADERS.writing,['序号','词条','词性','语境义','例句','常见搭配']);
   const item={senses:[{senseId:'s1',contextPos:'verb',exampleIds:['e2','e1']},{senseId:'s2',contextPos:'noun',exampleIds:['e1']}],examples:[{exampleId:'e1',text:'  Original\n sentence. '},{exampleId:'e2',text:'Second.'}]};
   const rows=wordbookContextRows(item);
   assert.deepEqual(rows.map(r=>[r.sense.senseId,r.example.text,r.first,r.span]),[['s1','Second.',true,2],['s1','  Original\n sentence. ',false,2],['s2','  Original\n sentence. ',true,1]]);

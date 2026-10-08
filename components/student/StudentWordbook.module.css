@@ -8,10 +8,15 @@
 .table tbody:hover { background: #fafafa; }
 .table td.word { vertical-align: middle; }
 .table td.pos { text-align: center; vertical-align: middle; padding-left: 4px; padding-right: 4px; }
-.table th:nth-child(2) { text-align: center; padding-left: 4px; padding-right: 4px; }
+.table th.pos { text-align: center; padding-left: 4px; padding-right: 4px; }
+.table .serial, .table .selection { text-align: center; vertical-align: middle; padding-left: 4px; padding-right: 4px; }
+.selectAll { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px; font-size: 12px; }
+.checkbox { width: 16px; height: 16px; margin: 0; accent-color: var(--student-primary); cursor: pointer; }
+.checkbox:disabled { cursor: not-allowed; }
 .exampleContainer { position: relative; min-width: 0; line-height: 24px; }
 .exampleText { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 24px; }
-.exampleToggle { display: inline; padding: 0; border: 0; background: transparent; font: inherit; line-height: inherit; white-space: nowrap; color: var(--student-primary); cursor: pointer; }
+.exampleTail { white-space: nowrap; }
+.exampleToggle { display: inline-block; appearance: none; vertical-align: baseline; min-width: 0; padding: 0; border: 0; background: transparent; font: inherit; line-height: inherit; white-space: nowrap; color: var(--student-primary); cursor: pointer; }
 .exampleToggle:hover { text-decoration: underline; }
 .exampleToggle:focus-visible { outline: 2px solid var(--student-primary); outline-offset: 2px; border-radius: 2px; }
 .mobileEnrichment { display: none; }
@@ -19,11 +24,23 @@
   .table, .table tbody { display: block; }
   .table colgroup, .table thead, .table td.desktopEnrichment { display: none; }
   .table tbody { padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
-  .table tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); }
+  .table tr { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .table td { display: block; padding: 6px 12px; }
   .table td.pos { display: flex; flex-direction: column; justify-content: center; align-items: center; }
   .table td::before { content: attr(data-label); display: block; margin-bottom: 3px; font-size: 11px; color: var(--student-muted); }
-  .table td.word { grid-column: 1 / -1; }
+  .table.managing thead { display: block; }
+  .table.managing thead tr { display: block; }
+  .table.managing thead th { display: none; }
+  .table.managing thead th.selection { display: block; width: fit-content; background: transparent; }
+  .table td.serial, .table td.selection { align-self: center; }
+  .table td.serial { grid-column: 1; }
+  .table td.serial::before, .table td.selection::before { display: none; }
+  .table td.word { grid-column: 2 / -1; }
+  .table.managing td.selection { grid-column: 1; }
+  .table.managing td.serial { grid-column: 2; }
+  .table.managing td.word { grid-column: 3 / -1; }
+  .table td.pos { grid-column: 1; }
+  .table td.meaning { grid-column: 2 / -1; }
   .table td.word::before { display: none; }
   .table td.example { grid-column: 1 / -1; }
   .table tbody + tbody tr:first-child td { border-top: 0; }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
-import { twoLinePrefix } from "@/lib/lexical/wordbookPresentation";
+import { twoLinePrefix, wordbookExampleTail } from "@/lib/lexical/wordbookPresentation";
 import styles from "./StudentWordbook.module.css";
 
 export function WordbookExample({ text }: { text: string }) {
@@ -15,9 +15,10 @@ export function WordbookExample({ text }: { text: string }) {
     let signature = "";
     const measure = () => {
       if (disposed) return;
-      const width = container.clientWidth;
+      // clientWidth rounds fractional table widths; measure the actual CSS box.
+      const width = container.getBoundingClientRect().width;
       if (!width) return;
-      const computed = getComputedStyle(container);
+      const computed = getComputedStyle(container.firstElementChild ?? container);
       const next = `${width}:${computed.font}:${computed.lineHeight}:${computed.letterSpacing}`;
       if (next === signature) return;
       signature = next;
@@ -29,13 +30,21 @@ export function WordbookExample({ text }: { text: string }) {
       Object.assign(probe.style, { position: "absolute", visibility: "hidden", pointerEvents: "none", width: `${width}px`, top: "0", left: "0" });
       container.appendChild(probe);
       try {
-        const suffix = document.createElement("span");
+        // A span is NOT layout-equivalent to a native button (atomic inline box).
+        const suffix = document.createElement("button");
+        suffix.type = "button";
+        suffix.tabIndex = -1;
         suffix.className = styles.exampleToggle;
         suffix.textContent = "...";
+        const tail = document.createElement("span");
+        tail.className = styles.exampleTail;
         const lineHeight = parseFloat(getComputedStyle(probe).lineHeight);
         const result = twoLinePrefix(text, (value, toggle) => {
-          probe.replaceChildren(document.createTextNode(value), ...(toggle ? [suffix] : []));
-          return probe.getBoundingClientRect().height <= lineHeight * 2 + 0.5;
+          const [body, last] = wordbookExampleTail(value);
+          tail.replaceChildren(document.createTextNode(last), suffix);
+          probe.replaceChildren(document.createTextNode(toggle ? body : value), ...(toggle ? [tail] : []));
+          const box = probe.getBoundingClientRect();
+          return box.height <= lineHeight * 2 && (!toggle || suffix.getBoundingClientRect().bottom <= box.top + lineHeight * 2);
         });
         setPrefix(previous => previous === result ? previous : result);
       } finally { probe.remove(); }
@@ -49,9 +58,11 @@ export function WordbookExample({ text }: { text: string }) {
     void document.fonts?.ready.then(refresh);
     return () => { disposed = true; observer?.disconnect(); window.removeEventListener("resize", refresh); document.fonts?.removeEventListener("loadingdone", refresh); };
   }, [text]);
-  return <div ref={root} className={styles.exampleContainer}>
-    <p className={styles.exampleText}>{expanded || prefix === null ? text : prefix}{prefix !== null ? <button type="button"
+  const [body, last] = wordbookExampleTail(prefix ?? "");
+  const toggle = prefix !== null ? <button type="button"
       className={styles.exampleToggle} aria-expanded={expanded} aria-label={expanded ? "收起例句" : "展开完整例句"}
-      onClick={() => setExpanded(value => !value)}>{expanded ? " 收起" : "..."}</button> : null}</p>
+      onClick={() => setExpanded(value => !value)}>{expanded ? " 收起" : "..."}</button> : null;
+  return <div ref={root} className={styles.exampleContainer}>
+    <p className={styles.exampleText}>{expanded || prefix === null ? <>{text}{toggle}</> : <>{body}<span className={styles.exampleTail}>{last}{toggle}</span></>}</p>
   </div>;
 }
