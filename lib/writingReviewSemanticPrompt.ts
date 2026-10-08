@@ -7,7 +7,7 @@ import {
 } from "./writingReviewSemanticSchema.ts";
 
 export const WRITING_REVIEW_C3_PROMPT_VERSION =
-  "writing_review_c3_prompt_v6" as const;
+  "writing_review_c3_prompt_v7" as const;
 
 const anchors = `Anchor handling rules:
 The markers such as ⟦TPS_UNIT:U01⟧ are TPS metadata, not student writing. Ignore them for scoring, grammar, organization, punctuation, formatting, and word count. Read anchored_response as one complete response; unit boundaries are not sentence boundaries. Use unit IDs only as location references. Never quote, revise, count, mention, or return a marker.`;
@@ -43,10 +43,14 @@ export function buildWritingReviewSemanticC3Messages(input: {
 The subject is provided by the task and is not part of the student's required response. Do not penalize the student or give negative feedback for omitting a subject line.`
       : `Evaluate response to the professor, clear stance, genuine discussion participation, engagement with peers, elaboration, relevance, and coherence.
 Responding to either peer is optional. Do not penalize a response for failing to address one or both student posts. A response can fully satisfy the task by directly answering the professor's question and making a meaningful, supported contribution.
-Academic Discussion word-count rule:
+Academic Discussion word-count rule (internal scoring decision only):
 - First determine the base overall score under the existing official rubric. Then apply one under-100-word adjustment: 5 → 4, 4 → 3, 3 → 2, 2 → 1, 1 → 1, 0 → 0. Return the adjusted value as official_score.
+- Apply this mapping only when the response has fewer than 100 English words. At 100 English words or more, do not apply this adjustment.
 - Never turn a valid English response with a base score of 1 into 0 merely because it is under 100 words. Score 0 remains reserved for the existing essentially invalid responses (blank, not meaningfully English, entirely copied prompt, meaningless keyboard input, or the existing Score 0 cases).
-- Apply the adjustment exactly once. Do not apply further mechanical deductions for the same word-count fact; genuine problems such as insufficient development, support, or explanation are still evaluated normally under the official rubric.`;
+- Apply the adjustment exactly once. Do not apply further mechanical deductions for the same word-count fact; genuine problems such as insufficient development, support, or explanation are still evaluated normally under the official rubric.
+Teacher-visible overall score reference (score_reason):
+- Keep the word-count decision internal. Do not mention the 100-word threshold, the response's word count or whether it meets a length requirement, any penalty or absence of a penalty, the score mapping, or the difference between the internal base score and adjusted score. Do not disclose these through Chinese, English, or paraphrases.
+- Explain task fulfillment, stance, argument development, language quality, and organizational coherence instead. You may still evaluate genuine insufficient development or missing concrete support; do not explain these as effects of the word-count scoring mechanism.`;
 
   return [
     {

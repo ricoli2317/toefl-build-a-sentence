@@ -119,3 +119,55 @@ test("C3 selects the task-specific schema rather than sharing Email schema with 
   assert.equal(calls[0].options.schemaName, "tps_writing_review_c3_v5_academic_discussion");
   assert.deepEqual(calls[0].options.jsonSchema.properties.dimension_scores.required, ["relevance", "elaboration", "syntactic_range_and_word_choice", "lexical_and_grammatical_control"]);
 });
+
+for (const wordCount of [99, 100, 101]) {
+  test(`production C3 AD request includes the silent word-count contract at ${wordCount} words`, async () => {
+    const calls = [];
+    const adInput = {
+      taskType: "academic_discussion",
+      question: { professor_prompt: "Should cities invest in public transit?" },
+      responseText: "I support public transit because it reduces traffic.",
+      wordCount
+    };
+    // Stub only the provider response: this verifies the production request's
+    // prompt contract, not whether a real model always obeys it or scores correctly.
+    const adSemantic = {
+      ...semantic,
+      score_reason: "观点明确，但论证缺少具体支持，语言基本清楚。",
+      dimension_scores: Object.fromEntries(
+        ["relevance", "elaboration", "syntactic_range_and_word_choice", "lexical_and_grammatical_control"]
+          .map((key) => [key, { score: 4, basis: "文中有明确依据。" }])
+      ),
+      content_feedback: []
+    };
+    const result = await requestProductionC3WritingReview(adInput, provider, {}, {
+      requestStructuredOutput: requestWith(response(JSON.stringify(adSemantic)), calls)
+    });
+    assert.equal(calls.length, 1);
+    const system = calls[0].messages[0].content;
+    assert.equal(JSON.parse(calls[0].messages[1].content).word_count, wordCount);
+    assert.match(system, /5 → 4, 4 → 3, 3 → 2, 2 → 1, 1 → 1, 0 → 0/);
+    assert.match(system, /At 100 English words or more, do not apply this adjustment\./);
+    assert.match(system, /Never turn a valid English response with a base score of 1 into 0 merely because it is under 100 words/);
+    assert.match(system, /Apply the adjustment exactly once/);
+    assert.match(system, /Teacher-visible overall score reference \(score_reason\):/);
+    assert.match(system, /Do not mention the 100-word threshold/);
+    assert.match(system, /whether it meets a length requirement/);
+    assert.match(system, /any penalty or absence of a penalty, the score mapping/);
+    assert.match(system, /difference between the internal base score and adjusted score/);
+    assert.match(system, /Do not disclose these through Chinese, English, or paraphrases/);
+    assert.match(system, /You may still evaluate genuine insufficient development or missing concrete support/);
+    assert.equal(result.review.scores.official_score.rationale, adSemantic.score_reason);
+  });
+}
+
+test("production C3 Email request does not receive the AD score-reference restrictions", async () => {
+  const calls = [];
+  await requestProductionC3WritingReview(input, provider, {}, {
+    requestStructuredOutput: requestWith(response(), calls)
+  });
+  const system = calls[0].messages[0].content;
+  assert.match(system, /Evaluate completion of the email's communicative requirements, politeness, social conventions, greeting\/closing, and specific content/);
+  assert.match(system, /Do not penalize the student or give negative feedback for omitting a subject line/);
+  assert.doesNotMatch(system, /under-100-word|Teacher-visible overall score reference|Keep the word-count decision internal/);
+});

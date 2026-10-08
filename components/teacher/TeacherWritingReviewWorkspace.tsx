@@ -696,10 +696,6 @@ export function TeacherWritingReviewWorkspace({
   async function generateSampleEssay() {
     if (!data || sampleOperationRef.current || operationRef.current) return;
     const instruction = sampleInstruction.trim();
-    if (!instruction) {
-      setSampleError("请输入范文要求。");
-      return;
-    }
     sampleOperationRef.current = true;
     setSampleGenerating(true);
     setSampleMessage("");

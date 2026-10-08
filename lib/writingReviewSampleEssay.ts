@@ -9,7 +9,7 @@ import {
 } from "./openrouterWritingReview.ts";
 
 export const WRITING_SAMPLE_ESSAY_PROMPT_VERSION =
-  "writing_sample_essay_prompt_v1" as const;
+  "writing_sample_essay_prompt_v2" as const;
 // Bump the version above whenever the 范文 Prompt contract changes.
 // The sample essay is plain text; this stable label keeps the AI log schema_version
 // column meaningful without pretending a structured schema exists.
@@ -112,7 +112,18 @@ Use the rubric to match the quality level requested by the teacher. If the teach
 
 You may preserve useful ideas, reasoning, or organization from the student's response when appropriate. However, if the teacher explicitly asks for a completely new response, a response that does not use the student's ideas, or an equivalent instruction, do not rely on the student's response for content.
 
-Return only the model response itself. Do not return analysis, a score, rubric explanation, feedback, a markdown heading, "Model Response:", "Here is...", or JSON.`;
+Return only the model response itself. Do not return analysis, a score, rubric explanation, feedback, a title, a word count, Markdown wrapping, "Model Response:", "Here is...", or JSON.`;
+
+const DEFAULT_EMAIL_GENERATION_RULES = `Default generation rules (no teacher instruction was provided):
+Generate a TOEFL Write an Email score-5 model response under the provided six-band 0–5 rubric. Target 120–140 English words in the response body.
+Preserve the student's main ideas, intent, reasons, and key information. You may reorganize the response, add necessary details, and improve language and coherence. Correct errors; you do not need to preserve the original sentence by sentence.
+Fulfill the current Email task requirements. If the student's response has no identifiable valid ideas, prioritize fulfilling the task rather than inventing views and attributing them to the student.`;
+
+const DEFAULT_AD_GENERATION_RULES = `Default generation rules (no teacher instruction was provided):
+Generate a TOEFL Academic Discussion score-5 model response under the provided six-band 0–5 rubric. Target 160–180 English words in the response body.
+Preserve the student's core stance, main reasons, and direction of argument. You may deepen the argument, add appropriate examples, and improve organization.
+Answer the professor's discussion question and fulfill the existing Academic Discussion task requirements. Responding to other students is optional, not required.
+If the student's response has no identifiable valid ideas, prioritize fulfilling the task rather than inventing views and attributing them to the student.`;
 
 export function buildWritingSampleEssayMessages(input: {
   taskType: WritingTaskType;
@@ -120,6 +131,10 @@ export function buildWritingSampleEssayMessages(input: {
   responseText: string;
   teacherInstruction: string;
 }) {
+  const teacherInstruction = input.teacherInstruction.trim();
+  const defaultRules = teacherInstruction
+    ? ""
+    : `\n\n${input.taskType === "email" ? DEFAULT_EMAIL_GENERATION_RULES : DEFAULT_AD_GENERATION_RULES}`;
   const rubric =
     input.taskType === "email"
       ? EMAIL_SCORING_GUIDE
@@ -131,7 +146,7 @@ export function buildWritingSampleEssayMessages(input: {
   return [
     {
       role: "system" as const,
-      content: `${SAMPLE_ESSAY_GENERATION_RULES}
+      content: `${SAMPLE_ESSAY_GENERATION_RULES}${defaultRules}
 
 Task-specific 0–5 scoring rubric:
 ${rubric}`
@@ -144,7 +159,7 @@ ${rubric}`
           original_task: input.question,
           task_directions: taskDirections,
           student_response: input.responseText,
-          teacher_instruction: input.teacherInstruction
+          teacher_instruction: teacherInstruction ? input.teacherInstruction : ""
         },
         null,
         2
@@ -169,10 +184,10 @@ export function parseWritingSampleEssayInstruction(body: unknown) {
     throw failure("INVALID_TEACHER_INSTRUCTION", "请输入范文要求。", 400);
   }
   const instruction = body.instruction.trim();
-  if (!instruction || instruction.length > WRITING_SAMPLE_ESSAY_INSTRUCTION_MAX_LENGTH) {
+  if (instruction.length > WRITING_SAMPLE_ESSAY_INSTRUCTION_MAX_LENGTH) {
     throw failure(
       "INVALID_TEACHER_INSTRUCTION",
-      `范文要求不能为空且不能超过 ${WRITING_SAMPLE_ESSAY_INSTRUCTION_MAX_LENGTH} 个字符。`,
+      `范文要求不能超过 ${WRITING_SAMPLE_ESSAY_INSTRUCTION_MAX_LENGTH} 个字符。`,
       400
     );
   }
