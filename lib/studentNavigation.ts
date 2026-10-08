@@ -17,7 +17,8 @@ export const STUDENT_ROUTES = {
   readingFullSets: "/student/reading/full-sets",
   grammarPractice: "/student/grammar-practice",
   questionCategoryPractice: "/student/question-category-practice",
-  wrongQuestions: "/student/wrong-questions"
+  wrongQuestions: "/student/wrong-questions",
+  wordbook: "/student/wordbook"
 } as const;
 
 export type StudentBreadcrumbItem = {

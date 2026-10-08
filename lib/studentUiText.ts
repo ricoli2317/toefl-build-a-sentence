@@ -2,6 +2,7 @@ export const STUDENT_UI_TEXT = {
   studentHome: "学生首页",
   practiceSets: "套题练习",
   wrongQuestions: "错题集",
+  wordbook: "生词本",
   practiceHistory: "练习历史",
   grammarPractice: "按语法分类练习",
   questionCategoryPractice: "按题型分类练习",

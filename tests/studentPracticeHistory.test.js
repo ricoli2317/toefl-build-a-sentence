@@ -845,9 +845,12 @@ test("student page replaces the full-history scan with day / range loads only", 
   assert.match(component, /上一天/);
   assert.match(component, /下一天/);
   assert.match(component, />\s*今天\s*</);
-  assert.match(component, /type="date"/);
-  assert.match(component, /查看当天/);
-  assert.match(component, /查看范围统计/);
+  assert.match(component, /<StudentDateSelection draft=\{dateDraft\}/);
+  const dateSelection = read("components/student/StudentDateSelection.tsx");
+  assert.match(dateSelection, /type="date"/);
+  assert.match(dateSelection, /TeacherPopover/);
+  assert.match(dateSelection, /查看当天/);
+  assert.match(dateSelection, /查看范围统计/);
   assert.match(component, /返回范围统计/);
   // Result links keep source + the exact returnTo state; retakes reuse the
   // existing student entries.

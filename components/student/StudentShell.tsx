@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import {
   BookOpen,
+  BookMarked,
   Clock3,
   ClipboardList,
   ClipboardX,
@@ -114,6 +115,12 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
         label: STUDENT_UI_TEXT.wrongQuestions,
         match: (path) => path.startsWith(STUDENT_ROUTES.wrongQuestions)
           || path.startsWith("/student/reading/wrongbook-results/")
+      },
+      {
+        href: STUDENT_ROUTES.wordbook,
+        icon: BookMarked,
+        label: STUDENT_UI_TEXT.wordbook,
+        match: (path) => path.startsWith(STUDENT_ROUTES.wordbook)
       },
       {
         href: STUDENT_ROUTES.grammarPractice,

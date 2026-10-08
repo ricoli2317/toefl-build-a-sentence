@@ -130,6 +130,8 @@ test('status uses bounded owner/domain/canonical unique key and lookup tolerates
 
 async function fixture() {
   const db=new PGlite();await db.exec(dependencies);await db.exec(read('supabase/student_wordbook_v1_20261008.sql'));await db.exec(a2);
+  // Optional compatibility run of the unchanged A2 scenarios against A3 RPC.
+  if (process.env.WORDBOOK_SQL_TEST_A3 === '1') await db.exec(read('supabase/student_wordbook_v1_phase_a3_20261008.sql'));
   await db.exec('grant select on profiles to service_role');
   await db.query(`update lexical_occurrences set start_offset=7,end_offset=14,surface_text='running',context_text=$1,context_pos='verb',context_definition_en='Move quickly.' where occurrence_id=$2`,[text,O]);
   await db.query(`insert into lexical_source_blocks values('00000000-0000-4000-8000-000000000014','ctw','fixture','paragraph:p','ctw_paragraph',$1,'generated')`,[block.source_text_hash]);

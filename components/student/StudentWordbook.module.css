@@ -1,0 +1,22 @@
+.table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; color: var(--student-text); font-size: 14px; background: white; }
+.table th { padding: 12px; background: #f9fafb; text-align: left; font-size: 13px; font-weight: 600; }
+.table th:first-child { border-top-left-radius: 12px; }
+.table th:last-child { border-top-right-radius: 12px; }
+.table td { padding: 12px; vertical-align: top; overflow-wrap: anywhere; min-width: 0; }
+.table tbody + tbody tr:first-child td { border-top: 1px solid #f3f4f6; }
+.table tbody:hover { background: #fafafa; }
+.table td.word { vertical-align: middle; }
+.mobileEnrichment { display: none; }
+@media (max-width: 767px) {
+  .table, .table tbody { display: block; }
+  .table colgroup, .table thead, .table td.desktopEnrichment { display: none; }
+  .table tbody { padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+  .table tr { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); }
+  .table td { display: block; padding: 6px 12px; }
+  .table td::before { content: attr(data-label); display: block; margin-bottom: 3px; font-size: 11px; color: var(--student-muted); }
+  .table td.word { grid-column: 1 / -1; }
+  .table td.word::before { display: none; }
+  .table td.example { grid-column: 1 / -1; }
+  .table tbody + tbody tr:first-child td { border-top: 0; }
+  .table .mobileEnrichment { display: block; }
+}

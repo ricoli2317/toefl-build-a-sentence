@@ -52,3 +52,4 @@ pnpm-debug.log*
 
 # local browser verification screenshots (OpenChamber browser panel)
 .openchamber/screenshots/
+docs/student-wordbook-v1-phase-a3-production-acceptance.md
