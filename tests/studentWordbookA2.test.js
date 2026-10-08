@@ -49,14 +49,14 @@ test('all six sources preserve true short fragments; natural fields are not AI-c
   assert.equal(contextFor('There are opportunities.','opportunities','email_subject').context_kind,'fragment');
   assert.equal(contextFor('Header\n\nGrowing opportunities\n\nFooter','Growing','rdl_material').example_text,'Growing opportunities');
 });
-test('long unbounded blocks, cross-sentence expressions, ellipses, multiline ambiguity and stale spans fail closed', () => {
+test('verified boundary failures return explicit no-example; stale spans still fail closed', () => {
   for (const [text,surface] of [['growing '.repeat(200),'growing'],['We are growing. It was late.','growing. It'],['We are growing... It was late.','growing... It']])
-    assert.throws(()=>contextFor(text,surface),WordbookError);
+    assert.deepEqual(contextFor(text,surface),{example_text:null,context_kind:null,extraction_method:'verified_no_example_boundary'});
   assert.throws(()=>contextFor('We are growing.','growing','ctw_paragraph',{ context_text:'stale' }),/核验/);
   assert.throws(()=>contextFor('We are growing.','growing','ctw_paragraph',{ start_offset:0 }),/核验/);
   assert.equal(contextFor('Growing\nopportunities','Growing').context_kind,'fragment');
-  assert.throws(()=>contextFor('They are living in the U.S. It is growing.','growing'),WordbookError);
-  assert.throws(()=>contextFor('Acme Corp. Was growing quickly. It is expanding.','growing'),WordbookError);
+  assert.equal(contextFor('They are living in the U.S. It is growing.','growing').example_text,null);
+  assert.equal(contextFor('Acme Corp. Was growing quickly. It is expanding.','growing').example_text,null);
 });
 test('RAP sentence map must exactly reconstruct the block and uniquely contain the whole occurrence', () => {
   const text='We are growing. It was late.';
@@ -110,14 +110,23 @@ test('server rejects illegal ownership, active results, mismatched identity, dis
   const db=database(tables());await assert.rejects(operateWordbook(db,db,U,selection,E,'wrong','save',readers),e=>e.status===403);
   assert.equal(db.calls.some(c=>c.rpc),false);
 });
-test('extraction failure performs no RPC or writes; remove does not require extraction', async () => {
+test('verified extraction failure sends only explicit no-example to atomic RPC; remove needs no example', async () => {
   const t=tables();const long='running '.repeat(1000);
   t.reading_ctw_segments[0].text_content=long;t.lexical_source_blocks[0].source_text_hash=canonicalSourceTextHash(long);
   Object.assign(t.lexical_occurrences[0],{ start_offset:0,end_offset:7,context_text:long });
   const r={ ...selection,startOffset:0,endOffset:7,blockText:long };const db=database(t);
-  await assert.rejects(operateWordbook(db,db,U,r,E,O,'save',readers),e=>e.code==='UNVERIFIABLE_CONTEXT_BOUNDARY');
-  assert.equal(db.calls.some(c=>c.rpc),false);
-  await operateWordbook(db,db,U,r,E,O,'remove',readers);assert.equal(db.calls.filter(c=>c.rpc).length,1);
+  await operateWordbook(db,db,U,r,E,O,'save',readers);
+  assert.equal(db.calls.find(c=>c.rpc).args.p_expected.example_text,null);
+  await operateWordbook(db,db,U,r,E,O,'remove',readers);assert.equal(db.calls.filter(c=>c.rpc).length,2);
+});
+test('no-example fallback never turns missing SQL, database errors or mismatched RPC domain into a success', async () => {
+  const t=tables(),long='running '.repeat(1000);
+  t.reading_ctw_segments[0].text_content=long;t.lexical_source_blocks[0].source_text_hash=canonicalSourceTextHash(long);
+  Object.assign(t.lexical_occurrences[0],{start_offset:0,end_offset:7,context_text:long});
+  const r={...selection,startOffset:0,endOffset:7,blockText:long};
+  for(const response of [{data:null,error:{message:'WORDBOOK_INVALID_CONTEXT'}},{data:null,error:{message:'database unavailable'}},{data:{saved:true,domain:'writing'},error:null}]){
+    const db=database(t,async()=>response);await assert.rejects(operateWordbook(db,db,U,r,E,O,'save',readers),e=>e.code==='WORDBOOK_UNAVAILABLE');
+  }
 });
 test('status uses bounded owner/domain/canonical unique key and lookup tolerates status failure', async () => {
   const db=database({ student_wordbook_canonical_links:[{ student_id:U,domain:'reading',lexical_entry_id:E,wordbook_entry_id:'saved' }] });
@@ -132,6 +141,7 @@ async function fixture() {
   const db=new PGlite();await db.exec(dependencies);await db.exec(read('supabase/student_wordbook_v1_20261008.sql'));await db.exec(a2);
   // Optional compatibility run of the unchanged A2 scenarios against A3 RPC.
   if (process.env.WORDBOOK_SQL_TEST_A3 === '1') await db.exec(read('supabase/student_wordbook_v1_phase_a3_20261008.sql'));
+  if (process.env.WORDBOOK_SQL_TEST_BUGFIX === '1') await db.exec(read('supabase/student_wordbook_v1_bugfix_20261008.sql'));
   await db.exec('grant select on profiles to service_role');
   await db.query(`update lexical_occurrences set start_offset=7,end_offset=14,surface_text='running',context_text=$1,context_pos='verb',context_definition_en='Move quickly.' where occurrence_id=$2`,[text,O]);
   await db.query(`insert into lexical_source_blocks values('00000000-0000-4000-8000-000000000014','ctw','fixture','paragraph:p','ctw_paragraph',$1,'generated')`,[block.source_text_hash]);
@@ -167,7 +177,9 @@ engineTest('shipped RPC: first/repeat save, appended sense/example/source and or
     await call(db,'save',expected({ ...occurrence,source_type:'rdl',context_meaning_zh:'经营',context_text:next,start_offset:9,end_offset:16 },entry,
       { ...block,block_kind:'rdl_material',source_text_hash:canonicalSourceTextHash(next) }));
     assert.deepEqual(await counts(db),{ entries:1,canonical:1,senses:2,examples:2,links:3 });
-    const after=(await db.query('select * from student_wordbook_entries')).rows[0];assert.deepEqual(after,saved);
+    const after=(await db.query('select * from student_wordbook_entries')).rows[0];
+    if (process.env.WORDBOOK_SQL_TEST_BUGFIX === '1') {assert.deepEqual(after.source_types,['ctw','rdl']);delete after.source_types;delete saved.source_types;}
+    assert.deepEqual(after,saved);
   } finally { await db.close(); }
 });
 engineTest('shipped RPC: domain/user isolation, idempotent cancel, cascade and fresh first_saved_at on re-save',async()=>{
@@ -220,6 +232,22 @@ engineTest('actual server -> shipped SQL: first save/status/repeated save/remove
     assert.equal((await operateWordbook(db,db,U,selection,E,O,'remove',readers)).saved,false);
     assert.deepEqual(await counts(engine),{ entries:0,canonical:0,senses:0,examples:0,links:0 });
   } finally { await engine.close(); }
+});
+
+engineTest('actual server -> upgraded SQL: verified no-example saves still authorize reconstructed CTW and dedupe activities',async()=>{
+  if(process.env.WORDBOOK_SQL_TEST_BUGFIX!=='1')return;
+  const engine=await fixture();try {
+    const t=tables(),long='running '.repeat(1000);
+    t.reading_ctw_segments[0].text_content=long;t.lexical_source_blocks[0].source_text_hash=canonicalSourceTextHash(long);
+    Object.assign(t.lexical_occurrences[0],{start_offset:0,end_offset:7,context_text:long});
+    await engine.query('update lexical_occurrences set context_text=$1,start_offset=0,end_offset=7 where occurrence_id=$2',[long,O]);
+    await engine.query('update lexical_source_blocks set source_text_hash=$1',[canonicalSourceTextHash(long)]);
+    const db=database(t,async(name,args)=>({data:await call(engine,args.p_action,args.p_expected,args.p_student_id,args.p_occurrence_id),error:null}));
+    const r={...selection,startOffset:0,endOffset:7,blockText:long};
+    assert.equal((await operateWordbook(db,db,U,r,E,O,'save',readers)).saved,true);await operateWordbook(db,db,U,r,E,O,'save',readers);
+    assert.deepEqual(await counts(engine),{entries:1,canonical:1,senses:1,examples:0,links:0});
+    assert.equal((await engine.query('select count(*)::int n from student_wordbook_activities')).rows[0].n,1);
+  }finally{await engine.close();}
 });
 
 engineTest('shipped RPC: same display/lemma with a different identity_variant NEVER merges',async()=>{

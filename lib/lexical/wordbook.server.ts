@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { LexicalLookupRequest, LexicalLookupResult } from "./lookup.ts";
 import { authorizeLexicalSource, lookupAuthorizedSelection, type LexicalPageReaders } from "./lookup.server.ts";
 import { canonicalSourceTextHash } from "./hash.ts";
-import { extractWordbookContext, WordbookError } from "./wordbookContext.ts";
+import { extractWordbookContext, verifyWordbookOccurrence, WordbookError } from "./wordbookContext.ts";
 
 export const wordbookDomain = (source: string): "reading" | "writing" => {
   if (["ctw", "rdl", "rap"].includes(source)) return "reading";
@@ -48,6 +48,7 @@ export async function operateWordbook(db: SupabaseClient, client: SupabaseClient
     || e.expression_type !== target.entry.expression_type || o.context_pos !== target.occurrence.context_pos
     || o.context_meaning_zh !== target.occurrence.context_meaning_zh || o.context_definition_en !== target.occurrence.context_definition_en)
     throw new WordbookError("CANONICAL_CONTEXT_STALE");
+  verifyWordbookOccurrence(source.text, o);
   let context;
   if (action === "save") {
     let sentences;

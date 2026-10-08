@@ -6,7 +6,7 @@ import type { CanonicalLexicalSourceType } from "@/lib/lexical/types";
 import type { LexicalAccess, LexicalLookupRequest, LexicalLookupResult } from "@/lib/lexical/lookup";
 import { parseLookupRequest } from "@/lib/lexical/lookup";
 import { domCanonicalLexicalSelection } from "@/lib/lexical/selection";
-import { lexicalPopupPosition, lexicalRangeRect, type LexicalRect } from "@/lib/lexical/position";
+import { lexicalPopupNaturalHeight, lexicalPopupPosition, lexicalRangeRect, type LexicalRect } from "@/lib/lexical/position";
 import { Check, Plus, X } from "lucide-react";
 
 type Span = Pick<LexicalLookupRequest, "startOffset" | "endOffset" | "selectedText" | "blockText" | "ctwAnchor">;
@@ -31,12 +31,14 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
   const [position, setPosition] = useState<ReturnType<typeof lexicalPopupPosition> | null>(null);
   const abort = useRef<AbortController | null>(null);
   const panel = useRef<HTMLDivElement | null>(null);
+  const content = useRef<HTMLDivElement | null>(null);
+  const placement = useRef<"above" | "below" | undefined>(undefined);
   const region = useRef<HTMLDivElement | null>(null);
   const anchor = useRef<Anchor | null>(null);
   const currentRequest = useRef<LexicalLookupRequest | null>(null);
   const mutationBusy = useRef(false);
   const revision = useRef(0);
-  const close = useCallback(() => { revision.current++; abort.current?.abort(); anchor.current = null; currentRequest.current = null; setState(null); setPosition(null); }, []);
+  const close = useCallback(() => { revision.current++; abort.current?.abort(); anchor.current = null; currentRequest.current = null; placement.current = undefined; setState(null); setPosition(null); }, []);
   const runLookup = useCallback((request: LexicalLookupRequest) => {
     if (!enabled || !access) return;
     revision.current++;
@@ -70,6 +72,7 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
     const range = !rect && selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : undefined;
     if (!rect && !range) { close(); return; }
     anchor.current = { rect: rect ?? (() => range ? lexicalRangeRect(range) : null), range };
+    placement.current = undefined;
     setPosition(null);
     setQuery(span.selectedText);
     const request = { access, sourceType, sourceItemId, contentBlockId, ...span } satisfies LexicalLookupRequest;
@@ -78,28 +81,32 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
   }, [access, enabled, sourceItemId, sourceType, runLookup, close]);
   const reposition = useCallback(() => {
     const saved = anchor.current; const card = panel.current;
-    if (!saved || !card) return;
+    if (!saved || !card || !content.current) return;
     if (saved.range && (!region.current?.contains(saved.range.startContainer) || !region.current.contains(saved.range.endContainer))) { close(); return; }
     const rect = saved.rect(); const viewport = window.visualViewport;
     const width = viewport?.width ?? window.innerWidth; const height = viewport?.height ?? window.innerHeight;
     const left = viewport?.offsetLeft ?? 0; const top = viewport?.offsetTop ?? 0;
     if (!rect || rect.right <= left || rect.left >= left + width || rect.bottom <= top || rect.top >= top + height) { close(); return; }
-    const next = lexicalPopupPosition(rect, { width: Math.min(448, width - 16), height: card.scrollHeight + card.offsetHeight - card.clientHeight },
-      { width, height: Math.max(0, height - 12), left, top: top + 12 }); // Reserve space above the overlapping close button.
-    setPosition(next);
+    const next = lexicalPopupPosition(rect, { width: Math.min(448, width - 16), height: lexicalPopupNaturalHeight(content.current, card) },
+      { width, height: Math.max(0, height - 12), left, top: top + 12 }, placement.current); // Reserve space above the overlapping close button.
+    placement.current = next.placement as "above" | "below";
+    setPosition(previous => previous && Object.keys(next).every(key => previous[key as keyof typeof next] === next[key as keyof typeof next]) ? previous : next);
   }, [close]);
   useLayoutEffect(() => { if (state) reposition(); }, [state, query, reposition]);
   const open = state !== null;
   useEffect(() => {
     if (!open) return;
-    window.addEventListener("scroll", reposition, true);
+    // Internal card scrolling must not reposition the selection-anchored popup.
+    const onScroll = (event: Event) => { if (!(event.target instanceof Node) || !panel.current?.contains(event.target)) reposition(); };
+    window.addEventListener("scroll", onScroll, true);
     window.addEventListener("resize", reposition);
     window.visualViewport?.addEventListener("resize", reposition);
     window.visualViewport?.addEventListener("scroll", reposition);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(reposition);
     if (panel.current) observer?.observe(panel.current);
+    if (content.current) observer?.observe(content.current);
     return () => {
-      window.removeEventListener("scroll", reposition, true); window.removeEventListener("resize", reposition);
+      window.removeEventListener("scroll", onScroll, true); window.removeEventListener("resize", reposition);
       window.visualViewport?.removeEventListener("resize", reposition); window.visualViewport?.removeEventListener("scroll", reposition);
       observer?.disconnect();
     };
@@ -178,10 +185,10 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
         data-placement={position?.placement}>
         <button type="button" className="absolute -right-2 -top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded-full border border-student-border bg-white text-student-muted shadow-sm transition hover:border-student-primary hover:text-student-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary active:bg-student-primary-soft"
           aria-label="关闭查词" onClick={close}><X aria-hidden="true" size={15} strokeWidth={2.5} /></button>
-        <div className="overflow-y-auto rounded-xl p-4" style={{ maxHeight: position?.maxHeight ?? "calc(100dvh - 16px)" }}>
-          <LexicalLookupCard state={state} query={query} onQueryChange={(value) => {
+        <div className="overflow-y-auto rounded-xl p-4" style={{ maxHeight: position ? Math.max(0, position.maxHeight - 2) : "calc(100dvh - 16px)", scrollbarGutter: "stable" }}>
+          <div ref={content}><LexicalLookupCard state={state} query={query} onQueryChange={(value) => {
             revision.current++; abort.current?.abort(); setQuery(value); setState({ selected: state.selected });
-          }} onSearch={() => { if (currentRequest.current) runLookup({ ...currentRequest.current, query }); }} onWordbookToggle={toggleWordbook} />
+          }} onSearch={() => { if (currentRequest.current) runLookup({ ...currentRequest.current, query }); }} onWordbookToggle={toggleWordbook} /></div>
         </div>
       </div> : null}
     </Context.Provider>

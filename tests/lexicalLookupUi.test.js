@@ -156,9 +156,9 @@ test('provider interaction sends one canonical selection request, aborts stale r
     const tree = renderer.LexicalLookupProvider({ ...props,enabled });
     const [region,panel] = tree.props.children;
     region.ref.current = { contains:node => node === block };
-    if (panel) panel.ref.current = { contains:node => node === input,offsetWidth:448,offsetHeight:180,clientHeight:178,scrollHeight:178 };
+    if (panel) { panel.ref.current = { contains:node => node === input,offsetWidth:448,offsetHeight:180,clientHeight:178,scrollHeight:178 };panel.props.children[1].props.children.ref.current={scrollHeight:146}; }
     effects.splice(0).forEach(fn => fn());
-    return { region,panel,card:panel?.props.children[1].props.children,lookup:tree.props.value?.lookup };
+    return { region,panel,card:panel?.props.children[1].props.children.props.children,lookup:tree.props.value?.lookup };
   };
   const settle = () => new Promise(resolve => setImmediate(resolve));
   try {
@@ -170,7 +170,7 @@ test('provider interaction sends one canonical selection request, aborts stale r
     view = render(); assert.ok(view.panel);
     view = render(); assert.equal(view.panel.props.style.left,100); assert.equal(view.panel.props.style.top,128);
     anchorRect = { ...anchorRect,top:500,bottom:520 };
-    listeners.get('scroll')(); view = render(); assert.equal(view.panel.props['data-placement'],'above'); assert.equal(view.panel.props.style.top,312);
+    listeners.get('scroll')({target:window}); view = render(); assert.equal(view.panel.props['data-placement'],'above'); assert.equal(view.panel.props.style.top,312);
     selected = { ...selected,startOffset:6,endOffset:12,selectedText:'energy' };
     view.region.props.onPointerUp({ target:block }); await settle();
     assert.equal(pending.length,2); assert.equal(pending[0].init.signal.aborted,true);

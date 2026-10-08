@@ -10,7 +10,8 @@ test('popup is anchored below/above the real Range and clamped at viewport edges
   position = lexicalPopupPosition(rect(750,500),{ width:448,height:180 },{ width:800,height:600 });
   assert.equal(position.left,344); assert.equal(position.top,312); assert.equal(position.placement,'above');
   position = lexicalPopupPosition(rect(100,220),{ width:448,height:400 },{ width:800,height:600 });
-  assert.equal(position.placement,'above'); assert.equal(position.top,8); assert.equal(position.maxHeight,204);
+  // Neither side fits: use the larger lower area, with internal scrolling.
+  assert.equal(position.placement,'below'); assert.equal(position.top,248); assert.equal(position.maxHeight,344);
   for (const [viewport,anchor,panel] of [
     [{ width:320,height:220 },rect(300,160),{ width:448,height:600 }],
     [{ width:800,height:80 },rect(-10,20),{ width:448,height:600 }],

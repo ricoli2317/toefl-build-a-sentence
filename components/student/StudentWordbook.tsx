@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useStudentDataCache } from "@/components/StudentDataCache";
 import { StudentNavigation } from "@/components/student/StudentUI";
 import { StudentDateSelection } from "@/components/student/StudentDateSelection";
+import { WordbookExample } from "./WordbookExample";
+import { wordbookPos } from "@/lib/lexical/wordbookPresentation";
+import { ChevronDown } from "lucide-react";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
-import { browserTimeZone, formatDateInputValue, normalizeDateDraft, startOfLocalDay } from "@/lib/studentDates";
+import { addDays, boundedCalendarMonth, boundedDateDraft, browserTimeZone, formatDateInputValue, startOfLocalDay } from "@/lib/studentDates";
 import { WORDBOOK_HEADERS, wordbookContextRows, type WordbookDomain, type WordbookItem, type WordbookList } from "@/lib/lexical/wordbookList";
 import styles from "./StudentWordbook.module.css";
 
@@ -18,6 +21,15 @@ export function StudentWordbook() {
   const active = filters[domain];
   const [draft, setDraft] = useState({ start: "", end: "" });
   const [month, setMonth] = useState(() => startOfLocalDay());
+  const [today, setToday] = useState(() => startOfLocalDay());
+  const bounds = { min: "2026-07-01", max: formatDateInputValue(today) };
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const refresh = () => { const day = startOfLocalDay(); setToday(day); timer = setTimeout(refresh, addDays(day, 1).getTime() - Date.now() + 50); };
+    const focus = () => { clearTimeout(timer); refresh(); };
+    refresh(); window.addEventListener("focus", focus);
+    return () => { clearTimeout(timer); window.removeEventListener("focus", focus); };
+  }, []);
   const [revision, setRevision] = useState(0);
   const timeZone = useMemo(() => browserTimeZone(), []);
   const monthKey = formatDateInputValue(month).slice(0, 7);
@@ -31,35 +43,42 @@ export function StudentWordbook() {
   const dates = useWordbookRead<{ dates: string[] }>(datesUrl, revision);
   useEffect(() => { setDraft({ start: active.start, end: active.end }); }, [domain, active.start, active.end]);
   const update = (changes: Partial<Filters>) => setFilters(previous => ({ ...previous, [domain]: { ...previous[domain], ...changes } }));
+  const switchDomain = (next: WordbookDomain) => {
+    if (next === domain) return;
+    // Dates never survive a tab switch, including when returning to the old tab.
+    // Keep each domain's sort; reset both pages along with applied/draft dates.
+    setFilters(previous => ({ reading: { ...previous.reading, start: "", end: "", page: 1 }, writing: { ...previous.writing, start: "", end: "", page: 1 } }));
+    setDraft({ start: "", end: "" });setMonth(startOfLocalDay());setDomain(next);
+  };
   const items = list.data?.items ?? [];
   const pages = Math.max(1, Math.ceil((list.data?.total ?? 0) / 20));
   // A cancellation in another tab may leave an empty last page. Correct once.
   useEffect(() => { if (list.data && active.page > pages) setFilters(previous => ({ ...previous, [domain]: { ...previous[domain], page: pages } })); }, [list.data, active.page, pages, domain]);
 
-  return <div className="grid min-w-0 gap-5">
-    <StudentNavigation backHref={STUDENT_ROUTES.home} showBack={false} crumbs={[{ label: "学习" }, { label: "生词本" }]} />
+  return <div className={`grid min-w-0 gap-5 ${domain === "reading" ? "reading-theme" : ""}`}>
+    <StudentNavigation backHref={STUDENT_ROUTES.home} crumbs={[{ label: "学生首页", href: STUDENT_ROUTES.home }, { label: "生词本" }]} />
     <div aria-label="生词本分类" role="tablist" className="flex gap-1 border-b border-student-border">
       {(["reading", "writing"] as const).map(tab => <button id={`wordbook-tab-${tab}`} aria-controls={`wordbook-panel-${tab}`} aria-selected={domain === tab} role="tab" type="button" key={tab}
-        tabIndex={domain === tab ? 0 : -1} onClick={() => setDomain(tab)}
-        onKeyDown={event => { if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) { event.preventDefault(); const next = event.key === "Home" ? "reading" : event.key === "End" ? "writing" : domain === "reading" ? "writing" : "reading"; setDomain(next); document.getElementById(`wordbook-tab-${next}`)?.focus(); } }}
+        tabIndex={domain === tab ? 0 : -1} onClick={() => switchDomain(tab)}
+        onKeyDown={event => { if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) { event.preventDefault(); const next = event.key === "Home" ? "reading" : event.key === "End" ? "writing" : domain === "reading" ? "writing" : "reading"; switchDomain(next); document.getElementById(`wordbook-tab-${next}`)?.focus(); } }}
         className={`border-b-2 px-5 py-3 text-sm font-semibold transition ${domain === tab ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}>
         {tab === "reading" ? "Reading" : "Writing"}
       </button>)}
     </div>
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <div className="flex min-w-0 flex-wrap items-center gap-2">
-        <StudentDateSelection draft={draft} onDraftChange={setDraft} rangeLabel="查看日期范围"
+      <div className={`flex min-w-0 flex-wrap items-center gap-2 ${domain === "reading" ? styles.readingDateControls : ""}`}>
+        <StudentDateSelection key={domain} draft={draft} onDraftChange={setDraft} rangeLabel="查看日期范围" bounds={bounds}
           hint="单日或范围内有收藏活动的词汇，展示其当前全部语境。"
-          onApply={close => { const range = normalizeDateDraft(draft, formatDateInputValue(new Date())); update({ ...range, page: 1 }); close(); }}
-          onClear={() => update({ start: "", end: "", page: 1 })}
-          activity={{ month, onMonthChange: setMonth, dates: dates.data?.dates ?? [], error: dates.error, loading: dates.loading }} />
+          onApply={close => { const range = boundedDateDraft(draft, { ...bounds, max: formatDateInputValue(new Date()) }); if (!range) return; update({ ...range, page: 1 }); close(); }}
+          onClear={() => { setDraft({ start: "", end: "" });update({ start: "", end: "", page: 1 }); }}
+          activity={{ month, onMonthChange: value => { const next = boundedCalendarMonth(value, bounds); setMonth(previous => formatDateInputValue(previous).slice(0, 7) === formatDateInputValue(next).slice(0, 7) ? previous : next); }, dates: dates.data?.dates ?? [], error: dates.error, loading: dates.loading, showToday: true, resetMonthOnOpen: true }} />
         <span className="text-sm text-student-muted">{active.start ? active.start === active.end ? active.start : `${active.start} — ${active.end}` : "全部日期"}</span>
-        {active.start ? <button type="button" className="text-xs text-student-primary hover:underline" onClick={() => update({ start: "", end: "", page: 1 })}>清除</button> : null}
+        {active.start ? <button type="button" className="text-xs text-student-primary hover:underline" onClick={() => { setDraft({ start: "", end: "" });update({ start: "", end: "", page: 1 }); }}>清除</button> : null}
       </div>
       <label className="flex items-center gap-2 text-sm text-student-muted">排序
-        <select aria-label="生词本排序" className="teacher-input min-w-0" value={active.sort} onChange={event => update({ sort: event.target.value as Filters["sort"], page: 1 })}>
+        <span className="relative inline-flex items-center"><select aria-label="生词本排序" className="teacher-input min-w-0 appearance-none !pr-9" value={active.sort} onChange={event => update({ sort: event.target.value as Filters["sort"], page: 1 })}>
           <option value="newest">最新优先</option><option value="oldest">最早优先</option>
-        </select>
+        </select><ChevronDown aria-hidden="true" size={16} className="pointer-events-none absolute right-3 text-student-muted" /></span>
       </label>
     </div>
     <section id={`wordbook-panel-${domain}`} role="tabpanel" aria-labelledby={`wordbook-tab-${domain}`} aria-busy={list.loading} className="min-w-0">
@@ -109,15 +128,15 @@ const SOURCE_BADGES: Record<string, { label: string; className: string }> = {
   ctw: { label: "CTW", className: "bg-[#eef6ff] text-[#347fdc]" },
   rdl: { label: "RDL", className: "bg-[#eef6ff] text-[#347fdc]" },
   rap: { label: "RAP", className: "bg-[#eef6ff] text-[#347fdc]" },
-  bas: { label: "BAS", className: "bg-student-primary-soft text-student-primary" },
-  write_email: { label: "WE", className: "bg-student-primary-soft text-student-primary" },
-  academic_discussion: { label: "AD", className: "bg-student-primary-soft text-student-primary" }
+   bas: { label: "BAS", className: "bg-student-primary-soft text-student-primary" },
+   write_email: { label: "WE", className: "bg-student-primary-soft text-student-primary" },
+   academic_discussion: { label: "AD", className: "bg-student-primary-soft text-student-primary" }
 };
 
 export function WordbookTable({ domain, items }: { domain: WordbookDomain; items: WordbookItem[] }) {
   const headers = WORDBOOK_HEADERS[domain];
-  return <table className={styles.table} aria-label={`${domain === "reading" ? "Reading" : "Writing"} 生词表`}>
-    <colgroup><col style={{ width: "16%" }} /><col style={{ width: "8%" }} /><col style={{ width: "22%" }} /><col style={{ width: "36%" }} /><col style={{ width: "18%" }} /></colgroup>
+  return <table className={`${styles.table} ${domain === "reading" ? "reading-theme" : ""}`} aria-label={`${domain === "reading" ? "Reading" : "Writing"} 生词表`}>
+    <colgroup><col style={{ width: "16%" }} /><col style={{ width: "6%" }} /><col style={{ width: "23%" }} /><col style={{ width: "37%" }} /><col style={{ width: "18%" }} /></colgroup>
     <thead><tr>{headers.map(header => <th scope="col" key={header}>{header}</th>)}</tr></thead>
     {items.map(item => {
       const rows = wordbookContextRows(item);
@@ -129,32 +148,15 @@ export function WordbookTable({ domain, items }: { domain: WordbookDomain; items
               const badge = SOURCE_BADGES[source];
               return badge ? <span key={source} className={`rounded px-1.5 py-0.5 text-[10px] font-semibold leading-4 ${badge.className}`}>{badge.label}</span> : null;
             })}</span></div></td> : null}
-          {row.first ? <><td rowSpan={row.span} data-label="词性" className={styles.pos}>{row.sense.contextPos ?? "—"}</td>
+          {row.first ? <><td rowSpan={row.span} data-label="词性" className={styles.pos}>{wordbookPos(row.sense.contextPos)}</td>
             <td rowSpan={row.span} data-label="语境义" className={styles.meaning}><p>{row.sense.contextMeaningZh}</p>{row.sense.contextDefinitionEn ? <p className="mt-1 text-xs leading-5 text-student-muted">{row.sense.contextDefinitionEn}</p> : null}</td></> : null}
-          <td data-label="例句" className={styles.example}>{row.example ? <LongExample text={row.example.text} /> : "—"}</td>
+          <td data-label="例句" className={styles.example}>{row.example ? <WordbookExample key={row.example.exampleId} text={row.example.text} /> : "—"}</td>
           {index === 0 ? <td rowSpan={rows.length} data-label={headers[4]} className={styles.desktopEnrichment}>{enrichment}</td> : null}
         </tr>)}
         <tr className={styles.mobileEnrichment}><td colSpan={5} data-label={headers[4]}>{enrichment}</td></tr>
       </tbody>;
     })}
   </table>;
-}
-
-function LongExample({ text }: { text: string }) {
-  const ref = useRef<HTMLParagraphElement>(null);
-  const [expanded, setExpanded] = useState(false);
-  const [long, setLong] = useState(false);
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    const measure = () => setLong(element.scrollHeight > parseFloat(getComputedStyle(element).lineHeight) * 2 + 1);
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, [text, expanded]);
-  return <div><p ref={ref} className={`whitespace-pre-wrap leading-6 ${expanded ? "" : "line-clamp-2"}`}>{text}</p>
-    {long || expanded ? <button aria-expanded={expanded} type="button" className="mt-1 text-xs font-medium text-student-primary hover:underline" onClick={() => setExpanded(value => !value)}>{expanded ? "收起" : "展开全文"}</button> : null}</div>;
 }
 
 function Enrichment({ item, domain }: { item: WordbookItem; domain: WordbookDomain }) {

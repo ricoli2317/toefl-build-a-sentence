@@ -33,3 +33,16 @@ export function normalizeDateDraft(draft: { start: string; end: string }, fallba
   if (end < start) [start, end] = [end, start];
   return { start, end };
 }
+
+// Opt-in validation; practice history retains normalizeDateDraft's old behavior.
+export type StudentDateBounds = { min: string; max: string };
+export function boundedDateDraft(draft: { start: string; end: string }, bounds: StudentDateBounds) {
+  const start = draft.start, end = draft.end || start;
+  return !parseDateInputValue(start) || !parseDateInputValue(end) || start < bounds.min
+    || end > bounds.max || end < start ? null : { start, end };
+}
+export function boundedCalendarMonth(month: Date, bounds: StudentDateBounds) {
+  const key = formatDateInputValue(month).slice(0, 7);
+  const min = bounds.min.slice(0, 7), max = bounds.max.slice(0, 7);
+  return parseDateInputValue(`${key < min ? min : key > max ? max : key}-01`)!;
+}
