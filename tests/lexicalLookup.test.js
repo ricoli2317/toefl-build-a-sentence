@@ -227,7 +227,7 @@ test('runtime API/browser boundary contains no direct client corpus access or se
   const api = read('app/api/lexical/lookup/route.ts');
   const server = read('lib/lexical/lookup.server.ts');
   assert.match(api,/requireReadingAttemptStudent/); assert.ok(api.indexOf('authorizeLexicalSource(client') < api.indexOf('lookupAuthorizedSelection(db'));
-  assert.match(client,/\/api\/lexical\/lookup/); assert.doesNotMatch(client,/\.from\("lexical_|common_senses|derived_words|useful_patterns|生词本/);
+  assert.match(client,/\/api\/lexical\/lookup/); assert.doesNotMatch(client,/\.from\("(?:lexical_|student_wordbook_)|common_senses|derived_words|useful_patterns/);
   assert.doesNotMatch(api+server,/deepseek|openai|generateSemantic|provider\.server|\.insert\(|\.upsert\(/i);
 });
 

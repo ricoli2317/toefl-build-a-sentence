@@ -32,6 +32,7 @@ export type LexicalLookupResult = { status: "unmatched" | "unavailable" } | {
   entry: LexicalLookupEntry;
   occurrence: Omit<LexicalLookupOccurrence, "lexical_entries">;
   containingPhrases?: LexicalLookupPhrase[];
+  wordbook?: { available: boolean; saved?: boolean; domain?: "reading" | "writing"; wordbookEntryId?: string | null };
 };
 export function parseLookupRequest(value: unknown): LexicalLookupRequest | null {
   if (!value || typeof value !== "object") return null;

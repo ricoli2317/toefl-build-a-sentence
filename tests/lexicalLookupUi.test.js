@@ -96,6 +96,7 @@ test('actual API route rejects anonymous/active/wrong-source before lookup and r
     '@/lib/reading/attemptServer': { requireReadingAttemptStudent:async () => auth,readingAttemptJson:(v,init) => new Response(JSON.stringify(v),{ ...init,headers:{ 'cache-control':'no-store' } }) },
     '@/lib/supabase/server': { createServiceSupabase:() => ({}) },
     '@/lib/lexical/lookup': { parseLookupRequest },
+    '@/lib/lexical/wordbook.server': { addWordbookStatus:async (_db,_user,result) => result },
     '@/lib/lexical/lookup.server': { LexicalAccessError:AccessError,
       authorizeLexicalSource:async () => { authorizeCalls++; if (!allowed) throw new AccessError(409); return { sourceItemId:'item' }; },
       lookupAuthorizedSelection:async () => { lookupCalls++; return { status:'unmatched' }; } },
@@ -113,7 +114,7 @@ test('provider interaction sends one canonical selection request, aborts stale r
   // Narrow hook/event harness; no new browser/test framework or alternate corpus.
   const hooks = []; let cursor = 0; const effects = []; const listeners = new Map(); const pending = [];
   const hookReact = { ...React,
-    useState(initial) { const i = cursor++; if (!(i in hooks)) hooks[i] = initial; return [hooks[i],v => { hooks[i] = v; }]; },
+     useState(initial) { const i = cursor++; if (!(i in hooks)) hooks[i] = initial; return [hooks[i],v => { hooks[i] = typeof v === 'function' ? v(hooks[i]) : v; }]; },
     useRef(initial) { const i = cursor++; if (!(i in hooks)) hooks[i] = { current:initial }; return hooks[i]; },
     useCallback(callback,deps) { const i = cursor++; const previous = hooks[i];
       if (!previous || deps.some((d,j) => d !== previous.deps[j])) hooks[i] = { deps,callback };
@@ -157,7 +158,7 @@ test('provider interaction sends one canonical selection request, aborts stale r
     region.ref.current = { contains:node => node === block };
     if (panel) panel.ref.current = { contains:node => node === input,offsetWidth:448,offsetHeight:180,clientHeight:178,scrollHeight:178 };
     effects.splice(0).forEach(fn => fn());
-    return { region,panel,lookup:tree.props.value?.lookup };
+    return { region,panel,card:panel?.props.children[1].props.children,lookup:tree.props.value?.lookup };
   };
   const settle = () => new Promise(resolve => setImmediate(resolve));
   try {
@@ -174,14 +175,14 @@ test('provider interaction sends one canonical selection request, aborts stale r
     view.region.props.onPointerUp({ target:block }); await settle();
     assert.equal(pending.length,2); assert.equal(pending[0].init.signal.aborted,true);
     pending[0].resolve({ ok:true,json:async () => ({ status:'unmatched' }) }); await settle();
-    view = render(); assert.equal(view.panel.props.children[1].props.state.selected,'energy');
+    view = render(); assert.equal(view.card.props.state.selected,'energy');
     pending[1].resolve({ ok:true,json:async () => ({ status:'unmatched' }) }); await settle();
-    view = render(); assert.equal(view.panel.props.children[1].props.state.result.status,'unmatched');
+    view = render(); assert.equal(view.card.props.state.result.status,'unmatched');
     // Editing focuses the input and may collapse the browser selection; the saved source Range remains usable.
     document.activeElement = input; collapsed = true; listeners.get('selectionchange')(); assert.ok(render().panel);
-    view.panel.props.children[1].props.onQueryChange('energy!'); view = render(); assert.equal(view.panel.props.children[1].props.query,'energy!');
-    assert.equal(view.panel.props.children[1].props.state.result,undefined);
-    view.panel.props.children[1].props.onSearch(); await settle();
+    view.card.props.onQueryChange('energy!'); view = render(); assert.equal(view.card.props.query,'energy!');
+    assert.equal(view.card.props.state.result,undefined);
+    view.card.props.onSearch(); await settle();
     assert.equal(pending.length,3); const edited = JSON.parse(pending[2].init.body);
     assert.equal(edited.query,'energy!'); assert.equal(edited.selectedText,'energy'); assert.equal(edited.startOffset,6);
     listeners.get('pointerdown')({ target:outside }); view = render(); assert.equal(view.panel,null);
@@ -199,8 +200,29 @@ test('provider interaction sends one canonical selection request, aborts stale r
     view.lookup('material:m',selected,() => anchorRect); await settle(); view = render();
     listeners.get('selectionchange')(); assert.ok(render().panel);
     const last = pending.at(-1); last.resolve({ ok:false,status:503,json:async () => ({ error:'fixture failure' }) }); await settle();
-    assert.equal(render().panel.props.children[1].props.state.error,'查词暂时不可用。');
+    assert.equal(render().card.props.state.error,'查词暂时不可用。');
     view = render(); view.panel.props.children[0].props.onClick(); assert.equal(render().panel,null);
+    // Real provider mutation handler: duplicate clicks are suppressed, state is
+    // changed only after confirmation, and late responses cannot reopen a card.
+    collapsed=false;view=render();view.region.props.onPointerUp({ target:block });await settle();
+    const matched={ status:'matched',entry:{ entry_id:'entry',canonical_expression:'green' },occurrence:{ occurrence_id:'occ',surface_text:'green' },wordbook:{ available:true,saved:false } };
+    pending.at(-1).resolve({ ok:true,json:async()=>matched });await settle();view=render();
+    const saving=view.card.props.onWordbookToggle();view.card.props.onWordbookToggle();await settle();
+    assert.equal(pending.at(-1).url,'/api/lexical/wordbook');assert.equal(JSON.parse(pending.at(-1).init.body).action,'save');
+    assert.equal(render().card.props.state.wordbookBusy,true);
+    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:true,available:true,domain:'reading' }) });await saving;
+    view=render();assert.equal(view.card.props.state.result.wordbook.saved,true);assert.equal(view.card.props.state.wordbookBusy,false);
+    assert.equal(view.card.props.state.wordbookMessage,'已加入生词本。');
+    const removing=view.card.props.onWordbookToggle();await settle();assert.equal(JSON.parse(pending.at(-1).init.body).action,'remove');
+    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:false,available:true,domain:'reading' }) });await removing;
+    view=render();assert.equal(view.card.props.state.result.wordbook.saved,false);
+    const failing=view.card.props.onWordbookToggle();await settle();
+    pending.at(-1).resolve({ ok:false,json:async()=>({ error:'无法可靠提取原句，本次未收藏。' }) });await settle();
+    assert.equal(JSON.parse(pending.at(-1).init.body).action,'status');
+    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:false,available:true }) });await failing;
+    view=render();assert.match(view.card.props.state.wordbookError,/未收藏/);assert.equal(view.card.props.state.result.wordbook.saved,false);
+    const late=view.card.props.onWordbookToggle();await settle();view.panel.props.children[0].props.onClick();
+    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:true,available:true }) });await late;assert.equal(render().panel,null);
     // An excluded CTW slot (or any invalid canonical selection) must not issue a lookup request.
     const requestsBeforeSlot = pending.length; selected = null; collapsed = false;
     view = render(); view.region.props.onPointerUp({ target:block }); await settle();
@@ -225,4 +247,39 @@ test('query keeps the raw selected punctuation, submits via Enter/search, and co
   assert.match(html,/value="Center!"/); assert.ok(html.indexOf('>Center</p>') < html.indexOf('所在短语'));
   for (const text of ['Center stage','舞台中央','The middle of the stage.']) assert.ok(html.includes(text));
   assert.doesNotMatch(renderToStaticMarkup(React.createElement(ui.LexicalLookupCard,{ state:{ selected:'word',result:{ status:'unmatched' } } })),/所在短语/);
+});
+
+test('wordbook primary action sits beside the title, toggles directly, disables pending requests and announces light feedback', () => {
+  const result={ status:'matched',entry:{ canonical_expression:'green' },occurrence:{ surface_text:'green',context_meaning_zh:'环保的' },wordbook:{ available:true,saved:false } };
+  const render=(extra={})=>renderToStaticMarkup(React.createElement(ui.LexicalLookupCard,{ state:{ selected:'green',result,...extra },onWordbookToggle:()=>{} }));
+  const html=render();assert.match(html,/lucide-plus/);assert.match(html,/lucide-plus[^>]*text-student-primary/);assert.match(html,/加入生词本/);assert.match(html,/aria-pressed="false"/);
+  assert.ok(html.indexOf('>green</p>')<html.indexOf('加入生词本'));assert.ok(html.indexOf('加入生词本')<html.indexOf('环保的'));
+  const saved=render({ result:{ ...result,wordbook:{ available:true,saved:true } } });assert.match(saved,/已加入 · 取消收藏/);assert.match(saved,/aria-pressed="true"/);
+  const busy=render({ wordbookBusy:true });assert.match(busy,/disabled=""/);assert.match(busy,/处理中/);
+  assert.match(render({ wordbookError:'无法可靠提取原句，本次未收藏。' }),/role="status"/);
+  const source=read('components/lexical/LexicalLookup.tsx');assert.match(source,/absolute -right-2 -top-3/);assert.match(source,/h-7 w-7.*rounded-full/);
+  assert.match(source,/overflow-visible/);assert.match(source,/focus-visible:ring-2/);assert.doesNotMatch(source,/float-right|pr-6/);
+  assert.match(source,/matched \? <div className="flex items-center gap-2"/);assert.doesNotMatch(source,/items-start justify-between gap-3/);
+});
+
+test('actual wordbook route authenticates first, validates IDs/proof/action and never forwards client snapshots',async()=>{
+  let auth={ error:new Response('{}',{ status:401 }) };let calls=0;let args;
+  const { WordbookError }=require('../lib/lexical/wordbookContext.ts');
+  const route=compile('app/api/lexical/wordbook/route.ts',{
+    '@/lib/reading/attemptServer':{ requireReadingAttemptStudent:async()=>auth,readingAttemptJson:(v,init)=>new Response(JSON.stringify(v),{ ...init,headers:{ 'cache-control':'no-store' } }) },
+    '@/lib/supabase/server':{ createServiceSupabase:()=>({}) },'@/lib/lexical/lookup':{ parseLookupRequest },
+    '@/lib/lexical/lookup.server':{ LexicalAccessError:class extends Error{} },'@/lib/lexical/wordbookContext':{ WordbookError },
+    '@/lib/lexical/wordbook.server':{ operateWordbook:async(...input)=>{ calls++;args=input;return { saved:true,domain:'reading' }; } },
+    '@/lib/reading/fullSetAttemptServer':{},'@/lib/writingServer':{}
+  });
+  const selection={ access:{ kind:'reading',attemptId:'11111111-1111-4111-8111-111111111111' },sourceType:'rap',sourceItemId:'item',contentBlockId:'question:q:stem',startOffset:0,endOffset:5,selectedText:'green',blockText:'green energy' };
+  const input={ action:'save',selection,entryId:'11111111-1111-4111-8111-111111111112',occurrenceId:'11111111-1111-4111-8111-111111111113',studentId:'attacker',domain:'writing',example_text:'invented' };
+  const request=(value=input)=>new Request('http://localhost/api/lexical/wordbook',{ method:'POST',body:JSON.stringify(value) });
+  assert.equal((await route.POST(request())).status,401);assert.equal(calls,0);
+  auth={ client:{},userId:'trusted',error:null };
+  for(const invalid of [{ ...input,entryId:'invalid' },{ ...input,action:'merge' },{ ...input,selection:{ ...selection,sourceType:'web' } }])
+    assert.equal((await route.POST(request(invalid))).status,400);
+  assert.equal(calls,0);const response=await route.POST(request());assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');
+  assert.equal(args[2],'trusted');assert.deepEqual(args[3],selection);assert.equal(args[4],input.entryId);assert.equal(args[6],'save');
+  assert.doesNotMatch(JSON.stringify(args),/attacker|invented/);
 });

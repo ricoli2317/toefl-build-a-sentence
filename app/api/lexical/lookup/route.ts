@@ -4,6 +4,7 @@ import { parseLookupRequest } from "@/lib/lexical/lookup";
 import { authorizeLexicalSource, lookupAuthorizedSelection, LexicalAccessError } from "@/lib/lexical/lookup.server";
 import { loadOwnedReadingFullSetAttempt } from "@/lib/reading/fullSetAttemptServer";
 import { readOwnedWritingAttempt, readWritingQuestion } from "@/lib/writingServer";
+import { addWordbookStatus } from "@/lib/lexical/wordbook.server";
 
 export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
@@ -26,7 +27,8 @@ export async function POST(request: Request) {
       // question. Ownership/submission/question membership are enforced first.
       basFinalVisible: () => true
     });
-    return readingAttemptJson(await lookupAuthorizedSelection(db, selection, source));
+    const result = await lookupAuthorizedSelection(db, selection, source);
+    return readingAttemptJson(await addWordbookStatus(db, auth.userId, result));
   } catch (error) {
     if (error instanceof LexicalAccessError) return readingAttemptJson({ error: error.message }, { status: error.status });
     if (error instanceof SyntaxError) return readingAttemptJson({ error: "无效的选择。" }, { status: 400 });
