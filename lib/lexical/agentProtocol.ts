@@ -617,7 +617,7 @@ function validateEnvelope(output: Record<string, unknown>, active: AgentActiveBa
   }
 }
 
-function tokenAnnotationsFromOccurrences(works: LexicalBlockWork[], occurrences: LexicalOccurrenceArtifact[]) {
+export function tokenAnnotationsFromOccurrences(works: LexicalBlockWork[], occurrences: LexicalOccurrenceArtifact[]) {
   return works.map((work) => ({
     block_key: lexicalBlockKey(work),
     tokens: work.tokens.filter((token) => !token.excluded).map((token) => {

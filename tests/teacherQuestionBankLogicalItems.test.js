@@ -28,6 +28,46 @@ test("BAS, Email, and AD are explicit Logical Item tabs that preserve type in de
   assert.match(component, /rootHref = `\/teacher\/question-bank\?taskType=\$\{taskType\}&page=\$\{returnPage\}`/);
 });
 
+test("question-bank tabs put the three Reading tasks before the three Writing tasks", () => {
+  const groups = component.slice(
+    component.indexOf("const QUESTION_BANK_TASK_GROUPS"),
+    component.indexOf("type TeacherLogicalItem")
+  );
+  assert.deepEqual(
+    [...groups.matchAll(/taskType: "([^"]+)"/g)].map((match) => match[1]),
+    ["ctw", "rdl", "rap", "build_sentence", "email", "academic_discussion"]
+  );
+  assert.ok(groups.indexOf('label: "阅读"') < groups.indexOf('label: "写作"'));
+});
+
+test("question-bank tabs use a mobile three-column grid and a desktop row with a group divider", () => {
+  const tabs = component.slice(
+    component.indexOf("function QuestionBankTaskTabs("),
+    component.indexOf("function QuestionBankTaskTab(")
+  );
+  assert.match(tabs, /grid auto-rows-fr grid-cols-3 gap-2 md:flex md:items-stretch md:gap-3/);
+  assert.match(tabs, /<span\s+aria-hidden="true"\s+className="hidden md:block md:w-px md:self-stretch md:bg-student-border"/);
+  const reading = tabs.indexOf("readingGroup.tabs.map");
+  const divider = tabs.indexOf("<span");
+  const writing = tabs.indexOf("writingGroup.tabs.map");
+  assert.ok(reading >= 0 && reading < divider && divider < writing);
+  assert.equal((tabs.match(/<QuestionBankTaskTab /g) ?? []).length, 2);
+  assert.doesNotMatch(tabs, /\{group\.label\}/);
+});
+
+test("shared question-bank task tabs retain task links, active state, and equal-width layout", () => {
+  const tab = component.slice(
+    component.indexOf("function QuestionBankTaskTab("),
+    component.indexOf("function TeacherWritingQuestionBankCatalog(")
+  );
+  assert.match(tab, /const active = tab\.taskType === taskType/);
+  assert.match(tab, /aria-current=\{active \? "page" : undefined\}/);
+  assert.match(tab, /active \? "student-button-primary" : "student-button-secondary"/);
+  assert.match(tab, /min-h-10 w-full flex-1 px-4 text-center/);
+  assert.match(tab, /href=\{`\/teacher\/question-bank\?taskType=\$\{tab\.taskType\}`\}/);
+  assert.match(tab, /\{tab\.label\}/);
+});
+
 test("teacher logical catalog uses one task-scoped request and local discovery pagination", () => {
   assert.match(component, /catalog:\$\{taskType\}`/);
   assert.doesNotMatch(component, /catalog:\$\{taskType\}:\$\{page\}/);

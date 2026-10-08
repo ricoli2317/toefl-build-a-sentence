@@ -53,19 +53,19 @@ const QUESTION_BANK_TASK_GROUPS: Array<{
   tabs: Array<{ label: string; taskType: TeacherQuestionBankTaskType }>;
 }> = [
   {
-    label: "写作",
-    tabs: [
-      { label: "Build a Sentence", taskType: "build_sentence" },
-      { label: "Write an Email", taskType: "email" },
-      { label: "Academic Discussion", taskType: "academic_discussion" }
-    ]
-  },
-  {
     label: "阅读",
     tabs: [
       { label: READING_PRODUCT_NAMES.ctw, taskType: "ctw" },
       { label: READING_PRODUCT_NAMES.rdl, taskType: "rdl" },
       { label: READING_PRODUCT_NAMES.rap, taskType: "rap" }
+    ]
+  },
+  {
+    label: "写作",
+    tabs: [
+      { label: "Build a Sentence", taskType: "build_sentence" },
+      { label: "Write an Email", taskType: "email" },
+      { label: "Academic Discussion", taskType: "academic_discussion" }
     ]
   }
 ];
@@ -106,27 +106,42 @@ export function TeacherQuestionBankCatalog({
 }
 
 function QuestionBankTaskTabs({ taskType }: { taskType: TeacherQuestionBankTaskType }) {
+  const [readingGroup, writingGroup] = QUESTION_BANK_TASK_GROUPS;
   return (
-    <nav aria-label="题目类型" className="grid gap-2">
-      {QUESTION_BANK_TASK_GROUPS.map((group) => (
-        <div className="flex flex-wrap items-center gap-2" key={group.label}>
-          <span className="w-8 text-xs font-semibold text-student-muted">{group.label}</span>
-          {group.tabs.map((tab) => {
-            const active = tab.taskType === taskType;
-            return (
-              <Link
-                aria-current={active ? "page" : undefined}
-                className={active ? "student-button-primary min-h-10 px-4" : "student-button-secondary min-h-10 px-4"}
-                href={`/teacher/question-bank?taskType=${tab.taskType}`}
-                key={tab.taskType}
-              >
-                {tab.label}
-              </Link>
-            );
-          })}
-        </div>
+    <nav
+      aria-label="题目类型"
+      className="grid auto-rows-fr grid-cols-3 gap-2 md:flex md:items-stretch md:gap-3"
+    >
+      {readingGroup.tabs.map((tab) => (
+        <QuestionBankTaskTab key={tab.taskType} tab={tab} taskType={taskType} />
+      ))}
+      <span
+        aria-hidden="true"
+        className="hidden md:block md:w-px md:self-stretch md:bg-student-border"
+      />
+      {writingGroup.tabs.map((tab) => (
+        <QuestionBankTaskTab key={tab.taskType} tab={tab} taskType={taskType} />
       ))}
     </nav>
+  );
+}
+
+function QuestionBankTaskTab({
+  tab,
+  taskType
+}: {
+  tab: { label: string; taskType: TeacherQuestionBankTaskType };
+  taskType: TeacherQuestionBankTaskType;
+}) {
+  const active = tab.taskType === taskType;
+  return (
+    <Link
+      aria-current={active ? "page" : undefined}
+      className={`${active ? "student-button-primary" : "student-button-secondary"} min-h-10 w-full flex-1 px-4 text-center`}
+      href={`/teacher/question-bank?taskType=${tab.taskType}`}
+    >
+      {tab.label}
+    </Link>
   );
 }
 

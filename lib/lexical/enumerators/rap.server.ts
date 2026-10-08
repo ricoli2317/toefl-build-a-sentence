@@ -8,6 +8,8 @@ import type { CanonicalLexicalBlock } from "../types.ts";
 export type RapLexicalInput = {
   sourceItemId: string;
   passageId: string;
+  /** Exact canonical passage title shown to students by the practice/result workspace. */
+  passageTitle: string;
   paragraphs: Array<{
     paragraphId: string;
     paragraphOrder: number;
@@ -32,6 +34,17 @@ export type RapLexicalInput = {
 };
 
 export function enumerateRapBlocks(input: RapLexicalInput): CanonicalLexicalBlock[] {
+  if (typeof input.passageTitle !== "string" || !input.passageTitle.trim()) {
+    throw new Error(`RAP passage ${input.passageId} has an empty canonical displayed title.`);
+  }
+  // The workspace title is part of the canonical visible RAP text and one stable block per passage.
+  const titleBlock: CanonicalLexicalBlock = {
+    sourceType: "rap",
+    sourceItemId: input.sourceItemId,
+    contentBlockId: `passage:${input.passageId}:title`,
+    blockKind: "rap_title",
+    text: input.passageTitle
+  };
   const passageBlocks = [...input.paragraphs].sort((left, right) => left.paragraphOrder - right.paragraphOrder).map((paragraph) => {
     const orderedSentences = [...paragraph.sentences].sort((left, right) => left.sentenceOrder - right.sentenceOrder);
     if (orderedSentences.map((sentence) => sentence.sentenceText).join(" ") !== paragraph.paragraphText) {
@@ -104,5 +117,5 @@ export function enumerateRapBlocks(input: RapLexicalInput): CanonicalLexicalBloc
       text: question.questionType === "rap_sentence_selection" ? rapSentenceSelectionStem(question.stem) : question.stem
     }, ...options];
   });
-  return [...passageBlocks, ...questionBlocks];
+  return [titleBlock, ...passageBlocks, ...questionBlocks];
 }

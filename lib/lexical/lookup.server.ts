@@ -149,6 +149,13 @@ async function readingBlockText(db: SupabaseClient, r: LexicalLookupRequest): Pr
     return r.blockText;
   }
   if (r.sourceType === "rap" && id.startsWith("passage:")) {
+    const titleMatch = /^passage:([^:]+):title$/.exec(id);
+    if (titleMatch) {
+      const passage = await one(db.from("reading_passages").select("passage_id,title")
+        .eq("passage_id", titleMatch[1]).eq("logical_item_id", r.sourceItemId!).maybeSingle());
+      reject(typeof passage.title === "string" && passage.title.trim());
+      return String(passage.title);
+    }
     const match = /^passage:([^:]+):paragraph:([^:]+)$/.exec(id); reject(match);
     await one(db.from("reading_passages").select("passage_id").eq("passage_id", match![1]).eq("logical_item_id", r.sourceItemId!).maybeSingle());
     const p = await one(db.from("reading_passage_paragraphs").select("paragraph_text").eq("passage_id", match![1]).eq("paragraph_id", match![2]).maybeSingle());

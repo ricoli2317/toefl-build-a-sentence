@@ -133,7 +133,7 @@ export async function loadCanonicalLexicalInputs(
     selectAllRows(db, "reading_ctw_segments", "question_id,paragraph_id,segment_order,segment_type,text_content,slot_id", ["question_id", "paragraph_id", "segment_order"]),
     selectAllRows(db, "reading_ctw_slots", "question_id,slot_id,slot_order,paragraph_id,answer", ["question_id", "slot_order"]),
     selectAllRows(db, "reading_materials", "material_id,binding_status,hitbox_data_path", ["material_id"]),
-    selectAllRows(db, "reading_passages", "passage_id,logical_item_id", ["logical_item_id"]),
+    selectAllRows(db, "reading_passages", "passage_id,logical_item_id,title", ["logical_item_id"]),
     selectAllRows(db, "reading_passage_paragraphs", "passage_id,paragraph_id,paragraph_order,paragraph_text", ["passage_id", "paragraph_order"]),
     selectAllRows(db, "reading_passage_sentences", "passage_id,paragraph_id,sentence_id,sentence_order,sentence_text", ["passage_id", "paragraph_id", "sentence_order"]),
     selectAllRows(db, "reading_rap_insertion_anchors", "question_id,passage_id,anchor_id,anchor_order,paragraph_id,boundary_index,after_sentence_id", ["question_id", "anchor_order"]),
@@ -248,6 +248,7 @@ export async function loadCanonicalLexicalInputs(
       return {
         sourceItemId,
         passageId,
+        passageTitle: passage.title as string,
         paragraphs: (paragraphsByPassage.get(passageId) ?? []).map((paragraph) => ({
           paragraphId: String(paragraph.paragraph_id),
           paragraphOrder: Number(paragraph.paragraph_order),
