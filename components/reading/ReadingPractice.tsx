@@ -1525,7 +1525,7 @@ function CtwPracticeWorkspace({
           type="text"
         />
       ) : null}
-      <h1 {...(question.stem === "Fill in the missing letters in the paragraph." ? lexicalBlockAttributes(`question:${question.questionId}:stem`) : {})} className="text-center font-extrabold text-student-text" style={readingTitleTypographyStyle}>Fill in the missing letters in the paragraph.</h1>
+      <h1 className="text-center font-extrabold text-student-text" style={readingTitleTypographyStyle}>Fill in the missing letters in the paragraph.</h1>
       {/* Read-only review: the paragraph scrolls inside its own area instead of
           being clipped, so a short viewport can never push the passage under
           the answer card. In the narrow-screen answer-table layout the whole
@@ -1983,7 +1983,8 @@ function ReadingTwoColumnPracticeShell({
   right,
   testId,
   title,
-  titleId
+  titleId,
+  titleLexicalBlockId
 }: {
   left: ReactNode;
   lookupEnabled: boolean;
@@ -1993,6 +1994,7 @@ function ReadingTwoColumnPracticeShell({
   testId: "rdl-workspace" | "rap-workspace";
   title: string;
   titleId: string;
+  titleLexicalBlockId?: string;
 }) {
   const desktopColumns = ratio === "rdl"
     ? "lg:grid-cols-[minmax(0,52fr)_minmax(0,48fr)]"
@@ -2004,7 +2006,8 @@ function ReadingTwoColumnPracticeShell({
       data-testid={testId}
     >
       <h1
-        className="shrink-0 text-center font-extrabold text-student-text"
+        {...(titleLexicalBlockId ? lexicalBlockAttributes(titleLexicalBlockId, title) : {})}
+        className={`shrink-0 text-center font-extrabold text-student-text ${titleLexicalBlockId && lookupEnabled ? "select-text" : ""}`}
         id={titleId}
         style={readingTitleStyle}
       >
@@ -2771,6 +2774,7 @@ function RapPracticeWorkspace({
       testId="rap-workspace"
       title={passage.title}
       titleId="rap-passage-title"
+      titleLexicalBlockId={`passage:${passage.passageId}:title`}
     />
   );
 }
