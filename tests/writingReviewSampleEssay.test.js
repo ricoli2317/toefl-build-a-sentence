@@ -67,7 +67,7 @@ function manualEmailDraft() {
 }
 
 // ---------------------------------------------------------------------------
-// C3 prompt: exactly the three hard rules, no rubric injection, no rewrite
+// C3 task-specific rules: no rubric injection or unrelated prompt rewrite
 // ---------------------------------------------------------------------------
 
 test("C3 Email prompt adds only the Subject exclusion and keeps the existing contract", () => {
@@ -99,7 +99,7 @@ test("C3 Email prompt adds only the Subject exclusion and keeps the existing con
   assert.doesNotMatch(system, /Official TOEFL Write an Email Scoring Guide/);
 });
 
-test("C3 Academic Discussion prompt adds the peer-optional rule and the under-100 adjustment only", () => {
+test("C3 Academic Discussion retains the peer-optional rule and internal under-100 adjustment", () => {
   const messages = buildWritingReviewSemanticC3Messages({
     taskType: "academic_discussion",
     question: discussionQuestion(),
@@ -124,6 +124,7 @@ test("C3 Academic Discussion prompt adds the peer-optional rule and the under-10
     /Never turn a valid English response with a base score of 1 into 0 merely because it is under 100 words\./
   );
   assert.match(system, /Apply the adjustment exactly once\./);
+  assert.match(system, /Do not apply further mechanical deductions for the same word-count fact/);
   assert.match(user, /"word_count":87/);
 
   // Existing structure is unchanged:
@@ -139,6 +140,47 @@ test("C3 Academic Discussion prompt adds the peer-optional rule and the under-10
   assert.doesNotMatch(system, /Official TOEFL Write for an Academic Discussion Scoring Guide/);
 });
 
+test("C3 AD keeps the exact six-score mapping and explicitly excludes 100 words or more", () => {
+  for (const wordCount of [99, 100, 101]) {
+    const messages = buildWritingReviewSemanticC3Messages({
+      taskType: "academic_discussion",
+      question: discussionQuestion(),
+      anchoredResponse: "I support public transit.",
+      wordCount
+    });
+    const system = messages[0].content;
+    const mapping = [...system.matchAll(/(\d) → (\d)/g)]
+      .map((match) => [Number(match[1]), Number(match[2])]);
+    assert.deepEqual(mapping, [[5, 4], [4, 3], [3, 2], [2, 1], [1, 1], [0, 0]]);
+    assert.match(system, /First determine the base overall score under the existing official rubric\. Then apply one under-100-word adjustment/);
+    assert.match(system, /Apply this mapping only when the response has fewer than 100 English words\./);
+    assert.match(system, /At 100 English words or more, do not apply this adjustment\./);
+    assert.equal(JSON.parse(messages[1].content).word_count, wordCount);
+  }
+});
+
+test("C3 AD score_reason hides the word-count mechanism but still explains genuine quality issues", () => {
+  const system = buildWritingReviewSemanticC3Messages({
+    taskType: "academic_discussion",
+    question: discussionQuestion(),
+    anchoredResponse: "I support public transit.",
+    wordCount: 40
+  })[0].content;
+  assert.match(system, /Teacher-visible overall score reference \(score_reason\):/);
+  assert.match(system, /Keep the word-count decision internal\./);
+  for (const prohibited of [
+    "the 100-word threshold",
+    "the response's word count or whether it meets a length requirement",
+    "any penalty or absence of a penalty",
+    "the score mapping",
+    "the difference between the internal base score and adjusted score"
+  ]) assert.ok(system.includes(prohibited), `missing prohibition: ${prohibited}`);
+  assert.match(system, /Do not disclose these through Chinese, English, or paraphrases\./);
+  assert.match(system, /Explain task fulfillment, stance, argument development, language quality, and organizational coherence instead\./);
+  assert.match(system, /You may still evaluate genuine insufficient development or missing concrete support/);
+  assert.match(system, /do not explain these as effects of the word-count scoring mechanism\./);
+});
+
 test("C3 Email prompt never carries the AD word-count rule and vice versa", () => {
   const emailSystem = buildWritingReviewSemanticC3Messages({
     taskType: "email",
@@ -152,6 +194,7 @@ test("C3 Email prompt never carries the AD word-count rule and vice versa", () =
     wordCount: 50
   })[0].content;
   assert.doesNotMatch(emailSystem, /under-100-word|fewer than 100 words|either peer is optional/);
+  assert.doesNotMatch(emailSystem, /Teacher-visible overall score reference|Keep the word-count decision internal/);
   assert.doesNotMatch(adSystem, /subject is provided by the task|omitting a subject line/);
 });
 
@@ -225,6 +268,57 @@ test("sample essay Academic Discussion prompt contains the complete task, both p
   );
 });
 
+for (const [taskType, question, target, preservation] of [
+  ["email", emailQuestion(), "120–140", "Preserve the student's main ideas, intent, reasons, and key information."],
+  ["academic_discussion", discussionQuestion(), "160–180", "Preserve the student's core stance, main reasons, and direction of argument."]
+]) test(`sample essay ${taskType} empty and whitespace instructions inject only the task-specific defaults`, () => {
+  const build = (teacherInstruction) => buildWritingSampleEssayMessages({
+    taskType, question, responseText, teacherInstruction
+  });
+  const messages = build("");
+  assert.deepEqual(build(" \t\n "), messages);
+  const system = messages[0].content;
+  assert.match(system, /Default generation rules \(no teacher instruction was provided\):/);
+  assert.match(system, /score-5 model response under the provided six-band 0–5 rubric/);
+  assert.ok(system.includes(`Target ${target} English words in the response body.`));
+  assert.ok(system.includes(preservation));
+  assert.match(system, /no identifiable valid ideas/);
+  assert.match(system, /prioritize fulfilling the task rather than inventing views and attributing them to the student/);
+  assert.match(system, /Return only the model response itself\./);
+  assert.match(system, /Do not return analysis, a score, rubric explanation, feedback, a title, a word count, Markdown wrapping/);
+  if (taskType === "email") {
+    assert.match(system, /You may reorganize the response, add necessary details, and improve language and coherence/);
+    assert.match(system, /Correct errors; you do not need to preserve the original sentence by sentence/);
+    assert.match(system, /Fulfill the current Email task requirements/);
+    assert.doesNotMatch(system, /Target 160–180/);
+  } else {
+    assert.match(system, /You may deepen the argument, add appropriate examples, and improve organization/);
+    assert.match(system, /Answer the professor's discussion question/);
+    assert.match(system, /Responding to other students is optional, not required/);
+    assert.doesNotMatch(system, /Target 120–140/);
+  }
+  const payload = JSON.parse(messages[1].content);
+  assert.equal(payload.teacher_instruction, "");
+  assert.equal(payload.student_response, responseText);
+  assert.deepEqual(payload.original_task, question);
+});
+
+test("nonempty teacher instructions never receive the default score, length, or preservation constraints", () => {
+  const instruction = "生成全新 3 分范文，不保留学生思路，90 词";
+  for (const [taskType, question] of [
+    ["email", emailQuestion()], ["academic_discussion", discussionQuestion()]
+  ]) {
+    const messages = buildWritingSampleEssayMessages({
+      taskType, question, responseText, teacherInstruction: instruction
+    });
+    assert.equal(JSON.parse(messages[1].content).teacher_instruction, instruction);
+    assert.match(messages[0].content, /The teacher's instruction has highest priority\./);
+    assert.match(messages[0].content, /rather than automatically maximizing the score/);
+    assert.match(messages[0].content, /do not rely on the student's response for content/);
+    assert.doesNotMatch(messages[0].content, /Default generation rules|Target 120–140|Target 160–180|Preserve the student's/);
+  }
+});
+
 test("sample essay prompts exclude review-only contracts (no C3 schema, localization, or feedback structure)", () => {
   for (const [taskType, question] of [
     ["email", emailQuestion()],
@@ -268,14 +362,16 @@ test("sample essay response parsing trims, unwraps a single fence, and rejects e
   );
 });
 
-test("sample essay instruction validation rejects blank, missing, and oversized input", () => {
+test("sample essay instruction validation accepts blank but rejects missing, non-string, and oversized input", () => {
   assert.equal(parseWritingSampleEssayInstruction({ instruction: "  4 分  " }), "4 分");
+  assert.equal(parseWritingSampleEssayInstruction({ instruction: "" }), "");
+  assert.equal(parseWritingSampleEssayInstruction({ instruction: " \t\n " }), "");
   assert.throws(
     () => parseWritingSampleEssayInstruction({}),
     (error) => error.code === "INVALID_TEACHER_INSTRUCTION"
   );
   assert.throws(
-    () => parseWritingSampleEssayInstruction({ instruction: " " }),
+    () => parseWritingSampleEssayInstruction({ instruction: 42 }),
     (error) => error.code === "INVALID_TEACHER_INSTRUCTION"
   );
   assert.throws(
@@ -344,6 +440,33 @@ test("successful sample essay generation persists the instruction and draft as o
   assert.equal(result.instruction, "保留学生思路，生成 4 分水平范文");
   assert.equal(result.draft, "Model essay.");
 });
+
+for (const taskType of ["email", "academic_discussion"]) {
+  for (const instruction of ["", " \t\n "]) {
+    test(`sample essay ${taskType} ${instruction === "" ? "empty" : "whitespace"} instruction reaches AI and saves an empty instruction with the draft`, async () => {
+      const repository = fakeSampleRepository({
+        attempt: { attempt_id: "attempt-1", task_type: taskType, question_id: "q1", response_text: responseText, status: "submitted" },
+        question: taskType === "email" ? emailQuestion() : discussionQuestion()
+      });
+      let request;
+      const result = await generateWritingSampleEssay("attempt-1", { instruction }, {
+        repository,
+        requestAI: async (messages, context) => {
+          request = { messages, context };
+          return { content: "Generated draft." };
+        }
+      });
+      assert.equal(request.context.taskType, taskType);
+      assert.match(request.messages[0].content, /Default generation rules/);
+      assert.equal(JSON.parse(request.messages[1].content).teacher_instruction, "");
+      assert.equal(repository.calls.save.length, 1);
+      assert.equal(repository.calls.save[0].instruction, "");
+      assert.equal(repository.calls.save[0].draft, "Generated draft.");
+      assert.equal(result.instruction, "");
+      assert.equal(result.draft, "Generated draft.");
+    });
+  }
+}
 
 test("sample essay generation failure never writes a draft", async () => {
   const repository = fakeSampleRepository();
@@ -616,6 +739,31 @@ async function generateInto(db, tables, instruction, essay) {
     requestAI: async () => ({ content: essay })
   });
 }
+
+test("default generation keeps manual Save, direct Publish, and regenerated draft isolation unchanged", async () => {
+  const tables = fakeFamilyTables();
+  const db = fakeDb(tables);
+  const draft = manualEmailDraft();
+  await generateInto(db, tables, "", "Default V1");
+  assert.equal(tables.writing_reviews[0].sample_essay_instruction, "");
+  assert.equal(tables.writing_reviews[0].sample_essay_draft, "Default V1");
+  assert.equal(tables.writing_reviews[0].published_sample_essay, null);
+
+  await saveWritingReviewWorkspace(db, "attempt-1", { ...draft, sample_essay_draft: "Manual V2" });
+  assert.equal(tables.writing_reviews[0].sample_essay_draft, "Manual V2");
+  assert.equal(tables.writing_reviews[0].published_sample_essay, null);
+  await saveWritingReviewWorkspace(db, "attempt-1", { ...draft, sample_essay_draft: "Unsaved V3" }, { publish: true });
+  const student = await loadStudentPublishedWritingReview(db, "student-1", "attempt-1");
+  assert.equal(student.review.sample_essay, "Unsaved V3");
+
+  await generateInto(db, tables, " \t\n ", "Default V4");
+  const workspace = await loadWritingReviewWorkspace(db, "attempt-1");
+  assert.equal(workspace.review.sample_essay_instruction, "");
+  assert.equal(workspace.review.sample_essay_draft, "Default V4");
+  assert.equal(workspace.review.published_sample_essay, "Unsaved V3");
+  const studentAfterGeneration = await loadStudentPublishedWritingReview(db, "student-1", "attempt-1");
+  assert.equal(studentAfterGeneration.review.sample_essay, "Unsaved V3");
+});
 
 test("generate V1 → publish V1 → generate V2 → publish V2 keeps student visibility one step behind", async () => {
   const tables = fakeFamilyTables();
@@ -914,6 +1062,21 @@ test("teacher workspace exposes the 范文 mode with an isolated sample-essay ac
   assert.match(teacher, /sample_essay_draft/);
   // Sample generation must never be routed through the review regeneration calls.
   assert.doesNotMatch(teacher, /generateSampleEssay[\s\S]{0,400}regenerate-ai/);
+});
+
+test("sample essay UI permits empty requirements and the API delegates to the same validated generation service", () => {
+  const teacher = read("components/teacher/TeacherWritingReviewWorkspace.tsx");
+  const handler = teacher.slice(teacher.indexOf("async function generateSampleEssay()"), teacher.indexOf("const hasUnsavedChanges"));
+  assert.match(handler, /const instruction = sampleInstruction\.trim\(\)/);
+  assert.match(handler, /requestSampleEssayGeneration\(attemptId, instruction\)/);
+  assert.doesNotMatch(handler, /if \(!instruction\)|请输入范文要求/);
+  const workspace = teacher.slice(teacher.indexOf("function SampleEssayWorkspace("), teacher.indexOf("function QuestionColumn("));
+  assert.match(workspace, /<button\s+className="[^"]+"\s+disabled=\{generating\}\s+onClick=\{onGenerate\}/);
+  assert.doesNotMatch(workspace, /disabled=\{[^}]*instruction/);
+  assert.match(workspace, /value=\{instruction\}/);
+  const route = read("app/api/teacher/writing/reviews/[attemptId]/sample-essay/generate/route.ts");
+  assert.match(route, /generateWritingSampleEssay\(\s*params\.attemptId,\s*await request\.json\(\)/);
+  assert.doesNotMatch(route, /if \(!instruction\)|请输入范文要求/);
 });
 
 test("teacher workspace 范文 body is editable and flows through the shared Save / Publish", () => {
