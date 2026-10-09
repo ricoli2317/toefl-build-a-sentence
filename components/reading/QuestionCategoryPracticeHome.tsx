@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpen, ListChecks } from "lucide-react";
-import { useStudentCachedData, STUDENT_READING_CATEGORY_COUNTS_CACHE_KEY } from "@/components/StudentDataCache";
+import { ArrowRight, BookOpen, ListChecks } from "lucide-react";
+import { useStudentCachedData, STUDENT_READING_CATEGORY_COUNTS_CACHE_KEY, STUDENT_READING_HISTORY_CACHE_PREFIX } from "@/components/StudentDataCache";
 import { StudentNavigation, StudentErrorState, StudentLoadingState } from "@/components/student/StudentUI";
 import { PracticeAmountDialog } from "@/components/student/PracticeAmountDialog";
+import { StudentErrorAnalysis } from "@/components/student/StudentErrorAnalysis";
+import type { QuestionCategoryErrorCount } from "@/lib/reading/questionCategoryAnalysis.server";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 import { wrongQuestionAmountOptions } from "@/lib/wrongQuestionBank";
@@ -22,12 +24,32 @@ export function QuestionCategoryPracticeHome() {
     }
   );
   const counts = new Map(state.data?.categories.map((category) => [category.questionCategory, category.count]));
+  const analysis = useStudentCachedData<{ ranking: QuestionCategoryErrorCount[] }>(
+    `${STUDENT_READING_HISTORY_CACHE_PREFIX}:rap-category-errors`, async (auth) => {
+      const response = await fetch(`${CATEGORY_API}/analysis`, { cache: "no-store", headers: { Authorization: `Bearer ${auth.accessToken}` } });
+      const payload = await response.json();
+      if (!response.ok || !Array.isArray(payload.ranking)) throw new Error(payload.error ?? "题型统计加载失败。");
+      return payload;
+    },
+    // Also refresh after returning from a Full Set; its existing cache flow is separate.
+    { refreshOnMount: true }
+  );
   const count = selected ? counts.get(selected) ?? 0 : 0;
   return <div className="grid gap-5">
     <StudentNavigation backHref={STUDENT_ROUTES.home} crumbs={[
       { label: STUDENT_UI_TEXT.studentHome, href: STUDENT_ROUTES.home },
       { label: STUDENT_UI_TEXT.questionCategoryPractice }
     ]} />
+    <StudentErrorAnalysis
+      title={<><span className="text-student-primary">Read an Academic Passage</span> 题型分析</>}
+      subtitle="高频错误题型" emptyText="暂无高频错误题型。" tone="orange"
+      items={(analysis.data?.ranking ?? []).map((row) => ({ ...row, tag: row.questionCategory }))}
+      loading={analysis.loading} error={Boolean(analysis.error)} minimumProgressPercent={0}
+      renderAction={(item, className) => <button type="button"
+        className={`${className} disabled:opacity-50`} disabled={state.loading || Boolean(state.error)}
+        onClick={() => setSelected(item.questionCategory)}>
+        专项练习 <ArrowRight aria-hidden="true" size={14} />
+      </button>} />
     {state.error ? <StudentErrorState text="题型数量加载失败，请稍后重试。" /> : null}
     {state.loading ? <StudentLoadingState text="正在加载题型数量..." /> : null}
     <div className="grid gap-2">
