@@ -1,0 +1,71 @@
+{
+  "formatVersion": 1,
+  "revision": "fixed-v2-approved-493-20261009",
+  "dataset": "data/wordbook-review/fixed-pool-v2.full-review.json",
+  "approvedDatasetSha256": "b94b9fd17d02d8a7b91125eba803a1f3181b9d86b26401f512ca09f4aa14b352",
+  "total": 493,
+  "byPos": {
+    "noun": 150,
+    "verb": 120,
+    "adjective": 100,
+    "adverb": 60,
+    "preposition": 27,
+    "conjunction": 16,
+    "pronoun": 20
+  },
+  "recommendedAtomicInstaller": "supabase/student_wordbook_review_v1_fixed_pool_v2_install.sql",
+  "standaloneDependencyOrder": [
+    "supabase/student_wordbook_review_v1_fixed_pool_migration.sql",
+    "supabase/student_wordbook_review_v1_fixed_pool_verify.sql",
+    "supabase/student_wordbook_review_v1_fixed_pool_v2_seed_APPROVED.sql",
+    "supabase/student_wordbook_review_v1_choice_preference_migration.sql",
+    "supabase/student_wordbook_review_v1_choice_preference_tags.sql",
+    "supabase/student_wordbook_review_v1_fixed_pool_v2_production_verify.sql"
+  ],
+  "files": {
+    "supabase/student_wordbook_review_v1_fixed_pool_v2_install.sql": {
+      "sha256": "c8eb1c4bc4ebd52f4dac596d7d0c5ac253c52d7016936e3c37ebfd47aa803334",
+      "bytes": 602538
+    },
+    "supabase/student_wordbook_review_v1_fixed_pool_migration.sql": {
+      "sha256": "0065ff72dc9190cf1213bc40f143caccb73a717aa9d216fafb643f472af1bc33",
+      "bytes": 8214
+    },
+    "supabase/student_wordbook_review_v1_fixed_pool_verify.sql": {
+      "sha256": "06bf1123e3821d3e09583454ff9febcd5c4764d10f8f7ec67dccfbf2513af900",
+      "bytes": 2828
+    },
+    "supabase/student_wordbook_review_v1_fixed_pool_v2_seed_APPROVED.sql": {
+      "sha256": "6d8778337df85ef514e66c8d908912a8458fb020e33db8d5b7d5c303176727ef",
+      "bytes": 187689
+    },
+    "supabase/student_wordbook_review_v1_choice_preference_migration.sql": {
+      "sha256": "465db29406e4caf919fbaafeb41fae281b3fbcf5eea29781247871b5a3cf6c0d",
+      "bytes": 10727
+    },
+    "supabase/student_wordbook_review_v1_choice_preference_tags.sql": {
+      "sha256": "dcef2982d3798b3178436c7462a5c26beac7da0b0ee1e6fa37913e5e8cfc7bf5",
+      "bytes": 71580
+    },
+    "supabase/student_wordbook_review_v1_fixed_pool_v2_production_verify.sql": {
+      "sha256": "f60548b67384b1b3609770a4c058a12872b8b70142bbacad0b7a46f8addf16df",
+      "bytes": 318333
+    },
+    "supabase/student_wordbook_review_v1_ascii_distractor_verify.sql": {
+      "sha256": "c1bc65fe67fef10e725bc3cf544bf9bcd66bddcedf606a02be372791b9fe8021",
+      "bytes": 2173
+    },
+    "supabase/student_wordbook_review_v1_choice_preference_verify.sql": {
+      "sha256": "f286b514afe33112a0e2f234e138144dda770527e9145690b571235d149468b8",
+      "bytes": 2589
+    },
+    "data/wordbook-review/fixed-pool-v2.full-review.json": {
+      "sha256": "b94b9fd17d02d8a7b91125eba803a1f3181b9d86b26401f512ca09f4aa14b352",
+      "bytes": 664830
+    },
+    "data/wordbook-review/fixed-pool-v2.preference-tags.json": {
+      "sha256": "d3f181917a506925d9d7cf085646342349bca2a37c13e2f272ff11ab11eaec9f",
+      "bytes": 212681
+    }
+  }
+}

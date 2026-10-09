@@ -143,7 +143,7 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
     const { contentBlockId, ...selectionSpan } = span;
     lookup(contentBlockId, selectionSpan);
   };
-  const toggleWordbook = async () => {
+  const toggleWordbook = async (intent: "toggle" | "save" = "toggle") => {
     const result = state?.result;
     const selection = currentRequest.current;
     if (teacherReadonly || !enabled || !selection || result?.status !== "matched" || mutationBusy.current) return;
@@ -167,8 +167,11 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
       // If the optional lookup status failed, refresh before choosing the action.
       const status = result.wordbook?.available ? result.wordbook : await send("status");
       try {
-        const wordbook = await send(status.saved ? "remove" : "save");
-        update({ result: { ...result, wordbook }, wordbookMessage: wordbook.saved ? "已加入生词本。" : "已取消收藏。" });
+        // Saved is entry-level status, NOT proof that this occurrence/source/sense
+        // was saved. Explicit context saves reuse the verified idempotent RPC.
+        const wordbook = await send(intent === "save" ? "save" : status.saved ? "remove" : "save");
+        update({ result: { ...result, wordbook }, wordbookMessage: wordbook.saved
+          ? intent === "save" ? "当前语境已保存。" : "已加入生词本。" : "已取消收藏。" });
       } catch (error) {
         // A dropped response might have committed. Reconcile, never blindly toggle again.
         try { update({ result: { ...result, wordbook: await send("status") } }); }
@@ -194,14 +197,17 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
         <div className="overflow-y-auto rounded-xl p-4" style={{ maxHeight: position ? Math.max(0, position.maxHeight - 2) : "calc(100dvh - 16px)", scrollbarGutter: "stable" }}>
           <div ref={content}><LexicalLookupCard state={state} query={query} onQueryChange={(value) => {
             revision.current++; abort.current?.abort(); setQuery(value); setState({ selected: state.selected });
-          }} onSearch={() => { if (currentRequest.current) runLookup({ ...currentRequest.current, query }); }} onWordbookToggle={teacherReadonly ? undefined : toggleWordbook} /></div>
+          }} onSearch={() => { if (currentRequest.current) runLookup({ ...currentRequest.current, query }); }}
+            onWordbookToggle={teacherReadonly ? undefined : () => void toggleWordbook()}
+            onWordbookSaveContext={teacherReadonly ? undefined : () => void toggleWordbook("save")} /></div>
         </div>
       </div> : null}
     </Context.Provider>
   );
 }
-export function LexicalLookupCard({ state, query = state.selected, onQueryChange, onSearch, onWordbookToggle }: {
+export function LexicalLookupCard({ state, query = state.selected, onQueryChange, onSearch, onWordbookToggle, onWordbookSaveContext }: {
   state: LookupState; query?: string; onQueryChange?: (query: string) => void; onSearch?: () => void; onWordbookToggle?: () => void;
+  onWordbookSaveContext?: () => void;
 }) {
   const matched = state.result?.status === "matched" ? state.result : null;
   return <div aria-live="polite">
@@ -210,7 +216,7 @@ export function LexicalLookupCard({ state, query = state.selected, onQueryChange
         value={query} onChange={(event) => onQueryChange?.(event.target.value)} maxLength={240} />
       <button className="student-button-primary shrink-0" disabled={!query.trim()} type="submit">Look Up</button>
     </form>
-    {matched ? <div className="flex items-center gap-2">
+    {matched ? <div className="flex flex-wrap items-center gap-2">
       <p className="min-w-0 break-words text-lg font-bold">{matched.entry.canonical_expression}</p>
       {onWordbookToggle ? <button type="button" onClick={onWordbookToggle} disabled={state.wordbookBusy}
         aria-pressed={Boolean(matched.wordbook?.saved)} title={matched.wordbook?.saved ? "点击取消当前科目的收藏" : "加入当前科目的生词本"}
@@ -220,6 +226,9 @@ export function LexicalLookupCard({ state, query = state.selected, onQueryChange
           : <Plus aria-hidden="true" className="shrink-0 text-student-primary" size={14} strokeWidth={2.2} />}
         {state.wordbookBusy ? "处理中…" : matched.wordbook?.saved ? "已加入 · 取消收藏" : "加入生词本"}
       </button> : null}
+      {onWordbookSaveContext && matched.wordbook?.saved ? <button type="button" onClick={onWordbookSaveContext}
+        disabled={state.wordbookBusy} className="student-button-secondary min-h-8 px-2.5 py-1 text-xs"
+        title="保存当前来源、语境义和例句；重复保存不会增加收藏活动">保存当前语境</button> : null}
     </div> : null}
     {state.wordbookError || state.wordbookMessage ? <p className={`mt-2 text-xs ${state.wordbookError ? "text-student-error" : "text-student-primary"}`} role="status">{state.wordbookError ?? state.wordbookMessage}</p> : null}
     {matched ? <>

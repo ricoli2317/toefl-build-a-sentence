@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { useStudentDataCache } from "@/components/StudentDataCache";
 import { StudentNavigation } from "@/components/student/StudentUI";
 import { StudentDateSelection } from "@/components/student/StudentDateSelection";
@@ -117,6 +118,8 @@ export function StudentWordbook() {
         {active.start ? <button type="button" className="text-xs text-student-primary hover:underline" onClick={() => { setDraft({ start: "", end: "" });update({ start: "", end: "", page: 1 }); }}>清除</button> : null}
       </fieldset>
       <div className="flex flex-wrap items-center gap-2">
+        <Link href={`/student/wordbook/review?domain=${domain}`} aria-disabled={deleting}
+          onClick={event => { if (deleting) event.preventDefault(); }} className={`student-button-primary ${deleting ? "pointer-events-none opacity-50" : ""}`}>开始复习</Link>
         {managing ? <><button type="button" className="student-button-secondary" disabled={!selected.length || deleting || list.loading}
           onClick={() => { setDeleteError("");setConfirming(true); }}>删除{selected.length ? ` (${selected.length})` : ""}</button>
           <button type="button" className="student-button-secondary" disabled={deleting} onClick={() => { setManaging(false);clearSelection(); }}>取消</button></>

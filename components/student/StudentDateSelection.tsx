@@ -8,7 +8,7 @@ import { addDays, boundedCalendarMonth, boundedDateDraft, formatDateInputValue, 
 export const DATE_BUTTON_CLASS = "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white text-student-muted transition hover:border-student-primary-border hover:text-student-primary";
 
 // Practice history's existing form, with an OPTIONAL activity month extension.
-export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, rangeLabel = "查看范围统计", activity, bounds }: {
+export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, rangeLabel = "查看范围统计", activity, bounds, singleDay = false }: {
   draft: { start: string; end: string };
   onDraftChange: (draft: { start: string; end: string }) => void;
   onApply: (close: () => void) => void;
@@ -16,6 +16,7 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
   hint?: string;
   rangeLabel?: string;
   bounds?: StudentDateBounds;
+  singleDay?: boolean;
   activity?: { month: Date; dates: string[]; onMonthChange: (month: Date) => void; error?: string; loading?: boolean; showToday?: boolean; resetMonthOnOpen?: boolean };
 }) {
   const valid = !bounds || Boolean(boundedDateDraft(draft, bounds));
@@ -27,9 +28,9 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
       <label className="grid gap-1.5 text-xs font-semibold text-student-muted">开始日期
         <input aria-label="开始日期" className="teacher-input w-full min-w-0" min={bounds?.min} max={bounds?.max} onChange={event => onDraftChange({ ...draft, start: event.target.value })} type="date" value={draft.start} />
       </label>
-      <label className="grid gap-1.5 text-xs font-semibold text-student-muted">结束日期（可不填）
+      {!singleDay ? <label className="grid gap-1.5 text-xs font-semibold text-student-muted">结束日期（可不填）
         <input aria-label="结束日期" className="teacher-input w-full min-w-0" min={bounds ? draft.start > bounds.min && draft.start <= bounds.max ? draft.start : bounds.min : undefined} max={bounds?.max} onChange={event => onDraftChange({ ...draft, end: event.target.value })} type="date" value={draft.end} />
-      </label>
+      </label> : null}
       <p className="text-xs leading-5 text-student-muted">{hint ?? "同一天按单日详情查看；起止不同则显示范围统计。"}</p>
       {bounds && (draft.start || draft.end) && !valid ? <p role="status" className="text-xs text-student-error">请选择 {bounds.min} 至 {bounds.max} 内的有效日期，结束日期不能早于开始日期。</p> : null}
       <button className="teacher-button-primary w-full" disabled={!draft.start || !valid} type="submit">{!draft.end || draft.end === draft.start ? "查看当天" : rangeLabel}</button>

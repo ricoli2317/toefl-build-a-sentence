@@ -145,6 +145,13 @@ async function fixture() {
   await db.exec('grant select on profiles to service_role');
   await db.query(`update lexical_occurrences set start_offset=7,end_offset=14,surface_text='running',context_text=$1,context_pos='verb',context_definition_en='Move quickly.' where occurrence_id=$2`,[text,O]);
   await db.query(`insert into lexical_source_blocks values('00000000-0000-4000-8000-000000000014','ctw','fixture','paragraph:p','ctw_paragraph',$1,'generated')`,[block.source_text_hash]);
+  if (process.env.WORDBOOK_SQL_TEST_REVIEW === '1') {
+    // Run unchanged collection/lookup scenarios against the upgraded save RPC.
+    // Requires the normal A3 + BUGFIX test flags; approved cleanup stays enforced.
+    await db.exec(read('supabase/student_wordbook_v1_batch_delete_20261008.sql'));
+    await require('./helpers/wordbookReviewFixture.cjs').beforeMigration(db);
+    await db.exec(read('supabase/student_wordbook_review_v1_migration.sql'));
+  }
   return db;
 }
 const call=async(db,action='save',payload=expected(),user=U,occ=O)=>(await db.query('select public.operate_student_wordbook_v1($1,$2,$3,$4::jsonb) as result',[user,occ,action,JSON.stringify(payload)])).rows[0].result;

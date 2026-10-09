@@ -354,5 +354,9 @@ test('entry wiring and compact WE/AD markup keep lookup physically inside Questi
   assert.match(read('components/reading/ReadingPractice.tsx'),/sessionId: payload.attempt.attemptId/);
   assert.match(read('components/TeacherDashboard.tsx'),/teacherStudentId=\{detail.student.studentId\}/);
   assert.match(read('lib/teacherStudentPractice.ts'),/href: `\/teacher\/writing\/reviews\//);
-  assert.match(read('components/lexical/LexicalLookup.tsx'),/onWordbookToggle=\{teacherReadonly \? undefined : toggleWordbook\}/);
+  const lookup=read('components/lexical/LexicalLookup.tsx');
+  // The context-save intent requires a no-argument toggle wrapper. Both
+  // mutation callbacks must still be absent from Teacher read-only cards.
+  assert.match(lookup,/onWordbookToggle=\{teacherReadonly \? undefined : \(\) => void toggleWordbook\(\)\}/);
+  assert.match(lookup,/onWordbookSaveContext=\{teacherReadonly \? undefined : \(\) => void toggleWordbook\("save"\)\}/);
 });

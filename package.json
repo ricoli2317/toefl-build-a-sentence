@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "node --test tests/*.test.js",
+    "test:wordbook-review": "node scripts/test-wordbook-review.cjs",
     "compare:writing-models": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/compare-writing-review-models.ts",
     "benchmark:writing-reasoning": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/benchmark-writing-review-reasoning.ts",
     "benchmark:writing-moonshot": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local --experimental-strip-types scripts/benchmark-writing-review-moonshot.ts",
@@ -58,6 +59,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "^3.1119.0",
+    "@electric-sql/pglite": "0.5.8",
     "@types/node": "^20.16.5",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
