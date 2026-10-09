@@ -38,6 +38,7 @@ import {
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
 import { CollapsibleText } from "@/components/writing/CollapsibleText";
+import { LexicalLookupProvider, LexicalText } from "@/components/lexical/LexicalLookup";
 import { WritingRevisionMarkedText } from "@/components/writing/WritingRevisionMarkedText";
 import { WritingOvertimeText } from "@/components/writing/WritingOvertimeText";
 import { createBrowserSupabase } from "@/lib/supabase/client";
@@ -808,7 +809,11 @@ export function TeacherWritingReviewWorkspace({
         />
       ) : (
         <div className="writing-review-grid min-h-0 flex-1 bg-[#f8f7fc] p-2">
-          <QuestionColumn question={data.question} taskType={data.attempt.task_type} />
+          <LexicalLookupProvider teacherReadonly enabled={data.question_source === "question_bank"}
+            access={{ kind: "writing", attemptId: data.attempt.attempt_id, studentId: data.attempt.user_id }}
+            sourceType={data.attempt.task_type === "email" ? "write_email" : "academic_discussion"}>
+            <QuestionColumn question={data.question} taskType={data.attempt.task_type} />
+          </LexicalLookupProvider>
 
           <section className="writing-review-column min-w-0 bg-white">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-student-border px-3 py-2.5">
@@ -1294,12 +1299,12 @@ function QuestionColumn({
 function CompactEmailQuestion({ question }: { question: EmailQuestion }) {
   return (
     <div className="rounded-lg border border-student-border p-3 text-xs leading-5">
-      <p>{question.scenario}</p>
-      <p className="mt-3 font-bold">{question.task_instruction}</p>
+      <p><LexicalText blockId="scenario" text={question.scenario} /></p>
+      <p className="mt-3 font-bold"><LexicalText blockId="task-instruction" text={question.task_instruction} /></p>
       <ul className="mt-2 list-disc space-y-1.5 pl-4">
-        <li>{question.requirement_1}</li>
-        <li>{question.requirement_2}</li>
-        <li>{question.requirement_3}</li>
+        <li><LexicalText blockId="requirement:1" text={question.requirement_1} /></li>
+        <li><LexicalText blockId="requirement:2" text={question.requirement_2} /></li>
+        <li><LexicalText blockId="requirement:3" text={question.requirement_3} /></li>
       </ul>
     </div>
   );
@@ -1308,18 +1313,18 @@ function CompactEmailQuestion({ question }: { question: EmailQuestion }) {
 function AcademicQuestionContent({ question }: { question: AcademicDiscussionQuestion }) {
   return (
     <div className="divide-y divide-student-border rounded-lg border border-student-border px-3 text-xs leading-5">
-      <CompactSourcePost name={question.professor_name} text={question.professor_prompt} />
-      <CompactSourcePost name={question.student_1_name} text={question.student_1_response} />
-      <CompactSourcePost name={question.student_2_name} text={question.student_2_response} />
+      <CompactSourcePost blockId="professor-prompt" name={question.professor_name} text={question.professor_prompt} />
+      <CompactSourcePost blockId="student-response:1" name={question.student_1_name} text={question.student_1_response} />
+      <CompactSourcePost blockId="student-response:2" name={question.student_2_name} text={question.student_2_response} />
     </div>
   );
 }
 
-function CompactSourcePost({ name, text }: { name: string; text: string }) {
+function CompactSourcePost({ blockId, name, text }: { blockId: string; name: string; text: string }) {
   return (
     <section className="py-3">
       <p className="font-bold">{name}</p>
-      <p className="mt-1.5 whitespace-pre-wrap">{text}</p>
+      <p className="mt-1.5 whitespace-pre-wrap"><LexicalText blockId={blockId} text={text} /></p>
     </section>
   );
 }

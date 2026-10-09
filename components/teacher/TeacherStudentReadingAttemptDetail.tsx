@@ -108,6 +108,8 @@ export function TeacherStudentReadingAttemptDetail({
     if (view.mode === "single") {
       return (
         <ReadingReadonlyReviewShell
+          teacherReadonly
+          lexicalAccess={{ kind: kind === "wrongbook" ? "reading_wrongbook" : "reading", attemptId, studentId }}
           answers={view.review.answers}
           initialReviewIndex={questionIndex}
           lookupEnabled={readingLookupEnabled("submitted_review", view.review.practice.item.module)}
@@ -121,6 +123,8 @@ export function TeacherStudentReadingAttemptDetail({
     }
     return (
       <ReadingFullSetReviewShell
+        teacherStudentId={studentId}
+        lexicalAccess={kind === "category" ? { kind: "reading_category", attemptId, studentId } : undefined}
         initialSourceAnswerIndex={questionIndex}
         onBack={onBackToResult}
         payload={view.review}

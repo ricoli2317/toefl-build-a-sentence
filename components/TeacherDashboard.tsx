@@ -499,6 +499,7 @@ function TeacherStudentQuestionDetailContent({
 
   return (
     <PracticeResultView
+      teacherStudentId={detail.student.studentId}
       initialQuestionId={initialAnswer?.questionId}
       navigation={<TeacherBreadcrumbs crumbs={crumbs} />}
       payload={payload}

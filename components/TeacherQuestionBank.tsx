@@ -25,6 +25,7 @@ import {
 } from "@/components/shared/CatalogDiscoveryControls";
 import { QuestionDisplay } from "@/components/shared/QuestionDisplay";
 import { WritingQuestionReview } from "@/components/writing/WritingQuestionPrompt";
+import { LexicalLookupProvider, LexicalText } from "@/components/lexical/LexicalLookup";
 import {
   TEACHER_QUESTION_BANK_CACHE_PREFIX,
   useTeacherCachedData
@@ -333,21 +334,25 @@ export function TeacherQuestionBankItemViewer({
         <TeacherDataError text={toQuestionBankErrorMessage(error || "无法加载题目详情。")} />
       ) : item.task_type === "build_sentence" ? (
         <BasLogicalItemViewer
+          itemId={item.item_id}
           currentIndex={currentIndex}
           onChange={setCurrentIndex}
           questions={data.questions ?? []}
         />
       ) : data.question ? (
-        <div data-readonly-writing-question>
-          <TeacherCard className="p-5">
-            <WritingQuestionReview
-              avatarMap={data.avatars ?? {}}
-              avatarMapReady={item.task_type === "email" || Boolean(data.avatars)}
-              question={data.question}
-              taskType={item.task_type}
-            />
-          </TeacherCard>
-        </div>
+        <LexicalLookupProvider teacherReadonly access={{ kind: "teacher_bank", itemId: item.item_id }}
+          sourceItemId={item.item_id} sourceType={item.task_type === "email" ? "write_email" : "academic_discussion"}>
+          <div data-readonly-writing-question>
+            <TeacherCard className="p-5">
+              <WritingQuestionReview
+                avatarMap={data.avatars ?? {}}
+                avatarMapReady={item.task_type === "email" || Boolean(data.avatars)}
+                question={data.question}
+                taskType={item.task_type}
+              />
+            </TeacherCard>
+          </div>
+        </LexicalLookupProvider>
       ) : (
         <TeacherEmptyState text="该题目暂无内容。" />
       )}
@@ -357,10 +362,12 @@ export function TeacherQuestionBankItemViewer({
 
 function BasLogicalItemViewer({
   currentIndex,
+  itemId,
   onChange,
   questions
 }: {
   currentIndex: number;
+  itemId: string;
   onChange: (index: number) => void;
   questions: Question[];
 }) {
@@ -370,26 +377,34 @@ function BasLogicalItemViewer({
   }
   return (
     <div className="grid gap-4" data-logical-bas-question-count={questions.length}>
-      <QuestionDisplay
-        answers={Array.from({ length: currentQuestion.blank_count }, () => null)}
-        locale="zh-CN"
-        options={splitTextItems(currentQuestion.options_text).map((text, index) => ({
-          id: `${currentQuestion.question_id}-${index}`,
-          text
-        }))}
-        prompt={currentQuestion.prompt}
-        questionNumber={currentQuestion.question_order}
-        readOnly
-        template={currentQuestion.sentence_template}
-      />
-      <TeacherCard className="border-student-primary-border bg-student-primary-soft/55 p-5">
-        <p className="text-sm font-semibold text-student-primary">正确答案</p>
-        <p className="mt-2 text-lg font-semibold leading-7 text-student-text">
-          {currentQuestion.final_sentence ||
-            buildSentenceDisplay(currentQuestion.sentence_template, currentQuestion.correct_order_text) ||
-            splitTextItems(currentQuestion.correct_order_text).join(" ")}
-        </p>
-      </TeacherCard>
+      <LexicalLookupProvider key={`${currentQuestion.question_id}:prompt`} teacherReadonly
+        access={{ kind: "bas_prompt", setId: currentQuestion.set_id, questionId: currentQuestion.question_id }}
+        sourceType="bas" sourceItemId={itemId}>
+        <QuestionDisplay
+          lexicalPrompt
+          answers={Array.from({ length: currentQuestion.blank_count }, () => null)}
+          locale="zh-CN"
+          options={splitTextItems(currentQuestion.options_text).map((text, index) => ({
+            id: `${currentQuestion.question_id}-${index}`,
+            text
+          }))}
+          prompt={currentQuestion.prompt}
+          questionNumber={currentQuestion.question_order}
+          readOnly
+          template={currentQuestion.sentence_template}
+        />
+      </LexicalLookupProvider>
+      <LexicalLookupProvider key={`${currentQuestion.question_id}:answer`} teacherReadonly
+        access={{ kind: "teacher_bank", itemId, questionId: currentQuestion.question_id }} sourceType="bas" sourceItemId={itemId}>
+        <TeacherCard className="border-student-primary-border bg-student-primary-soft/55 p-5">
+          <p className="text-sm font-semibold text-student-primary">正确答案</p>
+          <p className="mt-2 text-lg font-semibold leading-7 text-student-text">
+            {currentQuestion.final_sentence ? <LexicalText blockId="final-sentence" text={currentQuestion.final_sentence} /> :
+              buildSentenceDisplay(currentQuestion.sentence_template, currentQuestion.correct_order_text) ||
+              splitTextItems(currentQuestion.correct_order_text).join(" ")}
+          </p>
+        </TeacherCard>
+      </LexicalLookupProvider>
       {/* Same-set internal navigation (Q1 → Q10) stays available in preview:
           only cross item / cross feature navigation is blocked. */}
       <QuestionViewerNav

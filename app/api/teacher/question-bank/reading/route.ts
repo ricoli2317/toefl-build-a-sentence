@@ -170,7 +170,7 @@ async function loadReadingItemDetail(
     ctwDisplayTitle: itemResult.data.module === "ctw"
       ? assertCanonicalCtwTitle(String(itemResult.data.title ?? ""), `CTW title for ${itemId}`)
       : undefined,
-    skipRdlAssetVerification: true
+    skipRdlAssetVerification: false
   });
   const answerKey = await buildTeacherReadingAnswerKey(db, practice);
   return { practice, answerKey };

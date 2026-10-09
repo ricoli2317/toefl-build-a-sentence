@@ -23,8 +23,8 @@ export function LexicalText({ blockId, text }: { blockId: string; text: string }
   return <span {...lexicalBlockAttributes(blockId)}>{text}</span>;
 }
 
-export function LexicalLookupProvider({ access, sourceType, sourceItemId, enabled = true, children }: {
-  access?: LexicalAccess; sourceType: CanonicalLexicalSourceType; sourceItemId?: string; enabled?: boolean; children: ReactNode;
+export function LexicalLookupProvider({ access, sourceType, sourceItemId, enabled = true, teacherReadonly = false, children }: {
+  access?: LexicalAccess; sourceType: CanonicalLexicalSourceType; sourceItemId?: string; enabled?: boolean; teacherReadonly?: boolean; children: ReactNode;
 }) {
   const [state, setState] = useState<LookupState | null>(null);
   const [query, setQuery] = useState("");
@@ -75,10 +75,11 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
     placement.current = undefined;
     setPosition(null);
     setQuery(span.selectedText);
-    const request = { access, sourceType, sourceItemId, contentBlockId, ...span } satisfies LexicalLookupRequest;
+    const request = { access, sourceType, sourceItemId, contentBlockId, ...span,
+      ...(teacherReadonly ? { teacherReadonly: true } : {}) } satisfies LexicalLookupRequest;
     currentRequest.current = request;
     runLookup(request);
-  }, [access, enabled, sourceItemId, sourceType, runLookup, close]);
+  }, [access, enabled, sourceItemId, sourceType, teacherReadonly, runLookup, close]);
   const reposition = useCallback(() => {
     const saved = anchor.current; const card = panel.current;
     if (!saved || !card || !content.current) return;
@@ -111,7 +112,7 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
       observer?.disconnect();
     };
   }, [open, reposition]);
-  const identity = `${access?.kind}:${access?.attemptId}:${access?.questionId}:${access?.setId}:${sourceType}:${sourceItemId}`;
+  const identity = `${access?.kind}:${access?.attemptId}:${access?.questionId}:${access?.setId}:${access?.studentId}:${access?.sessionId}:${access?.kind === "teacher_bank" ? access.itemId : ""}:${teacherReadonly}:${sourceType}:${sourceItemId}`;
   useEffect(() => { close(); return () => abort.current?.abort(); }, [close, enabled, identity]);
   useEffect(() => {
     if (!open) return;
@@ -130,6 +131,10 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
   const capture = (target?: EventTarget | null) => {
     if (!enabled || !access) return;
     if (target instanceof Node && panel.current?.contains(target)) return;
+    // The verified image handler already supplies its own canonical span.
+    // A previous DOM text selection must not replace the teacher's image lookup.
+    if (teacherReadonly && target instanceof Node
+      && (target as Element).closest?.('[data-testid="rdl-selection-surface"]')) return;
     const selection = window.getSelection();
     if (!selection?.rangeCount || selection.isCollapsed) return;
     const range = selection.getRangeAt(0);
@@ -141,7 +146,7 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
   const toggleWordbook = async () => {
     const result = state?.result;
     const selection = currentRequest.current;
-    if (!enabled || !selection || result?.status !== "matched" || mutationBusy.current) return;
+    if (teacherReadonly || !enabled || !selection || result?.status !== "matched" || mutationBusy.current) return;
     mutationBusy.current = true;
     const version = revision.current;
     const update = (patch: Partial<LookupState>) => {
@@ -176,6 +181,7 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
   return (
     <Context.Provider value={enabled && access ? { lookup, close } : null}>
       <div ref={region} className="contents" data-lexical-enabled={enabled && access ? "true" : "false"}
+        data-lexical-mode={teacherReadonly ? "teacher_readonly" : "student"}
         onPointerUp={(e) => capture(e.target)} onKeyUp={(e) => { if (e.shiftKey) capture(e.target); }}>
         {children}
       </div>
@@ -188,7 +194,7 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
         <div className="overflow-y-auto rounded-xl p-4" style={{ maxHeight: position ? Math.max(0, position.maxHeight - 2) : "calc(100dvh - 16px)", scrollbarGutter: "stable" }}>
           <div ref={content}><LexicalLookupCard state={state} query={query} onQueryChange={(value) => {
             revision.current++; abort.current?.abort(); setQuery(value); setState({ selected: state.selected });
-          }} onSearch={() => { if (currentRequest.current) runLookup({ ...currentRequest.current, query }); }} onWordbookToggle={toggleWordbook} /></div>
+          }} onSearch={() => { if (currentRequest.current) runLookup({ ...currentRequest.current, query }); }} onWordbookToggle={teacherReadonly ? undefined : toggleWordbook} /></div>
         </div>
       </div> : null}
     </Context.Provider>

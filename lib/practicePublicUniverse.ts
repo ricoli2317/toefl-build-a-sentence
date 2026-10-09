@@ -419,6 +419,39 @@ export function createPracticeCatalogDirectory(
   };
 }
 
+/** The same public-source validator as the bank, scoped to one lookup item. */
+export async function loadPublicCanonicalPracticeSource(supabase: SupabaseClient, itemId: string) {
+  const [items, sources] = await Promise.all([
+    supabase.from("practice_items").select("item_id,task_type,display_number,display_title,first_seen_date,is_active").eq("item_id", itemId),
+    supabase.from("practice_item_sources").select("source_id,item_id,task_type,source_set_id,source_question_id,is_canonical").eq("item_id", itemId)
+  ]);
+  if (items.error || sources.error) throw new Error("Public canonical source query failed");
+  const snapshot: PracticePublicUniverseSnapshot = {
+    items: (items.data ?? []) as PracticeItemRow[], sources: (sources.data ?? []) as PracticeItemSourceRow[],
+    questionMaps: [], buildSentenceQuestions: [], emailQuestions: [], academicDiscussionQuestions: []
+  };
+  const canonical = snapshot.sources.filter(source => source.is_canonical);
+  if (canonical.length === 1 && snapshot.items.length === 1) {
+    const source = canonical[0];
+    if (source.task_type === "build_sentence") {
+      const [questions, maps] = await Promise.all([
+        supabase.from("questions").select("question_id,set_id,question_order").eq("set_id", source.source_set_id!),
+        supabase.from("practice_item_question_map").select("source_id,source_question_id,source_question_order,logical_question_order").eq("source_id", source.source_id)
+      ]);
+      if (questions.error || maps.error) throw new Error("Public BAS source query failed");
+      snapshot.buildSentenceQuestions = questions.data ?? [];
+      snapshot.questionMaps = maps.data ?? [];
+    } else if (source.task_type === "email" || source.task_type === "academic_discussion") {
+      const questions = await supabase.from(source.task_type === "email" ? "email_questions" : "academic_discussion_questions")
+        .select("question_id").eq("question_id", source.source_question_id!);
+      if (questions.error) throw new Error("Public writing source query failed");
+      if (source.task_type === "email") snapshot.emailQuestions = questions.data ?? [];
+      else snapshot.academicDiscussionQuestions = questions.data ?? [];
+    }
+  }
+  return createPracticePublicUniverse(snapshot).getPublicCanonicalSource(itemId);
+}
+
 export async function loadPracticePublicUniverse(
   supabase: SupabaseClient,
   timing?: StudentPerformanceTrace

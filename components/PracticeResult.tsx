@@ -184,11 +184,13 @@ export function PracticeResultView({
   initialQuestionId,
   navigation,
   payload,
+  teacherStudentId,
   showCorrection = false
 }: {
   initialQuestionId?: string;
   navigation?: React.ReactNode;
   payload: ResultPayload;
+  teacherStudentId?: string;
   /** Student-only entry correction link; teacher views never show it. */
   showCorrection?: boolean;
 }) {
@@ -287,7 +289,9 @@ export function PracticeResultView({
           </div>
           {activeAnswer && activeReadonlyState ? (
             <LexicalLookupProvider key={activeAnswer.question_id}
-              access={{ kind: "bas", attemptId: attempt.attempt_id, questionId: activeAnswer.question_id }} sourceType="bas">
+              teacherReadonly={Boolean(teacherStudentId)}
+              access={{ kind: "bas", attemptId: attempt.attempt_id, questionId: activeAnswer.question_id,
+                ...(teacherStudentId ? { studentId: teacherStudentId } : {}) }} sourceType="bas">
             <div
               className="mt-5 grid gap-5 border-t border-student-border pt-5"
               data-testid="practice-result-readonly-question"

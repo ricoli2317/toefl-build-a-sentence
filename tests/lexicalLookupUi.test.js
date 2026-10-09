@@ -96,6 +96,8 @@ test('actual API route rejects anonymous/active/wrong-source before lookup and r
     '@/lib/reading/attemptServer': { requireReadingAttemptStudent:async () => auth,readingAttemptJson:(v,init) => new Response(JSON.stringify(v),{ ...init,headers:{ 'cache-control':'no-store' } }) },
     '@/lib/supabase/server': { createServiceSupabase:() => ({}) },
     '@/lib/lexical/lookup': { parseLookupRequest },
+    '@/lib/auth': { bearerToken:() => null,requireTeacherOnly:async () => ({ error:'Forbidden' }) },
+    '@/lib/writingReviewWorkspaceServer': { WritingReviewWorkspaceServerError:class extends Error {} },
     '@/lib/lexical/wordbook.server': { addWordbookStatus:async (_db,_user,result) => result },
     '@/lib/lexical/lookup.server': { LexicalAccessError:AccessError,
       authorizeLexicalSource:async () => { authorizeCalls++; if (!allowed) throw new AccessError(409); return { sourceItemId:'item' }; },
@@ -136,7 +138,7 @@ test('provider interaction sends one canonical selection request, aborts stale r
   class FakeNode {}
   class FakeElement extends FakeNode {
     constructor() { super(); this.dataset = { lexicalBlock:'question:q:stem',lexicalOffset:'0' };this.textContent = 'green energy'; }
-    closest() { return this; }
+    closest(selector) { return selector === '[data-testid="rdl-selection-surface"]' ? null : this; }
     contains(node) { return node === this; }
   }
   const block = new FakeElement(); const outside = new FakeElement(); const input = new FakeElement(); let collapsed = false;
@@ -223,6 +225,20 @@ test('provider interaction sends one canonical selection request, aborts stale r
     view=render();assert.match(view.card.props.state.wordbookError,/未收藏/);assert.equal(view.card.props.state.result.wordbook.saved,false);
     const late=view.card.props.onWordbookToggle();await settle();view.panel.props.children[0].props.onClick();
     pending.at(-1).resolve({ ok:true,json:async()=>({ saved:true,available:true }) });await late;assert.equal(render().panel,null);
+    // Teaching uses the same selection/card but has no Wordbook handler or request.
+    props.teacherReadonly = true;
+    props.access = { ...props.access,studentId:'22222222-2222-4222-8222-222222222222' };
+    render(); view=render(); view.region.props.onPointerUp({ target:block });await settle();
+    const teacherRequest = pending.at(-1);
+    assert.equal(teacherRequest.url,'/api/lexical/lookup');
+    assert.equal(JSON.parse(teacherRequest.init.body).teacherReadonly,true);
+    teacherRequest.resolve({ ok:true,json:async()=>matched });await settle();view=render();
+    assert.equal(view.card.props.onWordbookToggle,undefined);
+    assert.doesNotMatch(renderToStaticMarkup(React.createElement(ui.LexicalLookupCard,view.card.props)),/加入生词本|取消收藏/);
+    const beforeImage=pending.length;block.closest=selector=>selector==='[data-testid="rdl-selection-surface"]'?block:null;
+    view.region.props.onPointerUp({ target:block });await settle();assert.equal(pending.length,beforeImage,'RDL handler owns its image span; stale DOM selection must not issue another request');
+    delete block.closest;
+    view.panel.props.children[0].props.onClick();assert.equal(render().panel,null);
     // An excluded CTW slot (or any invalid canonical selection) must not issue a lookup request.
     const requestsBeforeSlot = pending.length; selected = null; collapsed = false;
     view = render(); view.region.props.onPointerUp({ target:block }); await settle();

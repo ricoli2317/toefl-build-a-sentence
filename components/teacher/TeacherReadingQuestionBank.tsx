@@ -241,7 +241,9 @@ export function TeacherReadingQuestionBankItemViewer({
     <ReadingReadonlyReviewShell
       answerKeyOnly
       answers={answerKeyView.answers}
-      lookupEnabled={false}
+      lookupEnabled
+      teacherReadonly
+      lexicalAccess={{ kind: "teacher_bank", itemId }}
       onBack={preview ? undefined : () => router.push(bankHref)}
       practice={data.practice}
       reviewDisclosures={answerKeyView.disclosures}

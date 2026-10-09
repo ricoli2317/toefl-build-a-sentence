@@ -505,6 +505,7 @@ function readingCtwProgressLabel(scoringPointCount: number) {
 
 export function ReadingFullSetReviewShell({
   lexicalAccess,
+  teacherStudentId,
   initialSourceAnswerIndex,
   onBack,
   onRequestItem,
@@ -514,6 +515,7 @@ export function ReadingFullSetReviewShell({
   variant = "full_set"
 }: {
   lexicalAccess?: LexicalAccess;
+  teacherStudentId?: string;
   initialSourceAnswerIndex: number;
   onBack: () => void;
   /** Session review lazy loading: request one item's source on demand. */
@@ -702,11 +704,13 @@ export function ReadingFullSetReviewShell({
           ) : (
             <ReadingWorkspaceRouter
               answers={currentOccurrence!.answers}
+              teacherReadonly={Boolean(teacherStudentId)}
               lexicalAccess={lexicalAccess ?? (variant === "session"
                 ? currentOccurrence!.attemptId
-                  ? { kind: "reading_wrongbook", attemptId: currentOccurrence!.attemptId }
+                  ? { kind: "reading_wrongbook", attemptId: currentOccurrence!.attemptId,
+                    ...(teacherStudentId ? { studentId: teacherStudentId, sessionId: payload.attempt.attemptId } : {}) }
                   : undefined
-                : { kind: "full_set", attemptId: payload.attempt.attemptId })}
+                : { kind: "full_set", attemptId: payload.attempt.attemptId, ...(teacherStudentId ? { studentId: teacherStudentId } : {}) })}
               currentQuestion={currentQuestion!}
               lookupEnabled={readingLookupEnabled("submitted_review", currentOccurrence!.practice.item.module)}
               onAnswerChange={() => undefined}
@@ -1245,8 +1249,9 @@ export function ReadingPracticeHeader({
   );
 }
 
-export function ReadingWorkspaceRouter(props: Parameters<typeof ReadingWorkspaceContent>[0] & { lexicalAccess?: LexicalAccess }) {
+export function ReadingWorkspaceRouter(props: Parameters<typeof ReadingWorkspaceContent>[0] & { lexicalAccess?: LexicalAccess; teacherReadonly?: boolean }) {
   return <LexicalLookupProvider key={props.currentQuestion.questionId} access={props.lexicalAccess} enabled={props.lookupEnabled && props.readOnly}
+    teacherReadonly={props.teacherReadonly}
     sourceType={props.practice.item.module} sourceItemId={props.practice.item.itemId}>
     <ReadingWorkspaceContent {...props} />
   </LexicalLookupProvider>;
@@ -3111,6 +3116,7 @@ export function ReadingReadonlyReviewShell({
   headerAction,
   initialReviewIndex = 0,
   lexicalAccess,
+  teacherReadonly = false,
   lookupEnabled,
   onBack,
   practice,
@@ -3125,6 +3131,7 @@ export function ReadingReadonlyReviewShell({
   headerAction?: ReactNode;
   initialReviewIndex?: number;
   lexicalAccess?: LexicalAccess;
+  teacherReadonly?: boolean;
   lookupEnabled: boolean;
   onBack?: () => void;
   practice: StudentReadingPracticePayload;
@@ -3217,6 +3224,7 @@ export function ReadingReadonlyReviewShell({
           <ReadingWorkspaceRouter
             answerKeyOnly={answerKeyOnly}
             lexicalAccess={lexicalAccess}
+            teacherReadonly={teacherReadonly}
             answers={answers}
             currentQuestion={currentQuestion}
             lookupEnabled={lookupEnabled}

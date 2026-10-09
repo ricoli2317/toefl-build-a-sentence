@@ -1,10 +1,13 @@
 import type { CanonicalLexicalSourceType } from "./types.ts";
 import { normalizeLexicalSurface } from "./normalize.ts";
 
-export type LexicalAccess = { kind: "reading" | "reading_wrongbook" | "reading_category" | "full_set" | "writing" | "bas"; attemptId: string; questionId?: string; setId?: never }
-  | { kind: "bas_prompt"; questionId: string; setId: string; attemptId?: never };
+export type LexicalAccess = { kind: "reading" | "reading_wrongbook" | "reading_category" | "full_set" | "writing" | "bas"; attemptId: string; questionId?: string; setId?: never; studentId?: string; sessionId?: string }
+  | { kind: "bas_prompt"; questionId: string; setId: string; attemptId?: never; studentId?: never; sessionId?: never }
+  | { kind: "teacher_bank"; itemId: string; questionId?: string; setId?: never; attemptId?: never; studentId?: never; sessionId?: never };
 export type LexicalLookupRequest = {
   access: LexicalAccess;
+  /** Explicit read-only teaching context; never accepted by Wordbook authorization. */
+  teacherReadonly?: boolean;
   sourceType: CanonicalLexicalSourceType;
   sourceItemId?: string;
   contentBlockId: string;
@@ -38,8 +41,14 @@ export function parseLookupRequest(value: unknown): LexicalLookupRequest | null 
   if (!value || typeof value !== "object") return null;
   const v = value as LexicalLookupRequest;
   if (!["ctw", "rdl", "rap", "bas", "write_email", "academic_discussion"].includes(v.sourceType)
-    || !v.access || !["reading", "reading_wrongbook", "reading_category", "full_set", "writing", "bas", "bas_prompt"].includes(v.access.kind)
-    || (v.access.kind === "bas_prompt"
+     || !v.access || !["reading", "reading_wrongbook", "reading_category", "full_set", "writing", "bas", "bas_prompt", "teacher_bank"].includes(v.access.kind)
+     || (v.teacherReadonly != null && typeof v.teacherReadonly !== "boolean")
+     || ((v.access.kind === "teacher_bank" || v.access.studentId != null || v.access.sessionId != null) && v.teacherReadonly !== true)
+     || (v.access.studentId != null && (typeof v.access.studentId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v.access.studentId)))
+     || (v.access.sessionId != null && (v.access.kind !== "reading_wrongbook" || typeof v.access.sessionId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v.access.sessionId)))
+     || (v.access.kind === "teacher_bank"
+       ? typeof v.access.itemId !== "string" || !v.access.itemId || v.access.itemId.length > 180
+       : v.access.kind === "bas_prompt"
       ? typeof v.access.setId !== "string" || !v.access.setId || v.access.setId.length > 180 || !v.access.questionId
       : typeof v.access.attemptId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v.access.attemptId))
     || (v.access.questionId != null && (typeof v.access.questionId !== "string" || v.access.questionId.length > 180))

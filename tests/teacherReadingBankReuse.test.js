@@ -99,7 +99,8 @@ test("teacher Reading detail renders the immersive shared shell without practice
   const ui = read("components/teacher/TeacherReadingQuestionBank.tsx");
   assert.match(ui, /ReadingReadonlyReviewShell/);
   assert.match(ui, /answerKeyOnly/);
-  assert.match(ui, /lookupEnabled=\{false\}/);
+  assert.match(ui, /lookupEnabled\s+teacherReadonly/);
+  assert.match(ui, /lexicalAccess=\{\{ kind: "teacher_bank", itemId \}\}/);
   assert.doesNotMatch(ui, /student\/reading|forceNew|retake|submit/i);
 
   const page = read("app/teacher/question-bank/[monthKey]/page.tsx");
