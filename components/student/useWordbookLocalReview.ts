@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReviewCommand, ReviewRound } from "@/lib/lexical/wordbookReview";
 import { acknowledgeReview, applyReviewAction, localReview, localReviewKey, readLocalReview,
-  reviewLocalState, saveLocalReview, type LocalReview } from "@/lib/lexical/wordbookReviewLocal";
+  reviewLocalState, saveLocalReview, recordReviewSyncFailure, visibleReviewSyncError, type LocalReview } from "@/lib/lexical/wordbookReviewLocal";
 import { ReviewRequestError } from "@/lib/lexical/wordbookReviewRequest";
 
 type RequestRound = <T>(url: string, body?: unknown, signal?: AbortSignal) => Promise<T>;
@@ -13,10 +13,9 @@ async function locked<T>(name: string, work: () => Promise<T> | T): Promise<T> {
 }
 export function useWordbookLocalReview(owner: string | null, session: string, request: RequestRound) {
   const [local, setLocal] = useState<LocalReview>(), [error, setError] = useState("");
-  const [syncError, setSyncError] = useState(""), [syncing, setSyncing] = useState(false);
   const current = useRef<LocalReview>(), requestRef = useRef(request); requestRef.current = request;
   const generation = useRef(0), worker = useRef(false), retryTimer = useRef<ReturnType<typeof setTimeout>>();
-  const syncAbort = useRef<AbortController>(), active = useRef(false), failures = useRef(0);
+  const syncAbort = useRef<AbortController>(), active = useRef(false);
   const identity = `${owner}:${session}`, lock = `wordbook-edit:${identity}`;
   const publish = useCallback((value: LocalReview) => { current.current = value; setLocal(value); }, []);
   const pumpRef = useRef<() => void>(() => {});
@@ -30,6 +29,7 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
     saveLocalReview(localStorage, next); publish(next);
     if (next.phase === "result" && !next.queue.length && next.confirmed === next.round.session.total)
       localStorage.removeItem(localReviewKey(owner, session));
+    return next;
     });
   }, [lock, owner, session, publish]);
 
@@ -42,23 +42,29 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
         while (active.current && mine === generation.current) {
           const value = readLocalReview(localStorage, owner, session);
           const command = value?.owner === owner && value.round.session.session_id === session ? value.queue[0] : undefined;
-          if (!command) { setSyncError(""); return; }
-          setSyncing(true); syncAbort.current = new AbortController();
+          if (!command) return;
+          syncAbort.current = new AbortController();
           const result = await requestRef.current<{ acknowledged: string }>(`${ROOT}/${session}`, { action: "sync", command }, syncAbort.current.signal);
           if (!active.current || mine !== generation.current) return;
           if (result.acknowledged !== command.id) throw new ReviewRequestError("保存结果未确认，待同步记录仍保留。", 502, "REVIEW_ACK");
-          await edit(latest => acknowledgeReview(latest, command)); failures.current = 0; setSyncError("");
+          await edit(latest => acknowledgeReview(latest, command));
         }
       });
     } catch (e) {
       if (!active.current || mine !== generation.current) return;
-      setSyncError(e instanceof Error ? e.message : "同步失败，本地记录已保留。");
-      // Transport/upstream failures back off, never loop on auth or conflicts.
-      if (!(e instanceof ReviewRequestError) || e.retryable) {
-        const delay = Math.min(30000, 1000 * 2 ** Math.min(failures.current++, 5));
+      const retryable = !(e instanceof ReviewRequestError) || e.retryable;
+      const message = retryable ? "同步暂未完成，记录已保留。" : e instanceof ReviewRequestError && e.code === "REVIEW_SYNC_CONFLICT"
+        ? "其他页面已保存不同答案，请核对。" : e instanceof Error ? e.message : "同步失败，记录已保留。";
+      let failed: LocalReview | undefined;
+      try { failed = await edit(value => recordReviewSyncFailure(value, message, retryable, e instanceof Error ? e.message : String(e))); }
+      catch (storageError) { setError(storageError instanceof Error ? storageError.message : "本地记录无法保存，请重试。"); }
+      // Honor the same initial + two-retry silent period for every error.
+      // Auth/conflict errors get only three bounded retries, then require help.
+      if (retryable || (failed?.syncFailure?.count ?? 1) <= 3) {
+        const delay = Math.min(30000, 1000 * 2 ** Math.min((failed?.syncFailure?.count ?? 1) - 1, 5));
         retryTimer.current = setTimeout(() => pumpRef.current(), delay);
       }
-    } finally { if (mine === generation.current) { worker.current = false; if (active.current) setSyncing(false); } }
+    } finally { if (mine === generation.current) worker.current = false; }
   }, [owner, session, identity, edit]);
   pumpRef.current = () => { void pump(); };
 
@@ -79,14 +85,20 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
   }, [owner, session, publish]);
   useEffect(() => {
     const mine = ++generation.current; active.current = true; worker.current = false; current.current = undefined;
-    setLocal(undefined); setError(""); setSyncError(""); setSyncing(false); failures.current = 0;
+    setLocal(undefined); setError("");
     void reload();
     const wake = () => pumpRef.current();
     const changed = (event: StorageEvent) => {
       if (!owner || event.key !== localReviewKey(owner, session)) return;
       try {
         const saved = readLocalReview(localStorage, owner, session);
-        if (saved) { publish(saved); wake(); }
+        if (saved) {
+          const previous = current.current;
+          publish(saved);
+          // Persisted failure counts must not trigger ping-pong retries between
+          // tabs and bypass backoff. Wake only for a changed queue.
+          if (saved.queue[0]?.id !== previous?.queue[0]?.id || saved.queue.length !== previous?.queue.length) wake();
+        }
         else void reload(); // Another tab finished and removed the durable queue.
       }
       catch (e) { setError(e instanceof Error ? e.message : "待同步记录读取失败。"); }
@@ -117,5 +129,5 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
   const visible = local?.owner === owner && local.round.session.session_id === session ? local : undefined;
   const pending = visible?.queue.length ?? 0;
   return { state: visible ? reviewLocalState(visible) : undefined, action, error, reload,
-    pending, syncError, syncing, retrySync: () => { failures.current = 0; pumpRef.current(); } };
+    pending, syncError: visibleReviewSyncError(visible), retrySync: () => pumpRef.current() };
 }

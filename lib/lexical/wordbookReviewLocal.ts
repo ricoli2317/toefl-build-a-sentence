@@ -3,7 +3,8 @@ import { reviewExample, spellingShape } from "./wordbookReviewPresentation.ts";
 
 export type LocalReview = { version: 1; owner: string; round: ReviewRound; phase: "study" | "test" | "result";
   position: number; answers: Record<string, ReviewAnswer>; deadlines: Record<string, number>;
-  queue: ReviewCommand[]; confirmed: number; revision: number };
+  queue: ReviewCommand[]; confirmed: number; revision: number;
+  syncFailure?: { count: number; message: string; detail: string; requiresIntervention: boolean } };
 // Matches Postgres wordbook_review_spelling: collapse POSIX whitespace, btrim
 // ASCII space, lowercase. Do NOT normalize punctuation, apostrophes or NFKC.
 export const normalizeReviewSpelling = (text: string) => Array.from(text
@@ -82,5 +83,15 @@ export function saveLocalReview(storage: Pick<Storage, "setItem">, value: LocalR
 }
 export function acknowledgeReview(local: LocalReview, command: ReviewCommand): LocalReview {
   if (!local.queue.some(c => c.id === command.id)) return local;
-  return { ...local, queue: local.queue.filter(c => c.id !== command.id), confirmed: local.confirmed + Number(command.action === "answer") };
+  return { ...local, queue: local.queue.filter(c => c.id !== command.id), confirmed: local.confirmed + Number(command.action === "answer"), syncFailure: undefined };
+}
+export function recordReviewSyncFailure(local: LocalReview, message: string, retryable: boolean, detail = message): LocalReview {
+  return { ...local, syncFailure: { count: (local.syncFailure?.count ?? 0) + 1, message, detail, requiresIntervention: !retryable } };
+}
+export function visibleReviewSyncError(local?: LocalReview) {
+  // Initial failure + retries 1 and 2 remain silent. Retry 3 failing is the
+  // fourth consecutive failure. This threshold also applies to auth/conflict
+  // errors; their retries are bounded instead of looping indefinitely.
+  return local?.queue.length && local.syncFailure && local.syncFailure.count > 3
+    ? local.syncFailure.message : "";
 }

@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-10",
+  "browser": "Google Chrome",
+  "productionSql": false,
+  "realReviewRoundsCreated": 0,
+  "checks": [
+    "No new overflow: spelling length / paste / composition / mobile keyboard simulation",
+    "Native input: overlong typing, paste, selection replacement, deletion, arrows, punctuation and IME commit PASS",
+    "Legal spaces/hyphen/case are retained without grading normalization changes",
+    "First failure and retry failures 1–2 are silent",
+    "No new overflow: visible sync failure",
+    "Retry failure 3 displays compact error without button movement or lost work",
+    "Refresh preserves failure threshold, wrong feedback and pending answer",
+    "Recovery clears failure notice; same command is saved once",
+    "Pending result / refresh / history resume never mark unsaved work saved",
+    "Silent normal sync does not block immediate grading / 1s next",
+    "Auth failure honors the silent threshold, retains work, then stops bounded retries with an accurate intervention prompt",
+    "No new overflow: reading orange / primary feedback",
+    "No new overflow: reading desktop feedback",
+    "reading wrong spelling/POS match official orange tokens; correct feedback retains primary theme",
+    "No new overflow: reading choice official orange",
+    "reading wrong choice uses the same official orange text/border/background",
+    "No new overflow: writing orange / primary feedback",
+    "No new overflow: writing desktop feedback",
+    "writing wrong spelling/POS match official orange tokens; correct feedback retains primary theme",
+    "No new overflow: writing choice official orange",
+    "writing wrong choice uses the same official orange text/border/background",
+    "Reading/Writing navigation borders, theme colors, hover, 44px targets and original links PASS at desktop/390/320"
+  ],
+  "timings": [
+    {
+      "case": "Writing correct next, background delayed 3000ms",
+      "visibleMs": 1009.2999999970198
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "physicalIphoneSafari": "not verified",
+  "unitTests": {
+    "passed": 19,
+    "excluded": "One SQL fixture test was deliberately excluded; no database tests or production SQL executed"
+  },
+  "typecheck": "passed",
+  "targetedLint": "passed",
+  "diffCheck": "passed",
+  "screenshotsTracked": false
+}

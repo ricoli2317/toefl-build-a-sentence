@@ -11,7 +11,7 @@ import { REVIEW_SOURCES, reviewPercent, reviewRangeLabel,
   type ReviewAvailability, type ReviewHistory, type ReviewSettings, type ReviewRound } from "@/lib/lexical/wordbookReview";
 import { WordbookReviewWorkspace } from "./WordbookReviewWorkspace";
 import { useWordbookLocalReview } from "./useWordbookLocalReview";
-import { fetchReview } from "@/lib/lexical/wordbookReviewRequest";
+import { fetchReview, ReviewRequestError } from "@/lib/lexical/wordbookReviewRequest";
 import { localReview, saveLocalReview } from "@/lib/lexical/wordbookReviewLocal";
 import type { WordbookDomain } from "@/lib/lexical/wordbookList";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
@@ -31,7 +31,7 @@ function useReviewRequest() {
   const owner = useRef(studentId); owner.current = studentId;
   const request = useCallback(async <T,>(url: string, body?: unknown, signal?: AbortSignal): Promise<T> => {
     const token = getSession()?.accessToken, id = studentId;
-    if (!token || !id) throw new Error("请重新登录。");
+    if (!token || !id) throw new ReviewRequestError("请重新登录。", 401, "REVIEW_AUTH");
     const result = await fetchReview<T>(url, token, body, signal);
     if (owner.current !== id) throw new Error("登录账号已变化，请刷新页面。");
     return result as T;
@@ -196,7 +196,7 @@ export function WordbookReviewSession({ sessionId }: { sessionId: string }) {
   };
   return <WordbookReviewWorkspace key={identity} state={review.state} busy={busy} error={error || review.error}
     onAction={review.action} onRetry={() => void retry()} onReload={() => void review.reload()}
-    pending={review.pending} syncError={review.syncError} syncing={review.syncing} onSyncRetry={review.retrySync} />;
+    pending={review.pending} syncError={review.syncError} onSyncRetry={review.retrySync} />;
 }
 function Pagination({ page, total, pageSize, disabled, onChange }: { page: number; total: number; pageSize: number; disabled: boolean; onChange: (page: number) => void }) {
   const pages = Math.max(1, Math.ceil(total / pageSize));

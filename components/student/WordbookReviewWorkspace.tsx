@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { reviewPercent, type ReviewItem, type ReviewOption, type ReviewState } from "@/lib/lexical/wordbookReview";
 import styles from "./WordbookReviewWorkspace.module.css";
+import { constrainReviewSpelling, insertReviewSpelling } from "@/lib/lexical/wordbookReviewInput";
 
 const SETUP = "/student/wordbook/review";
 
@@ -14,11 +15,25 @@ export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, fe
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [focused, setFocused] = useState(false), [selection, setSelection] = useState({ start: value.length, end: value.length });
-  const typed = Array.from(value), chars = Array.from(shape);
+  const composing = useRef(false), compositionBase = useRef(value);
+  const [compositionDraft, setCompositionDraft] = useState<string | null>(null);
+  const pendingSelection = useRef<{ value: string; caret: number }>();
+  const displayValue = compositionDraft ?? value;
+  const typed = Array.from(displayValue), chars = Array.from(shape);
+  const commit = (edit: { value: string; caret: number }) => {
+    const node = input.current;
+    if (node) { node.value = edit.value; node.setSelectionRange(edit.caret, edit.caret); }
+    pendingSelection.current = edit; onChange(edit.value);
+    setSelection({ start: edit.caret, end: edit.caret });
+  };
+  useLayoutEffect(() => {
+    const edit = pendingSelection.current;
+    if (edit && value === edit.value) { input.current?.setSelectionRange(edit.caret, edit.caret); pendingSelection.current = undefined; }
+  }, [value, compositionDraft]);
   const select = () => { if (input.current) setSelection({ start: input.current.selectionStart ?? value.length, end: input.current.selectionEnd ?? value.length }); };
-  const cursor = Array.from(value.slice(0, selection.start)).length, end = Array.from(value.slice(0, selection.end)).length;
+  const cursor = Array.from(displayValue.slice(0, selection.start)).length, end = Array.from(displayValue.slice(0, selection.end)).length;
   const slots = Array.from({ length: Math.max(chars.length, typed.length, focused ? cursor + 1 : 0) }, (_, key) => {
-    const char = chars[key] ?? (typed[key] ? "_" : "");
+    const char = chars[key] ?? typed[key] ?? "";
     return <span key={key} data-slot={key} data-typed={Boolean(typed[key])} className={`relative inline-flex h-11 items-center justify-center text-2xl font-medium ${char === "_" ? "w-6 border-b-2 border-student-text/60 pb-1" : /\s/.test(char) ? "w-4" : "w-3"} ${key >= cursor && key < end ? styles.selectedLetter : ""}`}>
       {typed[key] ?? (char === "_" ? "\u00a0" : char)}{focused && !disabled && key === cursor ? <span data-caret className={styles.caret} /> : null}
     </span>;
@@ -36,10 +51,33 @@ export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, fe
     <div aria-hidden="true" className="pointer-events-none flex min-w-0 flex-wrap justify-center gap-x-1.5 gap-y-2 pb-2">
       {slots}
     </div>
-    <input ref={input} aria-label="英文拼写" value={value} onChange={e => { onChange(e.target.value); select(); }} disabled={disabled}
+    <input ref={input} aria-label="英文拼写" value={displayValue} onChange={e => {
+      if (composing.current || (e.nativeEvent as InputEvent).isComposing) { setCompositionDraft(e.target.value); select(); return; }
+      const edit = constrainReviewSpelling(shape, value, e.target.value);
+      if (edit.value !== e.target.value) commit(edit); else { onChange(edit.value); select(); }
+    }} disabled={disabled}
+      onBeforeInput={event => {
+        const native = event.nativeEvent as InputEvent;
+        if (composing.current || native.isComposing || typeof native.data !== "string" || !event.cancelable) return;
+        const node = event.currentTarget;
+        const start = node.selectionStart ?? value.length, end = node.selectionEnd ?? start;
+        const edit = insertReviewSpelling(shape, value, start, end, native.data);
+        if (edit.value !== value.slice(0, start) + native.data + value.slice(end)) { event.preventDefault(); commit(edit); }
+      }}
+      onPaste={event => {
+        if (composing.current) return;
+        event.preventDefault(); const node = event.currentTarget;
+        const start = node.selectionStart ?? value.length;
+        commit(insertReviewSpelling(shape, value, start, node.selectionEnd ?? start, event.clipboardData.getData("text")));
+      }}
+      onCompositionStart={event => { composing.current = true; compositionBase.current = value; setCompositionDraft(event.currentTarget.value); }}
+      onCompositionEnd={event => {
+        composing.current = false; const edit = constrainReviewSpelling(shape, compositionBase.current, event.currentTarget.value);
+        setCompositionDraft(null); commit(edit);
+      }}
       onFocus={() => { setFocused(true); select(); }} onBlur={() => setFocused(false)} onSelect={select} className={styles.nativeInput}
       autoComplete="off" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={300}
-      onKeyDown={event => { if (event.key === "Enter" && !event.nativeEvent.isComposing) { event.preventDefault(); event.currentTarget.blur(); onConfirm(); } }} />
+      onKeyDown={event => { if (event.key === "Enter" && !composing.current && !event.nativeEvent.isComposing && event.keyCode !== 229) { event.preventDefault(); event.currentTarget.blur(); onConfirm(); } }} />
   </div>;
 }
 
@@ -92,9 +130,9 @@ function FitContent({ children, keyboard = false }: { children: ReactNode; keybo
   </div>;
 }
 
-function Result({ state, busy, onRetry }: { state: ReviewState; busy: boolean; onRetry: () => void }) {
+function Result({ state, busy, onRetry, pending }: { state: ReviewState; busy: boolean; onRetry: () => void; pending: boolean }) {
   const s = state.summary;
-  return <div className="grid gap-8 text-center">
+  return <div data-review-persistence={pending ? "local" : "saved"} aria-label={pending ? "本轮本地结果，尚未全部保存" : "本轮已保存结果"} className="grid gap-8 text-center">
     <div><p className="text-sm text-student-muted">整体正确率</p><p className="mt-2 text-6xl font-bold text-student-primary">{reviewPercent(s.correct, state.session.total)}</p></div>
     <dl className="grid grid-cols-3 gap-3">{[["词条总数", state.session.total], ["答对", s.correct], ["答错", s.incorrect]].map(([label, value]) =>
       <div key={label}><dt className="text-sm text-student-muted">{label}</dt><dd className="mt-2 text-3xl font-semibold">{value}</dd></div>)}</dl>
@@ -105,10 +143,10 @@ function Result({ state, busy, onRetry }: { state: ReviewState; busy: boolean; o
   </div>;
 }
 
-export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry, onReload, pending = 0, syncError, syncing, onSyncRetry }: {
+export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry, onReload, pending = 0, syncError, onSyncRetry }: {
   state?: ReviewState; busy: boolean; error?: string;
   onAction: (action: string, answer?: unknown) => Promise<void>; onRetry: () => void; onReload: () => void;
-  pending?: number; syncError?: string; syncing?: boolean; onSyncRetry?: () => void;
+  pending?: number; syncError?: string; onSyncRetry?: () => void;
 }) {
   const [spelling, setSpelling] = useState(""), [selected, setSelected] = useState("");
   const [exampleOpen, setExampleOpen] = useState(false), [confirmSkip, setConfirmSkip] = useState(false);
@@ -140,7 +178,7 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
   }, []);
   const study = phase === "study", result = phase === "result", last = item?.position === state?.session.total;
   const progress = result ? state?.session.total ?? 0 : study ? item?.position ?? 0 : state?.session.answered ?? 0;
-  return <section ref={workspace} aria-label="生词本复习" data-keyboard={keyboard} className={`${styles.workspace} ${keyboard ? "relative min-h-screen overflow-x-hidden" : "fixed inset-x-0 top-0 h-[100dvh] overflow-hidden"} flex min-w-0 flex-col bg-white text-student-text ${state?.session.domain === "reading" ? "reading-theme" : ""}`}
+  return <section ref={workspace} aria-label="生词本复习" data-keyboard={keyboard} className={`${keyboard ? "relative min-h-screen overflow-x-hidden" : "fixed inset-x-0 top-0 h-[100dvh] overflow-hidden"} flex min-w-0 flex-col bg-white text-student-text ${state?.session.domain === "reading" ? "reading-theme" : ""}`}
     style={!keyboard && viewport ? { height: viewport.height, top: viewport.top } : undefined}>
     <div ref={node => { if (confirmSkip) node?.setAttribute("inert", ""); else node?.removeAttribute("inert"); }} aria-hidden={confirmSkip || undefined}
       className={`mx-auto flex ${keyboard ? "min-h-screen" : "h-full"} w-full max-w-3xl min-w-0 flex-col gap-4 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] sm:gap-6 sm:px-10 sm:pb-8 sm:pt-6`}>
@@ -152,7 +190,7 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
         {study ? <button ref={skipButton} type="button" disabled={busy} className="shrink-0 text-sm text-student-primary hover:underline" onClick={() => setConfirmSkip(true)}>跳过复习</button> : null}
         {!result ? <Link href={`${SETUP}/history`} className="shrink-0 text-sm text-student-primary hover:underline">暂停</Link> : null}
       </header>
-      <FitContent keyboard={keyboard}>{!state ? <div className="text-center">{!error ? "正在恢复复习…" : null}</div> : result ? <Result state={state} busy={busy || pending > 0} onRetry={onRetry} /> : item ?
+      <FitContent keyboard={keyboard}>{!state ? <div className="text-center">{!error ? "正在恢复复习…" : null}</div> : result ? <Result state={state} busy={busy || pending > 0} pending={pending > 0} onRetry={onRetry} /> : item ?
         <div className="grid min-w-0 gap-6 sm:gap-8">
           {study && item.study ? <>
             <div className="grid gap-3 text-center"><h1 className="text-4xl font-bold leading-tight [overflow-wrap:anywhere] sm:text-5xl">{item.study.expression}</h1>
@@ -173,11 +211,11 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
         </div> : null}</FitContent>
       {error ? <div role="alert" className="shrink-0 text-center text-sm text-student-error [overflow-wrap:anywhere]">{error}
          <button type="button" disabled={busy} className="ml-3 text-student-primary underline" onClick={onReload}>重试</button></div> : null}
-       {pending > 0 ? <div role="status" className="shrink-0 text-center text-xs text-student-muted">
-         {syncError || (syncing ? `正在同步 · ${pending}项待保存` : `尚有${pending}项未同步，记录保留在本机`)}
-         {onSyncRetry ? <button type="button" className="ml-2 text-student-primary underline" onClick={onSyncRetry}>重试同步</button> : null}
-         {result ? <p className="mt-1">本轮结果含未同步作答；同步完成后可在历史查看及错词再练。请勿清除浏览器数据。</p> : null}
-       </div> : null}
+       <div data-sync-slot className={styles.syncSlot}>
+         {pending > 0 && syncError ? <div role="status" className={styles.syncNotice}>
+           <span>{syncError}</span>{onSyncRetry ? <button type="button" onClick={onSyncRetry}>重试同步</button> : null}
+         </div> : null}
+       </div>
       {!result && item ? <footer className="grid shrink-0 gap-3">
         {study ? <div className={`grid gap-3 ${last ? "grid-cols-2" : "grid-cols-1"}`}>
           {last ? <button type="button" disabled={busy} className="student-button-secondary h-11" onClick={() => void onAction("repeat")}>再看一遍</button> : null}

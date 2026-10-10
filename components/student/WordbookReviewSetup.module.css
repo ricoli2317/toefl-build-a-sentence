@@ -1,8 +1,9 @@
 .page { min-height: 100dvh; overflow-x: clip; background: white; color: var(--student-text); }
 .layout { display: flex; flex-direction: column; width: min(100%, 1200px); min-height: 100dvh; margin: 0 auto; padding: 0 48px; }
 .navigation { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: max(24px, env(safe-area-inset-top)) 0 20px; font-size: 14px; color: var(--student-muted); }
-.navigation a { display: inline-flex; align-items: center; min-height: 44px; }
-.navigation a:hover { color: var(--student-primary); }
+.navigation a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; border: 1px solid var(--student-primary-border); border-radius: 10px; background: white; color: var(--student-primary); font-weight: 600; transition: background 150ms, border-color 150ms, color 150ms; }
+.navigation a:hover { border-color: var(--student-primary); background: var(--student-primary-soft); }
+.navigation a:active { border-color: var(--student-primary); background: var(--student-primary-soft); color: var(--student-primary-hover); }
 .pending { padding-top: 12px; }
 .pending:empty { display: none; }
 .configuration { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.65fr); align-items: center; gap: clamp(40px, 6vw, 88px); flex: 1; min-width: 0; margin: 0; padding: 24px 0; border: 0; }
