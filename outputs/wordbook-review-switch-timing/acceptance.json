@@ -1,0 +1,399 @@
+{
+  "account": "jiangzhuocheng2",
+  "origin": "http://localhost:3001",
+  "realRounds": [
+    {
+      "id": "5a677e40-4d47-4041-90d8-6d6cb3fc52fc",
+      "source": "CTW",
+      "total": 3,
+      "summary": {
+        "correct": 2,
+        "posTotal": 3,
+        "incorrect": 1,
+        "posCorrect": 2,
+        "choiceTotal": 0,
+        "choiceCorrect": 0,
+        "spellingTotal": 3,
+        "spellingCorrect": 2
+      }
+    },
+    {
+      "id": "1de46685-8579-4641-a735-4d35398bfbd9",
+      "source": "RAP",
+      "total": 2,
+      "summary": {
+        "correct": 2,
+        "posTotal": 0,
+        "incorrect": 0,
+        "posCorrect": 0,
+        "choiceTotal": 2,
+        "choiceCorrect": 2,
+        "spellingTotal": 0,
+        "spellingCorrect": 0
+      }
+    }
+  ],
+  "measurements": [
+    {
+      "label": "real desktop spelling → next",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1760.8999999985099,
+      "greenMs": 1043.6000000014901,
+      "waitingText": "即将进入下一题",
+      "disabled": true,
+      "initialRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 0.6000000014901161,
+          "response": 1025.6999999955297,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 1026.6000000014901,
+          "response": 1747.1999999955297,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "real delayed advance → next",
+      "slowResponseAddedMs": 1300,
+      "totalMs": 2694.7000000029802,
+      "greenMs": 659.8999999985099,
+      "waitingText": "即将进入下一题",
+      "disabled": true,
+      "initialRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 1.7000000029802322,
+          "response": 643.3999999985099,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 643.8999999985099,
+          "response": 2681.60000000149,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "real mobile choice → next",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1563.1999999955297,
+      "greenMs": 841.8999999985099,
+      "waitingText": "即将进入下一题",
+      "disabled": true,
+      "initialRect": {
+        "x": 20,
+        "y": 780,
+        "width": 350,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 20,
+        "y": 780,
+        "width": 350,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 0.5999999940395355,
+          "response": 825.1999999955297,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 826,
+          "response": 1547.1999999955297,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "real mobile final → result",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1575.1000000014901,
+      "greenMs": 755.4000000059605,
+      "waitingText": "即将查看结果",
+      "disabled": true,
+      "initialRect": {
+        "x": 20,
+        "y": 780,
+        "width": 350,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 20,
+        "y": 780,
+        "width": 350,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 1.3000000044703484,
+          "response": 749.9000000059605,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 750.7000000029802,
+          "response": 1570.2000000029802,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "isolated fast mobile → next",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1007.5,
+      "greenMs": 173.79999999701977,
+      "waitingText": "即将进入下一题",
+      "disabled": true,
+      "initialRect": {
+        "x": 20,
+        "y": 780,
+        "width": 350,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 20,
+        "y": 780,
+        "width": 350,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 1.6999999955296516,
+          "response": 164,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 164.69999999552965,
+          "response": 321,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "isolated fast final → result",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1009,
+      "greenMs": 173.59999999403954,
+      "waitingText": "即将查看结果",
+      "disabled": true,
+      "initialRect": {
+        "x": 20,
+        "y": 780,
+        "width": 350,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 20,
+        "y": 780,
+        "width": 350,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 1.5,
+          "response": 161.89999999850988,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 162.69999999552965,
+          "response": 319.59999999403954,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "isolated fast desktop → next",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1009.3000000044703,
+      "greenMs": 161,
+      "waitingText": "即将进入下一题",
+      "disabled": true,
+      "initialRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 1.3999999985098839,
+          "response": 156.89999999850988,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 157.60000000149012,
+          "response": 312.8999999985099,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "isolated fast desktop final → result",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1013.2000000029802,
+      "greenMs": 161.30000000447035,
+      "waitingText": "即将查看结果",
+      "disabled": true,
+      "initialRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 1.1000000014901161,
+          "response": 158.10000000149012,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 158.60000000149012,
+          "response": 314.20000000298023,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "isolated fast desktop → next",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1010.8000000044703,
+      "greenMs": 177.80000000447035,
+      "waitingText": "即将进入下一题",
+      "disabled": true,
+      "initialRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 1.3000000044703484,
+          "response": 159.20000000298023,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 160.30000000447035,
+          "response": 314,
+          "status": 200
+        }
+      ]
+    },
+    {
+      "label": "isolated fast desktop final → result",
+      "slowResponseAddedMs": 0,
+      "totalMs": 1016.2999999970198,
+      "greenMs": 162.60000000149012,
+      "waitingText": "即将查看结果",
+      "disabled": true,
+      "initialRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "waitingRect": {
+        "x": 376,
+        "y": 824,
+        "width": 688,
+        "height": 44
+      },
+      "requests": [
+        {
+          "action": "answer",
+          "start": 0.8999999985098839,
+          "response": 157.5,
+          "status": 200
+        },
+        {
+          "action": "advance",
+          "start": 158,
+          "response": 315.20000000298023,
+          "status": 200
+        }
+      ]
+    }
+  ],
+  "checks": [
+    "real desktop spelling → next persisted refresh PASS",
+    "real delayed advance → next persisted refresh PASS",
+    "blank wrong/manual advance/final feedback refresh unchanged PASS",
+    "real mobile choice → next persisted refresh PASS",
+    "real mobile final → result persisted refresh PASS",
+    "isolated fast mobile → next persisted refresh PASS",
+    "isolated fast final → result persisted refresh PASS",
+    "isolated refresh prepared next data held without skip PASS (reload visible after 702ms)",
+    "isolated fast desktop → next persisted refresh PASS",
+    "isolated fast desktop final → result persisted refresh PASS",
+    "isolated refresh prepared next data held without skip PASS (click → restored next 1089ms)",
+    "isolated fast desktop → next persisted refresh PASS",
+    "isolated fast desktop final → result persisted refresh PASS",
+    "isolated refresh prepared next data held without skip PASS (click → restored next 1065ms)",
+    "isolated prepare failure before commit / disabled button / retry original itemId / no regrade or skip PASS",
+    "isolated prepare failure after commit / disabled button / retry original itemId / no regrade or skip PASS",
+    "isolated refresh persisted correct answer auto-prepares exactly once with no resubmission PASS"
+  ],
+  "errors": [],
+  "status": "passed"
+}

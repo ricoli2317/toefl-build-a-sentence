@@ -158,6 +158,7 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
   const { displayName, role } = useCurrentAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const immersive =
+    /^\/student\/wordbook\/review\/[0-9a-f-]{36}$/i.test(pathname) ||
     pathname.startsWith("/student/write-email/practice/") ||
     pathname.startsWith("/student/write-email/submission/") ||
     pathname.startsWith("/student/academic-discussion/practice/") ||

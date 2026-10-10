@@ -18,7 +18,7 @@ V1是复习产品版本；`fixed_pool_v2`是最终493条固定池及偏好算法
 2. 干扰项先取当前学生同科目保存的同POS义，不足3项才用approved493小表。**运行时不查询occurrence作为全局干扰池，不调用AI**；正确答案来自保存的源义，固定池不覆盖它。
 3. 每层排序为本次candidate调用未使用 → 类别/同或显式相关学科/名词类型软偏好 → 使用次数 → 目标相关MD5稳定顺序；供应少时允许有限复用。计数不是跨轮持久多样性，本地优先不因固定池语义更强而改变。
 4. 标签需canonical关联＋POS＋规范化精确义匹配；未知/歧义保持中性，不能按拼写或篇章猜标签。过滤重复、目标其他保存义/身份变体、ASCII字母及包含/近义冲突，包括「限制／抑制／约束／制约」。
-5. CREATE保存整轮option ID、顺序、正确项及反馈源义。READ/SUBMIT/历史/再练不重算candidate、不再读池；未作答不公开正确答案，后续题未解锁不能预读或提交。
+5. CREATE保存整轮option ID、顺序、正确项及反馈源义。READ/SUBMIT/历史/再练不重算candidate、不再读池；测试接口未作答不公开正确答案，后续题未解锁不能预读或提交。新增复习阶段仅通过独立的来源快照投影展示本轮词条，不解锁测试、不计分，见[沉浸式流程增量说明](student-wordbook-review-v1-immersive.md)。
 6. API先认证再使用service client；严格允许列表拒绝客户owner/评分/正确答案。RPC固定search_path、security-invoker；私有表RLS、浏览器角色不可直读写或调用，service_role对固定池只读。事务锁、幂等及immutable guard保护旧轮。57014返回503/REVIEW_TIMEOUT，不提高超时、不自动重试或泄露SQL。
 
 ## 最终数据与维护

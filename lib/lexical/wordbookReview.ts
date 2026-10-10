@@ -1,4 +1,5 @@
 import type { WordbookDomain } from "./wordbookList.ts";
+import type { ReviewExamplePart } from "./wordbookReviewPresentation.ts";
 
 export const REVIEW_SOURCES = {
   reading: [{ id: "ctw", label: "CTW" }, { id: "rdl", label: "RDL" }, { id: "rap", label: "RAP" }],
@@ -15,13 +16,16 @@ export type ReviewAnswer = { student: { spelling?: string; pos?: string; optionI
   correct: boolean; submittedAt: string; expression: string; pos: string | null; standardPos: string | null;
   meaning: string; definitionEn: string | null; correctOptionId: string | null; examples: { text: string; kind: string }[] };
 export type ReviewItem = { itemId: string; position: number; kind: "spelling_pos" | "meaning_choice";
-  sourceTypes: string[]; prompt: string; options: ReviewOption[]; answer?: ReviewAnswer };
+  sourceTypes: string[]; prompt: string; options: ReviewOption[]; answer?: ReviewAnswer;
+  spellingShape?: string; example?: ReviewExamplePart[] | null;
+  study?: { expression: string; pos: string | null; meaning: string } };
 export type ReviewSummary = { correct: number; incorrect: number; spellingCorrect: number; spellingTotal: number;
   posCorrect: number; posTotal: number; choiceCorrect: number; choiceTotal: number };
 export type ReviewSession = { session_id: string; domain: WordbookDomain; source_types: string[]; mode: ReviewSettings["mode"] | "retry";
   settings: Partial<ReviewSettings>; timezone: string; started_at: string; completed_at: string | null;
   status: "active" | "completed"; total: number; answered: number; parent_session_id: string | null };
-export type ReviewState = { session: ReviewSession; summary: ReviewSummary; composition: { spellingPos: number; meaningChoice: number }; item: ReviewItem };
+export type ReviewState = { session: ReviewSession; summary: ReviewSummary; composition: { spellingPos: number; meaningChoice: number }; item: ReviewItem;
+  flow?: { phase: "study" | "test" | "result"; position: number } };
 export type ReviewAvailability = { total: number; spellingPos: number; meaningChoice: number; unavailable: number;
   reasons: Record<string, number>; posOptions: ReviewOption[] };
 export type ReviewHistory = { items: (ReviewSession & { summary: ReviewSummary })[]; total: number; page: number; pageSize: number };

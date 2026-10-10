@@ -274,6 +274,7 @@ test('real review handlers authenticate before database access, whitelist all ac
       if(name.includes('attemptServer'))return{requireReadingAttemptStudent:async()=>authorized?{userId:h.U}:{error:{status:401}},readingAttemptJson:(body,init)=>({body,status:init?.status??200})};
       if(name.includes('supabase/server'))return{createServiceSupabase:()=>({rpc:async(name,args)=>{calls.push({name,args});return{data:{ok:true}};}})};
       if(name.endsWith('wordbookReview.server'))return{reviewRpc};
+      if(name.endsWith('wordbookReviewPresentation'))return{presentReviewState:data=>data};
       if(name.endsWith('wordbookReview'))return require('../lib/lexical/wordbookReview.ts');throw Error(name);
     }});
     const context={params:{sessionId:h.uuid()}},url='https://offline.invalid/review';

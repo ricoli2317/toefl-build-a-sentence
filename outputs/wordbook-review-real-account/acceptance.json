@@ -1,0 +1,4797 @@
+{
+  "account": "jiangzhuocheng2",
+  "origin": "http://localhost:3001",
+  "startedAt": "2026-10-10T00:47:09.112Z",
+  "rounds": [
+    {
+      "id": "90a410f9-a8da-4865-a010-7a202a7312ad",
+      "domain": "reading",
+      "source": "CTW-retry-wrong",
+      "parent": "18cdd645-87d4-46d9-b5fc-e0687ca32338",
+      "total": 1,
+      "answers": [
+        {
+          "itemId": "d49557ea-5879-40b7-89f6-227ad7eebf64",
+          "kind": "spelling_pos",
+          "mode": "wrong-spelling-correct-pos",
+          "correct": false
+        }
+      ],
+      "studyOrder": [
+        "d49557ea-5879-40b7-89f6-227ad7eebf64"
+      ],
+      "summary": {
+        "correct": 0,
+        "posTotal": 1,
+        "incorrect": 1,
+        "posCorrect": 1,
+        "choiceTotal": 0,
+        "choiceCorrect": 0,
+        "spellingTotal": 1,
+        "spellingCorrect": 0
+      }
+    },
+    {
+      "id": "29516c36-9149-40c7-b078-9ad0a4506d92",
+      "domain": "reading",
+      "source": "CTW-retry-correct",
+      "parent": "90a410f9-a8da-4865-a010-7a202a7312ad",
+      "total": 1,
+      "answers": [
+        {
+          "itemId": "995065f9-3b52-46c1-b173-8be417412b5a",
+          "kind": "spelling_pos",
+          "mode": "correct",
+          "correct": true,
+          "autoAdvanceRequestMs": 1000,
+          "autoAdvanceMs": 1645
+        }
+      ],
+      "studyOrder": [
+        "995065f9-3b52-46c1-b173-8be417412b5a"
+      ],
+      "summary": {
+        "correct": 1,
+        "posTotal": 1,
+        "incorrect": 0,
+        "posCorrect": 1,
+        "choiceTotal": 0,
+        "choiceCorrect": 0,
+        "spellingTotal": 1,
+        "spellingCorrect": 1
+      }
+    },
+    {
+      "id": "b3407502-51dd-4c91-8e4e-6e332a80b070",
+      "domain": "reading",
+      "source": "CTW-mobile",
+      "parent": "18cdd645-87d4-46d9-b5fc-e0687ca32338",
+      "total": 1,
+      "answers": [
+        {
+          "itemId": "3ecf448d-44ea-4a3e-9a9d-8d895155fab2",
+          "kind": "spelling_pos",
+          "mode": "correct",
+          "correct": true,
+          "autoAdvanceRequestMs": 997,
+          "autoAdvanceMs": 1609
+        }
+      ],
+      "studyOrder": [
+        "3ecf448d-44ea-4a3e-9a9d-8d895155fab2"
+      ],
+      "summary": {
+        "correct": 1,
+        "posTotal": 1,
+        "incorrect": 0,
+        "posCorrect": 1,
+        "choiceTotal": 0,
+        "choiceCorrect": 0,
+        "spellingTotal": 1,
+        "spellingCorrect": 1
+      }
+    },
+    {
+      "id": "ad125fbf-faa7-461b-847c-1f76fb53d21f",
+      "domain": "reading",
+      "source": "RAP-mobile",
+      "parent": "187ca6ca-7c5e-4bfb-8502-66115a2ec932",
+      "total": 1,
+      "answers": [
+        {
+          "itemId": "043d09f3-51ae-4662-92b3-be84beb0f846",
+          "kind": "meaning_choice",
+          "mode": "correct",
+          "correct": true,
+          "autoAdvanceRequestMs": 995,
+          "autoAdvanceMs": 1697
+        }
+      ],
+      "studyOrder": [
+        "043d09f3-51ae-4662-92b3-be84beb0f846"
+      ],
+      "summary": {
+        "correct": 1,
+        "posTotal": 0,
+        "incorrect": 0,
+        "posCorrect": 0,
+        "choiceTotal": 1,
+        "choiceCorrect": 1,
+        "spellingTotal": 0,
+        "spellingCorrect": 0
+      }
+    }
+  ],
+  "checks": [
+    "Normal UI login PASS: jiangzhuocheng2",
+    "Layout PASS: Reconfirmed ctw completed result desktop (1440×900)",
+    "Layout PASS: Reconfirmed ctw completed result mobile (390×844)",
+    "Layout PASS: Reconfirmed rap completed result desktop (1440×900)",
+    "Layout PASS: Reconfirmed rap completed result mobile (390×844)",
+    "Layout PASS: Reconfirmed rap completed result desktop (1440×900)",
+    "Layout PASS: Reconfirmed rap completed result mobile (390×844)",
+    "Layout PASS: reading CTW-retry-wrong study 1 (1440×900)",
+    "Layout PASS: reading CTW-retry-wrong skip confirmation (1440×900)",
+    "Review order / repeat / skip-cancel PASS: reading CTW-retry-wrong",
+    "Same-round study → test PASS: reading CTW-retry-wrong",
+    "Layout PASS: Reading nonempty spelling example expanded (1440×900)",
+    "Example toggle / target rendering PASS: Reading nonempty spelling",
+    "Layout PASS: reading CTW-retry-wrong wrong desktop (1440×900)",
+    "Pause/history resume PASS: reading test position 1",
+    "Layout PASS: reading CTW-retry-wrong wrong mobile (390×844)",
+    "Layout PASS: reading CTW-retry-wrong wrong small/landscape/keyboard-height (320×568)",
+    "Layout PASS: reading CTW-retry-wrong wrong small/landscape/keyboard-height (844×390)",
+    "Layout PASS: reading CTW-retry-wrong wrong small/landscape/keyboard-height (390×350)",
+    "Wrong lock / nonempty misspelling / manual-next / refresh / pause PASS: reading CTW-retry-wrong",
+    "Layout PASS: reading CTW-retry-wrong result desktop (1440×900)",
+    "Layout PASS: reading CTW-retry-wrong result mobile (390×844)",
+    "Results / server counts / refresh PASS: reading CTW-retry-wrong",
+    "Layout PASS: reading CTW-retry-correct study 1 (1440×900)",
+    "Layout PASS: reading CTW-retry-correct skip confirmation (1440×900)",
+    "Review order / repeat / skip-cancel PASS: reading CTW-retry-correct",
+    "Same-round study → test PASS: reading CTW-retry-correct",
+    "Layout PASS: Reading corrected spelling example expanded (1440×900)",
+    "Example toggle / target rendering PASS: Reading corrected spelling",
+    "Layout PASS: reading CTW-retry-correct green feedback (1440×900)",
+    "Server-correct → auto advance PASS: reading CTW-retry-correct, 1645ms",
+    "Layout PASS: reading CTW-retry-correct result desktop (1440×900)",
+    "Layout PASS: reading CTW-retry-correct result mobile (390×844)",
+    "Results / server counts / refresh PASS: reading CTW-retry-correct",
+    "Writing real-data availability: WE = 0",
+    "Writing real-data availability: AD = 0",
+    "Writing real-data availability: BAS = 0",
+    "Normal UI login PASS: jiangzhuocheng2",
+    "Layout PASS: reading CTW-mobile study 1 (390×844)",
+    "Pause/history resume PASS: reading study position 1",
+    "Layout PASS: reading CTW-mobile skip confirmation (390×844)",
+    "Review order / repeat / skip-cancel PASS: reading CTW-mobile",
+    "Same-round study → test PASS: reading CTW-mobile",
+    "Layout PASS: Mobile CTW unanswered example expanded (390×844)",
+    "Example toggle / target rendering PASS: Mobile CTW unanswered",
+    "Layout PASS: Mobile CTW unanswered (390×844)",
+    "Layout PASS: Mobile CTW unanswered small/landscape/keyboard-height (320×568)",
+    "Layout PASS: Mobile CTW unanswered small/landscape/keyboard-height (844×390)",
+    "Layout PASS: Mobile CTW unanswered small/landscape/keyboard-height (390×350)",
+    "Layout PASS: reading CTW-mobile green feedback (390×844)",
+    "Server-correct → auto advance PASS: reading CTW-mobile, 1609ms",
+    "Layout PASS: reading CTW-mobile result desktop (1440×900)",
+    "Layout PASS: reading CTW-mobile result mobile (390×844)",
+    "Results / server counts / refresh PASS: reading CTW-mobile",
+    "Layout PASS: reading RAP-mobile study 1 (390×844)",
+    "Pause/history resume PASS: reading study position 1",
+    "Layout PASS: reading RAP-mobile skip confirmation (390×844)",
+    "Review order / repeat / skip-cancel PASS: reading RAP-mobile",
+    "Same-round study → test PASS: reading RAP-mobile",
+    "Layout PASS: Mobile RAP unanswered example expanded (390×844)",
+    "Example toggle / target rendering PASS: Mobile RAP unanswered",
+    "Layout PASS: Mobile RAP unanswered (390×844)",
+    "Layout PASS: Mobile RAP unanswered small/landscape/keyboard-height (320×568)",
+    "Layout PASS: Mobile RAP unanswered small/landscape/keyboard-height (844×390)",
+    "Layout PASS: Mobile RAP unanswered small/landscape/keyboard-height (390×350)",
+    "Layout PASS: reading RAP-mobile green feedback (390×844)",
+    "Server-correct → auto advance PASS: reading RAP-mobile, 1697ms",
+    "Layout PASS: reading RAP-mobile result desktop (1440×900)",
+    "Layout PASS: reading RAP-mobile result mobile (390×844)",
+    "Results / server counts / refresh PASS: reading RAP-mobile",
+    "Normal UI login PASS: jiangzhuocheng2",
+    "Final actual history PASS: all 7 acceptance rounds completed, exactly 9 answers, original histories unchanged"
+  ],
+  "layouts": [
+    {
+      "label": "Reconfirmed ctw completed result desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 262.5,
+        "right": 1064,
+        "bottom": 659.5,
+        "width": 688,
+        "height": 397
+      },
+      "stage": {
+        "x": 376,
+        "y": 54,
+        "right": 1064,
+        "bottom": 868,
+        "width": 688,
+        "height": 814
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 376,
+            "y": 619.5,
+            "right": 597.328125,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 609.328125,
+            "y": 619.5,
+            "right": 830.65625,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 842.65625,
+            "y": 619.5,
+            "right": 1063.984375,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Reconfirmed ctw completed result mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 180.5,
+        "right": 370,
+        "bottom": 681.5,
+        "width": 350,
+        "height": 501
+      },
+      "stage": {
+        "x": 20,
+        "y": 38,
+        "right": 370,
+        "bottom": 824,
+        "width": 350,
+        "height": 786
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 20,
+            "y": 537.5,
+            "right": 370,
+            "bottom": 577.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 20,
+            "y": 589.5,
+            "right": 370,
+            "bottom": 629.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 20,
+            "y": 641.5,
+            "right": 370,
+            "bottom": 681.5,
+            "width": 350,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Reconfirmed rap completed result desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 262.5,
+        "right": 1064,
+        "bottom": 659.5,
+        "width": 688,
+        "height": 397
+      },
+      "stage": {
+        "x": 376,
+        "y": 54,
+        "right": 1064,
+        "bottom": 868,
+        "width": 688,
+        "height": 814
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 376,
+            "y": 619.5,
+            "right": 597.328125,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 609.328125,
+            "y": 619.5,
+            "right": 830.65625,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 842.65625,
+            "y": 619.5,
+            "right": 1063.984375,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Reconfirmed rap completed result mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 180.5,
+        "right": 370,
+        "bottom": 681.5,
+        "width": 350,
+        "height": 501
+      },
+      "stage": {
+        "x": 20,
+        "y": 38,
+        "right": 370,
+        "bottom": 824,
+        "width": 350,
+        "height": 786
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 20,
+            "y": 537.5,
+            "right": 370,
+            "bottom": 577.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 20,
+            "y": 589.5,
+            "right": 370,
+            "bottom": 629.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 20,
+            "y": 641.5,
+            "right": 370,
+            "bottom": 681.5,
+            "width": 350,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Reconfirmed rap completed result desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 262.5,
+        "right": 1064,
+        "bottom": 659.5,
+        "width": 688,
+        "height": 397
+      },
+      "stage": {
+        "x": 376,
+        "y": 54,
+        "right": 1064,
+        "bottom": 868,
+        "width": 688,
+        "height": 814
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 376,
+            "y": 619.5,
+            "right": 597.328125,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 609.328125,
+            "y": 619.5,
+            "right": 830.65625,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 842.65625,
+            "y": 619.5,
+            "right": 1063.984375,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Reconfirmed rap completed result mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 180.5,
+        "right": 370,
+        "bottom": 681.5,
+        "width": 350,
+        "height": 501
+      },
+      "stage": {
+        "x": 20,
+        "y": 38,
+        "right": 370,
+        "bottom": 824,
+        "width": 350,
+        "height": 786
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 20,
+            "y": 537.5,
+            "right": 370,
+            "bottom": 577.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 20,
+            "y": 589.5,
+            "right": 370,
+            "bottom": 629.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 20,
+            "y": 641.5,
+            "right": 370,
+            "bottom": 681.5,
+            "width": 350,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong study 1",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 316,
+        "right": 1064,
+        "bottom": 512,
+        "width": 688,
+        "height": 196
+      },
+      "stage": {
+        "x": 376,
+        "y": 68,
+        "right": 1064,
+        "bottom": 760,
+        "width": 688,
+        "height": 692
+      },
+      "controls": [
+        {
+          "label": "跳过复习",
+          "rect": {
+            "x": 964.625,
+            "y": 24,
+            "right": 1020.203125,
+            "bottom": 44,
+            "width": 55.578125,
+            "height": 20
+          }
+        },
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 1036.203125,
+            "y": 24,
+            "right": 1064,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "再看一遍",
+          "rect": {
+            "x": 376,
+            "y": 828,
+            "right": 714,
+            "bottom": 868,
+            "width": 338,
+            "height": 40
+          }
+        },
+        {
+          "label": "开始测试",
+          "rect": {
+            "x": 726,
+            "y": 828,
+            "right": 1064,
+            "bottom": 868,
+            "width": 338,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong skip confirmation",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 316,
+        "right": 1064,
+        "bottom": 512,
+        "width": 688,
+        "height": 196
+      },
+      "stage": {
+        "x": 376,
+        "y": 68,
+        "right": 1064,
+        "bottom": 760,
+        "width": 688,
+        "height": 692
+      },
+      "controls": [
+        {
+          "label": "取消",
+          "rect": {
+            "x": 528,
+            "y": 456,
+            "right": 714,
+            "bottom": 496,
+            "width": 186,
+            "height": 40
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 726,
+            "y": 456,
+            "right": 912,
+            "bottom": 496,
+            "width": 186,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Reading nonempty spelling example expanded",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 272,
+        "right": 1064,
+        "bottom": 552,
+        "width": 688,
+        "height": 280
+      },
+      "stage": {
+        "x": 376,
+        "y": 68,
+        "right": 1064,
+        "bottom": 756,
+        "width": 688,
+        "height": 688
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 1036.203125,
+            "y": 24,
+            "right": 1064,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 706.09375,
+            "y": 324,
+            "right": 733.890625,
+            "bottom": 344,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 376,
+            "y": 416,
+            "right": 1064,
+            "bottom": 468,
+            "width": 688,
+            "height": 52
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 478.46875,
+            "y": 500,
+            "right": 526.4375,
+            "bottom": 552,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 534.4375,
+            "y": 500,
+            "right": 580.59375,
+            "bottom": 552,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 588.59375,
+            "y": 500,
+            "right": 649.59375,
+            "bottom": 552,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 657.59375,
+            "y": 500,
+            "right": 722.171875,
+            "bottom": 552,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 730.171875,
+            "y": 500,
+            "right": 802.84375,
+            "bottom": 552,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 810.84375,
+            "y": 500,
+            "right": 880.75,
+            "bottom": 552,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 888.75,
+            "y": 500,
+            "right": 961.515625,
+            "bottom": 552,
+            "width": 72.765625,
+            "height": 52
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 376,
+            "y": 824,
+            "right": 1064,
+            "bottom": 868,
+            "width": 688,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong wrong desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 252,
+        "right": 1064,
+        "bottom": 572,
+        "width": 688,
+        "height": 320
+      },
+      "stage": {
+        "x": 376,
+        "y": 68,
+        "right": 1064,
+        "bottom": 756,
+        "width": 688,
+        "height": 688
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 1036.203125,
+            "y": 24,
+            "right": 1064,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 706.09375,
+            "y": 304,
+            "right": 733.890625,
+            "bottom": 324,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 376,
+            "y": 396,
+            "right": 1064,
+            "bottom": 448,
+            "width": 688,
+            "height": 52
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 478.46875,
+            "y": 520,
+            "right": 526.4375,
+            "bottom": 572,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 534.4375,
+            "y": 520,
+            "right": 580.59375,
+            "bottom": 572,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 588.59375,
+            "y": 520,
+            "right": 649.59375,
+            "bottom": 572,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 657.59375,
+            "y": 520,
+            "right": 722.171875,
+            "bottom": 572,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 730.171875,
+            "y": 520,
+            "right": 802.84375,
+            "bottom": 572,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 810.84375,
+            "y": 520,
+            "right": 880.75,
+            "bottom": 572,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 888.75,
+            "y": 520,
+            "right": 961.515625,
+            "bottom": 572,
+            "width": 72.765625,
+            "height": 52
+          }
+        },
+        {
+          "label": "下一个",
+          "rect": {
+            "x": 376,
+            "y": 824,
+            "right": 1064,
+            "bottom": 868,
+            "width": 688,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong wrong mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 193.625,
+        "right": 370,
+        "bottom": 578.375,
+        "width": 350,
+        "height": 384.75
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 720,
+        "width": 350,
+        "height": 668
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 181.09375,
+            "y": 254.375,
+            "right": 208.890625,
+            "bottom": 274.375,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 20,
+            "y": 298.375,
+            "right": 370,
+            "bottom": 402.375,
+            "width": 350,
+            "height": 104
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 32.8125,
+            "y": 466.375,
+            "right": 80.78125,
+            "bottom": 518.375,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 88.78125,
+            "y": 466.375,
+            "right": 134.9375,
+            "bottom": 518.375,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 142.9375,
+            "y": 466.375,
+            "right": 203.9375,
+            "bottom": 518.375,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 211.9375,
+            "y": 466.375,
+            "right": 276.515625,
+            "bottom": 518.375,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 284.515625,
+            "y": 466.375,
+            "right": 357.1875,
+            "bottom": 518.375,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 119.65625,
+            "y": 526.375,
+            "right": 189.5625,
+            "bottom": 578.375,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 197.5625,
+            "y": 526.375,
+            "right": 270.328125,
+            "bottom": 578.375,
+            "width": 72.765625,
+            "height": 52
+          }
+        },
+        {
+          "label": "下一个",
+          "rect": {
+            "x": 20,
+            "y": 780,
+            "right": 370,
+            "bottom": 824,
+            "width": 350,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong wrong small/landscape/keyboard-height",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "scrollHeight": 568,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 320,
+        "bottom": 568,
+        "width": 320,
+        "height": 568
+      },
+      "content": {
+        "x": 20,
+        "y": 55.625,
+        "right": 300,
+        "bottom": 440.375,
+        "width": 280,
+        "height": 384.75
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 300,
+        "bottom": 444,
+        "width": 280,
+        "height": 392
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 272.203125,
+            "y": 16,
+            "right": 300,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 146.09375,
+            "y": 116.375,
+            "right": 173.890625,
+            "bottom": 136.375,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 20,
+            "y": 160.375,
+            "right": 300,
+            "bottom": 264.375,
+            "width": 280,
+            "height": 104
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 38.140625,
+            "y": 328.375,
+            "right": 86.109375,
+            "bottom": 380.375,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 94.109375,
+            "y": 328.375,
+            "right": 140.265625,
+            "bottom": 380.375,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 148.265625,
+            "y": 328.375,
+            "right": 209.265625,
+            "bottom": 380.375,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 217.265625,
+            "y": 328.375,
+            "right": 281.84375,
+            "bottom": 380.375,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 44.328125,
+            "y": 388.375,
+            "right": 117,
+            "bottom": 440.375,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 125,
+            "y": 388.375,
+            "right": 194.90625,
+            "bottom": 440.375,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 202.90625,
+            "y": 388.375,
+            "right": 275.671875,
+            "bottom": 440.375,
+            "width": 72.765625,
+            "height": 52
+          }
+        },
+        {
+          "label": "下一个",
+          "rect": {
+            "x": 20,
+            "y": 504,
+            "right": 300,
+            "bottom": 548,
+            "width": 280,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong wrong small/landscape/keyboard-height",
+      "width": 844,
+      "height": 390,
+      "scrollWidth": 844,
+      "scrollHeight": 390,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 844,
+        "bottom": 390,
+        "width": 844,
+        "height": 390
+      },
+      "content": {
+        "x": 203.3142852783203,
+        "y": 68,
+        "right": 640.6857452392578,
+        "bottom": 246,
+        "width": 437.3714599609375,
+        "height": 178
+      },
+      "stage": {
+        "x": 78,
+        "y": 68,
+        "right": 766,
+        "bottom": 246,
+        "width": 688,
+        "height": 178
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 738.203125,
+            "y": 24,
+            "right": 766,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 413.15960693359375,
+            "y": 101.05714416503906,
+            "right": 430.8304748535156,
+            "bottom": 113.77143096923828,
+            "width": 17.670867919921875,
+            "height": 12.714286804199219
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 203.3142852783203,
+            "y": 134.11428833007812,
+            "right": 640.6857452392578,
+            "bottom": 167.1714324951172,
+            "width": 437.3714599609375,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 268.45513916015625,
+            "y": 212.94285583496094,
+            "right": 298.9495544433594,
+            "bottom": 246,
+            "width": 30.494415283203125,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 304.0352783203125,
+            "y": 212.94285583496094,
+            "right": 333.37744140625,
+            "bottom": 246,
+            "width": 29.3421630859375,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 338.4631652832031,
+            "y": 212.94285583496094,
+            "right": 377.24176025390625,
+            "bottom": 246,
+            "width": 38.778594970703125,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 382.32745361328125,
+            "y": 212.94285583496094,
+            "right": 423.38067626953125,
+            "bottom": 246,
+            "width": 41.05322265625,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 428.4664306640625,
+            "y": 212.94285583496094,
+            "right": 474.66497802734375,
+            "bottom": 246,
+            "width": 46.19854736328125,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 479.75067138671875,
+            "y": 212.94285583496094,
+            "right": 524.1911010742188,
+            "bottom": 246,
+            "width": 44.4404296875,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 529.2767944335938,
+            "y": 212.94285583496094,
+            "right": 575.534912109375,
+            "bottom": 246,
+            "width": 46.25811767578125,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "下一个",
+          "rect": {
+            "x": 78,
+            "y": 314,
+            "right": 766,
+            "bottom": 358,
+            "width": 688,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong wrong small/landscape/keyboard-height",
+      "width": 390,
+      "height": 350,
+      "scrollWidth": 390,
+      "scrollHeight": 350,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 350,
+        "width": 390,
+        "height": 350
+      },
+      "content": {
+        "x": 115.90908813476562,
+        "y": 52.056495666503906,
+        "right": 274.0909118652344,
+        "bottom": 225.94351959228516,
+        "width": 158.18182373046875,
+        "height": 173.88702392578125
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 226,
+        "width": 350,
+        "height": 174
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 188.715087890625,
+            "y": 79.51233673095703,
+            "right": 201.27783203125,
+            "bottom": 88.55130004882812,
+            "width": 12.562744140625,
+            "height": 9.038963317871094
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 115.90908813476562,
+            "y": 99.39805603027344,
+            "right": 274.0909118652344,
+            "bottom": 146.40065002441406,
+            "width": 158.18182373046875,
+            "height": 47.002593994140625
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 121.69967651367188,
+            "y": 175.3253173828125,
+            "right": 143.37905883789062,
+            "bottom": 198.82662963867188,
+            "width": 21.67938232421875,
+            "height": 23.501312255859375
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 146.99464416503906,
+            "y": 175.3253173828125,
+            "right": 167.8548583984375,
+            "bottom": 198.82662963867188,
+            "width": 20.860214233398438,
+            "height": 23.501312255859375
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 171.470458984375,
+            "y": 175.3253173828125,
+            "right": 199.03927612304688,
+            "bottom": 198.82662963867188,
+            "width": 27.568817138671875,
+            "height": 23.501312255859375
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 202.65487670898438,
+            "y": 175.3253173828125,
+            "right": 231.8408203125,
+            "bottom": 198.82662963867188,
+            "width": 29.185943603515625,
+            "height": 23.501312255859375
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 235.45640563964844,
+            "y": 175.3253173828125,
+            "right": 268.3003234863281,
+            "bottom": 198.82662963867188,
+            "width": 32.84391784667969,
+            "height": 23.501312255859375
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 160.9485321044922,
+            "y": 202.44219970703125,
+            "right": 192.5425262451172,
+            "bottom": 225.94351196289062,
+            "width": 31.593994140625,
+            "height": 23.501312255859375
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 196.15811157226562,
+            "y": 202.44219970703125,
+            "right": 229.04440307617188,
+            "bottom": 225.94351196289062,
+            "width": 32.88629150390625,
+            "height": 23.501312255859375
+          }
+        },
+        {
+          "label": "下一个",
+          "rect": {
+            "x": 20,
+            "y": 286,
+            "right": 370,
+            "bottom": 330,
+            "width": 350,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong result desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 262.5,
+        "right": 1064,
+        "bottom": 659.5,
+        "width": 688,
+        "height": 397
+      },
+      "stage": {
+        "x": 376,
+        "y": 54,
+        "right": 1064,
+        "bottom": 868,
+        "width": 688,
+        "height": 814
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 376,
+            "y": 619.5,
+            "right": 597.328125,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 609.328125,
+            "y": 619.5,
+            "right": 830.65625,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 842.65625,
+            "y": 619.5,
+            "right": 1063.984375,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-wrong result mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 180.5,
+        "right": 370,
+        "bottom": 681.5,
+        "width": 350,
+        "height": 501
+      },
+      "stage": {
+        "x": 20,
+        "y": 38,
+        "right": 370,
+        "bottom": 824,
+        "width": 350,
+        "height": 786
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 20,
+            "y": 537.5,
+            "right": 370,
+            "bottom": 577.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 20,
+            "y": 589.5,
+            "right": 370,
+            "bottom": 629.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 20,
+            "y": 641.5,
+            "right": 370,
+            "bottom": 681.5,
+            "width": 350,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-correct study 1",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 316,
+        "right": 1064,
+        "bottom": 512,
+        "width": 688,
+        "height": 196
+      },
+      "stage": {
+        "x": 376,
+        "y": 68,
+        "right": 1064,
+        "bottom": 760,
+        "width": 688,
+        "height": 692
+      },
+      "controls": [
+        {
+          "label": "跳过复习",
+          "rect": {
+            "x": 964.625,
+            "y": 24,
+            "right": 1020.203125,
+            "bottom": 44,
+            "width": 55.578125,
+            "height": 20
+          }
+        },
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 1036.203125,
+            "y": 24,
+            "right": 1064,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "再看一遍",
+          "rect": {
+            "x": 376,
+            "y": 828,
+            "right": 714,
+            "bottom": 868,
+            "width": 338,
+            "height": 40
+          }
+        },
+        {
+          "label": "开始测试",
+          "rect": {
+            "x": 726,
+            "y": 828,
+            "right": 1064,
+            "bottom": 868,
+            "width": 338,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-correct skip confirmation",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 316,
+        "right": 1064,
+        "bottom": 512,
+        "width": 688,
+        "height": 196
+      },
+      "stage": {
+        "x": 376,
+        "y": 68,
+        "right": 1064,
+        "bottom": 760,
+        "width": 688,
+        "height": 692
+      },
+      "controls": [
+        {
+          "label": "取消",
+          "rect": {
+            "x": 528,
+            "y": 456,
+            "right": 714,
+            "bottom": 496,
+            "width": 186,
+            "height": 40
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 726,
+            "y": 456,
+            "right": 912,
+            "bottom": 496,
+            "width": 186,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Reading corrected spelling example expanded",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 272,
+        "right": 1064,
+        "bottom": 552,
+        "width": 688,
+        "height": 280
+      },
+      "stage": {
+        "x": 376,
+        "y": 68,
+        "right": 1064,
+        "bottom": 756,
+        "width": 688,
+        "height": 688
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 1036.203125,
+            "y": 24,
+            "right": 1064,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 706.09375,
+            "y": 324,
+            "right": 733.890625,
+            "bottom": 344,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 376,
+            "y": 416,
+            "right": 1064,
+            "bottom": 468,
+            "width": 688,
+            "height": 52
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 478.46875,
+            "y": 500,
+            "right": 526.4375,
+            "bottom": 552,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 534.4375,
+            "y": 500,
+            "right": 580.59375,
+            "bottom": 552,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 588.59375,
+            "y": 500,
+            "right": 649.59375,
+            "bottom": 552,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 657.59375,
+            "y": 500,
+            "right": 722.171875,
+            "bottom": 552,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 730.171875,
+            "y": 500,
+            "right": 802.84375,
+            "bottom": 552,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 810.84375,
+            "y": 500,
+            "right": 880.75,
+            "bottom": 552,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 888.75,
+            "y": 500,
+            "right": 961.515625,
+            "bottom": 552,
+            "width": 72.765625,
+            "height": 52
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 376,
+            "y": 824,
+            "right": 1064,
+            "bottom": 868,
+            "width": 688,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-correct green feedback",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 272,
+        "right": 1064,
+        "bottom": 552,
+        "width": 688,
+        "height": 280
+      },
+      "stage": {
+        "x": 376,
+        "y": 68,
+        "right": 1064,
+        "bottom": 756,
+        "width": 688,
+        "height": 688
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 1036.203125,
+            "y": 24,
+            "right": 1064,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 706.09375,
+            "y": 324,
+            "right": 733.890625,
+            "bottom": 344,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 376,
+            "y": 416,
+            "right": 1064,
+            "bottom": 468,
+            "width": 688,
+            "height": 52
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 478.46875,
+            "y": 500,
+            "right": 526.4375,
+            "bottom": 552,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 534.4375,
+            "y": 500,
+            "right": 580.59375,
+            "bottom": 552,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 588.59375,
+            "y": 500,
+            "right": 649.59375,
+            "bottom": 552,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 657.59375,
+            "y": 500,
+            "right": 722.171875,
+            "bottom": 552,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 730.171875,
+            "y": 500,
+            "right": 802.84375,
+            "bottom": 552,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 810.84375,
+            "y": 500,
+            "right": 880.75,
+            "bottom": 552,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 888.75,
+            "y": 500,
+            "right": 961.515625,
+            "bottom": 552,
+            "width": 72.765625,
+            "height": 52
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-correct result desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 262.5,
+        "right": 1064,
+        "bottom": 659.5,
+        "width": 688,
+        "height": 397
+      },
+      "stage": {
+        "x": 376,
+        "y": 54,
+        "right": 1064,
+        "bottom": 868,
+        "width": 688,
+        "height": 814
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 376,
+            "y": 619.5,
+            "right": 597.328125,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 609.328125,
+            "y": 619.5,
+            "right": 830.65625,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 842.65625,
+            "y": 619.5,
+            "right": 1063.984375,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-retry-correct result mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 180.5,
+        "right": 370,
+        "bottom": 681.5,
+        "width": 350,
+        "height": 501
+      },
+      "stage": {
+        "x": 20,
+        "y": 38,
+        "right": 370,
+        "bottom": 824,
+        "width": 350,
+        "height": 786
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 20,
+            "y": 537.5,
+            "right": 370,
+            "bottom": 577.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 20,
+            "y": 589.5,
+            "right": 370,
+            "bottom": 629.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 20,
+            "y": 641.5,
+            "right": 370,
+            "bottom": 681.5,
+            "width": 350,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-mobile study 1",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 280,
+        "right": 370,
+        "bottom": 496,
+        "width": 350,
+        "height": 216
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 724,
+        "width": 350,
+        "height": 672
+      },
+      "controls": [
+        {
+          "label": "跳过复习",
+          "rect": {
+            "x": 270.625,
+            "y": 16,
+            "right": 326.203125,
+            "bottom": 36,
+            "width": 55.578125,
+            "height": 20
+          }
+        },
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "再看一遍",
+          "rect": {
+            "x": 20,
+            "y": 784,
+            "right": 189,
+            "bottom": 824,
+            "width": 169,
+            "height": 40
+          }
+        },
+        {
+          "label": "开始测试",
+          "rect": {
+            "x": 201,
+            "y": 784,
+            "right": 370,
+            "bottom": 824,
+            "width": 169,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-mobile skip confirmation",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 280,
+        "right": 370,
+        "bottom": 496,
+        "width": 350,
+        "height": 216
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 724,
+        "width": 350,
+        "height": 672
+      },
+      "controls": [
+        {
+          "label": "取消",
+          "rect": {
+            "x": 24,
+            "y": 428,
+            "right": 189,
+            "bottom": 468,
+            "width": 165,
+            "height": 40
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 201,
+            "y": 428,
+            "right": 366,
+            "bottom": 468,
+            "width": 165,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile CTW unanswered example expanded",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 179.625,
+        "right": 370,
+        "bottom": 592.375,
+        "width": 350,
+        "height": 412.75
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 720,
+        "width": 350,
+        "height": 668
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 181.09375,
+            "y": 240.375,
+            "right": 208.890625,
+            "bottom": 260.375,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 20,
+            "y": 352.375,
+            "right": 370,
+            "bottom": 456.375,
+            "width": 350,
+            "height": 104
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 32.8125,
+            "y": 480.375,
+            "right": 80.78125,
+            "bottom": 532.375,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 88.78125,
+            "y": 480.375,
+            "right": 134.9375,
+            "bottom": 532.375,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 142.9375,
+            "y": 480.375,
+            "right": 203.9375,
+            "bottom": 532.375,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 211.9375,
+            "y": 480.375,
+            "right": 276.515625,
+            "bottom": 532.375,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 284.515625,
+            "y": 480.375,
+            "right": 357.1875,
+            "bottom": 532.375,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 119.65625,
+            "y": 540.375,
+            "right": 189.5625,
+            "bottom": 592.375,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 197.5625,
+            "y": 540.375,
+            "right": 270.328125,
+            "bottom": 592.375,
+            "width": 72.765625,
+            "height": 52
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 20,
+            "y": 780,
+            "right": 370,
+            "bottom": 824,
+            "width": 350,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile CTW unanswered",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 179.625,
+        "right": 370,
+        "bottom": 592.375,
+        "width": 350,
+        "height": 412.75
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 720,
+        "width": 350,
+        "height": 668
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 181.09375,
+            "y": 240.375,
+            "right": 208.890625,
+            "bottom": 260.375,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 20,
+            "y": 352.375,
+            "right": 370,
+            "bottom": 456.375,
+            "width": 350,
+            "height": 104
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 32.8125,
+            "y": 480.375,
+            "right": 80.78125,
+            "bottom": 532.375,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 88.78125,
+            "y": 480.375,
+            "right": 134.9375,
+            "bottom": 532.375,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 142.9375,
+            "y": 480.375,
+            "right": 203.9375,
+            "bottom": 532.375,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 211.9375,
+            "y": 480.375,
+            "right": 276.515625,
+            "bottom": 532.375,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 284.515625,
+            "y": 480.375,
+            "right": 357.1875,
+            "bottom": 532.375,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 119.65625,
+            "y": 540.375,
+            "right": 189.5625,
+            "bottom": 592.375,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 197.5625,
+            "y": 540.375,
+            "right": 270.328125,
+            "bottom": 592.375,
+            "width": 72.765625,
+            "height": 52
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 20,
+            "y": 780,
+            "right": 370,
+            "bottom": 824,
+            "width": 350,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile CTW unanswered small/landscape/keyboard-height",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "scrollHeight": 568,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 320,
+        "bottom": 568,
+        "width": 320,
+        "height": 568
+      },
+      "content": {
+        "x": 27.11865234375,
+        "y": 52.11865234375,
+        "right": 292.88134765625,
+        "bottom": 443.88134765625,
+        "width": 265.7626953125,
+        "height": 391.7626953125
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 300,
+        "bottom": 444,
+        "width": 280,
+        "height": 392
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 272.203125,
+            "y": 16,
+            "right": 300,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 146.8008575439453,
+            "y": 109.7796630859375,
+            "right": 173.184326171875,
+            "bottom": 128.76272583007812,
+            "width": 26.383468627929688,
+            "height": 18.983062744140625
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 27.11865234375,
+            "y": 216.08474731445312,
+            "right": 292.88134765625,
+            "bottom": 314.7966003417969,
+            "width": 265.7626953125,
+            "height": 98.71185302734375
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 44.33687210083008,
+            "y": 337.5762634277344,
+            "right": 89.86653137207031,
+            "bottom": 386.9322204589844,
+            "width": 45.529659271240234,
+            "height": 49.35595703125
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 97.45975494384766,
+            "y": 337.5762634277344,
+            "right": 141.26907348632812,
+            "bottom": 386.9322204589844,
+            "width": 43.80931854248047,
+            "height": 49.35595703125
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 148.8623046875,
+            "y": 337.5762634277344,
+            "right": 206.76060485839844,
+            "bottom": 386.9322204589844,
+            "width": 57.89830017089844,
+            "height": 49.35595703125
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 214.35382080078125,
+            "y": 337.5762634277344,
+            "right": 275.6483154296875,
+            "bottom": 386.9322204589844,
+            "width": 61.29449462890625,
+            "height": 49.35595703125
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 50.209754943847656,
+            "y": 394.5254211425781,
+            "right": 119.18644714355469,
+            "bottom": 443.88134765625,
+            "width": 68.97669219970703,
+            "height": 49.355926513671875
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 126.77967071533203,
+            "y": 394.5254211425781,
+            "right": 193.13136291503906,
+            "bottom": 443.88134765625,
+            "width": 66.35169219970703,
+            "height": 49.355926513671875
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 200.72457885742188,
+            "y": 394.5254211425781,
+            "right": 269.7902526855469,
+            "bottom": 443.88134765625,
+            "width": 69.065673828125,
+            "height": 49.355926513671875
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 20,
+            "y": 504,
+            "right": 300,
+            "bottom": 548,
+            "width": 280,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile CTW unanswered small/landscape/keyboard-height",
+      "width": 844,
+      "height": 390,
+      "scrollWidth": 844,
+      "scrollHeight": 390,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 844,
+        "bottom": 390,
+        "width": 844,
+        "height": 390
+      },
+      "content": {
+        "x": 203.3142852783203,
+        "y": 68,
+        "right": 640.6857452392578,
+        "bottom": 246,
+        "width": 437.3714599609375,
+        "height": 178
+      },
+      "stage": {
+        "x": 78,
+        "y": 68,
+        "right": 766,
+        "bottom": 246,
+        "width": 688,
+        "height": 178
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 738.203125,
+            "y": 24,
+            "right": 766,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 413.15960693359375,
+            "y": 101.05714416503906,
+            "right": 430.8304748535156,
+            "bottom": 113.77143096923828,
+            "width": 17.670867919921875,
+            "height": 12.714286804199219
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 203.3142852783203,
+            "y": 159.54286193847656,
+            "right": 640.6857452392578,
+            "bottom": 192.60000610351562,
+            "width": 437.3714599609375,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 268.45513916015625,
+            "y": 212.94285583496094,
+            "right": 298.9495544433594,
+            "bottom": 246,
+            "width": 30.494415283203125,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 304.0352783203125,
+            "y": 212.94285583496094,
+            "right": 333.37744140625,
+            "bottom": 246,
+            "width": 29.3421630859375,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 338.4631652832031,
+            "y": 212.94285583496094,
+            "right": 377.24176025390625,
+            "bottom": 246,
+            "width": 38.778594970703125,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 382.32745361328125,
+            "y": 212.94285583496094,
+            "right": 423.38067626953125,
+            "bottom": 246,
+            "width": 41.05322265625,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 428.4664306640625,
+            "y": 212.94285583496094,
+            "right": 474.66497802734375,
+            "bottom": 246,
+            "width": 46.19854736328125,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 479.75067138671875,
+            "y": 212.94285583496094,
+            "right": 524.1911010742188,
+            "bottom": 246,
+            "width": 44.4404296875,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 529.2767944335938,
+            "y": 212.94285583496094,
+            "right": 575.534912109375,
+            "bottom": 246,
+            "width": 46.25811767578125,
+            "height": 33.05714416503906
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 78,
+            "y": 314,
+            "right": 766,
+            "bottom": 358,
+            "width": 688,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile CTW unanswered small/landscape/keyboard-height",
+      "width": 390,
+      "height": 350,
+      "scrollWidth": 390,
+      "scrollHeight": 350,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 350,
+        "width": 390,
+        "height": 350
+      },
+      "content": {
+        "x": 121.27118682861328,
+        "y": 52.05266571044922,
+        "right": 268.7288284301758,
+        "bottom": 225.94731903076172,
+        "width": 147.4576416015625,
+        "height": 173.8946533203125
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 226,
+        "width": 350,
+        "height": 174
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 189.1411895751953,
+            "y": 77.6470947265625,
+            "right": 200.85223388671875,
+            "bottom": 86.0732421875,
+            "width": 11.711044311523438,
+            "height": 8.4261474609375
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 121.27118682861328,
+            "y": 124.83353424072266,
+            "right": 268.7288284301758,
+            "bottom": 168.64952087402344,
+            "width": 147.4576416015625,
+            "height": 43.81598663330078
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 126.669189453125,
+            "y": 178.76089477539062,
+            "right": 146.8787841796875,
+            "bottom": 200.66888427734375,
+            "width": 20.2095947265625,
+            "height": 21.907989501953125
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 150.24923706054688,
+            "y": 178.76089477539062,
+            "right": 169.69522094726562,
+            "bottom": 200.66888427734375,
+            "width": 19.44598388671875,
+            "height": 21.907989501953125
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 173.065673828125,
+            "y": 178.76089477539062,
+            "right": 198.76544189453125,
+            "bottom": 200.66888427734375,
+            "width": 25.69976806640625,
+            "height": 21.907989501953125
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 202.13589477539062,
+            "y": 178.76089477539062,
+            "right": 229.3431396484375,
+            "bottom": 200.66888427734375,
+            "width": 27.207244873046875,
+            "height": 21.907989501953125
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 232.71360778808594,
+            "y": 178.76089477539062,
+            "right": 263.330810546875,
+            "bottom": 200.66888427734375,
+            "width": 30.617202758789062,
+            "height": 21.907989501953125
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 163.25711059570312,
+            "y": 204.03933715820312,
+            "right": 192.70913696289062,
+            "bottom": 225.94732666015625,
+            "width": 29.4520263671875,
+            "height": 21.907989501953125
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 196.07958984375,
+            "y": 204.03933715820312,
+            "right": 226.73629760742188,
+            "bottom": 225.94732666015625,
+            "width": 30.656707763671875,
+            "height": 21.907989501953125
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 20,
+            "y": 286,
+            "right": 370,
+            "bottom": 330,
+            "width": 350,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-mobile green feedback",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 179.625,
+        "right": 370,
+        "bottom": 592.375,
+        "width": 350,
+        "height": 412.75
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 720,
+        "width": 350,
+        "height": 668
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 181.09375,
+            "y": 240.375,
+            "right": 208.890625,
+            "bottom": 260.375,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "英文拼写",
+          "rect": {
+            "x": 20,
+            "y": 352.375,
+            "right": 370,
+            "bottom": 456.375,
+            "width": 350,
+            "height": 104
+          }
+        },
+        {
+          "label": "n.",
+          "rect": {
+            "x": 32.8125,
+            "y": 480.375,
+            "right": 80.78125,
+            "bottom": 532.375,
+            "width": 47.96875,
+            "height": 52
+          }
+        },
+        {
+          "label": "v.",
+          "rect": {
+            "x": 88.78125,
+            "y": 480.375,
+            "right": 134.9375,
+            "bottom": 532.375,
+            "width": 46.15625,
+            "height": 52
+          }
+        },
+        {
+          "label": "adj.",
+          "rect": {
+            "x": 142.9375,
+            "y": 480.375,
+            "right": 203.9375,
+            "bottom": 532.375,
+            "width": 61,
+            "height": 52
+          }
+        },
+        {
+          "label": "adv.",
+          "rect": {
+            "x": 211.9375,
+            "y": 480.375,
+            "right": 276.515625,
+            "bottom": 532.375,
+            "width": 64.578125,
+            "height": 52
+          }
+        },
+        {
+          "label": "prep.",
+          "rect": {
+            "x": 284.515625,
+            "y": 480.375,
+            "right": 357.1875,
+            "bottom": 532.375,
+            "width": 72.671875,
+            "height": 52
+          }
+        },
+        {
+          "label": "conj.",
+          "rect": {
+            "x": 119.65625,
+            "y": 540.375,
+            "right": 189.5625,
+            "bottom": 592.375,
+            "width": 69.90625,
+            "height": 52
+          }
+        },
+        {
+          "label": "pron.",
+          "rect": {
+            "x": 197.5625,
+            "y": 540.375,
+            "right": 270.328125,
+            "bottom": 592.375,
+            "width": 72.765625,
+            "height": 52
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-mobile result desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 262.5,
+        "right": 1064,
+        "bottom": 659.5,
+        "width": 688,
+        "height": 397
+      },
+      "stage": {
+        "x": 376,
+        "y": 54,
+        "right": 1064,
+        "bottom": 868,
+        "width": 688,
+        "height": 814
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 376,
+            "y": 619.5,
+            "right": 597.328125,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 609.328125,
+            "y": 619.5,
+            "right": 830.65625,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 842.65625,
+            "y": 619.5,
+            "right": 1063.984375,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading CTW-mobile result mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 180.5,
+        "right": 370,
+        "bottom": 681.5,
+        "width": 350,
+        "height": 501
+      },
+      "stage": {
+        "x": 20,
+        "y": 38,
+        "right": 370,
+        "bottom": 824,
+        "width": 350,
+        "height": 786
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 20,
+            "y": 537.5,
+            "right": 370,
+            "bottom": 577.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 20,
+            "y": 589.5,
+            "right": 370,
+            "bottom": 629.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 20,
+            "y": 641.5,
+            "right": 370,
+            "bottom": 681.5,
+            "width": 350,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading RAP-mobile study 1",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 252,
+        "right": 370,
+        "bottom": 524,
+        "width": 350,
+        "height": 272
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 724,
+        "width": 350,
+        "height": 672
+      },
+      "controls": [
+        {
+          "label": "跳过复习",
+          "rect": {
+            "x": 270.625,
+            "y": 16,
+            "right": 326.203125,
+            "bottom": 36,
+            "width": 55.578125,
+            "height": 20
+          }
+        },
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "再看一遍",
+          "rect": {
+            "x": 20,
+            "y": 784,
+            "right": 189,
+            "bottom": 824,
+            "width": 169,
+            "height": 40
+          }
+        },
+        {
+          "label": "开始测试",
+          "rect": {
+            "x": 201,
+            "y": 784,
+            "right": 370,
+            "bottom": 824,
+            "width": 169,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading RAP-mobile skip confirmation",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 252,
+        "right": 370,
+        "bottom": 524,
+        "width": 350,
+        "height": 272
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 724,
+        "width": 350,
+        "height": 672
+      },
+      "controls": [
+        {
+          "label": "取消",
+          "rect": {
+            "x": 24,
+            "y": 428,
+            "right": 189,
+            "bottom": 468,
+            "width": 165,
+            "height": 40
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 201,
+            "y": 428,
+            "right": 366,
+            "bottom": 468,
+            "width": 165,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile RAP unanswered example expanded",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 149.625,
+        "right": 370,
+        "bottom": 622.375,
+        "width": 350,
+        "height": 472.75
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 720,
+        "width": 350,
+        "height": 668
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 181.09375,
+            "y": 210.375,
+            "right": 208.890625,
+            "bottom": 230.375,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "文学的",
+          "rect": {
+            "x": 20,
+            "y": 378.375,
+            "right": 370,
+            "bottom": 430.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "空气传播的",
+          "rect": {
+            "x": 20,
+            "y": 442.375,
+            "right": 370,
+            "bottom": 494.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "严谨的",
+          "rect": {
+            "x": 20,
+            "y": 506.375,
+            "right": 370,
+            "bottom": 558.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "总体的",
+          "rect": {
+            "x": 20,
+            "y": 570.375,
+            "right": 370,
+            "bottom": 622.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 20,
+            "y": 780,
+            "right": 370,
+            "bottom": 824,
+            "width": 350,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile RAP unanswered",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 149.625,
+        "right": 370,
+        "bottom": 622.375,
+        "width": 350,
+        "height": 472.75
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 720,
+        "width": 350,
+        "height": 668
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 181.09375,
+            "y": 210.375,
+            "right": 208.890625,
+            "bottom": 230.375,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "文学的",
+          "rect": {
+            "x": 20,
+            "y": 378.375,
+            "right": 370,
+            "bottom": 430.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "空气传播的",
+          "rect": {
+            "x": 20,
+            "y": 442.375,
+            "right": 370,
+            "bottom": 494.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "严谨的",
+          "rect": {
+            "x": 20,
+            "y": 506.375,
+            "right": 370,
+            "bottom": 558.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "总体的",
+          "rect": {
+            "x": 20,
+            "y": 570.375,
+            "right": 370,
+            "bottom": 622.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 20,
+            "y": 780,
+            "right": 370,
+            "bottom": 824,
+            "width": 350,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile RAP unanswered small/landscape/keyboard-height",
+      "width": 320,
+      "height": 568,
+      "scrollWidth": 320,
+      "scrollHeight": 568,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 320,
+        "bottom": 568,
+        "width": 320,
+        "height": 568
+      },
+      "content": {
+        "x": 50.459083557128906,
+        "y": 52.097808837890625,
+        "right": 269.54093170166016,
+        "bottom": 443.9021911621094,
+        "width": 219.08184814453125,
+        "height": 391.80438232421875
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 300,
+        "bottom": 444,
+        "width": 280,
+        "height": 392
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 272.203125,
+            "y": 16,
+            "right": 300,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 149.1192626953125,
+            "y": 99.6307373046875,
+            "right": 170.86851501464844,
+            "bottom": 115.27944946289062,
+            "width": 21.749252319335938,
+            "height": 15.648712158203125
+          }
+        },
+        {
+          "label": "文学的",
+          "rect": {
+            "x": 50.459083557128906,
+            "y": 252.98802185058594,
+            "right": 269.54093170166016,
+            "bottom": 293.6746520996094,
+            "width": 219.08184814453125,
+            "height": 40.68663024902344
+          }
+        },
+        {
+          "label": "空气传播的",
+          "rect": {
+            "x": 50.459083557128906,
+            "y": 303.0638732910156,
+            "right": 269.54093170166016,
+            "bottom": 343.75048828125,
+            "width": 219.08184814453125,
+            "height": 40.686614990234375
+          }
+        },
+        {
+          "label": "严谨的",
+          "rect": {
+            "x": 50.459083557128906,
+            "y": 353.13970947265625,
+            "right": 269.54093170166016,
+            "bottom": 393.82635498046875,
+            "width": 219.08184814453125,
+            "height": 40.6866455078125
+          }
+        },
+        {
+          "label": "总体的",
+          "rect": {
+            "x": 50.459083557128906,
+            "y": 403.215576171875,
+            "right": 269.54093170166016,
+            "bottom": 443.9021911621094,
+            "width": 219.08184814453125,
+            "height": 40.686614990234375
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 20,
+            "y": 504,
+            "right": 300,
+            "bottom": 548,
+            "width": 280,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile RAP unanswered small/landscape/keyboard-height",
+      "width": 844,
+      "height": 390,
+      "scrollWidth": 844,
+      "scrollHeight": 390,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 844,
+        "bottom": 390,
+        "width": 844,
+        "height": 390
+      },
+      "content": {
+        "x": 274.80767822265625,
+        "y": 68,
+        "right": 569.1923217773438,
+        "bottom": 246,
+        "width": 294.3846435546875,
+        "height": 178
+      },
+      "stage": {
+        "x": 78,
+        "y": 68,
+        "right": 766,
+        "bottom": 246,
+        "width": 688,
+        "height": 178
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 738.203125,
+            "y": 24,
+            "right": 766,
+            "bottom": 44,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 416.04974365234375,
+            "y": 90.25,
+            "right": 427.943603515625,
+            "bottom": 98.80769348144531,
+            "width": 11.89385986328125,
+            "height": 8.557693481445312
+          }
+        },
+        {
+          "label": "文学的",
+          "rect": {
+            "x": 274.80767822265625,
+            "y": 141.59616088867188,
+            "right": 569.1923217773438,
+            "bottom": 163.84616088867188,
+            "width": 294.3846435546875,
+            "height": 22.25
+          }
+        },
+        {
+          "label": "空气传播的",
+          "rect": {
+            "x": 274.80767822265625,
+            "y": 168.98077392578125,
+            "right": 569.1923217773438,
+            "bottom": 191.23077392578125,
+            "width": 294.3846435546875,
+            "height": 22.25
+          }
+        },
+        {
+          "label": "严谨的",
+          "rect": {
+            "x": 274.80767822265625,
+            "y": 196.36538696289062,
+            "right": 569.1923217773438,
+            "bottom": 218.61538696289062,
+            "width": 294.3846435546875,
+            "height": 22.25
+          }
+        },
+        {
+          "label": "总体的",
+          "rect": {
+            "x": 274.80767822265625,
+            "y": 223.75,
+            "right": 569.1923217773438,
+            "bottom": 246,
+            "width": 294.3846435546875,
+            "height": 22.25
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 78,
+            "y": 314,
+            "right": 766,
+            "bottom": 358,
+            "width": 688,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "Mobile RAP unanswered small/landscape/keyboard-height",
+      "width": 390,
+      "height": 350,
+      "scrollWidth": 390,
+      "scrollHeight": 350,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 350,
+        "width": 390,
+        "height": 350
+      },
+      "content": {
+        "x": 130.62368774414062,
+        "y": 52.045989990234375,
+        "right": 259.3763122558594,
+        "bottom": 225.9540252685547,
+        "width": 128.75262451171875,
+        "height": 173.9080352783203
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 226,
+        "width": 350,
+        "height": 174
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 189.88438415527344,
+            "y": 74.39376831054688,
+            "right": 200.10986328125,
+            "bottom": 81.75106811523438,
+            "width": 10.225479125976562,
+            "height": 7.3572998046875
+          }
+        },
+        {
+          "label": "文学的",
+          "rect": {
+            "x": 130.62368774414062,
+            "y": 136.19503784179688,
+            "right": 259.3763122558594,
+            "bottom": 155.32400512695312,
+            "width": 128.75262451171875,
+            "height": 19.12896728515625
+          }
+        },
+        {
+          "label": "空气传播的",
+          "rect": {
+            "x": 130.62368774414062,
+            "y": 159.73837280273438,
+            "right": 259.3763122558594,
+            "bottom": 178.86734008789062,
+            "width": 128.75262451171875,
+            "height": 19.12896728515625
+          }
+        },
+        {
+          "label": "严谨的",
+          "rect": {
+            "x": 130.62368774414062,
+            "y": 183.28172302246094,
+            "right": 259.3763122558594,
+            "bottom": 202.4106903076172,
+            "width": 128.75262451171875,
+            "height": 19.12896728515625
+          }
+        },
+        {
+          "label": "总体的",
+          "rect": {
+            "x": 130.62368774414062,
+            "y": 206.82505798339844,
+            "right": 259.3763122558594,
+            "bottom": 225.9540252685547,
+            "width": 128.75262451171875,
+            "height": 19.12896728515625
+          }
+        },
+        {
+          "label": "确定",
+          "rect": {
+            "x": 20,
+            "y": 286,
+            "right": 370,
+            "bottom": 330,
+            "width": 350,
+            "height": 44
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading RAP-mobile green feedback",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 149.625,
+        "right": 370,
+        "bottom": 622.375,
+        "width": 350,
+        "height": 472.75
+      },
+      "stage": {
+        "x": 20,
+        "y": 52,
+        "right": 370,
+        "bottom": 720,
+        "width": 350,
+        "height": 668
+      },
+      "controls": [
+        {
+          "label": "暂停",
+          "rect": {
+            "x": 342.203125,
+            "y": 16,
+            "right": 370,
+            "bottom": 36,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "例句",
+          "rect": {
+            "x": 181.09375,
+            "y": 210.375,
+            "right": 208.890625,
+            "bottom": 230.375,
+            "width": 27.796875,
+            "height": 20
+          }
+        },
+        {
+          "label": "文学的",
+          "rect": {
+            "x": 20,
+            "y": 378.375,
+            "right": 370,
+            "bottom": 430.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "空气传播的",
+          "rect": {
+            "x": 20,
+            "y": 442.375,
+            "right": 370,
+            "bottom": 494.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "严谨的",
+          "rect": {
+            "x": 20,
+            "y": 506.375,
+            "right": 370,
+            "bottom": 558.375,
+            "width": 350,
+            "height": 52
+          }
+        },
+        {
+          "label": "总体的",
+          "rect": {
+            "x": 20,
+            "y": 570.375,
+            "right": 370,
+            "bottom": 622.375,
+            "width": 350,
+            "height": 52
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading RAP-mobile result desktop",
+      "width": 1440,
+      "height": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 1440,
+        "bottom": 900,
+        "width": 1440,
+        "height": 900
+      },
+      "content": {
+        "x": 376,
+        "y": 262.5,
+        "right": 1064,
+        "bottom": 659.5,
+        "width": 688,
+        "height": 397
+      },
+      "stage": {
+        "x": 376,
+        "y": 54,
+        "right": 1064,
+        "bottom": 868,
+        "width": 688,
+        "height": 814
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 376,
+            "y": 619.5,
+            "right": 597.328125,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 609.328125,
+            "y": 619.5,
+            "right": 830.65625,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 842.65625,
+            "y": 619.5,
+            "right": 1063.984375,
+            "bottom": 659.5,
+            "width": 221.328125,
+            "height": 40
+          }
+        }
+      ]
+    },
+    {
+      "label": "reading RAP-mobile result mobile",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "bodyOverflow": "hidden",
+      "section": {
+        "x": 0,
+        "y": 0,
+        "right": 390,
+        "bottom": 844,
+        "width": 390,
+        "height": 844
+      },
+      "content": {
+        "x": 20,
+        "y": 180.5,
+        "right": 370,
+        "bottom": 681.5,
+        "width": 350,
+        "height": 501
+      },
+      "stage": {
+        "x": 20,
+        "y": 38,
+        "right": 370,
+        "bottom": 824,
+        "width": 350,
+        "height": 786
+      },
+      "controls": [
+        {
+          "label": "错词再练",
+          "rect": {
+            "x": 20,
+            "y": 537.5,
+            "right": 370,
+            "bottom": 577.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "新一轮复习",
+          "rect": {
+            "x": 20,
+            "y": 589.5,
+            "right": 370,
+            "bottom": 629.5,
+            "width": 350,
+            "height": 40
+          }
+        },
+        {
+          "label": "复习历史",
+          "rect": {
+            "x": 20,
+            "y": 641.5,
+            "right": 370,
+            "bottom": 681.5,
+            "width": 350,
+            "height": 40
+          }
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    "reading-CTW-retry-wrong-study-desktop.png",
+    "reading-CTW-retry-wrong-wrong-desktop.png",
+    "reading-CTW-retry-wrong-wrong-mobile.png",
+    "reading-CTW-retry-wrong-result-desktop.png",
+    "reading-CTW-retry-wrong-result-mobile.png",
+    "reading-CTW-retry-correct-study-desktop.png",
+    "reading-CTW-retry-correct-result-desktop.png",
+    "reading-CTW-retry-correct-result-mobile.png",
+    "writing-WE-availability-desktop.png",
+    "writing-AD-availability-desktop.png",
+    "writing-BAS-availability-desktop.png",
+    "reading-CTW-mobile-study-mobile.png",
+    "reading-CTW-unanswered-mobile.png",
+    "reading-CTW-mobile-result-desktop.png",
+    "reading-CTW-mobile-result-mobile.png",
+    "reading-RAP-mobile-study-mobile.png",
+    "reading-RAP-unanswered-mobile.png",
+    "reading-RAP-mobile-result-desktop.png",
+    "reading-RAP-mobile-result-mobile.png",
+    "runner-history-await.png"
+  ],
+  "missingExamples": [],
+  "errors": [],
+  "warnings": [
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:47:10.816Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:47:10.964Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:47:13.461Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:47:13.463Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:47:13.464Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:6 (2.110.0) 2026-10-10T00:47:13.464Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:7 (2.110.0) 2026-10-10T00:47:14.223Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:8 (2.110.0) 2026-10-10T00:47:14.225Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:47:15.073Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:47:15.078Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:47:15.078Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:47:15.126Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:47:15.134Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "Skipping auto-scroll behavior due to `position: sticky` or `position: fixed` on element: JSHandle@node",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:47:29.241Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:47:29.245Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:47:29.246Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:47:29.265Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:47:29.268Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:47:34.035Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:47:34.038Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:47:34.039Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:47:34.055Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:47:34.057Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:47:41.575Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:47:41.578Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:47:41.579Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:47:41.596Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:47:41.598Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:47:42.949Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:47:42.953Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:47:42.954Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:47:43.000Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:47:43.001Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:48:56.747Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:48:56.910Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:48:58.879Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:48:58.880Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:48:58.881Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:6 (2.110.0) 2026-10-10T00:48:58.883Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:7 (2.110.0) 2026-10-10T00:48:59.605Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:8 (2.110.0) 2026-10-10T00:48:59.607Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:49:00.444Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:49:00.449Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:49:00.450Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:49:00.485Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:49:00.488Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:49:03.681Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:49:03.684Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:49:03.685Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:49:03.703Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:49:03.705Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:49:11.869Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:49:11.874Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:49:11.874Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:49:11.897Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:49:11.899Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:49:13.234Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:49:13.238Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:49:13.239Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:49:13.256Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:49:13.258Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:49:16.081Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:49:16.084Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:49:16.085Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:49:16.102Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:49:16.104Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:49:24.325Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:49:24.329Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:49:24.330Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:49:24.348Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:49:24.349Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:50:17.624Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:50:17.759Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:50:19.357Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:50:19.358Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:50:19.360Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:6 (2.110.0) 2026-10-10T00:50:19.360Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:7 (2.110.0) 2026-10-10T00:50:19.901Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:8 (2.110.0) 2026-10-10T00:50:19.902Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:1 (2.110.0) 2026-10-10T00:50:20.700Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:2 (2.110.0) 2026-10-10T00:50:20.705Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:3 (2.110.0) 2026-10-10T00:50:20.706Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:4 (2.110.0) 2026-10-10T00:50:20.746Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+    "GoTrueClient@sb-uiuiatiqffrmfdjyoeib-auth-token:5 (2.110.0) 2026-10-10T00:50:20.748Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key."
+  ],
+  "status": "reading-passed-writing-blocked",
+  "previousRun": {
+    "note": "Reading checks passed in the first real-browser run; its runner stopped at Writing WE with zero eligible entries. Summaries recovered through the normal history UI.",
+    "completedRounds": [
+      {
+        "id": "18cdd645-87d4-46d9-b5fc-e0687ca32338",
+        "domain": "reading",
+        "sources": [
+          "ctw"
+        ],
+        "total": 2,
+        "answered": 2,
+        "status": "completed",
+        "summary": {
+          "correct": 1,
+          "posTotal": 2,
+          "incorrect": 1,
+          "posCorrect": 1,
+          "choiceTotal": 0,
+          "choiceCorrect": 0,
+          "spellingTotal": 2,
+          "spellingCorrect": 1
+        }
+      },
+      {
+        "id": "187ca6ca-7c5e-4bfb-8502-66115a2ec932",
+        "domain": "reading",
+        "sources": [
+          "rap"
+        ],
+        "total": 2,
+        "answered": 2,
+        "status": "completed",
+        "summary": {
+          "correct": 1,
+          "posTotal": 0,
+          "incorrect": 1,
+          "posCorrect": 0,
+          "choiceTotal": 2,
+          "choiceCorrect": 1,
+          "spellingTotal": 0,
+          "spellingCorrect": 0
+        }
+      },
+      {
+        "id": "7efc86f1-49e4-4520-9ff6-672534e38f88",
+        "domain": "reading",
+        "sources": [
+          "rap"
+        ],
+        "total": 1,
+        "answered": 1,
+        "status": "completed",
+        "summary": {
+          "correct": 1,
+          "posTotal": 0,
+          "incorrect": 0,
+          "posCorrect": 0,
+          "choiceTotal": 1,
+          "choiceCorrect": 1,
+          "spellingTotal": 0,
+          "spellingCorrect": 0
+        }
+      }
+    ],
+    "verified": [
+      "study next/repeat/skip-cancel/start-test/skip-confirm",
+      "same-round source meanings",
+      "real spelling/choice examples and target rendering",
+      "native spelling editing",
+      "blank spelling/blank choice saved as incorrect",
+      "correct auto-next and last auto-result",
+      "wrong lock/manual-next including final wrong refresh",
+      "pause/history restore in study and test",
+      "result refresh/parent wrong-word retry",
+      "desktop/mobile/small/landscape/keyboard-height no scroll or clipping"
+    ]
+  },
+  "writingAvailability": [
+    {
+      "source": "WE",
+      "total": 0,
+      "unavailable": 0,
+      "reasons": {}
+    },
+    {
+      "source": "AD",
+      "total": 0,
+      "unavailable": 0,
+      "reasons": {}
+    },
+    {
+      "source": "BAS",
+      "total": 0,
+      "unavailable": 0,
+      "reasons": {}
+    }
+  ],
+  "blockers": [
+    "jiangzhuocheng2 has zero eligible Writing words for WE, AD and BAS, and no Writing review history. No words/accounts were created to bypass this limitation."
+  ],
+  "finalHistory": {
+    "total": 10,
+    "acceptanceRounds": [
+      {
+        "id": "18cdd645-87d4-46d9-b5fc-e0687ca32338",
+        "total": 2,
+        "summary": {
+          "correct": 1,
+          "posTotal": 2,
+          "incorrect": 1,
+          "posCorrect": 1,
+          "choiceTotal": 0,
+          "choiceCorrect": 0,
+          "spellingTotal": 2,
+          "spellingCorrect": 1
+        }
+      },
+      {
+        "id": "187ca6ca-7c5e-4bfb-8502-66115a2ec932",
+        "total": 2,
+        "summary": {
+          "correct": 1,
+          "posTotal": 0,
+          "incorrect": 1,
+          "posCorrect": 0,
+          "choiceTotal": 2,
+          "choiceCorrect": 1,
+          "spellingTotal": 0,
+          "spellingCorrect": 0
+        }
+      },
+      {
+        "id": "7efc86f1-49e4-4520-9ff6-672534e38f88",
+        "total": 1,
+        "summary": {
+          "correct": 1,
+          "posTotal": 0,
+          "incorrect": 0,
+          "posCorrect": 0,
+          "choiceTotal": 1,
+          "choiceCorrect": 1,
+          "spellingTotal": 0,
+          "spellingCorrect": 0
+        }
+      },
+      {
+        "id": "90a410f9-a8da-4865-a010-7a202a7312ad",
+        "total": 1,
+        "summary": {
+          "correct": 0,
+          "posTotal": 1,
+          "incorrect": 1,
+          "posCorrect": 1,
+          "choiceTotal": 0,
+          "choiceCorrect": 0,
+          "spellingTotal": 1,
+          "spellingCorrect": 0
+        }
+      },
+      {
+        "id": "29516c36-9149-40c7-b078-9ad0a4506d92",
+        "total": 1,
+        "summary": {
+          "correct": 1,
+          "posTotal": 1,
+          "incorrect": 0,
+          "posCorrect": 1,
+          "choiceTotal": 0,
+          "choiceCorrect": 0,
+          "spellingTotal": 1,
+          "spellingCorrect": 1
+        }
+      },
+      {
+        "id": "b3407502-51dd-4c91-8e4e-6e332a80b070",
+        "total": 1,
+        "summary": {
+          "correct": 1,
+          "posTotal": 1,
+          "incorrect": 0,
+          "posCorrect": 1,
+          "choiceTotal": 0,
+          "choiceCorrect": 0,
+          "spellingTotal": 1,
+          "spellingCorrect": 1
+        }
+      },
+      {
+        "id": "ad125fbf-faa7-461b-847c-1f76fb53d21f",
+        "total": 1,
+        "summary": {
+          "correct": 1,
+          "posTotal": 0,
+          "incorrect": 0,
+          "posCorrect": 0,
+          "choiceTotal": 1,
+          "choiceCorrect": 1,
+          "spellingTotal": 0,
+          "spellingCorrect": 0
+        }
+      }
+    ]
+  },
+  "finishedAt": "2026-10-10T00:50:21.469Z",
+  "runnerNotes": [
+    "The first runner stopped on the Writing zero-availability case; a follow-up checked all three Writing sources. A final history assertion was initially made before async rows rendered; it was corrected by waiting for the actual history response/links and rechecked read-only. These were harness sequencing issues, not application exceptions."
+  ]
+}

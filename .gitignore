@@ -52,6 +52,27 @@ pnpm-debug.log*
 
 # local browser verification screenshots (OpenChamber browser panel)
 .openchamber/screenshots/
+
+# generated workspace screenshots (keep local; do not ignore production assets)
+/outputs/**/*.[pP][nN][gG]
+/outputs/**/*.[jJ][pP][gG]
+/outputs/**/*.[jJ][pP][eE][gG]
+/outputs/**/*.[wW][eE][bB][pP]
+/outputs/**/*.[gG][iI][fF]
+/outputs/**/*.[aA][vV][iI][fF]
+/outputs/**/*.[bB][mM][pP]
+/outputs/**/*.[tT][iI][fF]
+/outputs/**/*.[tT][iI][fF][fF]
+**/screenshots/
+
+# one-off delivery / audit / acceptance reports (keep local)
+/outputs/**/*.md
+/docs/student-wordbook-v1-phase-a1.md
+/docs/student-wordbook-v1-phase-a2.md
+/docs/student-wordbook-v1-phase-a3.md
+/docs/student-wordbook-review-v1-immersive.md
+/docs/student-wordbook-review-v1-real-ui-acceptance.md
+/docs/student-wordbook-review-correct-switch-timing.md
 docs/student-wordbook-v1-phase-a3-production-acceptance.md
 docs/student-wordbook-v1-bugfix-production-acceptance.md
 docs/student-wordbook-v1-production-bugfixes.md

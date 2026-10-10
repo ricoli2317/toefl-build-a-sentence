@@ -8,7 +8,7 @@ import { addDays, boundedCalendarMonth, boundedDateDraft, formatDateInputValue, 
 export const DATE_BUTTON_CLASS = "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white text-student-muted transition hover:border-student-primary-border hover:text-student-primary";
 
 // Practice history's existing form, with an OPTIONAL activity month extension.
-export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, rangeLabel = "查看范围统计", activity, bounds, singleDay = false }: {
+export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, rangeLabel = "查看范围统计", activity, bounds, singleDay = false, hideHints = false }: {
   draft: { start: string; end: string };
   onDraftChange: (draft: { start: string; end: string }) => void;
   onApply: (close: () => void) => void;
@@ -17,6 +17,7 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
   rangeLabel?: string;
   bounds?: StudentDateBounds;
   singleDay?: boolean;
+  hideHints?: boolean;
   activity?: { month: Date; dates: string[]; onMonthChange: (month: Date) => void; error?: string; loading?: boolean; showToday?: boolean; resetMonthOnOpen?: boolean };
 }) {
   const valid = !bounds || Boolean(boundedDateDraft(draft, bounds));
@@ -24,14 +25,14 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
     menuAlign={activity ? "left" : "right"} menuClassName="w-[304px] max-w-[calc(100vw-2rem)] p-4" panelRole="dialog">
     {close => <form className="grid gap-3" onSubmit={event => { event.preventDefault(); if (valid) onApply(close); }}>
       <p className="text-sm font-bold text-student-text">日期选择</p>
-      {activity ? <ActivityMonth activity={activity} draft={draft} onDraftChange={onDraftChange} bounds={bounds} /> : null}
+      {activity ? <ActivityMonth activity={activity} draft={draft} onDraftChange={onDraftChange} bounds={bounds} hideHints={hideHints} /> : null}
       <label className="grid gap-1.5 text-xs font-semibold text-student-muted">开始日期
         <input aria-label="开始日期" className="teacher-input w-full min-w-0" min={bounds?.min} max={bounds?.max} onChange={event => onDraftChange({ ...draft, start: event.target.value })} type="date" value={draft.start} />
       </label>
       {!singleDay ? <label className="grid gap-1.5 text-xs font-semibold text-student-muted">结束日期（可不填）
         <input aria-label="结束日期" className="teacher-input w-full min-w-0" min={bounds ? draft.start > bounds.min && draft.start <= bounds.max ? draft.start : bounds.min : undefined} max={bounds?.max} onChange={event => onDraftChange({ ...draft, end: event.target.value })} type="date" value={draft.end} />
       </label> : null}
-      <p className="text-xs leading-5 text-student-muted">{hint ?? "同一天按单日详情查看；起止不同则显示范围统计。"}</p>
+      {!hideHints ? <p className="text-xs leading-5 text-student-muted">{hint ?? "同一天按单日详情查看；起止不同则显示范围统计。"}</p> : null}
       {bounds && (draft.start || draft.end) && !valid ? <p role="status" className="text-xs text-student-error">请选择 {bounds.min} 至 {bounds.max} 内的有效日期，结束日期不能早于开始日期。</p> : null}
       <button className="teacher-button-primary w-full" disabled={!draft.start || !valid} type="submit">{!draft.end || draft.end === draft.start ? "查看当天" : rangeLabel}</button>
       {onClear ? <button className="student-button-secondary" type="button" onClick={() => { onClear(); close(); }}>清除日期选择</button> : null}
@@ -39,10 +40,11 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
   </TeacherPopover>;
 }
 
-function ActivityMonth({ activity, draft, onDraftChange, bounds }: {
+function ActivityMonth({ activity, draft, onDraftChange, bounds, hideHints }: {
   activity: NonNullable<Parameters<typeof StudentDateSelection>[0]["activity"]>;
   draft: { start: string; end: string }; onDraftChange: (draft: { start: string; end: string }) => void;
   bounds?: StudentDateBounds;
+  hideHints?: boolean;
 }) {
   // Mounts only when the popover opens. This opt-in does not affect history.
   useLayoutEffect(() => {
@@ -79,6 +81,6 @@ function ActivityMonth({ activity, draft, onDraftChange, bounds }: {
         </button>;
       })}
     </div>
-    <p aria-live="polite" className="text-xs text-student-muted">{activity.error ?? (activity.loading ? "正在加载活动日期…" : "圆点表示有收藏活动；范围可在下方输入。")}</p>
+    {!hideHints || activity.error || activity.loading ? <p aria-live="polite" className="text-xs text-student-muted">{activity.error ?? (activity.loading ? "正在加载活动日期…" : "圆点表示有收藏活动；范围可在下方输入。")}</p> : null}
   </div>;
 }
