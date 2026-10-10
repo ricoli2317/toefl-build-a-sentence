@@ -3,11 +3,11 @@ import { createServiceSupabase } from "@/lib/supabase/server";
 import { loadTeacherScope } from "@/lib/teacherScope.server";
 import { readingAttemptJson } from "@/lib/reading/attemptServer";
 import { parseWordbookQuery, type WordbookDomain } from "./wordbookList.ts";
-import { readWordbookList, readWordbookActivityDates } from "./wordbookList.server.ts";
-import { ReviewError, reviewPage, reviewUuid, type ReviewState } from "./wordbookReview.ts";
+import { readWordbookList, readWordbookActivityDates, readWordbookReviewHistory } from "./wordbookList.server.ts";
+import { ReviewError, reviewUuid, type ReviewState } from "./wordbookReview.ts";
 import { reviewRpc } from "./wordbookReview.server.ts";
 
-type ReadKind = "scope" | "list" | "dates" | "history" | "result";
+type ReadKind = "scope" | "list" | "dates" | "history" | "history-dates" | "result";
 const forbidden = () => new ReviewError("WORDBOOK_FORBIDDEN", 403, "无权查看该学生或学科的生词本。");
 const invalid = () => new ReviewError("WORDBOOK_INVALID", 400, "无效的生词本查询参数。");
 
@@ -41,23 +41,16 @@ export async function teacherWordbookRead(request: Request, params: { studentId:
       return readingAttemptJson(kind === "list" ? await readWordbookList(db, studentId, query)
         : await readWordbookActivityDates(db, studentId, query));
     }
-    const allowed = kind === "history" ? ["domain", "page"] : ["domain"];
-    search.forEach((_value, key) => { if (!allowed.includes(key) || search.getAll(key).length !== 1) throw invalid(); });
-    if (kind === "history") {
-      const page = reviewPage(search.get("page"));
-      // Filter BEFORE counting and paginating; the student history RPC includes
-      // both subjects and must not be used then filtered after the fact.
-      const { data, error, count } = await db.from("student_wordbook_review_sessions")
-        .select("session_id", { count: "exact" }).eq("student_id", studentId).eq("domain", domain)
-        .order("started_at", { ascending: false }).order("session_id")
-        .range((page - 1) * 10, page * 10 - 1);
-      if (error || !data || count === null) throw new Error("HISTORY_UNAVAILABLE");
-      const items = await Promise.all(data.map(async row => {
-        const state = await readSavedResult(db, studentId, domain, row.session_id);
-        return { ...state.session, summary: state.summary };
-      }));
-      return readingAttemptJson({ items, total: count, page, pageSize: 10 });
+    if (kind === "history" || kind === "history-dates") {
+      const allowed = kind === "history" ? ["domain", "page", "start", "end", "timeZone"] : ["domain", "month", "timeZone"];
+      search.forEach((_value, key) => { if (!allowed.includes(key)) throw invalid(); });
+      let query;
+      try { query = parseWordbookQuery(search); } catch { throw invalid(); }
+      if (kind === "history-dates" && !query.month || kind === "history" && query.month) throw invalid();
+      return readingAttemptJson(await readWordbookReviewHistory(db, studentId, query));
     }
+    const allowed = ["domain"];
+    search.forEach((_value, key) => { if (!allowed.includes(key) || search.getAll(key).length !== 1) throw invalid(); });
     const sessionId = reviewUuid(params.sessionId);
     // An authorized domain parameter cannot be used to read a different-domain
     // session or a different student's session. Fail without exposing its data.

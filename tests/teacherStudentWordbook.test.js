@@ -46,6 +46,11 @@ function fixture(domains = ['reading', 'writing'], role = 'teacher') {
     calls.push({ rpc: name, args });
     if (name === 'read_student_wordbook_v1') return { data: { items: [word(args.p_domain)], total: 1, page: args.p_page, pageSize: args.p_page_size } };
     if (name === 'read_student_wordbook_activity_dates_v1') return { data: ['2026-10-08'] };
+    if (name === 'read_wordbook_review_history_v1') {
+      const rows=sessions.filter(s=>s.student_id===args.p_student&&s.domain===args.p_domain).sort((a,b)=>b.started_at.localeCompare(a.started_at));
+      if(args.p_month)return {data:{dates:[...new Set(rows.map(s=>s.started_at.slice(0,10)))]}};
+      return {data:{items:rows.slice((args.p_page-1)*10,args.p_page*10).map(({student_id,...s})=>({...s,summary})),total:rows.length,page:args.p_page,pageSize:10}};
+    }
     if (name === 'wordbook_review_read') {
       const session = sessions.find(s => s.student_id === args.p_student && s.session_id === args.p_session);
       assert.ok(session);
@@ -80,7 +85,7 @@ function fixture(domains = ['reading', 'writing'], role = 'teacher') {
   const route = file => compile(file, { '@/lib/lexical/teacherWordbook.server': { teacherWordbookRead } });
   const root = 'app/api/teacher/students/[studentId]/wordbook';
   const routes = { list: route(`${root}/route.ts`), scope: route(`${root}/scope/route.ts`), dates: route(`${root}/activity-dates/route.ts`),
-    history: route(`${root}/review/history/route.ts`), result: route(`${root}/review/[sessionId]/route.ts`) };
+    history: route(`${root}/review/history/route.ts`), historyDates: route(`${root}/review/activity-dates/route.ts`), result: route(`${root}/review/[sessionId]/route.ts`) };
   return { tables, calls, db, authMocks, routes, setAccount: value => { account = value; }, async send(kind, query = '', target = student, session = sid(1)) {
     return routes[kind].GET(new Request(`https://offline.invalid/api?${query}`, { headers: { Authorization: 'Bearer offline' } }),
       { params: { studentId: target, sessionId: session } });
@@ -93,8 +98,8 @@ for (const domains of [['reading'], ['writing'], ['reading', 'writing']]) {
     assert.deepEqual((await (await f.send('scope')).json()).domains, domains);
     for (const domain of ['reading', 'writing']) {
       const start = f.calls.length;
-      for (const kind of ['list', 'dates', 'history', 'result']) {
-        const response = await f.send(kind, `domain=${domain}${kind === 'dates' ? '&month=2026-10' : ''}`, student, domain === 'writing' ? sid(20) : sid(1));
+      for (const kind of ['list', 'dates', 'history', 'historyDates', 'result']) {
+        const response = await f.send(kind, `domain=${domain}${kind === 'dates' || kind === 'historyDates' ? '&month=2026-10' : ''}`, student, domain === 'writing' ? sid(20) : sid(1));
         assert.equal(response.status, domains.includes(domain) ? 200 : 403);
         assert.equal(response.headers.get('Cache-Control'), 'no-store');
         const body = await response.json();
@@ -117,7 +122,7 @@ test('unbound, disabled or non-student target and unauthenticated/non-teacher ac
     if (condition === 'target-teacher') f.tables.teacher_student_bindings.forEach(b => { b.student.role = 'teacher'; });
     if (condition === 'student-actor' || condition === 'admin-actor') f.setAccount({ userId: teacher, role: condition.split('-')[0] });
     if (condition === 'missing-auth') f.setAccount({ userId: null, role: null, error: 'unauthenticated' });
-    for (const kind of ['scope', 'list', 'dates', 'history', 'result']) {
+    for (const kind of ['scope', 'list', 'dates', 'history', 'historyDates', 'result']) {
       assert.equal((await f.send(kind, kind === 'scope' ? '' : 'domain=reading&month=2026-10')).status, 403);
     }
     assert.ok(f.calls.every(c => c.table === 'teacher_student_bindings'));
@@ -149,11 +154,13 @@ test('history counts/pagination are domain-scoped before reading summaries; inva
   const page = await (await f.send('history', 'domain=reading&page=2')).json();
   assert.equal(page.total, 12); assert.equal(page.items.length, 2); assert.equal(page.page, 2);
   assert.ok(page.items.every(s => s.domain === 'reading'));
-  const query = f.calls.find(c => c.table === 'student_wordbook_review_sessions');
-  assert.deepEqual(query.filters, [['student_id', student], ['domain', 'reading']]);
+  const query = f.calls.find(c => c.rpc === 'read_wordbook_review_history_v1');
+  assert.equal(query.args.p_student,student); assert.equal(query.args.p_domain,'reading');
+  assert.ok(!f.calls.some(c=>c.rpc==='wordbook_review_read'));
   for (const [kind, query] of [['list', ''], ['list', 'domain=reading&student_id=' + other], ['list', 'domain=reading&page=bad'],
     ['list', 'domain=reading&domain=reading'], ['dates', 'domain=reading'], ['history', 'domain=reading&action=availability'],
-    ['history', 'domain=reading&page=0'], ['result', 'domain=reading&round=1'], ['result', 'domain=reading&action=sync']]) {
+    ['history', 'domain=reading&page=0'], ['history', 'domain=reading&pageSize=50'], ['historyDates', 'domain=reading&month=2026-10&start=2026-10-01'],
+    ['result', 'domain=reading&round=1'], ['result', 'domain=reading&action=sync']]) {
     const start = f.calls.length;
     assert.equal((await f.send(kind, query)).status, 400);
     assert.ok(!f.calls.slice(start).some(c => c.rpc));
@@ -186,6 +193,7 @@ test('direct student review writes cannot impersonate the viewed student; target
     '@/lib/reading/attemptServer': { requireReadingAttemptStudent: async () => ({ userId: teacher }), readingAttemptJson: json },
     '@/lib/supabase/server': { createServiceSupabase: () => db }, '@/lib/lexical/wordbookReview': review,
     '@/lib/lexical/wordbookReview.server': { reviewRpc }, '@/lib/lexical/wordbookReviewPresentation': {},
+    '@/lib/lexical/wordbookList':list,'@/lib/lexical/wordbookList.server':listServer,
     '@/lib/lexical/wordbookReviewRound.server': { readReviewRound: () => { throw new Error('Must never read target round'); } }
   };
   const setup = compile('app/api/student/wordbook/review/route.ts', mocks);
@@ -206,7 +214,8 @@ test('direct student review writes cannot impersonate the viewed student; target
 
 const Link = ({ href, children, ...props }) => React.createElement('a', { ...props, href }, children);
 const commonMocks = {
-  'next/link': Link, '@/components/StudentDataCache': { useStudentDataCache: () => { throw new Error('Teacher must not use student cache'); } },
+  'next/link': Link, '@/components/StudentDataCache': { useOptionalStudentDataCache:()=>null,useStudentDataCache: () => { throw new Error('Teacher must not use student cache'); } },
+  '@/components/TeacherDataCache':{useOptionalTeacherDataCache:()=>null},'@/lib/cacheInvalidation':{},
   '@/lib/lexical/wordbookList': list, '@/lib/lexical/wordbookReview': review,
   '@/lib/studentDates': require('../lib/studentDates.ts'), '@/lib/studentNavigation': { STUDENT_ROUTES: { home: '/student', wordbook: '/student/wordbook' } }
 };
@@ -231,7 +240,7 @@ test('shared wordbook view shows only bound tabs, one history entry, no manageme
 
 test('history and result reuse student displays without resume, retry, new-round or test actions in teacher mode', () => {
   const { WordbookReviewHistoryList } = compile('components/student/WordbookReview.tsx', { ...commonMocks,
-    'next/navigation': {}, './StudentUI': {}, './StudentDateSelection': {}, './WordbookReviewWorkspace': {}, './useWordbookLocalReview': {},
+    'next/navigation': {}, './StudentUI': {}, './StudentDateSelection': {}, './WordbookReviewWorkspace': {}, './useWordbookLocalReview': {}, './StudentWordbook': {},
     '@/lib/lexical/wordbookReviewRequest': {}, '@/lib/lexical/wordbookReviewLocal': {}, './WordbookReviewSetup.module.css': {} });
   const f = fixture(); const session = f.tables.student_wordbook_review_sessions[0];
   const history = { items: [{ ...session, summary }, { ...session, session_id: sid(88), status: 'active', summary }], total: 2 };

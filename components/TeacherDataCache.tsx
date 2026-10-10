@@ -220,6 +220,24 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
   useEffect(
     () =>
       subscribeToCacheInvalidation((event) => {
+        if (cacheDomainsForEvent(event).some(d => ["teacherStats", "teacherReadingStatistics", "teacherWritingReviews"].includes(d))) {
+          invalidate(event.studentId ? `teacher:practice-dates:${event.studentId}` : "teacher:practice-dates");
+        }
+        if (event.type === "TEACHER_BINDING_UPDATED") {
+          invalidate(event.studentId ? `wordbook-read:${event.studentId}` : "wordbook-read");
+          invalidate(event.studentId ? `teacher:practice-dates:${event.studentId}` : "teacher:practice-dates");
+        }
+        if ((event.type === "WORDBOOK_CHANGED" || event.type === "WORDBOOK_REVIEW_CHANGED") && event.studentId) {
+          const prefix = `wordbook-read:${event.studentId}${event.wordbookDomain ? `:${event.wordbookDomain}` : ""}:`;
+          entries.current.forEach((_entry, key) => {
+            if (!key.startsWith(prefix)) return;
+            const url = key.slice(key.indexOf("/api/"));
+            const review = url.includes("/review");
+            if (event.type === "WORDBOOK_CHANGED" ? !review
+              : review && (url.includes("/history") || url.includes("/activity-dates")
+                || Boolean(event.reviewSessionId && url.includes(`/review/${event.reviewSessionId}`)))) invalidate(key);
+          });
+        }
         for (const domain of cacheDomainsForEvent(event)) {
           switch (domain) {
             case "teacherStats":

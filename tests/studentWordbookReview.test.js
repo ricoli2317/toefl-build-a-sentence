@@ -276,6 +276,8 @@ test('real review handlers authenticate before database access, whitelist all ac
       if(name.endsWith('wordbookReview.server'))return{reviewRpc};
       if(name.endsWith('wordbookReviewRound.server'))return{readReviewRound:async()=>({cards:[]})};
       if(name.endsWith('wordbookReviewPresentation'))return{presentReviewState:data=>data};
+      if(name.endsWith('wordbookList'))return require('../lib/lexical/wordbookList.ts');
+      if(name.endsWith('wordbookList.server'))return require('../lib/lexical/wordbookList.server.ts');
       if(name.endsWith('wordbookReview'))return require('../lib/lexical/wordbookReview.ts');throw Error(name);
     }});
     const context={params:{sessionId:h.uuid()}},url='https://offline.invalid/review';

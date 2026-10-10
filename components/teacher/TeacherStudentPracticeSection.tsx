@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BookMarked, CalendarDays, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
+import { BookMarked, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
@@ -14,7 +14,8 @@ import {
 import { ModalShell } from "@/components/shared/ConfirmDialog";
 import { TeacherBreadcrumbs } from "@/components/teacher/TeacherAppShell";
 import { useTeacherClassDisplayName } from "@/components/teacher/TeacherNavigationContext";
-import { TeacherPopover } from "@/components/teacher/TeacherPopover";
+import { StudentDateSelection } from "@/components/student/StudentDateSelection";
+import { startOfLocalDay, addDays, localDayRange, browserTimeZone, formatDateInputValue, parseDateInputValue, boundedDateDraft, boundedCalendarMonth } from "@/lib/studentDates";
 import { SubjectBadgeStack } from "@/components/teacher/SubjectBadges";
 import { TeacherSubjectFieldset } from "@/components/teacher/TeacherSubjectFieldset";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
@@ -128,6 +129,11 @@ export function TeacherStudentPracticeWorkspace({
     initialTasks === undefined
       ? ALL_TASKS_SELECTED
       : parseTeacherPracticeTaskSelection(initialTasks));
+  const [month, setMonth] = useState(() => startOfLocalDay());
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const bounds = { min: "2026-07-01", max: formatDateInputValue(startOfLocalDay()) };
+  const monthKey = formatDateInputValue(month).slice(0, 7);
+  const timeZone = useMemo(() => browserTimeZone(), []);
   const [subjectsDraft, setSubjectsDraft] = useState<StudentBindingDomain[]>([]);
   const [subjectsDialogOpen, setSubjectsDialogOpen] = useState(false);
   const [subjectsBusy, setSubjectsBusy] = useState(false);
@@ -185,6 +191,19 @@ export function TeacherStudentPracticeWorkspace({
   const payload = state.data;
   const studentDomains =
     domainsOverride ?? payload?.student.domains ?? [];
+  const taskKey = TEACHER_PRACTICE_TASK_TYPES.filter(t => selectedTasks[t] && studentDomains.includes(["ctw", "rdl", "rap", "full_set"].includes(t) ? "reading" : "writing")).join(",") || "none";
+  const datesState = useTeacherCachedData<{ dates: string[] }>(
+    `teacher:practice-dates:${studentId}:${studentDomains.join(",")}:${monthKey}:${taskKey}:${timeZone}`,
+    async () => {
+      const { data: { session } } = await createBrowserSupabase().auth.getSession();
+      if (!session) throw new Error("请重新登录。");
+      const response = await fetch(`/api/teacher/students/${encodeURIComponent(studentId)}/practice/activity-dates?${new URLSearchParams({ month: monthKey, tasks: taskKey, timeZone })}`,
+        { cache: "no-store", headers: { Authorization: `Bearer ${session.access_token}` } });
+      const body = await response.json();
+      if (!response.ok) throw new Error(body.error ?? "练习日期读取失败。");
+      return body;
+    }, { enabled: calendarOpen && !noDomains && studentDomains.length > 0 }
+  );
   const readingRecords = filterRecords(payload?.reading?.records ?? [], selectedTasks);
   const writingRecords = filterRecords(payload?.writing?.records ?? [], selectedTasks);
   const rangeStartKey = view.kind === "range" || view.kind === "rangeDay" ? view.start : "";
@@ -212,9 +231,9 @@ export function TeacherStudentPracticeWorkspace({
   }, [view, selectedDay]);
 
   function applyDateDraft(close: () => void) {
-    let start = dateDraft.start || formatDateInputValue(selectedDay);
-    let end = dateDraft.end || start;
-    if (end < start) [start, end] = [end, start];
+    const valid = boundedDateDraft(dateDraft, bounds);
+    if (!valid) return;
+    const { start, end } = valid;
     const startDay = parseDateInputValue(start) ?? selectedDay;
     close();
     setSelectedDay(startDay);
@@ -377,6 +396,7 @@ export function TeacherStudentPracticeWorkspace({
             <div className="flex flex-wrap items-center gap-2">
               <button
                 aria-label="上一天"
+                disabled={formatDateInputValue(selectedDay) <= bounds.min}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white text-student-muted transition hover:border-student-primary-border hover:text-student-primary"
                 onClick={() => {
                   setView({ kind: "day" });
@@ -393,6 +413,7 @@ export function TeacherStudentPracticeWorkspace({
               </p>
               <button
                 aria-label="下一天"
+                disabled={formatDateInputValue(selectedDay) >= bounds.max}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white text-student-muted transition hover:border-student-primary-border hover:text-student-primary"
                 onClick={() => {
                   setView({ kind: "day" });
@@ -413,71 +434,14 @@ export function TeacherStudentPracticeWorkspace({
               >
                 今天
               </button>
-              {/* Same icon control as before: single date and range share one
-                  picker, so the date area keeps its exact size and position. */}
-              <TeacherPopover
-                buttonClassName="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white text-student-muted transition hover:border-student-primary-border hover:text-student-primary"
-                buttonContent={
-                  <>
-                    <span className="sr-only">选择日期</span>
-                    <CalendarDays aria-hidden="true" size={18} />
-                  </>
-                }
-                menuClassName="w-[304px] p-4"
-                panelRole="dialog"
-              >
-                {(close) => (
-                  <form
-                    className="grid gap-3"
-                    onSubmit={(event) => {
-                      event.preventDefault();
-                      applyDateDraft(close);
-                    }}
-                  >
-                    <p className="text-sm font-bold text-student-text">日期选择</p>
-                    <label className="grid gap-1.5 text-xs font-semibold text-student-muted">
-                      开始日期
-                      <input
-                        aria-label="开始日期"
-                        className="teacher-input w-full"
-                        onChange={(event) =>
-                          setDateDraft((draft) => ({ ...draft, start: event.target.value }))
-                        }
-                        type="date"
-                        value={dateDraft.start}
-                      />
-                    </label>
-                    <label className="grid gap-1.5 text-xs font-semibold text-student-muted">
-                      结束日期（可不填）
-                      <input
-                        aria-label="结束日期"
-                        className="teacher-input w-full"
-                        onChange={(event) =>
-                          setDateDraft((draft) => ({ ...draft, end: event.target.value }))
-                        }
-                        type="date"
-                        value={dateDraft.end}
-                      />
-                    </label>
-                    <p className="text-xs leading-5 text-student-muted">
-                      同一天按单日详情查看；起止不同则显示范围统计。
-                    </p>
-                    <button
-                      className="teacher-button-primary w-full"
-                      disabled={!dateDraft.start}
-                      type="submit"
-                    >
-                      {!dateDraft.end || dateDraft.end === dateDraft.start
-                        ? "查看当天"
-                        : "查看范围统计"}
-                    </button>
-                  </form>
-                )}
-              </TeacherPopover>
+              <StudentDateSelection draft={dateDraft} onDraftChange={setDateDraft} onApply={applyDateDraft} bounds={bounds}
+                activityLabel="练习记录" rangeLabel="练习日期范围"
+                onClear={() => { setSelectedDay(startOfLocalDay()); setView({ kind: "day" }); }}
+                activity={{ month, onOpenChange: setCalendarOpen, onMonthChange: v => setMonth(boundedCalendarMonth(v, bounds)), dates: datesState.data?.dates ?? [], loading: datesState.loading, error: datesState.error, showToday: true }} />
             </div>
             <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <legend className="sr-only">题型筛选</legend>
-              {TEACHER_PRACTICE_TASK_TYPES.map((taskType) => (
+              {TEACHER_PRACTICE_TASK_TYPES.filter(t => studentDomains.includes(["ctw", "rdl", "rap", "full_set"].includes(t) ? "reading" : "writing")).map((taskType) => (
                 <label
                   className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-student-text"
                   key={taskType}
@@ -845,24 +809,6 @@ function formatRecordTime(value: string) {
   });
 }
 
-function startOfLocalDay(date = new Date()) {
-  const day = new Date(date);
-  day.setHours(0, 0, 0, 0);
-  return day;
-}
-
-function addDays(day: Date, amount: number) {
-  const next = startOfLocalDay(day);
-  next.setDate(next.getDate() + amount);
-  return next;
-}
-
-function localDayRange(day: Date) {
-  const start = startOfLocalDay(day);
-  const end = addDays(start, 1);
-  return { startAt: start.toISOString(), endAt: end.toISOString() };
-}
-
 function isToday(day: Date) {
   return startOfLocalDay(day).getTime() === startOfLocalDay().getTime();
 }
@@ -891,27 +837,6 @@ function formatRangeDayLabel(dateKey: string) {
   if (!day) return dateKey;
   const weekday = day.toLocaleDateString("zh-CN", { weekday: "short" });
   return `${day.getFullYear()}年${day.getMonth() + 1}月${day.getDate()}日 · ${weekday}`;
-}
-
-function browserTimeZone() {
-  try {
-    return Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Shanghai";
-  } catch {
-    return "Asia/Shanghai";
-  }
-}
-
-function formatDateInputValue(day: Date) {
-  const month = String(day.getMonth() + 1).padStart(2, "0");
-  const date = String(day.getDate()).padStart(2, "0");
-  return `${day.getFullYear()}-${month}-${date}`;
-}
-
-function parseDateInputValue(value: string) {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const day = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
-  return Number.isNaN(day.getTime()) ? null : day;
 }
 
 export function TeacherStudentPracticeSkeleton() {

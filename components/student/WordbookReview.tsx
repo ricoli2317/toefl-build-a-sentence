@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStudentDataCache } from "@/components/StudentDataCache";
+import { useWordbookRead, useWordbookViewState, wordbookReadCacheKey, type WordbookReadAccess } from "./StudentWordbook";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { StudentNavigation } from "./StudentUI";
 import { StudentDateSelection } from "./StudentDateSelection";
 import { boundedCalendarMonth, boundedDateDraft, browserTimeZone, formatDateInputValue, startOfLocalDay } from "@/lib/studentDates";
@@ -27,31 +29,28 @@ function Navigation({ label }: { label: string }) {
   ]} />;
 }
 function useReviewRequest() {
-  const { getSession, studentId, sessionReady } = useStudentDataCache();
+  const cache = useStudentDataCache();
+  const { getSession, studentId, sessionReady, load } = cache;
   const owner = useRef(studentId); owner.current = studentId;
   const request = useCallback(async <T,>(url: string, body?: unknown, signal?: AbortSignal): Promise<T> => {
     const token = getSession()?.accessToken, id = studentId;
     if (!token || !id) throw new ReviewRequestError("请重新登录。", 401, "REVIEW_AUTH");
-    const result = await fetchReview<T>(url, token, body, signal);
+    const result = body === undefined ? await load<T>(wordbookReadCacheKey(url, { studentId }), () => fetchReview<T>(url, token, undefined, signal))
+      : await fetchReview<T>(url, token, body, signal);
+    if (result === undefined) throw new Error("读取失败，请重试。");
     if (owner.current !== id) throw new Error("登录账号已变化，请刷新页面。");
+    if (body && typeof body === "object") {
+      const mutation = body as { settings?: { domain?: WordbookDomain }; action?: string; command?: { action?: string } };
+      const session = (result as { session?: { domain?: WordbookDomain; session_id?: string } }).session;
+      const domain = session?.domain ?? mutation.settings?.domain;
+      if (domain && (mutation.settings || mutation.action === "retry")) publishCacheInvalidation({ type: "WORDBOOK_REVIEW_CHANGED", studentId: id, wordbookDomain: domain });
+    }
     return result as T;
-  }, [getSession, studentId]);
+  }, [getSession, studentId, load]);
   return { request, studentId, sessionReady };
 }
 function useReviewRead<T>(url: string | null, revision = 0) {
-  const { request, studentId, sessionReady } = useReviewRequest();
-  const identity = `${studentId}:${url}:${revision}`;
-  const [state, setState] = useState<{ identity: string; data?: T; error?: string }>({ identity: "" });
-  useEffect(() => {
-    if (!url || !studentId || !sessionReady) return;
-    const abort = new AbortController(); let active = true;
-    setState({ identity });
-    void request<T>(url, undefined, abort.signal).then(data => { if (active) setState({ identity, data }); })
-      .catch(error => { if (active) setState({ identity, error: error instanceof Error ? error.message : "读取失败。" }); });
-    return () => { active = false; abort.abort(); };
-  }, [url, identity, studentId, sessionReady, request]);
-  return { data: state.identity === identity ? state.data : undefined, error: state.identity === identity ? state.error : undefined,
-    loading: Boolean(url) && (!sessionReady || Boolean(studentId) && (state.identity !== identity || !state.data && !state.error)) };
+  return useWordbookRead<T>(url, revision, useStudentDataCache());
 }
 function Failure({ error, retry }: { error?: string; retry?: () => void }) {
   return error ? <div role="alert" className="grid gap-2 text-sm text-student-error"><p>{error}</p>
@@ -196,7 +195,7 @@ export function WordbookReviewSession({ sessionId }: { sessionId: string }) {
     finally { busyRef.current = false; if (identityRef.current === identity) setBusy(false); }
   };
   return <WordbookReviewWorkspace key={identity} state={review.state} busy={busy} error={error || review.error}
-    onAction={review.action} onRetry={() => void retry()} onReload={() => void review.reload()}
+    onAction={review.action} onRetry={() => void retry()} onReload={() => void review.reload(true)}
     pending={review.pending} syncError={review.syncError} onSyncRetry={review.retrySync} />;
 }
 function Pagination({ page, total, pageSize, disabled, onChange }: { page: number; total: number; pageSize: number; disabled: boolean; onChange: (page: number) => void }) {
@@ -206,13 +205,55 @@ function Pagination({ page, total, pageSize, disabled, onChange }: { page: numbe
       <button type="button" className="student-button-secondary" disabled={disabled || page >= pages} onClick={() => onChange(page + 1)}>下一页</button></div></div>;
 }
 export function WordbookReviewHistory() {
-  const [page, setPage] = useState(1), [revision, setRevision] = useState(0);
-  const history = useReviewRead<ReviewHistory>(`${ROOT}?action=history&page=${page}`, revision);
+  const access = useStudentDataCache();
   return <div className="grid min-w-0 gap-5"><Navigation label="复习历史" /><Link href={SETUP} className="student-button-primary justify-self-start">开始新复习</Link>
-    <PendingReviews />{history.loading ? <p className="text-sm text-student-muted">正在加载复习历史…</p> : null}<Failure error={history.error} retry={() => setRevision(v => v + 1)} />
-    {history.data ? <WordbookReviewHistoryList history={history.data} /> : null}
-    {history.data ? <Pagination page={page} total={history.data.total} pageSize={10} disabled={history.loading} onChange={setPage} /> : null}
+    <PendingReviews /><WordbookReviewHistoryView access={access} />
   </div>;
+}
+
+export function WordbookReviewHistoryView({ access, domains = ["reading", "writing"], initialDomain, apiRoot = ROOT, readOnly = false, resultHref }: {
+  access: WordbookReadAccess; domains?: WordbookDomain[]; initialDomain?: WordbookDomain; apiRoot?: string; readOnly?: boolean;
+  resultHref?: (id: string, domain: WordbookDomain) => string;
+}) {
+  const [domain, setDomain] = useWordbookViewState("review-domain", access, initialDomain ?? domains[0]);
+  const [filters, setFilters] = useWordbookViewState("review-filters", access, {
+    reading: { page: 1, start: "", end: "" }, writing: { page: 1, start: "", end: "" }
+  });
+  const subject = domains.includes(domain) ? domain : domains[0];
+  const active = filters[subject];
+  const [draft, setDraft] = useState({ start: active.start, end: active.end });
+  const [month, setMonth] = useState(() => startOfLocalDay());
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [revision, setRevision] = useState(0);
+  const timeZone = useMemo(() => browserTimeZone(), []);
+  const bounds = { min: "2026-07-01", max: formatDateInputValue(startOfLocalDay()) };
+  useEffect(() => { setDraft({ start: active.start, end: active.end }); }, [subject, active.start, active.end]);
+  const query = new URLSearchParams({ domain: subject, page: String(active.page), timeZone });
+  if (active.start) { query.set("start", active.start); query.set("end", active.end); }
+  const url = readOnly ? `${apiRoot}/history?${query}` : `${apiRoot}?action=history&${query}`;
+  const dateQuery = new URLSearchParams({ domain: subject, month: formatDateInputValue(month).slice(0, 7), timeZone });
+  const dateUrl = readOnly ? `${apiRoot}/activity-dates?${dateQuery}` : `${apiRoot}?action=history-dates&${dateQuery}`;
+  const history = useWordbookRead<ReviewHistory>(url, revision, access);
+  const dates = useWordbookRead<{ dates: string[] }>(calendarOpen ? dateUrl : null, 0, access);
+  const update = (changes: Partial<typeof active>) => setFilters(previous => ({ ...previous, [subject]: { ...previous[subject], ...changes } }));
+  return <>
+    {domains.length > 1 ? <div role="tablist" aria-label="复习历史分类" className={`flex gap-1 border-b border-student-border ${subject === "reading" ? "reading-theme" : ""}`}>
+      {domains.map(d => <button type="button" role="tab" aria-selected={subject === d} key={d}
+        className={`border-b-2 px-5 py-3 text-sm font-semibold ${subject === d ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
+        onClick={() => setDomain(d)}>{d === "reading" ? "Reading" : "Writing"}</button>)}
+    </div> : null}
+    <div className={`flex flex-wrap items-center gap-2 ${subject === "reading" ? "reading-theme" : ""}`}>
+      <StudentDateSelection draft={draft} onDraftChange={setDraft} bounds={bounds} activityLabel="复习记录" rangeLabel="复习日期范围"
+        onApply={close => { const range = boundedDateDraft(draft, bounds); if (range) { update({ ...range, page: 1 }); close(); } }}
+        onClear={() => { setDraft({ start: "", end: "" }); update({ start: "", end: "", page: 1 }); }}
+        activity={{ month, onOpenChange: setCalendarOpen, onMonthChange: value => setMonth(boundedCalendarMonth(value, bounds)), dates: dates.data?.dates ?? [], loading: dates.loading, error: dates.error, showToday: true }} />
+      <span className="text-sm text-student-muted">{active.start ? active.start === active.end ? active.start : `${active.start} — ${active.end}` : "全部日期"}</span>
+    </div>
+    {history.loading ? <p className="text-sm text-student-muted">正在加载复习历史…</p> : null}
+    <Failure error={history.error} retry={() => setRevision(v => v + 1)} />
+    {history.data ? <><WordbookReviewHistoryList history={history.data} readOnly={readOnly} resultHref={resultHref ? id => resultHref(id, subject) : undefined} />
+      <Pagination page={active.page} total={history.data.total} pageSize={10} disabled={history.loading} onChange={page => update({ page })} /></> : null}
+  </>;
 }
 
 export function WordbookReviewHistoryList({ history, readOnly = false, resultHref = id => `${SETUP}/${id}` }: {

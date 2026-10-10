@@ -1,30 +1,31 @@
 "use client";
 
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useRef } from "react";
 import { TeacherPopover } from "@/components/teacher/TeacherPopover";
 import { addDays, boundedCalendarMonth, boundedDateDraft, formatDateInputValue, startOfLocalDay, type StudentDateBounds } from "@/lib/studentDates";
 
 export const DATE_BUTTON_CLASS = "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white text-student-muted transition hover:border-student-primary-border hover:text-student-primary";
 
 // Practice history's existing form, with an OPTIONAL activity month extension.
-export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, rangeLabel = "查看范围统计", activity, bounds, singleDay = false, hideHints = false, inline = false }: {
+export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, rangeLabel = "查看范围统计", activityLabel = "收藏活动", activity, bounds, singleDay = false, hideHints = false, inline = false }: {
   draft: { start: string; end: string };
   onDraftChange: (draft: { start: string; end: string }) => void;
   onApply: (close: () => void) => void;
   onClear?: () => void;
   hint?: string;
   rangeLabel?: string;
+  activityLabel?: string;
   bounds?: StudentDateBounds;
   singleDay?: boolean;
   hideHints?: boolean;
   inline?: boolean;
-  activity?: { month: Date; dates: string[]; onMonthChange: (month: Date) => void; error?: string; loading?: boolean; showToday?: boolean; resetMonthOnOpen?: boolean };
+  activity?: { month: Date; dates: string[]; onMonthChange: (month: Date) => void; onOpenChange?: (open: boolean) => void; error?: string; loading?: boolean; showToday?: boolean; resetMonthOnOpen?: boolean };
 }) {
   const valid = !bounds || Boolean(boundedDateDraft(draft, bounds));
   const content = (close: () => void) => <form className={inline ? "grid min-w-0 gap-5" : "grid gap-3"} onSubmit={event => { event.preventDefault(); if (valid) onApply(close); }}>
       {!inline ? <p className="text-sm font-bold text-student-text">日期选择</p> : null}
-      {activity ? <ActivityMonth activity={activity} draft={draft} onDraftChange={onDraftChange} bounds={bounds} hideHints={hideHints} inline={inline} /> : null}
+      {activity ? <ActivityMonth activity={activity} activityLabel={activityLabel} draft={draft} onDraftChange={onDraftChange} bounds={bounds} hideHints={hideHints} inline={inline} /> : null}
       <div className={inline && !singleDay ? "grid min-w-0 grid-cols-2 gap-3" : "grid min-w-0 gap-3"}>
       <label className="grid gap-1.5 text-xs font-semibold text-student-muted">开始日期
         <input aria-label="开始日期" className={`teacher-input w-full min-w-0 ${inline ? "min-h-11 !text-base" : ""}`} min={bounds?.min} max={bounds?.max} onChange={event => onDraftChange({ ...draft, start: event.target.value })} type="date" value={draft.start} />
@@ -43,16 +44,36 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
     menuAlign={activity ? "left" : "right"} menuClassName="w-[304px] max-w-[calc(100vw-2rem)] p-4" panelRole="dialog">{content}</TeacherPopover>;
 }
 
-function ActivityMonth({ activity, draft, onDraftChange, bounds, hideHints, inline = false }: {
+function ActivityMonth({ activity, activityLabel, draft, onDraftChange, bounds, hideHints, inline = false }: {
   activity: NonNullable<Parameters<typeof StudentDateSelection>[0]["activity"]>;
+  activityLabel: string;
   draft: { start: string; end: string }; onDraftChange: (draft: { start: string; end: string }) => void;
   bounds?: StudentDateBounds;
   hideHints?: boolean;
   inline?: boolean;
 }) {
+  const root = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (inline) return;
+    const panel = root.current?.closest<HTMLElement>('[role="dialog"]');
+    if (!panel) return;
+    // History's icon can sit further right than Wordbook's. Keep the SAME
+    // calendar panel within the viewport without changing the shared popover
+    // or the layout of unrelated menus. Resizing is presentation-only.
+    const position = () => {
+      panel.style.transform = "";
+      const rect = panel.getBoundingClientRect();
+      const shift = rect.left < 16 ? 16 - rect.left : rect.right > window.innerWidth - 16 ? window.innerWidth - 16 - rect.right : 0;
+      if (shift) panel.style.transform = `translateX(${shift}px)`;
+    };
+    position(); window.addEventListener("resize", position);
+    return () => { window.removeEventListener("resize", position); panel.style.transform = ""; };
+  }, [inline]);
   // Mounts only when the popover opens. This opt-in does not affect history.
   useLayoutEffect(() => {
     if (activity.resetMonthOnOpen) activity.onMonthChange(startOfLocalDay());
+    activity.onOpenChange?.(true);
+    return () => activity.onOpenChange?.(false);
     // Opening, not every controlled month update, resets the month.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -63,7 +84,7 @@ function ActivityMonth({ activity, draft, onDraftChange, bounds, hideHints, inli
   const arrowClass = `${DATE_BUTTON_CLASS} ${inline ? "!h-11 !w-11" : ""} shrink-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-student-border disabled:hover:text-student-muted`;
   const count = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
   const marked = new Set(activity.dates);
-  return <div className="grid gap-2">
+  return <div ref={root} className="grid gap-2">
     <div className="flex items-center gap-1">
       <button aria-label="上个月" disabled={Boolean(bounds && monthKey <= bounds.min.slice(0, 7))} className={arrowClass} type="button" onClick={() => activity.onMonthChange(new Date(first.getFullYear(), first.getMonth() - 1, 1))}><ChevronLeft size={16} /></button>
       <span className="min-w-0 flex-1 whitespace-nowrap text-center text-sm font-semibold">{first.getFullYear()}年{first.getMonth() + 1}月</span>
@@ -78,13 +99,13 @@ function ActivityMonth({ activity, draft, onDraftChange, bounds, hideHints, inli
         const selected = key >= draft.start && key <= (draft.end || draft.start);
         const disabled = Boolean(bounds && (key < bounds.min || key > bounds.max));
         const isToday = activity.showToday && key === today;
-        return <button aria-label={`${key}${marked.has(key) ? "，有收藏活动" : ""}`} aria-current={isToday ? "date" : undefined} aria-pressed={selected} disabled={disabled} key={key} type="button"
+        return <button aria-label={`${key}${marked.has(key) ? `，有${activityLabel}` : ""}`} aria-current={isToday ? "date" : undefined} aria-pressed={selected} disabled={disabled} key={key} type="button"
            className={`relative ${inline ? "h-11 text-sm" : "h-9"} rounded-lg pb-1 transition hover:bg-student-primary-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent ${selected ? "bg-student-primary-soft" : ""} ${selected || isToday ? "text-student-primary" : "text-student-text"} ${isToday ? "ring-1 ring-inset ring-student-primary" : ""}`}
           onClick={() => onDraftChange({ start: key, end: key })}>{i + 1}
           {marked.has(key) ? <span aria-hidden="true" data-activity-dot className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-student-primary" /> : null}
         </button>;
       })}
     </div>
-    {!hideHints || activity.error || activity.loading ? <p aria-live="polite" className="text-xs text-student-muted">{activity.error ?? (activity.loading ? "正在加载活动日期…" : "圆点表示有收藏活动；范围可在下方输入。")}</p> : null}
+    {!hideHints || activity.error || activity.loading ? <p aria-live="polite" className="text-xs text-student-muted">{activity.error ?? (activity.loading ? "正在加载活动日期…" : `圆点表示有${activityLabel}；范围可在下方输入。`)}</p> : null}
   </div>;
 }

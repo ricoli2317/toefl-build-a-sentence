@@ -15,6 +15,8 @@ export type CacheInvalidationMutation =
   | "ASSIGNMENT_UPDATED"
   | "TEACHER_STATS_UPDATED"
   | "TEACHER_BINDING_UPDATED"
+  | "WORDBOOK_CHANGED"
+  | "WORDBOOK_REVIEW_CHANGED"
   | "CLASS_UPDATED";
 
 export type CacheInvalidationDomain =
@@ -51,12 +53,16 @@ export type CacheInvalidationEvent = {
   attempt?: OfficialAttemptStatus;
   taskType?: "email" | "academic_discussion";
   questionId?: string;
+  wordbookDomain?: "reading" | "writing";
+  reviewSessionId?: string;
 };
 
 const BASE_INVALIDATION_MATRIX: Record<
   CacheInvalidationMutation,
   readonly CacheInvalidationDomain[]
 > = {
+  WORDBOOK_CHANGED: [],
+  WORDBOOK_REVIEW_CHANGED: [],
   PRACTICE_CATALOG_UPDATED: [
     "studentPracticeCatalog",
     "studentPracticeHistory",

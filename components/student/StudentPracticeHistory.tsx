@@ -14,7 +14,7 @@ import {
 } from "@/components/StudentDataCache";
 import { StudentNavigation } from "@/components/student/StudentUI";
 import { StudentDateSelection, DATE_BUTTON_CLASS } from "@/components/student/StudentDateSelection";
-import { startOfLocalDay, addDays, localDayRange, browserTimeZone, formatDateInputValue, parseDateInputValue, normalizeDateDraft } from "@/lib/studentDates";
+import { startOfLocalDay, addDays, localDayRange, browserTimeZone, formatDateInputValue, parseDateInputValue, boundedDateDraft, boundedCalendarMonth } from "@/lib/studentDates";
 import {
   TeacherAccuracyBar,
   TeacherCard,
@@ -100,6 +100,22 @@ export function StudentPracticeHistory({
     start: initialState.selectedDay,
     end: initialState.selectedDay
   }));
+  const [month, setMonth] = useState(() => startOfLocalDay());
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const bounds = { min: "2026-07-01", max: formatDateInputValue(startOfLocalDay()) };
+  const monthKey = formatDateInputValue(month).slice(0, 7);
+  const taskKey = TEACHER_PRACTICE_TASK_TYPES.filter(t => selectedTasks[t]).join(",") || "none";
+  const timeZone = useMemo(() => browserTimeZone(), []);
+  const datesState = useStudentCachedData<{ dates: string[] }>(
+    `${STUDENT_PRACTICE_HISTORY_CACHE_PREFIX}:dates:${monthKey}:${taskKey}:${timeZone}`,
+    async session => {
+      const response = await fetch(`/api/student/practice-history/activity-dates?${new URLSearchParams({ month: monthKey, tasks: taskKey, timeZone })}`,
+        { cache: "no-store", headers: { Authorization: `Bearer ${session.accessToken}` } });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error ?? "练习日期读取失败。");
+      return payload;
+    }, { enabled: calendarOpen }
+  );
 
   // Browser Back/Forward (and any fresh drill-down return) realigns the state
   // from the URL, so the date, task filter and active range are never lost.
@@ -152,7 +168,9 @@ export function StudentPracticeHistory({
   }
 
   function applyDateDraft(close: () => void) {
-    const { start, end } = normalizeDateDraft(dateDraft, formatDateInputValue(selectedDay));
+    const valid = boundedDateDraft(dateDraft, bounds);
+    if (!valid) return;
+    const { start, end } = valid;
     const startDay = parseDateInputValue(start) ?? selectedDay;
     close();
     applyState({
@@ -226,6 +244,7 @@ export function StudentPracticeHistory({
         <div className="flex flex-wrap items-center gap-2">
           <button
             aria-label="上一天"
+            disabled={formatDateInputValue(selectedDay) <= bounds.min}
             className={DATE_BUTTON_CLASS}
             onClick={() => applyState({ selectedDay: addDays(selectedDay, -1), view: { kind: "day" } })}
             type="button"
@@ -239,6 +258,7 @@ export function StudentPracticeHistory({
           </p>
           <button
             aria-label="下一天"
+            disabled={formatDateInputValue(selectedDay) >= bounds.max}
             className={DATE_BUTTON_CLASS}
             onClick={() => applyState({ selectedDay: addDays(selectedDay, 1), view: { kind: "day" } })}
             type="button"
@@ -253,7 +273,10 @@ export function StudentPracticeHistory({
           >
             今天
           </button>
-          <StudentDateSelection draft={dateDraft} onDraftChange={setDateDraft} onApply={applyDateDraft} />
+          <StudentDateSelection draft={dateDraft} onDraftChange={setDateDraft} onApply={applyDateDraft} bounds={bounds}
+            activityLabel="练习记录" rangeLabel="练习日期范围"
+            onClear={() => applyState({ selectedDay: startOfLocalDay(), view: { kind: "day" } })}
+            activity={{ month, onOpenChange: setCalendarOpen, onMonthChange: v => setMonth(boundedCalendarMonth(v, bounds)), dates: datesState.data?.dates ?? [], loading: datesState.loading, error: datesState.error, showToday: true }} />
         </div>
         <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <legend className="sr-only">题型筛选</legend>

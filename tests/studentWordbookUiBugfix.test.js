@@ -54,11 +54,12 @@ test('Reading calendar primary-button shadow follows its theme without modifying
   assert.match(component,/domain === "reading" \? styles\.readingDateControls : ""/);
   assert.match(css,/\.readingDateControls :global\(\.teacher-button-primary\) \{ box-shadow: 0 5px 14px color-mix\(in srgb, var\(--student-primary\) 18%, transparent\); \}/);
 });
-test('actual wordbook tab handler clears applied single/range and unsubmitted dates in both domains while preserving sort',()=>{
+test('actual wordbook tab handler preserves each subject’s applied dates, page and sort for immediate cached reuse',()=>{
   const hooks=[];let cursor=0;
-  const hookReact={...React,useRef:value=>({current:value}),useEffect(){},useMemo:fn=>fn(),useState(initial){const i=cursor++;if(!(i in hooks))hooks[i]=typeof initial==='function'?initial():initial;return[hooks[i],value=>{hooks[i]=typeof value==='function'?value(hooks[i]):value;}];}};
+  const hookReact={...React,useCallback:fn=>fn,useRef:value=>({current:value}),useEffect(){},useMemo:fn=>fn(),useState(initial){const i=cursor++;if(!(i in hooks))hooks[i]=typeof initial==='function'?initial():initial;return[hooks[i],value=>{hooks[i]=typeof value==='function'?value(hooks[i]):value;}];}};
   const {WordbookView}=compile('components/student/StudentWordbook.tsx',{
-    react:hookReact,'@/components/StudentDataCache':{useStudentDataCache:()=>({getSession:()=>null,sessionReady:false,studentId:null})},
+    react:hookReact,'@/components/StudentDataCache':{useOptionalStudentDataCache:()=>null,useStudentDataCache:()=>({getSession:()=>null,sessionReady:false,studentId:null})},
+    '@/components/TeacherDataCache':{useOptionalTeacherDataCache:()=>null},'@/lib/cacheInvalidation':{},
     '@/components/shared/ConfirmDialog':{ConfirmDialog:()=>null},'@/lib/lexical/wordbookManagement':require('../lib/lexical/wordbookManagement.ts'),
     '@/components/student/StudentUI':{StudentNavigation:()=>null},'@/components/student/StudentDateSelection':{StudentDateSelection:()=>null},
     './WordbookExample':{WordbookExample:()=>null},'@/lib/lexical/wordbookPresentation':{wordbookPos},
@@ -67,14 +68,13 @@ test('actual wordbook tab handler clears applied single/range and unsubmitted da
   });
   const render=()=>{cursor=0;return WordbookView({access:{getSession:()=>null,sessionReady:false,studentId:null}});};render();
   for(const end of ['2026-07-10','2026-08-10']){
-    hooks[0]='reading';hooks[1]={reading:{start:'2026-07-10',end,sort:'oldest',page:3},writing:{start:'2026-09-01',end:'2026-09-20',sort:'newest',page:2}};
-    hooks[2]={start:'2026-08-01',end:'2026-09-01'};hooks[3]=new Date(2026,6,1);
+    hooks[0].value='reading';hooks[1].value={reading:{start:'2026-07-10',end,sort:'oldest',page:3},writing:{start:'2026-09-01',end:'2026-09-20',sort:'newest',page:2}};
+    const original=structuredClone(hooks[1].value);
+    hooks[2]={start:'2026-08-01',end:'2026-09-01'};hooks[3].value=new Date(2026,6,1);
     render().props.children[1].props.children[1].props.onClick();
-    assert.equal(hooks[0],'writing');assert.deepEqual(hooks[2],{start:'',end:''});
-    for(const domain of ['reading','writing']){assert.equal(hooks[1][domain].start,'');assert.equal(hooks[1][domain].end,'');assert.equal(hooks[1][domain].page,1);}
-    assert.equal(hooks[1].reading.sort,'oldest');assert.equal(hooks[1].writing.sort,'newest');
-    assert.equal(dates.formatDateInputValue(hooks[3]),dates.formatDateInputValue(dates.startOfLocalDay()));
-    render().props.children[1].props.children[0].props.onClick();assert.equal(hooks[0],'reading');assert.equal(hooks[1].reading.start,'');
+    assert.equal(hooks[0].value,'writing');assert.deepEqual(hooks[1].value,original);
+    assert.equal(dates.formatDateInputValue(hooks[3].value),'2026-07-01');
+    render().props.children[1].props.children[0].props.onClick();assert.equal(hooks[0].value,'reading');assert.deepEqual(hooks[1].value,original);
   }
 });
 test('POS maps the actual corpus types, preserves unknowns and keeps snapshots untouched',()=>{

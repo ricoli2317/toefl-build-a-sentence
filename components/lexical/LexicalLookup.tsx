@@ -6,6 +6,7 @@ import type { CanonicalLexicalSourceType } from "@/lib/lexical/types";
 import type { LexicalAccess, LexicalLookupRequest, LexicalLookupResult } from "@/lib/lexical/lookup";
 import { parseLookupRequest } from "@/lib/lexical/lookup";
 import { wordbookContextForm } from "@/lib/lexical/wordbookContextForm";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { lexicalLookupEnabled, type LexicalPageMode } from "@/lib/lexical/lookupCapabilities";
 import { domCanonicalLexicalSelection } from "@/lib/lexical/selection";
 import { lexicalPopupNaturalHeight, lexicalPopupPosition, lexicalRangeRect, type LexicalRect } from "@/lib/lexical/position";
@@ -179,9 +180,13 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, pageMo
         // Saved is entry-level status, NOT proof that this occurrence/source/sense
         // was saved. Explicit context saves reuse the verified idempotent RPC.
         const wordbook = await send(intent === "save" ? "save" : status.saved ? "remove" : "save");
+        publishCacheInvalidation({ type: "WORDBOOK_CHANGED", studentId: session.user.id,
+          wordbookDomain: ["ctw", "rdl", "rap"].includes(result.occurrence.source_type) ? "reading" : "writing" });
         update({ result: { ...result, wordbook }, wordbookMessage: wordbook.saved
           ? intent === "save" ? "当前语境已保存。" : "已加入生词本。" : "已取消收藏。" });
       } catch (error) {
+        publishCacheInvalidation({ type: "WORDBOOK_CHANGED", studentId: session.user.id,
+          wordbookDomain: ["ctw", "rdl", "rap"].includes(result.occurrence.source_type) ? "reading" : "writing" });
         // A dropped response might have committed. Reconcile, never blindly toggle again.
         try { update({ result: { ...result, wordbook: await send("status") } }); }
         catch { update({ result: { ...result, wordbook: { available: false } } }); }

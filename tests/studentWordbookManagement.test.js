@@ -52,31 +52,15 @@ test('actual POST authenticates first, rejects injected owner/invalid IDs, retur
   auth=true;for(const b of [{...body,student_id:h.V},{...body,entryIds:['bad']},{...body,entryIds:[]}])assert.equal((await exported.POST(request(b))).status,400);
   assert.equal(service,0);assert.equal((await exported.POST(request(body))).status,200);assert.equal(calls[0].user,h.U);assert.equal(service,1);
 });
-test('actual read hook invalidates cached list/dots immediately on delete revision and ignores a late old response',async()=>{
-  const ts=require('typescript'),file=path.join(__dirname,'../components/student/StudentWordbook.tsx'),exports={};
-  let state={identity:''},effect,cleanup;const requests=[],getSession=()=>({accessToken:'offline-test-token'});
-  vm.runInNewContext(ts.transpileModule(fs.readFileSync(file,'utf8')+'\nexport { useWordbookRead };',{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,{
-    exports,AbortController,fetch:async(url,options)=>new Promise(resolve=>requests.push({url,options,resolve})),require(name){
-      if(name==='react')return {useState:()=>[state,value=>{state=typeof value==='function'?value(state):value;}],useEffect:fn=>{effect=fn;}};
-      if(name.includes('StudentDataCache'))return {useStudentDataCache:()=>({getSession,studentId:h.U,sessionReady:true})};
-      if(name.includes('wordbookList'))return require('../lib/lexical/wordbookList.ts');
-      if(name.includes('wordbookPresentation'))return require('../lib/lexical/wordbookPresentation.ts');
-      if(name.includes('wordbookManagement'))return require('../lib/lexical/wordbookManagement.ts');
-      if(name.includes('studentDates'))return require('../lib/studentDates.ts');
-      return {};
-    }
-  });
-  const tick=()=>new Promise(resolve=>setImmediate(resolve));
-  const access={getSession,studentId:h.U,sessionReady:true};
-  for(const url of ['/api/student/wordbook?domain=reading','/api/student/wordbook/activity-dates?domain=reading&month=2026-10']){
-    state={identity:`${h.U}:${url}:0`,data:{items:['old'],dates:['2026-10-08']}};
-    const invalidated=exports.useWordbookRead(url,1,access);assert.equal(invalidated.data,undefined);assert.equal(invalidated.loading,true);
-    cleanup?.();cleanup=effect();const old=requests.at(-1);
-    exports.useWordbookRead(url,2,access);cleanup();cleanup=effect();const fresh=requests.at(-1);assert.equal(old.options.signal.aborted,true);
-    old.resolve({ok:true,json:async()=>({items:['deleted'],dates:['2026-10-08']})});await tick();assert.equal(exports.useWordbookRead(url,2,access).data,undefined);
-    fresh.resolve({ok:true,json:async()=>({items:[],dates:[]})});await tick();assert.deepEqual(exports.useWordbookRead(url,2,access).data,{items:[],dates:[]});
-  }
-  cleanup();
+test('actual read hook and layout cache reject late pre-deletion list/date responses after targeted invalidation',async()=>{
+  const runtime=await require('./helpers/wordbookReadHarness.cjs').harness('student',h.U),r=runtime.reader();
+  try { for(const url of ['/api/student/wordbook?domain=reading','/api/student/wordbook/activity-dates?domain=reading&month=2026-10']) {
+    r.read(url);const old=r.requests.at(-1);
+    runtime.emit({type:'WORDBOOK_CHANGED',studentId:h.U,wordbookDomain:'reading'});
+    r.read(url);const fresh=r.requests.at(-1);assert.notEqual(old,fresh);
+    old.resolve({items:['deleted'],dates:['2026-10-08']});await runtime.tick();assert.equal(r.read(url).data,undefined);
+    fresh.resolve({items:[],dates:[]});await runtime.tick();assert.deepEqual(r.read(url).data,{items:[],dates:[]});
+  } } finally {runtime.cleanup();}
 });
 const snapshot=async db=>(await db.query(`select (select jsonb_agg(to_jsonb(w) order by wordbook_entry_id) from student_wordbook_entries w) entries,
   (select count(*) from student_wordbook_senses) senses,(select count(*) from student_wordbook_examples) examples,

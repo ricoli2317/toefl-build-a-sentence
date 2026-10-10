@@ -1,9 +1,11 @@
 import { requireReadingAttemptStudent, readingAttemptJson } from "@/lib/reading/attemptServer";
 import { createServiceSupabase } from "@/lib/supabase/server";
-import { parseReviewSettings, reviewObject, reviewPage, reviewUuid, ReviewError } from "@/lib/lexical/wordbookReview";
+import { parseReviewSettings, reviewObject, reviewUuid, ReviewError } from "@/lib/lexical/wordbookReview";
 import { reviewRpc } from "@/lib/lexical/wordbookReview.server";
 import { readReviewRound } from "@/lib/lexical/wordbookReviewRound.server";
 import type { ReviewState } from "@/lib/lexical/wordbookReview";
+import { parseWordbookQuery } from "@/lib/lexical/wordbookList";
+import { readWordbookReviewHistory } from "@/lib/lexical/wordbookList.server";
 
 export const dynamic = "force-dynamic";
 function fail(error: unknown) {
@@ -17,14 +19,19 @@ export async function GET(request: Request) {
   try {
     const params = new URL(request.url).searchParams;
     const action = params.get("action");
-    const allowed = action === "availability" ? ["action", "settings"] : ["action", "page"];
+    const allowed = action === "availability" ? ["action", "settings"] : ["action", "domain", "page", "start", "end", "timeZone", "month"];
     params.forEach((_v, k) => { if (!allowed.includes(k) || params.getAll(k).length !== 1) throw new ReviewError("REVIEW_INVALID", 400, "无效参数。"); });
     if (action === "availability") {
       const settings = parseReviewSettings(JSON.parse(params.get("settings") ?? "null"));
       return readingAttemptJson(await reviewRpc(createServiceSupabase(), "wordbook_review_availability", { p_student: auth.userId, p_settings: settings }));
     }
-    if (action !== "history") throw new ReviewError("REVIEW_INVALID", 400, "无效参数。");
-    return readingAttemptJson(await reviewRpc(createServiceSupabase(), "wordbook_review_history", { p_student: auth.userId, p_page: reviewPage(params.get("page")) }));
+    if (action !== "history" && action !== "history-dates") throw new ReviewError("REVIEW_INVALID", 400, "无效参数。");
+    params.delete("action");
+    let query;
+    try { query = parseWordbookQuery(params); }
+    catch { throw new ReviewError("REVIEW_INVALID", 400, "无效参数。"); }
+    if (action === "history-dates" && !query.month || action === "history" && query.month) throw new ReviewError("REVIEW_INVALID", 400, "无效参数。");
+    return readingAttemptJson(await readWordbookReviewHistory(createServiceSupabase(), auth.userId, query));
   } catch (error) { return fail(error); }
 }
 export async function POST(request: Request) {

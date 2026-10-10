@@ -5,6 +5,9 @@ import type { ReviewCommand, ReviewRound } from "@/lib/lexical/wordbookReview";
 import { acknowledgeReview, applyReviewAction, localReview, localReviewKey, readLocalReview,
   reviewLocalState, saveLocalReview, recordReviewSyncFailure, visibleReviewSyncError, type LocalReview } from "@/lib/lexical/wordbookReviewLocal";
 import { ReviewRequestError } from "@/lib/lexical/wordbookReviewRequest";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
+import { useStudentDataCache } from "@/components/StudentDataCache";
+import { wordbookReadCacheKey } from "./StudentWordbook";
 
 type RequestRound = <T>(url: string, body?: unknown, signal?: AbortSignal) => Promise<T>;
 const ROOT = "/api/student/wordbook/review";
@@ -12,6 +15,7 @@ async function locked<T>(name: string, work: () => Promise<T> | T): Promise<T> {
   return navigator.locks ? navigator.locks.request(name, work) : work();
 }
 export function useWordbookLocalReview(owner: string | null, session: string, request: RequestRound) {
+  const { getEntry, invalidate } = useStudentDataCache();
   const [local, setLocal] = useState<LocalReview>(), [error, setError] = useState("");
   const current = useRef<LocalReview>(), requestRef = useRef(request); requestRef.current = request;
   const generation = useRef(0), worker = useRef(false), retryTimer = useRef<ReturnType<typeof setTimeout>>();
@@ -48,6 +52,9 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
           if (!active.current || mine !== generation.current) return;
           if (result.acknowledged !== command.id) throw new ReviewRequestError("保存结果未确认，待同步记录仍保留。", 502, "REVIEW_ACK");
           await edit(latest => acknowledgeReview(latest, command));
+          if (command.action === "answer" || command.action === "advance") publishCacheInvalidation({
+            type: "WORDBOOK_REVIEW_CHANGED", studentId: owner, wordbookDomain: value!.round.session.domain, reviewSessionId: session
+          });
         }
       });
     } catch (e) {
@@ -68,13 +75,15 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
   }, [owner, session, identity, edit]);
   pumpRef.current = () => { void pump(); };
 
-  const reload = useCallback(async () => {
+  const reload = useCallback(async (force = false) => {
     if (!owner) return;
     const mine = generation.current; setError("");
     try {
       const pending = readLocalReview(localStorage, owner, session);
       if (pending) { publish(pending); pumpRef.current(); return; }
-      const round = await requestRef.current<ReviewRound>(`${ROOT}/${session}?round=1`);
+      const url = `${ROOT}/${session}?round=1`;
+      if (force) invalidate(wordbookReadCacheKey(url, { studentId: owner }));
+      const round = await requestRef.current<ReviewRound>(url);
       if (mine !== generation.current || !active.current) return;
       if (!Array.isArray(round.cards) || round.cards.length !== round.session.total) throw new Error("本轮题目未完整读取，请重试。");
       const value = localReview(owner, round);
@@ -82,7 +91,7 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
       if (value.phase !== "result") saveLocalReview(localStorage, value);
       publish(value);
     } catch (e) { if (mine === generation.current && active.current) setError(e instanceof Error ? e.message : "读取失败，请重试。"); }
-  }, [owner, session, publish]);
+  }, [owner, session, publish, invalidate]);
   useEffect(() => {
     const mine = ++generation.current; active.current = true; worker.current = false; current.current = undefined;
     setLocal(undefined); setError("");
@@ -126,7 +135,13 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
     const timer = setTimeout(() => void action("advance"), Math.max(0, deadline - Date.now()));
     return () => clearTimeout(timer);
   }, [phase, itemId, correct, deadline, action]);
-  const visible = local?.owner === owner && local.round.session.session_id === session ? local : undefined;
+  const entry = owner ? getEntry(wordbookReadCacheKey(`${ROOT}/${session}?round=1`, { studentId: owner })) : undefined;
+  const round = entry?.status === "success" ? entry.data as ReviewRound : undefined;
+  // Completed snapshots are display-only. Reopening one should not paint a
+  // loading frame while the existing reload effect resolves the cache hit.
+  const cachedResult = owner && round?.session.session_id === session && round.session.status === "completed"
+    && round.cards.length === round.session.total ? localReview(owner, round) : undefined;
+  const visible = local?.owner === owner && local.round.session.session_id === session ? local : cachedResult;
   const pending = visible?.queue.length ?? 0;
   return { state: visible ? reviewLocalState(visible) : undefined, action, error, reload,
     pending, syncError: visibleReviewSyncError(visible), retrySync: () => pumpRef.current() };

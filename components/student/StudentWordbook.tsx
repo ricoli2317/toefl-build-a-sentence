@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { useStudentDataCache } from "@/components/StudentDataCache";
+import { useStudentDataCache, useOptionalStudentDataCache } from "@/components/StudentDataCache";
+import { useOptionalTeacherDataCache } from "@/components/TeacherDataCache";
+import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { StudentNavigation } from "@/components/student/StudentUI";
 import { StudentDateSelection } from "@/components/student/StudentDateSelection";
 import { WordbookExample } from "./WordbookExample";
@@ -25,6 +27,7 @@ export function StudentWordbook() {
 
 export type WordbookReadAccess = {
   studentId: string | null; sessionReady: boolean; getSession: () => { accessToken: string } | null;
+  actorId?: string;
 };
 
 export function WordbookView({ access, readOnly = false, domains = ["reading", "writing"], apiRoot = "/api/student/wordbook", navigation, historyHref }: {
@@ -32,11 +35,13 @@ export function WordbookView({ access, readOnly = false, domains = ["reading", "
   navigation?: ReactNode; historyHref?: (domain: WordbookDomain) => string;
 }) {
   const { getSession, studentId } = access;
-  const [domain, setDomain] = useState<WordbookDomain>(domains[0]);
-  const [filters, setFilters] = useState<Record<WordbookDomain, Filters>>({ reading: { ...emptyFilters }, writing: { ...emptyFilters } });
+  const [savedDomain, setDomain] = useWordbookViewState<WordbookDomain>("domain", access, domains[0]);
+  const domain = domains.includes(savedDomain) ? savedDomain : domains[0];
+  const [filters, setFilters] = useWordbookViewState<Record<WordbookDomain, Filters>>("filters", access, { reading: { ...emptyFilters }, writing: { ...emptyFilters } });
   const active = filters[domain];
   const [draft, setDraft] = useState({ start: "", end: "" });
-  const [month, setMonth] = useState(() => startOfLocalDay());
+  const [month, setMonth] = useWordbookViewState("month", access, startOfLocalDay());
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [today, setToday] = useState(() => startOfLocalDay());
   const bounds = { min: "2026-07-01", max: formatDateInputValue(today) };
   useEffect(() => {
@@ -70,7 +75,7 @@ export function WordbookView({ access, readOnly = false, domains = ["reading", "
   // Only bounded active pages/months. No long-lived enrichment cache, no hidden
   // domain full reload, and AbortController + URL identity prevent stale races.
   const list = useWordbookRead<WordbookList>(listUrl, revision, access);
-  const dates = useWordbookRead<{ dates: string[] }>(datesUrl, revision, access);
+  const dates = useWordbookRead<{ dates: string[] }>(calendarOpen ? datesUrl : null, revision, access);
   useEffect(() => { setDraft({ start: active.start, end: active.end }); }, [domain, active.start, active.end]);
   const update = (changes: Partial<Filters>) => { clearSelection();setMessage("");setFilters(previous => ({ ...previous, [domain]: { ...previous[domain], ...changes } })); };
   const switchDomain = (next: WordbookDomain) => {
@@ -78,15 +83,12 @@ export function WordbookView({ access, readOnly = false, domains = ["reading", "
     if (next === domain) return;
     if (deletingRef.current) return;
     setManaging(false);clearSelection();setMessage("");
-    // Dates never survive a tab switch, including when returning to the old tab.
-    // Keep each domain's sort; reset both pages along with applied/draft dates.
-    setFilters(previous => ({ reading: { ...previous.reading, start: "", end: "", page: 1 }, writing: { ...previous.writing, start: "", end: "", page: 1 } }));
-    setDraft({ start: "", end: "" });setMonth(startOfLocalDay());setDomain(next);
+    setDomain(next);
   };
   const items = list.data?.items ?? [];
   const pages = Math.max(1, Math.ceil((list.data?.total ?? 0) / (list.data?.pageSize ?? 20)));
   // A cancellation in another tab may leave an empty last page. Correct once.
-  useEffect(() => { if (list.data && active.page > pages) setFilters(previous => ({ ...previous, [domain]: { ...previous[domain], page: pages } })); }, [list.data, active.page, pages, domain]);
+  useEffect(() => { if (list.data && active.page > pages) setFilters(previous => ({ ...previous, [domain]: { ...previous[domain], page: pages } })); }, [list.data, active.page, pages, domain, setFilters]);
 
   const deleteSelected = async () => {
     if (readOnly) return;
@@ -105,8 +107,7 @@ export function WordbookView({ access, readOnly = false, domains = ["reading", "
         || result.deletedEntryIds.some((id: string) => !ids.includes(id))) throw new Error("删除结果未确认，请刷新后重试。");
       if (ownerRef.current !== owner) return;
       clearSelection();setMessage(`已删除 ${result.deletedCount} 个词条。`);
-      // Both read identities change immediately; stale responses cannot restore deletions.
-      setRevision(value => value + 1);
+      publishCacheInvalidation({ type: "WORDBOOK_CHANGED", studentId: owner, wordbookDomain: domain });
     } catch (error) { if (ownerRef.current === owner) setDeleteError(error instanceof Error ? error.message : "删除失败。"); }
     finally { deletingRef.current = false;setDeleting(false); }
   };
@@ -127,7 +128,7 @@ export function WordbookView({ access, readOnly = false, domains = ["reading", "
           hint="单日或范围内有收藏活动的词汇，展示其当前全部语境。"
           onApply={close => { const range = boundedDateDraft(draft, { ...bounds, max: formatDateInputValue(new Date()) }); if (!range) return; update({ ...range, page: 1 }); close(); }}
           onClear={() => { setDraft({ start: "", end: "" });update({ start: "", end: "", page: 1 }); }}
-          activity={{ month, onMonthChange: value => { const next = boundedCalendarMonth(value, bounds); setMonth(previous => formatDateInputValue(previous).slice(0, 7) === formatDateInputValue(next).slice(0, 7) ? previous : next); }, dates: dates.data?.dates ?? [], error: dates.error, loading: dates.loading, showToday: true, resetMonthOnOpen: true }} />
+          activity={{ month, onOpenChange: setCalendarOpen, onMonthChange: value => { const next = boundedCalendarMonth(value, bounds); setMonth(previous => formatDateInputValue(previous).slice(0, 7) === formatDateInputValue(next).slice(0, 7) ? previous : next); }, dates: dates.data?.dates ?? [], error: dates.error, loading: dates.loading, showToday: true, resetMonthOnOpen: true }} />
         <span className="text-sm text-student-muted">{active.start ? active.start === active.end ? active.start : `${active.start} — ${active.end}` : "全部日期"}</span>
         {active.start ? <button type="button" className="text-xs text-student-primary hover:underline" onClick={() => { setDraft({ start: "", end: "" });update({ start: "", end: "", page: 1 }); }}>清除</button> : null}
       </fieldset>
@@ -168,29 +169,74 @@ export function WordbookView({ access, readOnly = false, domains = ["reading", "
   </div>;
 }
 
-export function useWordbookRead<T>(url: string, revision: number, access: WordbookReadAccess) {
+export function useWordbookRead<T>(url: string | null, revision: number, access: WordbookReadAccess) {
   const { getSession, sessionReady, studentId } = access;
-  const [state, setState] = useState<{ identity: string; data?: T; error?: string }>({ identity: "" });
-  const identity = `${studentId}:${url}:${revision}`;
+  const studentCache = useOptionalStudentDataCache();
+  const teacherCache = useOptionalTeacherDataCache();
+  const cache = teacherCache ?? studentCache;
+  const key = wordbookReadCacheKey(url, access);
+  // The owning layout and actor/student key already isolate cached payloads.
+  // A remounted teacher page may still be restoring its token: render a cache
+  // hit immediately, but wait for readiness before making any new request.
+  const entry = studentId && url ? cache?.getEntry(key) : undefined;
+  const attempted = useRef("");
+  const previousRevision = useRef(revision);
+  const sessionRef = useRef(getSession); sessionRef.current = getSession;
   useEffect(() => {
-    if (!sessionReady || !studentId) return;
-    const abort = new AbortController();
-    let current = true;
-    const token = getSession()?.accessToken;
-    setState({ identity });
-    void (async () => {
-      try {
+    if (!cache || !url || !sessionReady || !studentId) return;
+    const loader = async () => {
+        const token = sessionRef.current()?.accessToken;
         if (!token) throw new Error("请重新登录。");
-        const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, cache: "no-store", signal: abort.signal });
+        const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
         const payload = await response.json();
         if (!response.ok) throw new Error(payload.error ?? "生词本读取失败，请稍后重试。");
-        if (current) setState({ identity, data: payload });
-      } catch (error) { if (current) setState({ identity, error: error instanceof Error ? error.message : "读取失败。" }); }
-    })();
-    return () => { current = false; abort.abort(); };
-  }, [url, revision, getSession, sessionReady, studentId, identity]);
-  return { data: state.identity === identity ? state.data : undefined, error: state.identity === identity ? state.error : undefined,
-    loading: !sessionReady || (Boolean(studentId) && (state.identity !== identity || !state.data && !state.error)) };
+        return payload as T;
+    };
+    const retry = previousRevision.current !== revision;
+    previousRevision.current = revision;
+    const current = cache.getEntry(key);
+    if (retry) { attempted.current = key; void cache.refresh<T>(key, loader); }
+    else if (!current || current.status === "error" && attempted.current !== key) {
+      attempted.current = key; void cache.load<T>(key, loader);
+    } else if (current.status === "stale" && studentCache) void studentCache.refresh<T>(key, loader);
+    // Shared layout cache dedupes in-flight reads and survives page remounts.
+    // Token refresh/focus are NOT invalidations. Generations reject stale writes.
+  }, [cache, studentCache, key, url, revision, sessionReady, studentId]);
+  return { data: entry && "data" in entry ? entry.data as T : undefined,
+    error: entry?.status === "error" ? entry.error : undefined,
+    loading: Boolean(url) && (entry ? entry.status === "loading" : !sessionReady || Boolean(studentId)) };
+}
+
+export function wordbookReadCacheKey(url: string | null, access: Pick<WordbookReadAccess, "studentId" | "actorId">) {
+  const params = url ? new URL(url, "http://local").searchParams : null;
+  let domain = params?.get("domain") ?? "scope";
+  if (params?.get("action") === "availability") {
+    try { domain = JSON.parse(params.get("settings") ?? "null")?.domain ?? domain; } catch { /* Invalid input remains scope-isolated. */ }
+  }
+  return `wordbook-read:${access.studentId}:${domain}:${access.actorId ?? access.studentId}:${url}`;
+}
+
+// Small UI state entry in the existing layout cache, separate from read payloads.
+// Keeps page/date/domain when returning from a result, never initiates a request.
+export function useWordbookViewState<T>(name: string, access: WordbookReadAccess, initial: T) {
+  const student = useOptionalStudentDataCache(), teacher = useOptionalTeacherDataCache();
+  const key = `wordbook-view:${access.actorId ?? access.studentId}:${access.studentId}:${name}`;
+  const cache = teacher ?? student;
+  const entry = cache?.getEntry(key);
+  const [stored, setStored] = useState(() => ({ key, value: entry && "data" in entry ? entry.data as T : initial }));
+  const value = stored.key === key ? stored.value : entry && "data" in entry ? entry.data as T : initial;
+  const save = teacher?.set ?? student?.setData;
+  useEffect(() => {
+    if (stored.key !== key) setStored({ key, value });
+    save?.(key, value);
+  }, [save, key, value, stored.key]);
+  const valueRef = useRef(value); valueRef.current = value;
+  const setValue = useCallback((next: T | ((previous: T) => T)) => setStored(current => {
+    const previous = current.key === key ? current.value : valueRef.current;
+    const value = typeof next === "function" ? (next as (previous: T) => T)(previous) : next;
+    return current.key === key && Object.is(current.value, value) ? current : { key, value };
+  }), [key]);
+  return [value, setValue] as const;
 }
 
 // Existing TPS theme chips: reading blue from WrongQuestionsHome / history;

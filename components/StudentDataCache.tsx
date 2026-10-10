@@ -563,6 +563,21 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
     () =>
       subscribeToCacheInvalidation((event) => {
         if (event.studentId && event.studentId !== sessionRef.current?.studentId) return;
+        if (event.type === "WORDBOOK_CHANGED" || event.type === "WORDBOOK_REVIEW_CHANGED") {
+          const owner = sessionRef.current?.studentId;
+          const prefix = `wordbook-read:${owner}`;
+          entries.current.forEach((_entry, scoped) => {
+            const key = scoped.replace(`student:${owner}:`, "");
+            if (!key.startsWith(`${prefix}:`)) return;
+            const url = key.slice(key.indexOf("/api/"));
+            const subject = key.split(":")[2];
+            if (event.wordbookDomain && subject !== "scope" && subject !== event.wordbookDomain) return;
+            const isReview = url.includes("/review");
+            if (event.type === "WORDBOOK_CHANGED" ? !isReview || url.includes("action=availability")
+              : isReview && (!url.includes("/review/") || url.includes("/review/history") || url.includes("/review/activity-dates")
+                || Boolean(event.reviewSessionId && url.includes(`/review/${event.reviewSessionId}`)))) markStale(key);
+          });
+        }
 
         for (const domain of cacheDomainsForEvent(event)) {
           switch (domain) {
