@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { ReviewError } from "./wordbookReview.ts";
+import { ReviewError, reviewCoverageMessage } from "./wordbookReview.ts";
 
 // All RPCs below expose allowlisted public JSON. Candidate/private snapshot
 // functions are deliberately not reachable from a client-controlled action.
@@ -7,6 +7,8 @@ export async function reviewRpc(db: SupabaseClient, name: string, args: Record<s
   const { data, error } = await db.rpc(name, args);
   if (error) {
     const message = error.message ?? "";
+    const coverage = /REVIEW_COVERAGE_(?:COUNT:\d+|MISSING:[a-z_,]+|OVERLAP)/.exec(message);
+    if (coverage) throw new ReviewError("REVIEW_COVERAGE", 409, reviewCoverageMessage(coverage[0]));
     if (error.code === "57014") throw new ReviewError("REVIEW_TIMEOUT", 503,
       "复习请求超时，暂时无法核算或创建复习；请稍后再试。");
     const insufficient = /REVIEW_INSUFFICIENT:(\d+)/.exec(message);

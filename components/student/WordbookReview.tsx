@@ -7,7 +7,7 @@ import { useStudentDataCache } from "@/components/StudentDataCache";
 import { StudentNavigation } from "./StudentUI";
 import { StudentDateSelection } from "./StudentDateSelection";
 import { boundedCalendarMonth, boundedDateDraft, browserTimeZone, formatDateInputValue, startOfLocalDay } from "@/lib/studentDates";
-import { REVIEW_SOURCES, reviewPercent, reviewRangeLabel,
+import { REVIEW_SOURCES, reviewPercent, reviewRangeLabel, reviewCoverageMessage,
   type ReviewAvailability, type ReviewHistory, type ReviewSettings, type ReviewRound } from "@/lib/lexical/wordbookReview";
 import { WordbookReviewWorkspace } from "./WordbookReviewWorkspace";
 import { useWordbookLocalReview } from "./useWordbookLocalReview";
@@ -110,7 +110,8 @@ export function WordbookReviewSetup({ initialDomain }: { initialDomain: Wordbook
   const available = useReviewRead<ReviewAvailability>(sources.length && validRange ? `${ROOT}?${new URLSearchParams({ action: "availability", settings: settingsKey })}` : null, revision);
   const dates = useReviewRead<{ dates: string[] }>(mode === "random" ? null : `/api/student/wordbook/activity-dates?${new URLSearchParams({ domain, month: formatDateInputValue(month).slice(0, 7), timeZone })}`);
   const canStart = sources.length > 0 && validRange && !available.loading && Boolean(available.data?.total)
-    && (mode !== "random" || validCount && Number(count) <= (available.data?.total ?? 0));
+    && !available.data?.coverageError
+    && (mode !== "random" || validCount && Number(count) >= sources.length && Number(count) <= (available.data?.total ?? 0));
   const start = async () => {
     if (busyRef.current || !canStart) return;
     busyRef.current = true; setBusy(true); setError("");
@@ -164,7 +165,7 @@ export function WordbookReviewSetup({ initialDomain }: { initialDomain: Wordbook
         </fieldset>
       </div>
       <footer className={setupStyles.action}>
-        {available.error || error ? <div className={setupStyles.actionErrors}><Failure error={available.error} retry={() => setRevision(v => v + 1)} /><Failure error={error} /></div> : null}
+        {available.error || error || available.data?.coverageError ? <div className={setupStyles.actionErrors}><Failure error={available.error} retry={() => setRevision(v => v + 1)} /><Failure error={error || reviewCoverageMessage(available.data?.coverageError)} /></div> : null}
         <div className={setupStyles.availability} aria-live="polite">
           {available.loading ? <span>正在核算可复习词条…</span> : available.data ? <><span>可复习</span><strong>{available.data.total}</strong><span>个词条</span></> : <span>{sources.length ? "选择范围后查看可复习数量" : "请选择复习题型"}</span>}
         </div>

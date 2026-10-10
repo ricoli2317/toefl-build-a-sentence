@@ -23,7 +23,8 @@ export function reviewExample(text: string, expression: string, mask: boolean, f
   return parts;
 }
 export function spellingShape(expression: string) {
-  return Array.from(expression).map(char => /[A-Za-z]/.test(char) ? "_" : char).join("");
+  // Spaces are fixed layout; every other character (including '-') is tested.
+  return Array.from(expression).map(char => /\s/.test(char) ? char : "_").join("");
 }
 /** Explicit API allowlist: raw spelling and unmasked examples never cross the
  * test boundary; study deliberately exposes the same saved source sense. */

@@ -208,16 +208,16 @@ export function WordbookTable({ domain, items, page = 1, pageSize = 20, managing
       const serial = wordbookSerial(page, pageSize, itemIndex);
       const enrichment = <Enrichment item={item} domain={domain} />;
       return <tbody key={item.wordbookEntryId} data-wordbook-entry={item.wordbookEntryId}>
-        {rows.map((row, index) => <tr key={`${row.sense.senseId}:${row.example?.exampleId ?? "none"}`}>
+        {rows.map((row, index) => <tr key={`${row.sense.senseId}:${row.contextId}:${row.example?.exampleId ?? "none"}`}>
           {index === 0 ? <>{managing ? <td rowSpan={rows.length} className={styles.selection}>
             <WordbookCheckbox label={`选择词条 ${item.expression}（${serial}）`} checked={selected.includes(item.wordbookEntryId)} disabled={disabled}
               onChange={() => onSelectionChange(selected.includes(item.wordbookEntryId) ? selected.filter(id => id !== item.wordbookEntryId) : [...selected, item.wordbookEntryId])} />
-          </td> : null}<td rowSpan={rows.length} className={styles.serial} data-label="序号">{serial}</td>
-          <td rowSpan={rows.length} className={styles.word} data-label="词条"><div className="flex flex-wrap items-start gap-1.5">
-            <strong className="text-base font-semibold">{item.expression}</strong><span className="flex flex-wrap gap-1">{item.sourceTypes.map(source => {
+           </td> : null}<td rowSpan={rows.length} className={styles.serial} data-label="序号">{serial}</td></> : null}
+           {row.first ? <td rowSpan={row.span} className={styles.word} data-label="词条"><div className="flex flex-wrap items-start gap-1.5">
+             <strong className="text-base font-semibold">{row.expression}</strong><span className="flex flex-wrap gap-1">{row.sources.map(source => {
               const badge = SOURCE_BADGES[source];
               return badge ? <span key={source} className={`rounded px-1.5 py-0.5 text-[10px] font-semibold leading-4 ${badge.className}`}>{badge.label}</span> : null;
-            })}</span></div></td></> : null}
+             })}</span></div>{row.expression !== item.expression ? <p className="mt-1 text-xs text-student-muted">标准词条：{item.expression}</p> : null}</td> : null}
           {row.first ? <><td rowSpan={row.span} data-label="词性" className={styles.pos}>{wordbookPos(row.sense.contextPos)}</td>
             <td rowSpan={row.span} data-label="语境义" className={styles.meaning}><p>{row.sense.contextMeaningZh}</p>{row.sense.contextDefinitionEn ? <p className="mt-1 text-xs leading-5 text-student-muted">{row.sense.contextDefinitionEn}</p> : null}</td></> : null}
           <td data-label="例句" className={styles.example}>{row.example ? <WordbookExample key={row.example.exampleId} text={row.example.text} /> : "—"}</td>

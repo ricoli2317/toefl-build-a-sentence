@@ -35,7 +35,18 @@ export type ReviewRound = ReviewState & { cards: ReviewCard[] };
 export type ReviewCommand = { id: string; action: "study_next" | "repeat" | "start_test" | "answer" | "advance";
   itemId: string; answer?: ReviewAnswer["student"] };
 export type ReviewAvailability = { total: number; spellingPos: number; meaningChoice: number; unavailable: number;
-  reasons: Record<string, number>; posOptions: ReviewOption[] };
+  reasons: Record<string, number>; posOptions: ReviewOption[]; sourceCounts?: Record<string, number>;
+  minimumCount?: number; coverageError?: string | null };
+export function reviewCoverageMessage(code?: string | null) {
+  if (!code) return "";
+  if (code.startsWith("REVIEW_COVERAGE_COUNT:")) return `至少选择 ${code.split(":")[1]} 个词条，才能覆盖全部所选题型。`;
+  if (code.startsWith("REVIEW_COVERAGE_MISSING:")) {
+    const labels = [...REVIEW_SOURCES.reading, ...REVIEW_SOURCES.writing];
+    const sources = code.split(":")[1].split(",").map(id => labels.find(s => s.id === id)?.label ?? id).join("、");
+    return `${sources} 没有可用于本轮的词条，请调整题型或日期范围。`;
+  }
+  return "所选题型的词条重叠，独立词条不足以分别覆盖全部题型，请调整范围。";
+}
 export type ReviewHistory = { items: (ReviewSession & { summary: ReviewSummary })[]; total: number; page: number; pageSize: number };
 export type ReviewErrors = { items: ReviewItem[]; total: number; page: number; pageSize: number };
 export class ReviewError extends Error {

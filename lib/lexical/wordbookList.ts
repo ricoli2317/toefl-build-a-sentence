@@ -3,7 +3,9 @@ export type WordbookItem = {
   wordbookEntryId: string; domain: WordbookDomain; expression: string;
   lexemeIdentity: { normalizedExpression: string; expressionType: string; identityVariant: string };
   firstSavedAt: string; lastActivityAt: string; sortActivityAt: string; sourceTypes: string[];
-  senses: { senseId: string; contextPos: string | null; contextMeaningZh: string; contextDefinitionEn: string | null; exampleIds: string[] }[];
+  senses: { senseId: string; contextPos: string | null; contextMeaningZh: string; contextDefinitionEn: string | null; exampleIds: string[];
+    contextForms?: { occurrenceId: string; sourceType: string; expression: string; contextPos: string | null;
+      contextMeaningZh: string; contextDefinitionEn: string | null; exampleIds: string[] }[] }[];
   examples: { exampleId: string; text: string; contextKind: string; sourceBlockKind: string; extractionMethod: string; sourceTypes: string[] }[];
   enrichmentSources: { lexicalEntryId: string; associationKind: string; canonicalStatus: string; enrichmentStatus: string;
     commonSenses: unknown[] | null; derivedWords: unknown[] | null; usefulPatterns: unknown[] | null }[];
@@ -22,7 +24,19 @@ export function wordbookContextRows(item: WordbookItem) {
   const examples = new Map(item.examples.map(example => [example.exampleId, example]));
   return item.senses.flatMap(sense => {
     const linked = sense.exampleIds.map(id => examples.get(id)).filter(e => e !== undefined);
-    return (linked.length ? linked : [null]).map((example, index) => ({ sense, example, first: index === 0, span: Math.max(1, linked.length) }));
+    const forms = sense.contextForms?.length ? sense.contextForms : [null];
+    const groups = forms.map(form => ({ form, matched: form ? linked.filter(e => form.exampleIds.includes(e.exampleId)) : linked }));
+    // Older saved examples with no recoverable form association remain visible;
+    // do not invent a link to one of today's occurrences or drop the example.
+    const unassigned = linked.filter(e => !groups.some(g => g.matched.includes(e)));
+    if (unassigned.length) groups.push({ form: null, matched: unassigned });
+    return groups.flatMap(({ form, matched }) => {
+      return (matched.length ? matched : [null]).map((example, index) => ({
+        sense: form ? { ...sense, contextPos: form.contextPos, contextMeaningZh: form.contextMeaningZh, contextDefinitionEn: form.contextDefinitionEn } : sense,
+        expression: form?.expression ?? item.expression, sources: form ? [form.sourceType] : item.sourceTypes,
+        contextId: form?.occurrenceId ?? sense.senseId, example, first: index === 0, span: Math.max(1, matched.length)
+      }));
+    });
   });
 }
 

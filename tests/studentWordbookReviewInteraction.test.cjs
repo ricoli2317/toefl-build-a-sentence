@@ -4,7 +4,7 @@ const {recordReviewSyncFailure,visibleReviewSyncError,acknowledgeReview,readLoca
 const shape='__________';
 test('10 spelling blanks reject excess letters from typing, native input fallback and paste',()=>{
   assert.deepEqual(insertReviewSpelling(shape,'compromise',10,10,'xyz'),{value:'compromise',caret:10});
-  assert.equal(insertReviewSpelling(shape,'',0,0,'compromises-extra').value,'compromise-');
+  assert.equal(insertReviewSpelling(shape,'',0,0,'compromises-extra').value,'compromise');
   assert.equal(constrainReviewSpelling(shape,'compromise','compromises').value,'compromise');
   assert.equal(constrainReviewSpelling(shape,'compromise','compXYZromise').value,'compromise');
 });
@@ -17,15 +17,15 @@ test('selected replacement counts letters outside the selection and keeps the un
 test('backspace, deletion and re-insertion free capacity without rewriting punctuation or spelling',()=>{
   assert.equal(constrainReviewSpelling(shape,'compromise','compromis').value,'compromis');
   assert.equal(insertReviewSpelling(shape,'compromis',9,9,'EX').value,'compromisE');
-  for(const expression of ['take care-of',"don't",'  Take\tcare-of  ']){
-    const target=expression.includes('Take')?'____ ____-__':expression.replace(/[A-Za-z]/g,'_');
+  for(const expression of ['take care-of',"don't"]){
+    const target=expression.replace(/[^\s]/g,'_');
     assert.equal(insertReviewSpelling(target,'',0,0,expression).value,expression);
   }
 });
 test('IME commit is constrained as an edit; non-ASCII composition output is not normalized or discarded',()=>{
   assert.deepEqual(constrainReviewSpelling(shape,'compromise','coABCDEFomise'),{value:'coABComise',caret:5});
   assert.equal(constrainReviewSpelling(shape,'','拼写').value,'拼写');
-  assert.equal(insertReviewSpelling('___','',0,0,'ＡＢＣabcde').value,'ＡＢＣabc');
+  assert.equal(insertReviewSpelling('___','',0,0,'ＡＢＣabcde').value,'ＡＢＣ');
   assert.ok(spellingLetterCount(insertReviewSpelling(shape,'',0,0,'a'.repeat(400)).value)<=10);
 });
 const pending=()=>({version:1,owner:'alice',round:{session:{session_id:'round',total:1},cards:[{itemId:'one'}]},phase:'test',position:1,

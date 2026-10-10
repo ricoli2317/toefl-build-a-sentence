@@ -4,25 +4,25 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { reviewPercent, type ReviewItem, type ReviewOption, type ReviewState } from "@/lib/lexical/wordbookReview";
 import styles from "./WordbookReviewWorkspace.module.css";
-import { constrainReviewSpelling, insertReviewSpelling } from "@/lib/lexical/wordbookReviewInput";
+import { constrainReviewSpelling, insertReviewSpelling, spellingInputValue } from "@/lib/lexical/wordbookReviewInput";
 
 const SETUP = "/student/wordbook/review";
 
 /** One native input preserves keyboard, deletion, paste, selection and IME.
- * The overlay changes presentation only; the exact input value is submitted. */
+ * Fixed spaces are layout; the submitted value restores them from the shape. */
 export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, feedback }: {
   shape: string; value: string; onChange: (value: string) => void; disabled: boolean; onConfirm: () => void; feedback?: "correct" | "wrong";
 }) {
   const input = useRef<HTMLInputElement>(null);
-  const [focused, setFocused] = useState(false), [selection, setSelection] = useState({ start: value.length, end: value.length });
+  const [focused, setFocused] = useState(false), [selection, setSelection] = useState({ start: spellingInputValue(value).length, end: spellingInputValue(value).length });
   const composing = useRef(false), compositionBase = useRef(value);
   const [compositionDraft, setCompositionDraft] = useState<string | null>(null);
   const pendingSelection = useRef<{ value: string; caret: number }>();
-  const displayValue = compositionDraft ?? value;
+  const displayValue = compositionDraft ?? spellingInputValue(value);
   const typed = Array.from(displayValue), chars = Array.from(shape);
   const commit = (edit: { value: string; caret: number }) => {
     const node = input.current;
-    if (node) { node.value = edit.value; node.setSelectionRange(edit.caret, edit.caret); }
+    if (node) { node.value = spellingInputValue(edit.value); node.setSelectionRange(edit.caret, edit.caret); }
     pendingSelection.current = edit; onChange(edit.value);
     setSelection({ start: edit.caret, end: edit.caret });
   };
@@ -30,12 +30,15 @@ export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, fe
     const edit = pendingSelection.current;
     if (edit && value === edit.value) { input.current?.setSelectionRange(edit.caret, edit.caret); pendingSelection.current = undefined; }
   }, [value, compositionDraft]);
-  const select = () => { if (input.current) setSelection({ start: input.current.selectionStart ?? value.length, end: input.current.selectionEnd ?? value.length }); };
+  const select = () => { if (input.current) setSelection({ start: input.current.selectionStart ?? displayValue.length, end: input.current.selectionEnd ?? displayValue.length }); };
   const cursor = Array.from(displayValue.slice(0, selection.start)).length, end = Array.from(displayValue.slice(0, selection.end)).length;
-  const slots = Array.from({ length: Math.max(chars.length, typed.length, focused ? cursor + 1 : 0) }, (_, key) => {
-    const char = chars[key] ?? typed[key] ?? "";
-    return <span key={key} data-slot={key} data-typed={Boolean(typed[key])} className={`relative inline-flex h-11 items-center justify-center text-2xl font-medium ${char === "_" ? "w-6 border-b-2 border-student-text/60 pb-1" : /\s/.test(char) ? "w-4" : "w-3"} ${key >= cursor && key < end ? styles.selectedLetter : ""}`}>
-      {typed[key] ?? (char === "_" ? "\u00a0" : char)}{focused && !disabled && key === cursor ? <span data-caret className={styles.caret} /> : null}
+  let editable = 0;
+  const layout = chars.map(char => ({ space: /\s/.test(char), position: editable += /\s/.test(char) ? 0 : 1 }));
+  if (focused && cursor === typed.length && cursor >= editable) layout.push({ space: false, position: editable + 1 });
+  const slots = layout.map(({ space, position }, key) => {
+    const index = space ? position : position - 1, letter = space ? undefined : typed[index];
+    return <span key={key} data-slot={key} data-input-offset={index} data-fixed-space={space || undefined} data-typed={Boolean(letter)} className={`relative inline-flex h-11 items-center justify-center text-2xl font-medium ${space ? "w-4" : index < editable ? "w-6 border-b-2 border-student-text/60 pb-1" : "w-3"} ${!space && index >= cursor && index < end ? styles.selectedLetter : ""}`}>
+      {letter ?? "\u00a0"}{!space && focused && !disabled && index === cursor ? <span data-caret className={styles.caret} /> : null}
     </span>;
   });
   return <div className={styles.spelling} data-feedback={feedback} onClick={event => {
@@ -45,7 +48,7 @@ export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, fe
     if (event.detail > 1 || node.selectionStart !== node.selectionEnd) { select(); return; }
     const slots = Array.from(event.currentTarget.querySelectorAll<HTMLElement>("[data-slot]"));
     const hit = slots.find(s => { const r = s.getBoundingClientRect(); return event.clientX >= r.left && event.clientX <= r.right && event.clientY >= r.top && event.clientY <= r.bottom; });
-    if (hit) { const position = typed.slice(0, Number(hit.dataset.slot)).join("").length; node.setSelectionRange(position, position); }
+    if (hit) { const position = typed.slice(0, Number(hit.dataset.inputOffset)).join("").length; node.setSelectionRange(position, position); }
     select();
   }}>
     <div aria-hidden="true" className="pointer-events-none flex min-w-0 flex-wrap justify-center gap-x-1.5 gap-y-2 pb-2">
@@ -54,20 +57,20 @@ export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, fe
     <input ref={input} aria-label="英文拼写" value={displayValue} onChange={e => {
       if (composing.current || (e.nativeEvent as InputEvent).isComposing) { setCompositionDraft(e.target.value); select(); return; }
       const edit = constrainReviewSpelling(shape, value, e.target.value);
-      if (edit.value !== e.target.value) commit(edit); else { onChange(edit.value); select(); }
+      if (spellingInputValue(edit.value) !== e.target.value) commit(edit); else { onChange(edit.value); select(); }
     }} disabled={disabled}
       onBeforeInput={event => {
         const native = event.nativeEvent as InputEvent;
         if (composing.current || native.isComposing || typeof native.data !== "string" || !event.cancelable) return;
         const node = event.currentTarget;
-        const start = node.selectionStart ?? value.length, end = node.selectionEnd ?? start;
+        const start = node.selectionStart ?? displayValue.length, end = node.selectionEnd ?? start;
         const edit = insertReviewSpelling(shape, value, start, end, native.data);
-        if (edit.value !== value.slice(0, start) + native.data + value.slice(end)) { event.preventDefault(); commit(edit); }
+        if (spellingInputValue(edit.value) !== displayValue.slice(0, start) + native.data + displayValue.slice(end)) { event.preventDefault(); commit(edit); }
       }}
       onPaste={event => {
         if (composing.current) return;
         event.preventDefault(); const node = event.currentTarget;
-        const start = node.selectionStart ?? value.length;
+        const start = node.selectionStart ?? displayValue.length;
         commit(insertReviewSpelling(shape, value, start, node.selectionEnd ?? start, event.clipboardData.getData("text")));
       }}
       onCompositionStart={event => { composing.current = true; compositionBase.current = value; setCompositionDraft(event.currentTarget.value); }}

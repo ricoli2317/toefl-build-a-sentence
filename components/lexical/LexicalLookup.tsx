@@ -5,6 +5,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import type { CanonicalLexicalSourceType } from "@/lib/lexical/types";
 import type { LexicalAccess, LexicalLookupRequest, LexicalLookupResult } from "@/lib/lexical/lookup";
 import { parseLookupRequest } from "@/lib/lexical/lookup";
+import { wordbookContextForm } from "@/lib/lexical/wordbookContextForm";
 import { lexicalLookupEnabled, type LexicalPageMode } from "@/lib/lexical/lookupCapabilities";
 import { domCanonicalLexicalSelection } from "@/lib/lexical/selection";
 import { lexicalPopupNaturalHeight, lexicalPopupPosition, lexicalRangeRect, type LexicalRect } from "@/lib/lexical/position";
@@ -219,6 +220,7 @@ export function LexicalLookupCard({ state, query = state.selected, onQueryChange
   onWordbookSaveContext?: () => void;
 }) {
   const matched = state.result?.status === "matched" ? state.result : null;
+  const context = matched ? wordbookContextForm(matched.occurrence) : null;
   return <div aria-live="polite">
     <form className="mb-3 flex items-center gap-2" onSubmit={(event) => { event.preventDefault(); onSearch?.(); }}>
       <input aria-label="Lookup query" className="min-w-0 flex-1 rounded-lg border border-student-border bg-white px-3 py-2 text-sm text-student-text outline-none focus:border-student-primary focus:ring-2 focus:ring-student-primary-soft"
@@ -226,7 +228,7 @@ export function LexicalLookupCard({ state, query = state.selected, onQueryChange
       <button className="student-button-primary shrink-0" disabled={!query.trim()} type="submit">Look Up</button>
     </form>
     {matched ? <div className="flex flex-wrap items-center gap-2">
-      <p className="min-w-0 break-words text-lg font-bold">{matched.entry.canonical_expression}</p>
+      <p className="min-w-0 break-words text-lg font-bold">{context?.expression}</p>
       {onWordbookToggle ? <button type="button" onClick={onWordbookToggle} disabled={state.wordbookBusy}
         aria-pressed={Boolean(matched.wordbook?.saved)} title={matched.wordbook?.saved ? "点击取消当前科目的收藏" : "加入当前科目的生词本"}
         className="inline-flex min-h-8 shrink-0 items-center gap-1 rounded-lg border border-student-primary-border bg-student-primary-soft px-2.5 py-1 text-xs font-semibold text-student-primary transition hover:border-student-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-student-primary active:bg-white disabled:cursor-wait disabled:opacity-60">
@@ -241,10 +243,10 @@ export function LexicalLookupCard({ state, query = state.selected, onQueryChange
     </div> : null}
     {state.wordbookError || state.wordbookMessage ? <p className={`mt-2 text-xs ${state.wordbookError ? "text-student-error" : "text-student-primary"}`} role="status">{state.wordbookError ?? state.wordbookMessage}</p> : null}
     {matched ? <>
-      {matched.entry.canonical_expression !== matched.occurrence.surface_text ? <p className="mt-1 text-xs text-student-muted">{matched.occurrence.surface_text}</p> : null}
-      <p className="mt-2 text-xs font-semibold text-student-primary">{matched.occurrence.context_pos}</p>
-      <p className="mt-2 leading-6">{matched.occurrence.context_meaning_zh}</p>
-      <p className="mt-2 leading-6 text-student-muted">{matched.occurrence.context_definition_en}</p>
+      {matched.entry.canonical_expression !== context?.expression ? <p className="mt-1 text-xs text-student-muted">标准词条：{matched.entry.canonical_expression}</p> : null}
+      <p className="mt-2 text-xs font-semibold text-student-primary">{context?.contextPos}</p>
+      <p className="mt-2 leading-6">{context?.contextMeaningZh}</p>
+      <p className="mt-2 leading-6 text-student-muted">{context?.contextDefinitionEn}</p>
       {matched.containingPhrases?.length ? <section className="mt-3 border-t border-student-primary-border pt-3" aria-label="所在短语">
         <p className="text-xs font-semibold text-student-primary">所在短语</p>
         {matched.containingPhrases.map(phrase => <div className="mt-2" key={phrase.occurrence.occurrence_id}>
