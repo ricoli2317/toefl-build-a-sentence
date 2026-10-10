@@ -2175,6 +2175,7 @@ export function ReadingFullSetRunner({
               </div>
             ) : currentPayload && currentQuestion ? (
               <ReadingWorkspaceRouter
+                pageMode="practice"
                 answers={currentAnswers}
                 currentQuestion={currentQuestion}
                 focusedCtwSlotId={focusedCtwSlotId}

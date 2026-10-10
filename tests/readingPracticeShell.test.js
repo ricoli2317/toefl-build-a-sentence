@@ -146,7 +146,8 @@ test("active CTW, RDL, and RAP all disable lookup through one capability gate", 
   assert.match(source, /<ReadingWorkspaceRouter[\s\S]*lookupEnabled=\{lookupEnabled\}/);
   assert.match(source, /data-lookup-enabled=\{lookupEnabled \? "true" : "false"\}/);
   assert.match(source, /lookupEnabled && selectionMap && bindingValid/);
-  assert.match(source, /lookupEnabled && selectionCommitted && selectedText/);
+  assert.match(source, /if \(lookupEnabled && lexical\) lexical.lookup/);
+  assert.match(source, /pageMode=\{props.pageMode\}/);
   assert.match(source, /lookupEnabled \? "" : "select-none"/);
 });
 

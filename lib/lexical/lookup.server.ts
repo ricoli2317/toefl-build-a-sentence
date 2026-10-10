@@ -36,6 +36,8 @@ export async function authorizeLexicalSource(client: SupabaseClient, db: Supabas
   const teacher = r.teacherReadonly === true;
   reject(!teacher || (lookupActor?.role === "teacher" && lookupActor.userId === userId));
   reject(teacher || (r.access.kind !== "teacher_bank" && !r.access.studentId && !r.access.sessionId));
+  // Student BAS prompts are practice-only; submitted views use owned BAS attempts.
+  reject(teacher || r.access.kind !== "bas_prompt");
   const bankAccess = r.access.kind === "teacher_bank" || (teacher && r.access.kind === "bas_prompt");
   const itemId = r.access.kind === "teacher_bank" ? r.access.itemId : r.sourceItemId;
   let bank: Awaited<ReturnType<typeof loadPublicCanonicalPracticeSource>> = null;
@@ -131,12 +133,11 @@ export async function authorizeLexicalSource(client: SupabaseClient, db: Supabas
     reject(!result.error && result.data);
     const a = result.data!;
     reject(r.sourceType === (a.task_type === "email" ? "write_email" : "academic_discussion"));
-    if (!bank) reject(a.status === "draft" || a.status === "submitted");
+    if (!bank && (a.status !== "submitted" || !a.submitted_at)) throw new LexicalAccessError(409);
     const visible = teacher ? await readWritingQuestionForReview(db, a.task_type, a.question_id, a.assignment_id,
       reviewSource ? { assignment: reviewSource.assignment } : undefined) : await readers.writingQuestion(a);
     reject(!visible.error && visible.data && visible.questionSource === "question_bank");
     if (teacher) reject(visible.data!.question_id === a.question_id);
-    if (a.status === "draft") reject((visible as { assignmentAvailable?: boolean }).assignmentAvailable !== false);
     const source = await one(db.from("practice_item_sources").select("item_id,source_question_id")
       .eq("task_type", a.task_type).eq("source_question_id", a.question_id).eq("is_canonical", true).maybeSingle());
     reject(!r.sourceItemId || r.sourceItemId === source.item_id);

@@ -277,7 +277,7 @@ export function StudentWritingReviewResult({
                   <p className="text-sm text-student-muted">暂无范文。</p>
                 )
               ) : (
-                <LexicalLookupProvider access={{ kind: "writing", attemptId: attemptId }}
+                <LexicalLookupProvider pageMode="readonly" access={{ kind: "writing", attemptId: attemptId }}
                   enabled={state.data.question_source !== "custom"} sourceType={attempt.task_type === "email" ? "write_email" : "academic_discussion"}>
                 <WritingQuestionReview
                   academicDiscussionAvatarSource={state.data.question_source}

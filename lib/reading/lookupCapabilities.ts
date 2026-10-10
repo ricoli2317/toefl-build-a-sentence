@@ -1,3 +1,5 @@
+import { lexicalLookupEnabled } from "../lexical/lookupCapabilities.ts";
+
 export type ReadingLookupModule = "ctw" | "rdl" | "rap";
 export type ReadingPracticeMode = "active" | "submitted_review";
 
@@ -11,7 +13,7 @@ export const READING_LOOKUP_CAPABILITIES: Readonly<
 export const ACTIVE_READING_LOOKUP_CAPABILITIES = READING_LOOKUP_CAPABILITIES.active;
 
 export function readingLookupEnabled(mode: ReadingPracticeMode, module: ReadingLookupModule) {
-  return READING_LOOKUP_CAPABILITIES[mode][module];
+  return lexicalLookupEnabled(mode === "submitted_review" ? "readonly" : "practice", READING_LOOKUP_CAPABILITIES[mode][module]);
 }
 
 export function activeReadingLookupEnabled(module: ReadingLookupModule) {

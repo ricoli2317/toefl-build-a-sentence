@@ -41,7 +41,7 @@ function database(tables) {
 }
 const readers = {
   fullSetAttempt: async () => ({ attempt: { status: 'completed', completedAt: 'now' }, error: null }),
-  writingAttempt: async () => ({ data: { task_type: 'email', question_id: 'raw', status: 'submitted' }, error: null }),
+  writingAttempt: async () => ({ data: { task_type: 'email', question_id: 'raw', status: 'submitted', submitted_at: 'now' }, error: null }),
   writingQuestion: async () => ({ data: { scenario: 'green energy' }, questionSource: 'question_bank', error: null }),
   basFinalVisible: (_a, answer) => answer.is_correct === true
 };
@@ -171,8 +171,25 @@ test('Email/AD canonical blocks only: stale snapshots become unavailable, withdr
   const stale = await authorizeLexicalSource(db,db,'student',r,{ ...readers,writingQuestion:async () => ({ data:{ scenario:'old snapshot' },questionSource:'question_bank' }) });
   assert.equal((await lookupAuthorizedSelection(db,r,stale)).status,'unavailable');
   const adDb = database({ practice_item_sources:[{ task_type:'academic_discussion',source_question_id:'raw',is_canonical:true,item_id:'ad' }] });
-  const adReaders = { ...readers,writingAttempt:async () => ({ data:{ task_type:'academic_discussion',question_id:'raw',status:'submitted' } }),writingQuestion:async () => ({ data:{ student_1_response:'green energy' },questionSource:'question_bank' }) };
+  const adReaders = { ...readers,writingAttempt:async () => ({ data:{ task_type:'academic_discussion',question_id:'raw',status:'submitted',submitted_at:'now' } }),writingQuestion:async () => ({ data:{ student_1_response:'green energy' },questionSource:'question_bank' }) };
   assert.equal((await authorizeLexicalSource(adDb,adDb,'student',{ ...r,sourceType:'academic_discussion',contentBlockId:'student-response:1' },adReaders)).text,'green energy');
+});
+test('WE/AD practice, restored drafts and spoofed readonly flags cannot bypass trusted submission state', async () => {
+  for (const taskType of ['email','academic_discussion']) {
+    for (const attempt of [{ status:'draft',submitted_at:null },{ status:'draft',submitted_at:'stale' },{ status:'submitted',submitted_at:null }]) {
+      const db = database({});let questionReads = 0;
+      const r = request({ access:{ kind:'writing',attemptId },sourceType:taskType === 'email' ? 'write_email' : 'academic_discussion',
+        contentBlockId:taskType === 'email' ? 'scenario' : 'professor-prompt',readonly:true,pageMode:'readonly' });
+      await assert.rejects(authorizeLexicalSource(db,db,'student',r,{ ...readers,
+        writingAttempt:async()=>({ data:{ task_type:taskType,question_id:'raw',...attempt },error:null }),
+        writingQuestion:async()=>{ questionReads++;return readers.writingQuestion(); }
+      }),e=>e instanceof LexicalAccessError && e.status === 409);
+      assert.equal(questionReads,0);assert.equal(db.calls.length,0);
+    }
+  }
+  const db = database({});
+  await assert.rejects(authorizeLexicalSource(db,db,'student',request({ access:{kind:'bas_prompt',setId:'set',questionId:'raw'},sourceType:'bas',contentBlockId:'prompt',readonly:true }),readers),LexicalAccessError);
+  assert.equal(db.calls.length,0,'practice-only BAS proof is rejected before source/corpus reads');
 });
 test('BAS routes only owned question prompt/final-sentence to canonical logical Q order, never student answers', async () => {
   const db = database({ attempts:[{ attempt_id:attemptId,student_id:'student',set_id:'set',submitted_at:'now' }],attempt_answers:[{ attempt_id:attemptId,question_id:'raw' }],
@@ -186,7 +203,7 @@ test('BAS routes only owned question prompt/final-sentence to canonical logical 
   await assert.rejects(authorizeLexicalSource(db,db,'student',{ ...r,contentBlockId:'final-sentence' },readers),LexicalAccessError);
   assert.equal((await authorizeLexicalSource(db,db,'student',{ ...r,contentBlockId:'final-sentence' },{ ...readers,basFinalVisible:() => true })).text,'A green world.');
   const active = { ...r, access:{ kind:'bas_prompt',setId:'set',questionId:'raw' } };
-  assert.equal((await authorizeLexicalSource(db,db,'student',active,readers)).contentBlockId,'question:q02:prompt');
+  await assert.rejects(authorizeLexicalSource(db,db,'student',active,readers),LexicalAccessError);
   await assert.rejects(authorizeLexicalSource(db,db,'student',{ ...active,contentBlockId:'final-sentence' },readers),LexicalAccessError);
   await assert.rejects(authorizeLexicalSource(db,db,'student',{ ...active,access:{ ...active.access,setId:'other-set' } },readers),LexicalAccessError);
 });

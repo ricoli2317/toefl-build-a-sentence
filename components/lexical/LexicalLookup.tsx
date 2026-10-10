@@ -5,6 +5,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import type { CanonicalLexicalSourceType } from "@/lib/lexical/types";
 import type { LexicalAccess, LexicalLookupRequest, LexicalLookupResult } from "@/lib/lexical/lookup";
 import { parseLookupRequest } from "@/lib/lexical/lookup";
+import { lexicalLookupEnabled, type LexicalPageMode } from "@/lib/lexical/lookupCapabilities";
 import { domCanonicalLexicalSelection } from "@/lib/lexical/selection";
 import { lexicalPopupNaturalHeight, lexicalPopupPosition, lexicalRangeRect, type LexicalRect } from "@/lib/lexical/position";
 import { Check, Plus, X } from "lucide-react";
@@ -23,9 +24,13 @@ export function LexicalText({ blockId, text }: { blockId: string; text: string }
   return <span {...lexicalBlockAttributes(blockId)}>{text}</span>;
 }
 
-export function LexicalLookupProvider({ access, sourceType, sourceItemId, enabled = true, teacherReadonly = false, children }: {
-  access?: LexicalAccess; sourceType: CanonicalLexicalSourceType; sourceItemId?: string; enabled?: boolean; teacherReadonly?: boolean; children: ReactNode;
+export function LexicalLookupProvider({ access, sourceType, sourceItemId, pageMode, enabled: requestedEnabled = true, teacherReadonly = false, children }: {
+  access?: LexicalAccess; sourceType: CanonicalLexicalSourceType; sourceItemId?: string; pageMode: LexicalPageMode;
+  enabled?: boolean; teacherReadonly?: boolean; children: ReactNode;
 }) {
+  const enabled = lexicalLookupEnabled(pageMode, requestedEnabled) && Boolean(access);
+  const identity = `${access?.kind}:${access?.attemptId}:${access?.questionId}:${access?.setId}:${access?.studentId}:${access?.sessionId}:${access?.kind === "teacher_bank" ? access.itemId : ""}:${teacherReadonly}:${sourceType}:${sourceItemId}`;
+  const activeIdentity = useRef<string | null>(null);
   const [state, setState] = useState<LookupState | null>(null);
   const [query, setQuery] = useState("");
   const [position, setPosition] = useState<ReturnType<typeof lexicalPopupPosition> | null>(null);
@@ -38,10 +43,10 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
   const currentRequest = useRef<LexicalLookupRequest | null>(null);
   const mutationBusy = useRef(false);
   const revision = useRef(0);
-  const close = useCallback(() => { revision.current++; abort.current?.abort(); anchor.current = null; currentRequest.current = null; placement.current = undefined; setState(null); setPosition(null); }, []);
+  const close = useCallback(() => { revision.current++; abort.current?.abort(); anchor.current = null; currentRequest.current = null; placement.current = undefined; setState(null); setQuery(""); setPosition(null); }, []);
   const runLookup = useCallback((request: LexicalLookupRequest) => {
-    if (!enabled || !access) return;
-    revision.current++;
+    if (!enabled || !access || activeIdentity.current !== identity) return;
+    const version = ++revision.current;
     currentRequest.current = request;
     abort.current?.abort();
     if (!parseLookupRequest(request)) {
@@ -53,21 +58,21 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
     void (async () => {
       try {
         const { data: { session } } = await createBrowserSupabase().auth.getSession();
-        if (controller.signal.aborted) return;
+        if (controller.signal.aborted || revision.current !== version) return;
         if (!session) throw new Error("请先登录。");
         const response = await fetch("/api/lexical/lookup", { method: "POST", cache: "no-store", signal: controller.signal,
           headers: { Authorization: `Bearer ${session.access_token}`, "Content-Type": "application/json" },
           body: JSON.stringify(request) });
         const result = await response.json();
         if (!response.ok) throw new Error(response.status === 403 || response.status === 409 ? "当前页面不可查词。" : "查词暂时不可用。");
-        if (!controller.signal.aborted) setState({ selected: request.selectedText, result });
+        if (!controller.signal.aborted && revision.current === version) setState({ selected: request.selectedText, result });
       } catch (error) {
-        if (!controller.signal.aborted) setState({ selected: request.selectedText, error: error instanceof Error ? error.message : "查词暂时不可用。" });
+        if (!controller.signal.aborted && revision.current === version) setState({ selected: request.selectedText, error: error instanceof Error ? error.message : "查词暂时不可用。" });
       }
     })();
-  }, [access, enabled]);
+  }, [access, enabled, identity]);
   const lookup = useCallback((contentBlockId: string, span: Span, rect?: () => LexicalRect | null) => {
-    if (!enabled || !access) return;
+    if (!enabled || !access || activeIdentity.current !== identity) return;
     const selection = window.getSelection();
     const range = !rect && selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : undefined;
     if (!rect && !range) { close(); return; }
@@ -79,7 +84,7 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
       ...(teacherReadonly ? { teacherReadonly: true } : {}) } satisfies LexicalLookupRequest;
     currentRequest.current = request;
     runLookup(request);
-  }, [access, enabled, sourceItemId, sourceType, teacherReadonly, runLookup, close]);
+  }, [access, enabled, identity, sourceItemId, sourceType, teacherReadonly, runLookup, close]);
   const reposition = useCallback(() => {
     const saved = anchor.current; const card = panel.current;
     if (!saved || !card || !content.current) return;
@@ -94,7 +99,7 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
     setPosition(previous => previous && Object.keys(next).every(key => previous[key as keyof typeof next] === next[key as keyof typeof next]) ? previous : next);
   }, [close]);
   useLayoutEffect(() => { if (state) reposition(); }, [state, query, reposition]);
-  const open = state !== null;
+  const open = enabled && state !== null;
   useEffect(() => {
     if (!open) return;
     // Internal card scrolling must not reposition the selection-anchored popup.
@@ -112,8 +117,11 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
       observer?.disconnect();
     };
   }, [open, reposition]);
-  const identity = `${access?.kind}:${access?.attemptId}:${access?.questionId}:${access?.setId}:${access?.studentId}:${access?.sessionId}:${access?.kind === "teacher_bank" ? access.itemId : ""}:${teacherReadonly}:${sourceType}:${sourceItemId}`;
-  useEffect(() => { close(); return () => abort.current?.abort(); }, [close, enabled, identity]);
+  // Clear before paint: disabling/unmounting also invalidates pending auth/fetch results.
+  useLayoutEffect(() => {
+    close(); activeIdentity.current = enabled ? identity : null;
+    return () => { activeIdentity.current = null; close(); };
+  }, [close, enabled, identity, pageMode]);
   useEffect(() => {
     if (!open) return;
     const outside = (event: PointerEvent) => { if (event.target instanceof Node && !panel.current?.contains(event.target)) close(); };
@@ -184,11 +192,12 @@ export function LexicalLookupProvider({ access, sourceType, sourceItemId, enable
   return (
     <Context.Provider value={enabled && access ? { lookup, close } : null}>
       <div ref={region} className="contents" data-lexical-enabled={enabled && access ? "true" : "false"}
-        data-lexical-mode={teacherReadonly ? "teacher_readonly" : "student"}
-        onPointerUp={(e) => capture(e.target)} onKeyUp={(e) => { if (e.shiftKey) capture(e.target); }}>
+        data-lexical-mode={teacherReadonly ? "teacher_readonly" : "student"} data-lexical-page-mode={pageMode}
+        onPointerUp={enabled ? (e) => capture(e.target) : undefined}
+        onKeyUp={enabled ? (e) => { if (e.shiftKey) capture(e.target); } : undefined}>
         {children}
       </div>
-      {state ? <div ref={panel} data-testid="lexical-lookup-card" role="dialog" aria-label="语境查词"
+      {enabled && state ? <div ref={panel} data-testid="lexical-lookup-card" role="dialog" aria-label="语境查词"
         className="fixed z-[80] w-[min(28rem,calc(100vw-2rem))] overflow-visible rounded-xl border border-student-primary-border bg-white text-sm text-student-text shadow-xl"
         style={{ left: position?.left ?? 0, top: position?.top ?? 0, width: position?.width, maxHeight: position?.maxHeight ?? "calc(100dvh - 16px)", visibility: position ? "visible" : "hidden" }}
         data-placement={position?.placement}>

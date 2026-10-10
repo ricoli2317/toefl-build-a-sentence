@@ -22,6 +22,7 @@ const ui = compile('components/lexical/LexicalLookup.tsx', {
   '@/lib/supabase/client': { createBrowserSupabase: () => { throw new Error('render must not query the corpus'); } },
   '@/lib/lexical/selection': require('../lib/lexical/selection.ts'),
   '@/lib/lexical/lookup': require('../lib/lexical/lookup.ts'),
+  '@/lib/lexical/lookupCapabilities': require('../lib/lexical/lookupCapabilities.ts'),
   '@/lib/lexical/position': require('../lib/lexical/position.ts'),
   react: { ...React,useLayoutEffect:React.useEffect }
 });
@@ -39,7 +40,7 @@ test('unmatched and unavailable states are simple messages, not fake dictionary 
   assert.match(unavailable,/此文本暂不可查词/);
 });
 test('active Reading provider is disabled and student response/UI chrome have no lexical annotation', () => {
-  const html = renderToStaticMarkup(React.createElement(ui.LexicalLookupProvider,{ enabled:false,sourceType:'ctw',access:{ kind:'reading',attemptId:'11111111-1111-4111-8111-111111111111' } },'Active text'));
+  const html = renderToStaticMarkup(React.createElement(ui.LexicalLookupProvider,{ pageMode:'practice',sourceType:'ctw',access:{ kind:'reading',attemptId:'11111111-1111-4111-8111-111111111111' } },'Active text'));
   assert.match(html,/data-lexical-enabled="false"/); assert.doesNotMatch(html,/lexical-lookup-card/);
   const writing = read('components/writing/WritingQuestionPrompt.tsx');
   for (const id of ['scenario','task-instruction','requirement:','professor-prompt','student-response:1','student-response:2']) assert.ok(writing.includes(id));
@@ -128,11 +129,13 @@ test('provider interaction sends one canonical selection request, aborts stale r
   };
   hookReact.useLayoutEffect = hookReact.useEffect;
   let selected = { startOffset:0,endOffset:5,selectedText:'green',blockText:'green energy' };
+  let getSession = async () => ({ data:{ session:{ access_token:'fixture-token' } } });
   const renderer = compile('components/lexical/LexicalLookup.tsx', {
     react:hookReact,
-    '@/lib/supabase/client':{ createBrowserSupabase:() => ({ auth:{ getSession:async () => ({ data:{ session:{ access_token:'fixture-token' } } }) } }) },
+    '@/lib/supabase/client':{ createBrowserSupabase:() => ({ auth:{ getSession:() => getSession() } }) },
     '@/lib/lexical/selection':{ domCanonicalLexicalSelection:() => selected ? ({ ...selected,contentBlockId:'question:q:stem' }) : null },
     '@/lib/lexical/lookup':{ parseLookupRequest },
+    '@/lib/lexical/lookupCapabilities':require('../lib/lexical/lookupCapabilities.ts'),
     '@/lib/lexical/position':require('../lib/lexical/position.ts')
   });
   class FakeNode {}
@@ -153,9 +156,9 @@ test('provider interaction sends one canonical selection request, aborts stale r
     getSelection:() => ({ isCollapsed:collapsed,rangeCount:1,getRangeAt:() => range }) };
   global.fetch = async (url,init) => new Promise(resolve => pending.push({ url,init,resolve }));
   const props = { sourceType:'rap',sourceItemId:'item',access:{ kind:'reading',attemptId:'11111111-1111-4111-8111-111111111111' },children:'source' };
-  const render = (enabled = true) => {
+  const render = (enabled = true, pageMode = 'readonly') => {
     cursor = 0;
-    const tree = renderer.LexicalLookupProvider({ ...props,enabled });
+    const tree = renderer.LexicalLookupProvider({ ...props,enabled,pageMode });
     const [region,panel] = tree.props.children;
     region.ref.current = { contains:node => node === block };
     if (panel) { panel.ref.current = { contains:node => node === input,offsetWidth:448,offsetHeight:180,clientHeight:178,scrollHeight:178 };panel.props.children[1].props.children.ref.current={scrollHeight:146}; }
@@ -190,7 +193,7 @@ test('provider interaction sends one canonical selection request, aborts stale r
     listeners.get('pointerdown')({ target:outside }); view = render(); assert.equal(view.panel,null);
     assert.equal(pending[2].init.signal.aborted,true);
     document.activeElement = null; collapsed = false;
-    view = render(false); view.region.props.onPointerUp({ target:block }); await settle(); assert.equal(pending.length,3);
+    view = render(false); assert.equal(view.region.props.onPointerUp,undefined); await settle(); assert.equal(pending.length,3);
     view = render(true); view.region.props.onPointerUp({ target:block }); await settle(); view = render();
     collapsed = true; listeners.get('selectionchange')(); assert.equal(render().panel,null);
     collapsed = false; view = render(); view.region.props.onPointerUp({ target:block }); await settle(); view = render();
@@ -212,19 +215,19 @@ test('provider interaction sends one canonical selection request, aborts stale r
     const saving=view.card.props.onWordbookToggle();view.card.props.onWordbookToggle();await settle();
     assert.equal(pending.at(-1).url,'/api/lexical/wordbook');assert.equal(JSON.parse(pending.at(-1).init.body).action,'save');
     assert.equal(render().card.props.state.wordbookBusy,true);
-    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:true,available:true,domain:'reading' }) });await saving;
+    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:true,available:true,domain:'reading' }) });await saving;await settle();
     view=render();assert.equal(view.card.props.state.result.wordbook.saved,true);assert.equal(view.card.props.state.wordbookBusy,false);
     assert.equal(view.card.props.state.wordbookMessage,'已加入生词本。');
     const removing=view.card.props.onWordbookToggle();await settle();assert.equal(JSON.parse(pending.at(-1).init.body).action,'remove');
-    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:false,available:true,domain:'reading' }) });await removing;
+    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:false,available:true,domain:'reading' }) });await removing;await settle();
     view=render();assert.equal(view.card.props.state.result.wordbook.saved,false);
     const failing=view.card.props.onWordbookToggle();await settle();
     pending.at(-1).resolve({ ok:false,json:async()=>({ error:'无法可靠提取原句，本次未收藏。' }) });await settle();
     assert.equal(JSON.parse(pending.at(-1).init.body).action,'status');
-    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:false,available:true }) });await failing;
+    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:false,available:true }) });await failing;await settle();
     view=render();assert.match(view.card.props.state.wordbookError,/未收藏/);assert.equal(view.card.props.state.result.wordbook.saved,false);
     const late=view.card.props.onWordbookToggle();await settle();view.panel.props.children[0].props.onClick();
-    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:true,available:true }) });await late;assert.equal(render().panel,null);
+    pending.at(-1).resolve({ ok:true,json:async()=>({ saved:true,available:true }) });await late;await settle();assert.equal(render().panel,null);
     // Teaching uses the same selection/card but has no Wordbook handler or request.
     props.teacherReadonly = true;
     props.access = { ...props.access,studentId:'22222222-2222-4222-8222-222222222222' };
@@ -239,6 +242,41 @@ test('provider interaction sends one canonical selection request, aborts stale r
     view.region.props.onPointerUp({ target:block });await settle();assert.equal(pending.length,beforeImage,'RDL handler owns its image span; stale DOM selection must not issue another request');
     delete block.closest;
     view.panel.props.children[0].props.onClick();assert.equal(render().panel,null);
+    // Each source/full-set uses the same page-mode gate, even with enabled=true.
+    const requestsBeforePractice = pending.length;
+    for (const sourceType of ['bas','write_email','academic_discussion','ctw','rdl','rap']) {
+      props.sourceType = sourceType;
+      const access = sourceType === 'bas' ? { kind:'bas_prompt',setId:'set',questionId:'q' }
+        : ['write_email','academic_discussion'].includes(sourceType) ? { kind:'writing',attemptId:'attempt' }
+        : { kind:'reading',attemptId:'attempt' };
+      props.access = access;
+      view = render(true,'practice');
+      assert.equal(view.panel,null,sourceType);
+      assert.equal(view.lookup,undefined,sourceType);
+      assert.equal(view.region.props.onPointerUp,undefined,sourceType);
+      assert.equal(view.region.props.onKeyUp,undefined,sourceType);
+      assert.equal(view.region.props['data-lexical-enabled'],'false',sourceType);
+    }
+    props.sourceType = 'rap';props.access = { kind:'full_set',attemptId:'attempt' };
+    view = render(true,'practice');assert.equal(view.lookup,undefined);assert.equal(view.panel,null);
+    assert.equal(pending.length,requestsBeforePractice);
+    // Transition removes the card immediately; a late response cannot revive it,
+    // including after returning to a readonly page on this same provider instance.
+    props.teacherReadonly = false;
+    props.access = { kind:'reading',attemptId:'11111111-1111-4111-8111-111111111111' };
+    render();view=render();view.region.props.onPointerUp({ target:block });await settle();
+    const lateLookup = pending.at(-1);view=render();assert.ok(view.panel);const cachedLookup = view.lookup;
+    view=render(true,'practice');assert.equal(view.panel,null);assert.equal(lateLookup.init.signal.aborted,true);
+    const beforeCached = pending.length;cachedLookup('question:q:stem',selected,()=>anchorRect);await settle();
+    assert.equal(pending.length,beforeCached,'a cached readonly handler is inert after the mode switch');
+    lateLookup.resolve({ ok:true,json:async()=>matched });await settle();
+    assert.equal(render(true,'practice').panel,null);render();assert.equal(render().panel,null);
+    // Disable while auth is still pending: not even the initial API call may escape.
+    let resolveSession;getSession=()=>new Promise(resolve=>{resolveSession=resolve;});
+    view=render();view.region.props.onPointerUp({target:block});view=render(true,'practice');
+    resolveSession({data:{session:{access_token:'fixture-token'}}});await settle();
+    assert.equal(pending.length,beforeCached);assert.equal(render(true,'practice').panel,null);
+    getSession=async()=>({data:{session:{access_token:'fixture-token'}}});render();
     // An excluded CTW slot (or any invalid canonical selection) must not issue a lookup request.
     const requestsBeforeSlot = pending.length; selected = null; collapsed = false;
     view = render(); view.region.props.onPointerUp({ target:block }); await settle();
@@ -275,7 +313,7 @@ test('wordbook primary action sits beside the title, toggles directly, disables 
   assert.match(render({ wordbookError:'无法可靠提取原句，本次未收藏。' }),/role="status"/);
   const source=read('components/lexical/LexicalLookup.tsx');assert.match(source,/absolute -right-2 -top-3/);assert.match(source,/h-7 w-7.*rounded-full/);
   assert.match(source,/overflow-visible/);assert.match(source,/focus-visible:ring-2/);assert.doesNotMatch(source,/float-right|pr-6/);
-  assert.match(source,/matched \? <div className="flex items-center gap-2"/);assert.doesNotMatch(source,/items-start justify-between gap-3/);
+  assert.match(source,/matched \? <div className="flex flex-wrap items-center gap-2"/);assert.doesNotMatch(source,/items-start justify-between gap-3/);
 });
 
 test('actual wordbook route authenticates first, validates IDs/proof/action and never forwards client snapshots',async()=>{

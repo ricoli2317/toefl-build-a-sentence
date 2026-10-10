@@ -491,7 +491,7 @@ export function PracticeSession({
           onSelect={jumpToQuestion}
         />
       ) : (
-        <LexicalLookupProvider access={{ kind: "bas_prompt", setId, questionId: currentQuestion.question_id }} sourceType="bas">
+        <LexicalLookupProvider pageMode="practice" access={{ kind: "bas_prompt", setId, questionId: currentQuestion.question_id }} sourceType="bas">
         <QuestionDisplay
           lexicalPrompt
           answers={currentAnswer}

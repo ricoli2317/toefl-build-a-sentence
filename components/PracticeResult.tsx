@@ -289,6 +289,7 @@ export function PracticeResultView({
           </div>
           {activeAnswer && activeReadonlyState ? (
             <LexicalLookupProvider key={activeAnswer.question_id}
+              pageMode="readonly"
               teacherReadonly={Boolean(teacherStudentId)}
               access={{ kind: "bas", attemptId: attempt.attempt_id, questionId: activeAnswer.question_id,
                 ...(teacherStudentId ? { studentId: teacherStudentId } : {}) }} sourceType="bas">

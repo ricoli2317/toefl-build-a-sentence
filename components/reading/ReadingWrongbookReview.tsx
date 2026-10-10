@@ -210,6 +210,7 @@ function ReadingFullSetWrongbookReviewShell({
           readOnly
         >
           <ReadingWorkspaceRouter
+            pageMode="readonly"
             lexicalAccess={{ kind: "reading_wrongbook", attemptId: review.attempt.attemptId }}
             answers={occurrence.answers}
             currentQuestion={question}

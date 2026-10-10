@@ -22,7 +22,8 @@ function compile(file,mocks,expose = []) {
 const react = { ...React,useLayoutEffect:React.useEffect };
 const lexical = compile('components/lexical/LexicalLookup.tsx',{
   react,'@/lib/supabase/client':{},'@/lib/lexical/selection':require('../lib/lexical/selection.ts'),
-  '@/lib/lexical/lookup':require('../lib/lexical/lookup.ts'),'@/lib/lexical/position':require('../lib/lexical/position.ts')
+  '@/lib/lexical/lookup':require('../lib/lexical/lookup.ts'),'@/lib/lexical/position':require('../lib/lexical/position.ts'),
+  '@/lib/lexical/lookupCapabilities':require('../lib/lexical/lookupCapabilities.ts')
 });
 const mocks = Object.fromEntries([...read('components/reading/ReadingPractice.tsx').matchAll(/from "(@\/[^\"]+)"/g)].map(match => [match[1],{}]));
 Object.assign(mocks,{ react,'next/navigation':{},'@/components/lexical/LexicalLookup':lexical,

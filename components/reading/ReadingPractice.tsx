@@ -124,6 +124,7 @@ import type { ReadingWrongbookTarget } from "@/lib/wrongQuestions";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import { LexicalLookupProvider, lexicalBlockAttributes, useLexicalLookup } from "@/components/lexical/LexicalLookup";
 import type { LexicalAccess } from "@/lib/lexical/lookup";
+import type { LexicalPageMode } from "@/lib/lexical/lookupCapabilities";
 import { rdlLexicalSelection, rdlLexicalSelectionRect } from "@/lib/lexical/selection";
 
 type PracticeResponse = { practice?: StudentReadingPracticePayload; error?: string };
@@ -703,6 +704,7 @@ export function ReadingFullSetReviewShell({
             </div>
           ) : (
             <ReadingWorkspaceRouter
+              pageMode="readonly"
               answers={currentOccurrence!.answers}
               teacherReadonly={Boolean(teacherStudentId)}
               lexicalAccess={lexicalAccess ?? (variant === "session"
@@ -1104,6 +1106,7 @@ export function ReadingPracticeShell({
               </p>
               <div className="min-h-0 flex-1">
                 <ReadingWorkspaceRouter
+                  pageMode="practice"
                   answers={answers}
                   currentQuestion={currentQuestion}
                   key={practice.item.itemId}
@@ -1116,6 +1119,7 @@ export function ReadingPracticeShell({
             </div>
           ) : (
             <ReadingWorkspaceRouter
+              pageMode="practice"
               answers={answers}
               currentQuestion={currentQuestion}
               editableSlotIds={editableSlotIds}
@@ -1166,6 +1170,7 @@ export function ReadingPracticePendingShell({
         </p>
         <ReadingQuestionViewport module={practice.item.module} readOnly>
           <ReadingWorkspaceRouter
+            pageMode="practice"
             answers={{}}
             currentQuestion={currentQuestion}
             lookupEnabled={false}
@@ -1249,8 +1254,9 @@ export function ReadingPracticeHeader({
   );
 }
 
-export function ReadingWorkspaceRouter(props: Parameters<typeof ReadingWorkspaceContent>[0] & { lexicalAccess?: LexicalAccess; teacherReadonly?: boolean }) {
+export function ReadingWorkspaceRouter(props: Parameters<typeof ReadingWorkspaceContent>[0] & { pageMode: LexicalPageMode; lexicalAccess?: LexicalAccess; teacherReadonly?: boolean }) {
   return <LexicalLookupProvider key={props.currentQuestion.questionId} access={props.lexicalAccess} enabled={props.lookupEnabled && props.readOnly}
+    pageMode={props.pageMode}
     teacherReadonly={props.teacherReadonly}
     sourceType={props.practice.item.module} sourceItemId={props.practice.item.itemId}>
     <ReadingWorkspaceContent {...props} />
@@ -3222,6 +3228,7 @@ export function ReadingReadonlyReviewShell({
           readOnly
         >
           <ReadingWorkspaceRouter
+            pageMode="readonly"
             answerKeyOnly={answerKeyOnly}
             lexicalAccess={lexicalAccess}
             teacherReadonly={teacherReadonly}

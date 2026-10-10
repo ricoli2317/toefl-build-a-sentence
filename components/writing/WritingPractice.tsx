@@ -921,7 +921,8 @@ function WritingPracticeSession({
   ) : null;
 
   return (
-    <LexicalLookupProvider access={{ kind: "writing", attemptId: attempt.attempt_id }}
+    <LexicalLookupProvider pageMode={readOnly && attempt.status === "submitted" ? "readonly" : "practice"}
+      access={{ kind: "writing", attemptId: attempt.attempt_id }}
       enabled={assignmentQuestionSource !== "custom"} sourceType={taskType === "email" ? "write_email" : "academic_discussion"}>
     <div className="writing-practice min-h-[100dvh] bg-[#fbfbfe] text-student-text lg:h-[100dvh] lg:overflow-hidden">
       <WritingPracticeHeader

@@ -340,7 +340,7 @@ export function TeacherQuestionBankItemViewer({
           questions={data.questions ?? []}
         />
       ) : data.question ? (
-        <LexicalLookupProvider teacherReadonly access={{ kind: "teacher_bank", itemId: item.item_id }}
+        <LexicalLookupProvider pageMode="readonly" teacherReadonly access={{ kind: "teacher_bank", itemId: item.item_id }}
           sourceItemId={item.item_id} sourceType={item.task_type === "email" ? "write_email" : "academic_discussion"}>
           <div data-readonly-writing-question>
             <TeacherCard className="p-5">
@@ -377,7 +377,7 @@ function BasLogicalItemViewer({
   }
   return (
     <div className="grid gap-4" data-logical-bas-question-count={questions.length}>
-      <LexicalLookupProvider key={`${currentQuestion.question_id}:prompt`} teacherReadonly
+      <LexicalLookupProvider key={`${currentQuestion.question_id}:prompt`} pageMode="readonly" teacherReadonly
         access={{ kind: "bas_prompt", setId: currentQuestion.set_id, questionId: currentQuestion.question_id }}
         sourceType="bas" sourceItemId={itemId}>
         <QuestionDisplay
@@ -394,7 +394,7 @@ function BasLogicalItemViewer({
           template={currentQuestion.sentence_template}
         />
       </LexicalLookupProvider>
-      <LexicalLookupProvider key={`${currentQuestion.question_id}:answer`} teacherReadonly
+      <LexicalLookupProvider key={`${currentQuestion.question_id}:answer`} pageMode="readonly" teacherReadonly
         access={{ kind: "teacher_bank", itemId, questionId: currentQuestion.question_id }} sourceType="bas" sourceItemId={itemId}>
         <TeacherCard className="border-student-primary-border bg-student-primary-soft/55 p-5">
           <p className="text-sm font-semibold text-student-primary">正确答案</p>

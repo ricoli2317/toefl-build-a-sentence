@@ -418,6 +418,7 @@ export function ReadingFullSetWrongbookPractice({
             ref={workspaceRef}
           >
             <ReadingWorkspaceRouter
+              pageMode="practice"
               answers={current.answers}
               currentQuestion={currentQuestion}
               editableSlotIds={editableSlotIds}

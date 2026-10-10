@@ -376,7 +376,7 @@ function WrongAnswerCard({
   number: number;
 }) {
   return (
-    <LexicalLookupProvider access={{ kind: "bas", attemptId: answer.attemptId, questionId: answer.questionId }} sourceType="bas">
+    <LexicalLookupProvider pageMode="readonly" access={{ kind: "bas", attemptId: answer.attemptId, questionId: answer.questionId }} sourceType="bas">
     <article className="student-card p-4 sm:p-5">
       <p className="text-sm font-bold text-student-error">第 {number} 题</p>
       <p className="mt-2 text-lg font-bold text-student-text"><LexicalText blockId="prompt" text={answer.prompt || "无题目内容"} /></p>

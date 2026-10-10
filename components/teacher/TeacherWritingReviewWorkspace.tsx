@@ -809,7 +809,7 @@ export function TeacherWritingReviewWorkspace({
         />
       ) : (
         <div className="writing-review-grid min-h-0 flex-1 bg-[#f8f7fc] p-2">
-          <LexicalLookupProvider teacherReadonly enabled={data.question_source === "question_bank"}
+          <LexicalLookupProvider teacherReadonly enabled={data.question_source === "question_bank"} pageMode="readonly"
             access={{ kind: "writing", attemptId: data.attempt.attempt_id, studentId: data.attempt.user_id }}
             sourceType={data.attempt.task_type === "email" ? "write_email" : "academic_discussion"}>
             <QuestionColumn question={data.question} taskType={data.attempt.task_type} />
