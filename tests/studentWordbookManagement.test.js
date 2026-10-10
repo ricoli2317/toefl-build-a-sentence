@@ -67,13 +67,14 @@ test('actual read hook invalidates cached list/dots immediately on delete revisi
     }
   });
   const tick=()=>new Promise(resolve=>setImmediate(resolve));
+  const access={getSession,studentId:h.U,sessionReady:true};
   for(const url of ['/api/student/wordbook?domain=reading','/api/student/wordbook/activity-dates?domain=reading&month=2026-10']){
     state={identity:`${h.U}:${url}:0`,data:{items:['old'],dates:['2026-10-08']}};
-    const invalidated=exports.useWordbookRead(url,1);assert.equal(invalidated.data,undefined);assert.equal(invalidated.loading,true);
+    const invalidated=exports.useWordbookRead(url,1,access);assert.equal(invalidated.data,undefined);assert.equal(invalidated.loading,true);
     cleanup?.();cleanup=effect();const old=requests.at(-1);
-    exports.useWordbookRead(url,2);cleanup();cleanup=effect();const fresh=requests.at(-1);assert.equal(old.options.signal.aborted,true);
-    old.resolve({ok:true,json:async()=>({items:['deleted'],dates:['2026-10-08']})});await tick();assert.equal(exports.useWordbookRead(url,2).data,undefined);
-    fresh.resolve({ok:true,json:async()=>({items:[],dates:[]})});await tick();assert.deepEqual(exports.useWordbookRead(url,2).data,{items:[],dates:[]});
+    exports.useWordbookRead(url,2,access);cleanup();cleanup=effect();const fresh=requests.at(-1);assert.equal(old.options.signal.aborted,true);
+    old.resolve({ok:true,json:async()=>({items:['deleted'],dates:['2026-10-08']})});await tick();assert.equal(exports.useWordbookRead(url,2,access).data,undefined);
+    fresh.resolve({ok:true,json:async()=>({items:[],dates:[]})});await tick();assert.deepEqual(exports.useWordbookRead(url,2,access).data,{items:[],dates:[]});
   }
   cleanup();
 });

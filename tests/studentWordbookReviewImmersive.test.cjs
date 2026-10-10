@@ -9,7 +9,8 @@ test('examples preserve exact source text, word boundaries, all repeated targets
   assert.deepEqual(reviewExample('Run, then RUN daily.','run',false),[{text:'Run',target:true},{text:', then '},{text:'RUN',target:true},{text:' daily.'}]);
   assert.deepEqual(reviewExample('We take   care daily.','take care',true),[{text:'We '},{text:'',target:true},{text:' daily.'}]);
   assert.deepEqual(reviewExample('The runner runs.','run',true),[{text:'The runner runs.'}]);
-  assert.equal(spellingShape('take care-of'), '____ ____-__');
+  // Only spaces are fixed layout; the student must type the hyphen too.
+  assert.equal(spellingShape('take care-of'), '____ _______');
   const raw={flow:{phase:'test'},item:{kind:'spelling_pos'},presentation:{expression:'run',meaning:'运行',pos:'verb',examples:[{kind:'sentence',text:'We run daily.'}]}};
   const projected=presentReviewState(raw);
   assert.equal(projected.item.spellingShape,'___');assert.equal(projected.presentation,undefined);

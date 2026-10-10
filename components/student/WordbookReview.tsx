@@ -210,13 +210,20 @@ export function WordbookReviewHistory() {
   const history = useReviewRead<ReviewHistory>(`${ROOT}?action=history&page=${page}`, revision);
   return <div className="grid min-w-0 gap-5"><Navigation label="复习历史" /><Link href={SETUP} className="student-button-primary justify-self-start">开始新复习</Link>
     <PendingReviews />{history.loading ? <p className="text-sm text-student-muted">正在加载复习历史…</p> : null}<Failure error={history.error} retry={() => setRevision(v => v + 1)} />
-    {history.data?.items.map(session => <section key={session.session_id} className={`student-card grid min-w-0 gap-3 p-4 ${session.domain === "reading" ? "reading-theme" : ""}`}>
+    {history.data ? <WordbookReviewHistoryList history={history.data} /> : null}
+    {history.data ? <Pagination page={page} total={history.data.total} pageSize={10} disabled={history.loading} onChange={setPage} /> : null}
+  </div>;
+}
+
+export function WordbookReviewHistoryList({ history, readOnly = false, resultHref = id => `${SETUP}/${id}` }: {
+  history: ReviewHistory; readOnly?: boolean; resultHref?: (id: string) => string;
+}) {
+  return <>{history.items.map(session => <section key={session.session_id} className={`student-card grid min-w-0 gap-3 p-4 ${session.domain === "reading" ? "reading-theme" : ""}`}>
       <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-bold">{session.domain === "reading" ? "Reading" : "Writing"} · {reviewRangeLabel(session)}</h2><Sources domain={session.domain} sources={session.source_types} /></div>
       <p className="break-words text-xs text-student-muted">{new Date(session.started_at).toLocaleString()} · {session.status === "completed" ? "已完成" : "未完成"}</p>
       <p className="text-sm">进度 {session.answered}/{session.total} · 答对 {session.summary.correct} · {session.status === "completed" ? `正确率 ${reviewPercent(session.summary.correct, session.total)}` : "成绩待完成"}</p>
-      <Link href={`${SETUP}/${session.session_id}`} className="student-button-secondary justify-self-start">{session.status === "completed" ? "查看结果" : "恢复复习"}</Link>
+      <Link href={resultHref(session.session_id)} className="student-button-secondary justify-self-start">{readOnly ? session.status === "completed" ? "查看结果" : "查看已保存记录" : session.status === "completed" ? "查看结果" : "恢复复习"}</Link>
     </section>)}
-    {history.data && !history.data.total ? <p className="py-6 text-center text-sm text-student-muted">还没有复习记录。</p> : null}
-    {history.data ? <Pagination page={page} total={history.data.total} pageSize={10} disabled={history.loading} onChange={setPage} /> : null}
-  </div>;
+    {!history.total ? <p className="py-6 text-center text-sm text-student-muted">还没有复习记录。</p> : null}
+  </>;
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CalendarDays, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
+import { BookMarked, CalendarDays, ChevronLeft, ChevronRight, UserRound } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
 import {
@@ -342,7 +342,7 @@ export function TeacherStudentPracticeWorkspace({
       ) : null}
       {!state.loading && !state.error && payload ? (
         <>
-          <TeacherCard className="flex min-h-[96px] items-center p-5">
+          <TeacherCard className="flex min-h-[96px] flex-wrap items-center justify-between gap-4 p-5">
             <div className="flex min-w-0 flex-wrap items-center gap-x-4 gap-y-3">
               <span className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-student-primary-soft text-student-primary">
                 <UserRound aria-hidden="true" size={28} strokeWidth={1.9} />
@@ -368,6 +368,9 @@ export function TeacherStudentPracticeWorkspace({
                 </button>
               </div>
             </div>
+            <Link className="teacher-button-primary ml-auto shrink-0 gap-2" href={teacherReturnToHref(`/teacher/students/${encodeURIComponent(studentId)}/wordbook`, selfHref)} prefetch={false}>
+              <BookMarked aria-hidden="true" size={18} strokeWidth={1.9} />生词本
+            </Link>
           </TeacherCard>
 
           <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-4">

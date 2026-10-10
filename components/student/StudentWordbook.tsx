@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useStudentDataCache } from "@/components/StudentDataCache";
 import { StudentNavigation } from "@/components/student/StudentUI";
@@ -19,8 +19,20 @@ type Filters = { start: string; end: string; sort: "newest" | "oldest"; page: nu
 const emptyFilters: Filters = { start: "", end: "", sort: "newest", page: 1 };
 
 export function StudentWordbook() {
-  const { getSession, studentId } = useStudentDataCache();
-  const [domain, setDomain] = useState<WordbookDomain>("reading");
+  const access = useStudentDataCache();
+  return <WordbookView access={access} />;
+}
+
+export type WordbookReadAccess = {
+  studentId: string | null; sessionReady: boolean; getSession: () => { accessToken: string } | null;
+};
+
+export function WordbookView({ access, readOnly = false, domains = ["reading", "writing"], apiRoot = "/api/student/wordbook", navigation, historyHref }: {
+  access: WordbookReadAccess; readOnly?: boolean; domains?: WordbookDomain[]; apiRoot?: string;
+  navigation?: ReactNode; historyHref?: (domain: WordbookDomain) => string;
+}) {
+  const { getSession, studentId } = access;
+  const [domain, setDomain] = useState<WordbookDomain>(domains[0]);
   const [filters, setFilters] = useState<Record<WordbookDomain, Filters>>({ reading: { ...emptyFilters }, writing: { ...emptyFilters } });
   const active = filters[domain];
   const [draft, setDraft] = useState({ start: "", end: "" });
@@ -53,15 +65,16 @@ export function StudentWordbook() {
   const monthKey = formatDateInputValue(month).slice(0, 7);
   const listQuery = new URLSearchParams({ domain, sort: active.sort, page: String(active.page), timeZone });
   if (active.start) { listQuery.set("start", active.start); listQuery.set("end", active.end); }
-  const listUrl = `/api/student/wordbook?${listQuery}`;
-  const datesUrl = `/api/student/wordbook/activity-dates?${new URLSearchParams({ domain, month: monthKey, timeZone })}`;
+  const listUrl = `${apiRoot}?${listQuery}`;
+  const datesUrl = `${apiRoot}/activity-dates?${new URLSearchParams({ domain, month: monthKey, timeZone })}`;
   // Only bounded active pages/months. No long-lived enrichment cache, no hidden
   // domain full reload, and AbortController + URL identity prevent stale races.
-  const list = useWordbookRead<WordbookList>(listUrl, revision);
-  const dates = useWordbookRead<{ dates: string[] }>(datesUrl, revision);
+  const list = useWordbookRead<WordbookList>(listUrl, revision, access);
+  const dates = useWordbookRead<{ dates: string[] }>(datesUrl, revision, access);
   useEffect(() => { setDraft({ start: active.start, end: active.end }); }, [domain, active.start, active.end]);
   const update = (changes: Partial<Filters>) => { clearSelection();setMessage("");setFilters(previous => ({ ...previous, [domain]: { ...previous[domain], ...changes } })); };
   const switchDomain = (next: WordbookDomain) => {
+    if (!domains.includes(next)) return;
     if (next === domain) return;
     if (deletingRef.current) return;
     setManaging(false);clearSelection();setMessage("");
@@ -76,6 +89,7 @@ export function StudentWordbook() {
   useEffect(() => { if (list.data && active.page > pages) setFilters(previous => ({ ...previous, [domain]: { ...previous[domain], page: pages } })); }, [list.data, active.page, pages, domain]);
 
   const deleteSelected = async () => {
+    if (readOnly) return;
     if (deletingRef.current || !selected.length || list.loading) return;
     const ids = [...selected], owner = studentId;
     deletingRef.current = true;setDeleting(true);setDeleteError("");setMessage("");
@@ -98,15 +112,15 @@ export function StudentWordbook() {
   };
 
   return <div className="grid min-w-0 gap-5">
-    <StudentNavigation backHref={STUDENT_ROUTES.home} crumbs={[{ label: "学生首页", href: STUDENT_ROUTES.home }, { label: "生词本" }]} />
-    <div aria-label="生词本分类" role="tablist" className={`flex gap-1 border-b border-student-border ${domain === "reading" ? "reading-theme" : ""}`}>
-      {(["reading", "writing"] as const).map(tab => <button id={`wordbook-tab-${tab}`} aria-controls={`wordbook-panel-${tab}`} aria-selected={domain === tab} role="tab" type="button" key={tab}
+    {navigation ?? <StudentNavigation backHref={STUDENT_ROUTES.home} crumbs={[{ label: "学生首页", href: STUDENT_ROUTES.home }, { label: "生词本" }]} />}
+    {domains.length > 1 ? <div aria-label="生词本分类" role="tablist" className={`flex gap-1 border-b border-student-border ${domain === "reading" ? "reading-theme" : ""}`}>
+      {domains.map(tab => <button id={`wordbook-tab-${tab}`} aria-controls={`wordbook-panel-${tab}`} aria-selected={domain === tab} role="tab" type="button" key={tab}
         disabled={deleting} tabIndex={domain === tab ? 0 : -1} onClick={() => switchDomain(tab)}
         onKeyDown={event => { if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) { event.preventDefault(); const next = event.key === "Home" ? "reading" : event.key === "End" ? "writing" : domain === "reading" ? "writing" : "reading"; switchDomain(next); document.getElementById(`wordbook-tab-${next}`)?.focus(); } }}
         className={`border-b-2 px-5 py-3 text-sm font-semibold transition ${domain === tab ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}>
         {tab === "reading" ? "Reading" : "Writing"}
       </button>)}
-    </div>
+    </div> : <h2 className="text-lg font-bold">{domain === "reading" ? "Reading" : "Writing"} 生词本</h2>}
     <div className={`flex flex-wrap items-center justify-between gap-3 ${domain === "reading" ? "reading-theme" : ""}`}>
       <fieldset disabled={deleting} className={`flex min-w-0 flex-wrap items-center gap-2 ${domain === "reading" ? styles.readingDateControls : ""}`}>
         <StudentDateSelection key={domain} draft={draft} onDraftChange={setDraft} rangeLabel="查看日期范围" bounds={bounds}
@@ -118,9 +132,9 @@ export function StudentWordbook() {
         {active.start ? <button type="button" className="text-xs text-student-primary hover:underline" onClick={() => { setDraft({ start: "", end: "" });update({ start: "", end: "", page: 1 }); }}>清除</button> : null}
       </fieldset>
       <div className="flex flex-wrap items-center gap-2">
-        <Link href={`/student/wordbook/review?domain=${domain}`} aria-disabled={deleting}
-          onClick={event => { if (deleting) event.preventDefault(); }} className={`student-button-primary ${deleting ? "pointer-events-none opacity-50" : ""}`}>开始复习</Link>
-        {managing ? <><button type="button" className="student-button-secondary" disabled={!selected.length || deleting || list.loading}
+        <Link href={readOnly ? historyHref!(domain) : `/student/wordbook/review?domain=${domain}`} aria-disabled={deleting}
+          onClick={event => { if (deleting) event.preventDefault(); }} className={`student-button-primary ${deleting ? "pointer-events-none opacity-50" : ""}`}>{readOnly ? "复习历史" : "开始复习"}</Link>
+        {readOnly ? null : managing ? <><button type="button" className="student-button-secondary" disabled={!selected.length || deleting || list.loading}
           onClick={() => { setDeleteError("");setConfirming(true); }}>删除{selected.length ? ` (${selected.length})` : ""}</button>
           <button type="button" className="student-button-secondary" disabled={deleting} onClick={() => { setManaging(false);clearSelection(); }}>取消</button></>
           : <button type="button" className="student-button-secondary" disabled={list.loading} onClick={() => { clearSelection();setMessage("");setManaging(true); }}>管理</button>}
@@ -133,13 +147,13 @@ export function StudentWordbook() {
     </div>
     {message ? <p role="status" className="text-sm text-student-primary">{message}</p> : null}
     {deleteError && !confirming ? <p role="alert" className="text-sm text-student-error">{deleteError}</p> : null}
-    <section id={`wordbook-panel-${domain}`} role="tabpanel" aria-labelledby={`wordbook-tab-${domain}`} aria-busy={list.loading || deleting} className={`min-w-0 ${domain === "reading" ? "reading-theme" : ""}`}>
+    <section id={`wordbook-panel-${domain}`} role={domains.length > 1 ? "tabpanel" : undefined} aria-labelledby={domains.length > 1 ? `wordbook-tab-${domain}` : undefined} aria-busy={list.loading || deleting} className={`min-w-0 ${domain === "reading" ? "reading-theme" : ""}`}>
       <WordbookTable domain={domain} items={items} page={active.page} pageSize={list.data?.pageSize ?? 20}
-        managing={managing} selected={selected} onSelectionChange={selectEntries} disabled={deleting || list.loading} />
+        managing={!readOnly && managing} selected={selected} onSelectionChange={selectEntries} disabled={deleting || list.loading} />
       <div aria-live="polite">
         {list.loading ? <p className="py-8 text-center text-sm text-student-muted">正在加载生词本…</p> : null}
         {list.error ? <div className="py-8 text-center text-sm text-student-muted"><p>{list.error}</p><button type="button" className="student-button-secondary mt-3" onClick={() => setRevision(value => value + 1)}>重试</button></div> : null}
-        {!list.loading && !list.error && list.data && !items.length ? <p className="py-12 text-center text-sm text-student-muted">{active.start ? "所选日期没有收藏活动。可清除日期筛选查看全部词汇。" : `还没有 ${domain === "reading" ? "Reading" : "Writing"} 生词。在练习查词卡中点击收藏，即可保留词汇及原题语境。`}</p> : null}
+        {!list.loading && !list.error && list.data && !items.length ? <p className="py-12 text-center text-sm text-student-muted">{active.start ? "所选日期没有收藏活动。可清除日期筛选查看全部词汇。" : readOnly ? `该学生还没有 ${domain === "reading" ? "Reading" : "Writing"} 生词。` : `还没有 ${domain === "reading" ? "Reading" : "Writing"} 生词。在练习查词卡中点击收藏，即可保留词汇及原题语境。`}</p> : null}
       </div>
       {list.data && list.data.total > 0 ? <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-student-muted">
         <span>共 {list.data.total} 个词条 · 第 {active.page} / {pages} 页</span>
@@ -147,15 +161,15 @@ export function StudentWordbook() {
            <button className="student-button-secondary" type="button" disabled={active.page >= pages || list.loading || deleting} onClick={() => update({ page: active.page + 1 })}>下一页</button></div>
       </div> : null}
     </section>
-    <ConfirmDialog open={confirming} title={`确认删除选中的 ${selected.length} 个词条吗？`}
+    {!readOnly ? <ConfirmDialog open={confirming} title={`确认删除选中的 ${selected.length} 个词条吗？`}
       message="删除后将移除这些词条的收藏义项、例句及收藏活动记录，不影响题库或另一分类的收藏。"
       confirmText="确认删除" cancelText="取消" confirming={deleting} error={deleteError}
-      onConfirm={() => void deleteSelected()} onCancel={() => { if (!deletingRef.current) setConfirming(false); }} />
+      onConfirm={() => void deleteSelected()} onCancel={() => { if (!deletingRef.current) setConfirming(false); }} /> : null}
   </div>;
 }
 
-function useWordbookRead<T>(url: string, revision: number) {
-  const { getSession, sessionReady, studentId } = useStudentDataCache();
+export function useWordbookRead<T>(url: string, revision: number, access: WordbookReadAccess) {
+  const { getSession, sessionReady, studentId } = access;
   const [state, setState] = useState<{ identity: string; data?: T; error?: string }>({ identity: "" });
   const identity = `${studentId}:${url}:${revision}`;
   useEffect(() => {

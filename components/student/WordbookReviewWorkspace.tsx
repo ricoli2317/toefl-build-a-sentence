@@ -133,7 +133,9 @@ function FitContent({ children, keyboard = false }: { children: ReactNode; keybo
   </div>;
 }
 
-function Result({ state, busy, onRetry, pending }: { state: ReviewState; busy: boolean; onRetry: () => void; pending: boolean }) {
+export function WordbookReviewResult({ state, busy = false, onRetry = () => {}, pending = false, readOnly = false }: {
+  state: ReviewState; busy?: boolean; onRetry?: () => void; pending?: boolean; readOnly?: boolean;
+}) {
   const s = state.summary;
   return <div data-review-persistence={pending ? "local" : "saved"} aria-label={pending ? "本轮本地结果，尚未全部保存" : "本轮已保存结果"} className="grid gap-8 text-center">
     <div><p className="text-sm text-student-muted">整体正确率</p><p className="mt-2 text-6xl font-bold text-student-primary">{reviewPercent(s.correct, state.session.total)}</p></div>
@@ -141,8 +143,8 @@ function Result({ state, busy, onRetry, pending }: { state: ReviewState; busy: b
       <div key={label}><dt className="text-sm text-student-muted">{label}</dt><dd className="mt-2 text-3xl font-semibold">{value}</dd></div>)}</dl>
     <dl className="grid gap-3 border-t border-student-border pt-6 text-sm">{[["拼写", s.spellingCorrect, s.spellingTotal], ["词性", s.posCorrect, s.posTotal], ["选择", s.choiceCorrect, s.choiceTotal]].map(([label, correct, total]) =>
       <div key={label} className="flex justify-between gap-3"><dt>{label}</dt><dd className="font-semibold">{correct}/{total} · {reviewPercent(Number(correct), Number(total))}</dd></div>)}</dl>
-    <div className="grid gap-3 sm:grid-cols-3"><button type="button" className="student-button-primary h-11" disabled={busy || !s.incorrect} onClick={onRetry}>错词再练</button>
-      <Link className="student-button-secondary h-11" href={SETUP}>新一轮复习</Link><Link className="student-button-secondary h-11" href={`${SETUP}/history`}>复习历史</Link></div>
+    {!readOnly ? <div className="grid gap-3 sm:grid-cols-3"><button type="button" className="student-button-primary h-11" disabled={busy || !s.incorrect} onClick={onRetry}>错词再练</button>
+      <Link className="student-button-secondary h-11" href={SETUP}>新一轮复习</Link><Link className="student-button-secondary h-11" href={`${SETUP}/history`}>复习历史</Link></div> : null}
   </div>;
 }
 
@@ -193,7 +195,7 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
         {study ? <button ref={skipButton} type="button" disabled={busy} className="shrink-0 text-sm text-student-primary hover:underline" onClick={() => setConfirmSkip(true)}>跳过复习</button> : null}
         {!result ? <Link href={`${SETUP}/history`} className="shrink-0 text-sm text-student-primary hover:underline">暂停</Link> : null}
       </header>
-      <FitContent keyboard={keyboard}>{!state ? <div className="text-center">{!error ? "正在恢复复习…" : null}</div> : result ? <Result state={state} busy={busy || pending > 0} pending={pending > 0} onRetry={onRetry} /> : item ?
+      <FitContent keyboard={keyboard}>{!state ? <div className="text-center">{!error ? "正在恢复复习…" : null}</div> : result ? <WordbookReviewResult state={state} busy={busy || pending > 0} pending={pending > 0} onRetry={onRetry} /> : item ?
         <div className="grid min-w-0 gap-6 sm:gap-8">
           {study && item.study ? <>
             <div className="grid gap-3 text-center"><h1 className="text-4xl font-bold leading-tight [overflow-wrap:anywhere] sm:text-5xl">{item.study.expression}</h1>
