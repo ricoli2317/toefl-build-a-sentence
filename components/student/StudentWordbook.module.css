@@ -1,9 +1,9 @@
 .readingDateControls :global(.teacher-button-primary) { box-shadow: 0 5px 14px color-mix(in srgb, var(--student-primary) 18%, transparent); }
 .table { width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; color: var(--student-text); font-size: 14px; background: white; }
-.table th { padding: 12px; background: #f9fafb; text-align: left; font-size: 13px; font-weight: 600; }
+.table th { padding: 12px; background: #f9fafb; text-align: left; vertical-align: middle; font-size: 13px; font-weight: 600; }
 .table th:first-child { border-top-left-radius: 12px; }
 .table th:last-child { border-top-right-radius: 12px; }
-.table td { padding: 12px; vertical-align: top; overflow-wrap: anywhere; min-width: 0; }
+.table td { padding: 12px; vertical-align: middle; overflow-wrap: anywhere; min-width: 0; }
 .table tbody + tbody tr:first-child td { border-top: 1px solid #f3f4f6; }
 .table tbody:hover { background: #fafafa; }
 .table td.word { vertical-align: middle; }
@@ -25,7 +25,7 @@
   .table colgroup, .table thead, .table td.desktopEnrichment { display: none; }
   .table tbody { padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
   .table tr { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .table td { display: block; padding: 6px 12px; }
+  .table td { display: flex; flex-direction: column; justify-content: center; padding: 6px 12px; }
   .table td.pos { display: flex; flex-direction: column; justify-content: center; align-items: center; }
   .table td::before { content: attr(data-label); display: block; margin-bottom: 3px; font-size: 11px; color: var(--student-muted); }
   .table.managing thead { display: block; }

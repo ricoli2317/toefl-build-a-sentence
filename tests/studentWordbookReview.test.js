@@ -272,8 +272,9 @@ test('real review handlers authenticate before database access, whitelist all ac
     let authorized=false,calls=[];const exports={};
     vm.runInNewContext(ts.transpileModule(h.read(file),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports,URL,Request,require(name){
       if(name.includes('attemptServer'))return{requireReadingAttemptStudent:async()=>authorized?{userId:h.U}:{error:{status:401}},readingAttemptJson:(body,init)=>({body,status:init?.status??200})};
-      if(name.includes('supabase/server'))return{createServiceSupabase:()=>({rpc:async(name,args)=>{calls.push({name,args});return{data:{ok:true}};}})};
+      if(name.includes('supabase/server'))return{createServiceSupabase:()=>({rpc:async(name,args)=>{calls.push({name,args});return{data:{ok:true,session:{session_id:h.uuid()}}};}})};
       if(name.endsWith('wordbookReview.server'))return{reviewRpc};
+      if(name.endsWith('wordbookReviewRound.server'))return{readReviewRound:async()=>({cards:[]})};
       if(name.endsWith('wordbookReviewPresentation'))return{presentReviewState:data=>data};
       if(name.endsWith('wordbookReview'))return require('../lib/lexical/wordbookReview.ts');throw Error(name);
     }});

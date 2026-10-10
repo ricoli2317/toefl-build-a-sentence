@@ -1,0 +1,274 @@
+{
+  "checks": [
+    "Layout: desktop Reading random: two columns + bottom action",
+    "Source selection / indeterminate all / empty-source guard unchanged",
+    "Preset/custom quantity controls and count guards unchanged",
+    "Layout: desktop single date: inline calendar",
+    "Inline single/range date application and reversed-range guard unchanged",
+    "Writing retains distinct theme and its own saved source selections",
+    "Layout: mobile Reading custom: one column + roomy controls",
+    "Layout: small mobile random: natural vertical scroll",
+    "Layout: small mobile inline calendar: natural scroll without horizontal overflow",
+    "Existing Wordbook date selector remains a popover"
+  ],
+  "layouts": [
+    {
+      "label": "desktop Reading random: two columns + bottom action",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "scroll": {
+        "width": 1440,
+        "height": 900
+      },
+      "configuration": {
+        "x": 168,
+        "y": 88,
+        "width": 1104,
+        "height": 695,
+        "bottom": 783,
+        "right": 1272
+      },
+      "collection": {
+        "x": 168,
+        "y": 249.5,
+        "width": 345.984375,
+        "height": 372,
+        "bottom": 621.5,
+        "right": 513.984375
+      },
+      "range": {
+        "x": 600.375,
+        "y": 265.5,
+        "width": 671.625,
+        "height": 340,
+        "bottom": 605.5,
+        "right": 1272
+      },
+      "footer": {
+        "x": 168,
+        "y": 783,
+        "width": 1104,
+        "height": 117,
+        "bottom": 900,
+        "right": 1272
+      },
+      "start": {
+        "x": 952,
+        "y": 812,
+        "width": 320,
+        "height": 56,
+        "bottom": 868,
+        "right": 1272
+      }
+    },
+    {
+      "label": "desktop single date: inline calendar",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "scroll": {
+        "width": 1440,
+        "height": 900
+      },
+      "configuration": {
+        "x": 168,
+        "y": 88,
+        "width": 1104,
+        "height": 695,
+        "bottom": 783,
+        "right": 1272
+      },
+      "collection": {
+        "x": 168,
+        "y": 249.5,
+        "width": 345.984375,
+        "height": 372,
+        "bottom": 621.5,
+        "right": 513.984375
+      },
+      "range": {
+        "x": 600.375,
+        "y": 126.5,
+        "width": 671.625,
+        "height": 618,
+        "bottom": 744.5,
+        "right": 1272
+      },
+      "footer": {
+        "x": 168,
+        "y": 783,
+        "width": 1104,
+        "height": 117,
+        "bottom": 900,
+        "right": 1272
+      },
+      "start": {
+        "x": 952,
+        "y": 812,
+        "width": 320,
+        "height": 56,
+        "bottom": 868,
+        "right": 1272
+      }
+    },
+    {
+      "label": "mobile Reading custom: one column + roomy controls",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "width": 390,
+        "height": 844
+      },
+      "configuration": {
+        "x": 24,
+        "y": 64,
+        "width": 342,
+        "height": 619,
+        "bottom": 683,
+        "right": 366
+      },
+      "collection": {
+        "x": 24,
+        "y": 115.5,
+        "width": 342,
+        "height": 204,
+        "bottom": 319.5,
+        "right": 366
+      },
+      "range": {
+        "x": 24,
+        "y": 351.5,
+        "width": 342,
+        "height": 272,
+        "bottom": 623.5,
+        "right": 366
+      },
+      "footer": {
+        "x": 24,
+        "y": 683,
+        "width": 342,
+        "height": 161,
+        "bottom": 844,
+        "right": 366
+      },
+      "start": {
+        "x": 24,
+        "y": 764,
+        "width": 342,
+        "height": 56,
+        "bottom": 820,
+        "right": 366
+      }
+    },
+    {
+      "label": "small mobile random: natural vertical scroll",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "scroll": {
+        "width": 320,
+        "height": 789
+      },
+      "configuration": {
+        "x": 16,
+        "y": 64,
+        "width": 288,
+        "height": 564,
+        "bottom": 628,
+        "right": 304
+      },
+      "collection": {
+        "x": 16,
+        "y": 88,
+        "width": 288,
+        "height": 204,
+        "bottom": 292,
+        "right": 304
+      },
+      "range": {
+        "x": 16,
+        "y": 324,
+        "width": 288,
+        "height": 272,
+        "bottom": 596,
+        "right": 304
+      },
+      "footer": {
+        "x": 16,
+        "y": 628,
+        "width": 288,
+        "height": 161,
+        "bottom": 789,
+        "right": 304
+      },
+      "start": {
+        "x": 16,
+        "y": 709,
+        "width": 288,
+        "height": 56,
+        "bottom": 765,
+        "right": 304
+      }
+    },
+    {
+      "label": "small mobile inline calendar: natural scroll without horizontal overflow",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "scroll": {
+        "width": 320,
+        "height": 1119
+      },
+      "configuration": {
+        "x": 16,
+        "y": -480,
+        "width": 288,
+        "height": 894,
+        "bottom": 414,
+        "right": 304
+      },
+      "collection": {
+        "x": 16,
+        "y": -456,
+        "width": 288,
+        "height": 204,
+        "bottom": -252,
+        "right": 304
+      },
+      "range": {
+        "x": 16,
+        "y": -220,
+        "width": 288,
+        "height": 602,
+        "bottom": 382,
+        "right": 304
+      },
+      "footer": {
+        "x": 16,
+        "y": 414,
+        "width": 288,
+        "height": 161,
+        "bottom": 575,
+        "right": 304
+      },
+      "start": {
+        "x": 16,
+        "y": 495,
+        "width": 288,
+        "height": 56,
+        "bottom": 551,
+        "right": 304
+      }
+    }
+  ],
+  "pageErrors": [],
+  "createdReviewRounds": 0,
+  "status": "passed"
+}

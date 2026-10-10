@@ -1,0 +1,11 @@
+.workspace { --review-wrong: color-mix(in srgb, var(--student-error) 55%, var(--student-muted)); --review-wrong-border: color-mix(in srgb, var(--review-wrong) 40%, white); }
+.wrongOption { border-color: var(--review-wrong-border); background: var(--student-error-soft); color: var(--review-wrong); }
+.spelling { position: relative; min-width: 0; border: 0; outline: 0; box-shadow: none; }
+.spelling:focus-within { border: 0; outline: 0; box-shadow: none; }
+.nativeInput { position: absolute; inset: 0; width: 100%; height: 100%; min-width: 0; opacity: 0; font-size: 16px; border: 0 !important; outline: 0 !important; box-shadow: none !important; }
+.spelling[data-feedback="correct"] [data-typed="true"] { color: var(--student-primary); }
+.spelling[data-feedback="wrong"] [data-typed="true"] { color: var(--review-wrong); }
+.selectedLetter { background: var(--student-primary-soft); }
+.caret { position: absolute; left: 0; top: 4px; width: 2px; height: 30px; background: var(--student-primary); animation: blink 1s step-end infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .caret { animation: none; } }

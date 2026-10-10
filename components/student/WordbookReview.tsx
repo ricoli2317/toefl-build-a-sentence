@@ -8,12 +8,14 @@ import { StudentNavigation } from "./StudentUI";
 import { StudentDateSelection } from "./StudentDateSelection";
 import { boundedCalendarMonth, boundedDateDraft, browserTimeZone, formatDateInputValue, startOfLocalDay } from "@/lib/studentDates";
 import { REVIEW_SOURCES, reviewPercent, reviewRangeLabel,
-  type ReviewAvailability, type ReviewHistory, type ReviewSettings, type ReviewState } from "@/lib/lexical/wordbookReview";
+  type ReviewAvailability, type ReviewHistory, type ReviewSettings, type ReviewRound } from "@/lib/lexical/wordbookReview";
 import { WordbookReviewWorkspace } from "./WordbookReviewWorkspace";
-import { clearReviewSwitch, prepareReviewAdvance, readReviewSwitch, REVIEW_SWITCH_DELAY,
-  saveReviewSwitch, waitForReviewSwitch } from "@/lib/lexical/wordbookReviewTiming";
+import { useWordbookLocalReview } from "./useWordbookLocalReview";
+import { fetchReview } from "@/lib/lexical/wordbookReviewRequest";
+import { localReview, saveLocalReview } from "@/lib/lexical/wordbookReviewLocal";
 import type { WordbookDomain } from "@/lib/lexical/wordbookList";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import setupStyles from "./WordbookReviewSetup.module.css";
 
 const ROOT = "/api/student/wordbook/review";
 const SETUP = "/student/wordbook/review";
@@ -30,12 +32,8 @@ function useReviewRequest() {
   const request = useCallback(async <T,>(url: string, body?: unknown, signal?: AbortSignal): Promise<T> => {
     const token = getSession()?.accessToken, id = studentId;
     if (!token || !id) throw new Error("请重新登录。");
-    const response = await fetch(url, { method: body === undefined ? "GET" : "POST", cache: "no-store", signal,
-      headers: { Authorization: `Bearer ${token}`, ...(body === undefined ? {} : { "Content-Type": "application/json" }) },
-      ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
-    const result = await response.json();
+    const result = await fetchReview<T>(url, token, body, signal);
     if (owner.current !== id) throw new Error("登录账号已变化，请刷新页面。");
-    if (!response.ok) throw new Error(result.error ?? "复习请求失败，请稍后重试。");
     return result as T;
   }, [getSession, studentId]);
   return { request, studentId, sessionReady };
@@ -62,6 +60,30 @@ function Failure({ error, retry }: { error?: string; retry?: () => void }) {
 function Sources({ domain, sources }: { domain: WordbookDomain; sources: string[] }) {
   return <span className="flex flex-wrap gap-1.5">{sources.map(source => <span key={source} className="student-chip text-xs">
     {REVIEW_SOURCES[domain].find(s => s.id === source)?.label ?? source}</span>)}</span>;
+}
+
+function PendingReviews() {
+  const { studentId } = useReviewRequest();
+  const [pending, setPending] = useState<{ session: string; count: number }[]>([]);
+  useEffect(() => {
+    const update = () => {
+      if (!studentId) { setPending([]); return; }
+      const found: { session: string; count: number }[] = [];
+      try {
+        for (let n = 0; n < localStorage.length; n++) {
+          const key = localStorage.key(n); if (!key?.startsWith(`tps:wordbook-review:pending:${studentId}:`)) continue;
+          const value = JSON.parse(localStorage.getItem(key) ?? "null");
+          if (value?.owner === studentId && value.queue?.length) found.push({ session: value.round.session.session_id, count: value.queue.length });
+        }
+      } catch { /* Session workspace surfaces an unreadable pending record. */ }
+      setPending(found);
+    };
+    update(); window.addEventListener("focus", update); window.addEventListener("storage", update);
+    return () => { window.removeEventListener("focus", update); window.removeEventListener("storage", update); };
+  }, [studentId]);
+  return pending.length ? <div role="status" className="grid gap-2 text-sm text-student-muted">
+    {pending.map(p => <Link key={p.session} href={`${SETUP}/${p.session}`} className="text-student-primary underline">本机有{p.count}项未同步记录 · 继续复习并同步</Link>)}
+  </div> : null;
 }
 
 export function WordbookReviewSetup({ initialDomain }: { initialDomain: WordbookDomain }) {
@@ -95,134 +117,86 @@ export function WordbookReviewSetup({ initialDomain }: { initialDomain: Wordbook
     try {
       const identity = `${studentId}:${settingsKey}`;
       if (pending.current?.identity !== identity) pending.current = { identity, id: crypto.randomUUID() };
-      const result = await request<ReviewState>(ROOT, { settings, requestId: pending.current.id });
+      const result = await request<ReviewRound>(ROOT, { settings, requestId: pending.current.id });
+      saveLocalReview(localStorage, localReview(studentId!, result));
       router.push(`${SETUP}/${result.session.session_id}`);
     } catch (e) { setError(e instanceof Error ? e.message : "创建失败。"); setRevision(v => v + 1); }
     finally { busyRef.current = false; setBusy(false); }
   };
-  return <div className="grid min-w-0 gap-5"><Navigation label="开始复习" />
-    <section className={`student-card grid min-w-0 gap-5 p-4 sm:p-6 ${domain === "reading" ? "reading-theme" : ""}`}>
-      <fieldset disabled={busy} className="grid min-w-0 gap-5">
-        <legend className="sr-only">复习设置</legend>
-        <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex gap-2" aria-label="复习词表">
+  return <div className={`${setupStyles.page} ${domain === "reading" ? "reading-theme" : ""}`}>
+    <section aria-label="复习设置" className={setupStyles.layout}>
+      <nav aria-label="复习导航" className={setupStyles.navigation}><Link href="/student/wordbook">返回生词本</Link>
+        <Link href={`${SETUP}/history`}>复习历史</Link></nav>
+      <div className={setupStyles.pending}><PendingReviews /></div>
+      <div data-review-configuration className={setupStyles.configuration}>
+        <fieldset disabled={busy} className={setupStyles.collection}>
+        <legend className="sr-only">复习词表与题型</legend>
+        <div><p className={setupStyles.label}>复习词表</p><div className={setupStyles.domains} aria-label="复习词表">
           {(["reading", "writing"] as const).map(d => <button type="button" aria-pressed={domain === d} key={d}
-            className={domain === d ? "student-button-primary" : "student-button-secondary"} onClick={() => { setDomain(d); setError(""); }}>{d === "reading" ? "Reading" : "Writing"}</button>)}</div>
-          <Link href={`${SETUP}/history`} className="text-sm font-semibold text-student-primary hover:underline">复习历史</Link></div>
-        <fieldset className="grid gap-3"><legend className="mb-2 text-sm font-bold">复习题型</legend>
-          <div className="flex flex-wrap gap-x-5 gap-y-3"><label className="flex items-center gap-2 text-sm"><input ref={allRef} type="checkbox" checked={sources.length === 3}
-            onChange={() => setSelections(v => ({ ...v, [domain]: sources.length === 3 ? [] : REVIEW_SOURCES[domain].map(s => s.id) }))} />全选</label>
-            {REVIEW_SOURCES[domain].map(source => <label key={source.id} className="flex items-center gap-2 text-sm"><input type="checkbox" checked={sources.includes(source.id)}
-              onChange={() => setSelections(v => ({ ...v, [domain]: sources.includes(source.id) ? sources.filter(s => s !== source.id) : [...sources, source.id] }))} />{source.label}</label>)}</div>
-          {!sources.length ? <p role="status" className="text-sm text-student-error">请至少选择一个题型。</p> : null}
+            className={setupStyles.domain} onClick={() => { setDomain(d); setError(""); }}>{d === "reading" ? "Reading" : "Writing"}</button>)}</div></div>
+        <fieldset className={setupStyles.sources}><legend className="sr-only">复习题型</legend>
+          <div className={setupStyles.sourceHeading}><p aria-hidden="true" className={setupStyles.label}>复习题型</p><label className={setupStyles.selectAll}><input ref={allRef} type="checkbox" checked={sources.length === 3}
+            onChange={() => setSelections(v => ({ ...v, [domain]: sources.length === 3 ? [] : REVIEW_SOURCES[domain].map(s => s.id) }))} />全选</label></div>
+          <div className={setupStyles.sourceOptions}>
+            {REVIEW_SOURCES[domain].map(source => <label key={source.id} className={setupStyles.source}><span>{source.label}</span><input type="checkbox" checked={sources.includes(source.id)}
+              onChange={() => setSelections(v => ({ ...v, [domain]: sources.includes(source.id) ? sources.filter(s => s !== source.id) : [...sources, source.id] }))} /></label>)}</div>
+          {!sources.length ? <p role="status" className={setupStyles.message}>请至少选择一个题型。</p> : null}
         </fieldset>
-        <fieldset className="grid min-w-0 gap-3"><legend className="mb-2 text-sm font-bold">复习范围</legend>
-          <div className="flex flex-wrap gap-2">{([['date', '指定日期'], ['range', '指定时间段'], ['random', '随机数量']] as const).map(([m, label]) =>
-            <button type="button" aria-pressed={mode === m} key={m} className={mode === m ? "student-button-primary" : "student-button-secondary"}
+        </fieldset>
+        <fieldset disabled={busy} className={setupStyles.range}><legend className={setupStyles.label}>复习范围</legend>
+          <div className={setupStyles.modes}>{([['date', '指定日期'], ['range', '指定时间段'], ['random', '随机数量']] as const).map(([m, label]) =>
+            <button type="button" aria-pressed={mode === m} key={m} className={setupStyles.mode}
               onClick={() => { setMode(m); setError(""); setDraft({ start: "", end: "" }); setRange({ start: "", end: "" }); }}>{label}</button>)}</div>
-          {mode === "random" ? <><div className="flex flex-wrap items-center gap-2">{[10, 20, 50].map(n => <button type="button" key={n} aria-pressed={!custom && count === String(n)}
-            className={!custom && count === String(n) ? "student-button-primary" : "student-button-secondary"} onClick={() => { setCustom(false); setCount(String(n)); }}>{n} 个</button>)}
-            <button type="button" aria-pressed={custom} className={custom ? "student-button-primary" : "student-button-secondary"} onClick={() => setCustom(true)}>自定义</button></div>
-            {custom ? <label className="grid max-w-48 gap-2 text-sm">自定义数量<input className="teacher-input min-w-0 w-full" inputMode="numeric" value={count} onChange={e => setCount(e.target.value)} /></label> : null}
-            {!validCount ? <p role="status" className="text-sm text-student-error">数量必须为正整数。</p> : null}
-            {available.data && validCount && Number(count) > available.data.total ? <p role="status" className="text-sm text-student-error">实际可复习 {available.data.total} 个，不能开始 {count} 个词条的复习。</p> : null}
-          </> : <div className="flex min-w-0 flex-wrap items-center gap-3"><StudentDateSelection singleDay={mode === "date"} draft={draft}
-            hideHints
+          <div className={setupStyles.rangeBody}>
+          {mode === "random" ? <><div className={setupStyles.quantities}>{[10, 20, 50].map(n => <button type="button" key={n} aria-label={`${n} 个`} aria-pressed={!custom && count === String(n)}
+            className={setupStyles.quantity} onClick={() => { setCustom(false); setCount(String(n)); }}><span className={setupStyles.quantityValue}>{n}</span><span className={setupStyles.quantityUnit}>个词条</span></button>)}
+            <button type="button" aria-pressed={custom} className={setupStyles.quantity} onClick={() => setCustom(true)}><span className={setupStyles.quantityCustom}>自定义</span></button></div>
+            {custom ? <label className={setupStyles.customCount}>自定义数量<input inputMode="numeric" value={count} onChange={e => setCount(e.target.value)} /><span aria-hidden="true">个词条</span></label> : null}
+            {!validCount ? <p role="status" className={setupStyles.message}>数量必须为正整数。</p> : null}
+            {available.data && validCount && Number(count) > available.data.total ? <p role="status" className={setupStyles.message}>实际可复习 {available.data.total} 个，不能开始 {count} 个词条的复习。</p> : null}
+          </> : <><StudentDateSelection singleDay={mode === "date"} draft={draft}
+            hideHints inline
             onDraftChange={v => setDraft(mode === "date" ? { start: v.start, end: v.start } : v)} bounds={bounds} rangeLabel="选择时间段"
             onApply={close => { const v = boundedDateDraft(draft, bounds); if (v) { setRange(v); close(); } }}
             activity={{ month, onMonthChange: v => setMonth(boundedCalendarMonth(v, bounds)), dates: dates.data?.dates ?? [], error: dates.error, loading: dates.loading, showToday: true, resetMonthOnOpen: true }} />
-            <span className="text-sm text-student-muted">{range.start ? range.start === range.end ? range.start : `${range.start} — ${range.end}` : "请选择日期"}</span></div>}
+            <p className="text-sm text-student-muted" role="status">{range.start ? range.start === range.end ? `已选择 ${range.start}` : `已选择 ${range.start} — ${range.end}` : "请选择日期并应用"}</p></>}
+          </div>
         </fieldset>
-      </fieldset>
-      <div className="text-sm font-semibold" aria-live="polite">
-        {available.loading ? <p>正在核算可复习词条…</p> : available.data ? <p>可复习 {available.data.total} 个词条</p> : null}
       </div>
-      <Failure error={available.error} retry={() => setRevision(v => v + 1)} /><Failure error={error} />
-      <button type="button" className="student-button-primary justify-self-start" disabled={!canStart || busy} onClick={() => void start()}>{busy ? "正在创建…" : "开始复习"}</button>
+      <footer className={setupStyles.action}>
+        {available.error || error ? <div className={setupStyles.actionErrors}><Failure error={available.error} retry={() => setRevision(v => v + 1)} /><Failure error={error} /></div> : null}
+        <div className={setupStyles.availability} aria-live="polite">
+          {available.loading ? <span>正在核算可复习词条…</span> : available.data ? <><span>可复习</span><strong>{available.data.total}</strong><span>个词条</span></> : <span>{sources.length ? "选择范围后查看可复习数量" : "请选择复习题型"}</span>}
+        </div>
+        <button type="button" className={setupStyles.start} disabled={!canStart || busy} onClick={() => void start()}>{busy ? "正在创建…" : "开始复习"}</button>
+      </footer>
     </section>
   </div>;
 }
 
 export function WordbookReviewSession({ sessionId }: { sessionId: string }) {
   const router = useRouter(), { request, studentId } = useReviewRequest();
-  const [revision, setRevision] = useState(0);
-  const [submitted, setSubmitted] = useState<{ owner: string | null; state: ReviewState } | null>(null);
   const [busy, setBusy] = useState(false), [error, setError] = useState("");
-  const [restoring, setRestoring] = useState(true);
   const busyRef = useRef(false), identityRef = useRef("");
-  const transition = useRef<AbortController | null>(null), restored = useRef<ReviewState | null>(null);
   const identity = `${studentId}:${sessionId}`; identityRef.current = identity;
   const retryRequest = useRef<string | null>(null);
-  const loaded = useReviewRead<ReviewState>(`${ROOT}/${sessionId}`, revision);
-  const state = submitted?.owner === studentId && submitted.state.session.session_id === sessionId ? submitted.state : restoring ? undefined : loaded.data;
-  useEffect(() => { identityRef.current = identity; setSubmitted(null); setError(""); setBusy(false); setRestoring(true);
-    busyRef.current = false; restored.current = null; retryRequest.current = null;
-    return () => { identityRef.current = ""; transition.current?.abort(); }; }, [identity]);
-  const runAction = async (current: ReviewState, name: string, answer?: unknown) => {
-    if (!current.item || !studentId || busyRef.current) return;
-    transition.current?.abort();
-    const abort = new AbortController(); transition.current = abort;
-    const active = () => !abort.signal.aborted && identityRef.current === identity;
-    const publish = (next: ReviewState) => { if (active()) setSubmitted({ owner: studentId, state: next }); };
-    // Called synchronously by the button/Enter handler, BEFORE the answer fetch.
-    const deadline = name === "answer" ? Date.now() + REVIEW_SWITCH_DELAY
-      : readReviewSwitch(studentId, sessionId)?.deadline ?? Date.now();
-    if (name === "answer") saveReviewSwitch(studentId, sessionId, { itemId: current.item.itemId, deadline });
-    busyRef.current = true; setBusy(true); setError("");
-    try {
-      if (name === "advance" && current.item.answer?.correct) {
-        await prepareReviewAdvance(() => request<ReviewState>(`${ROOT}/${sessionId}`, { action: "advance", itemId: current.item.itemId }), deadline, abort.signal, publish);
-        if (active()) clearReviewSwitch(studentId, sessionId);
-      } else {
-        const next = await request<ReviewState>(`${ROOT}/${sessionId}`, { action: name, itemId: current.item.itemId, ...(answer === undefined ? {} : { answer }) });
-        if (!active()) return;
-        publish(next);
-        if (name === "answer" && next.flow?.phase === "test" && next.item.answer?.correct) {
-          // The server has confirmed and saved this answer. Prepare the exact
-          // next cursor/result immediately while keeping the green card visible.
-          await prepareReviewAdvance(() => request<ReviewState>(`${ROOT}/${sessionId}`, { action: "advance", itemId: next.item.itemId }), deadline, abort.signal, publish);
-        }
-        if (active()) clearReviewSwitch(studentId, sessionId);
-      }
-    } catch (e) { if (active()) setError(e instanceof Error ? e.message : "请求失败。"); }
-    finally { if (transition.current === abort && active()) { busyRef.current = false; setBusy(false); } }
-  };
-  const runActionRef = useRef(runAction); runActionRef.current = runAction;
-  useEffect(() => {
-    const current = loaded.data;
-    if (!current || !studentId || restored.current === current) return;
-    restored.current = current;
-    if (current.flow?.phase === "test" && current.item.answer?.correct) {
-      setRestoring(false);
-      // No resubmission or new 1s timer on refresh: use the original deadline,
-      // and let the server's itemId guard handle an already-committed advance.
-      void runActionRef.current(current, "advance");
-      return;
-    }
-    const pending = readReviewSwitch(studentId, sessionId);
-    const abort = new AbortController(); transition.current?.abort(); transition.current = abort;
-    const deadline = pending && current.flow?.phase !== "study" && current.item.answer?.correct !== false
-      ? pending.deadline : Date.now();
-    // If a refresh reads the prepared next cursor/result before the deadline,
-    // hold its publication too. Do not restore an old answer from local storage.
-    void waitForReviewSwitch(deadline, abort.signal).then(ready => {
-      if (!ready || identityRef.current !== identity) return;
-      clearReviewSwitch(studentId, sessionId); setRestoring(false);
-    });
-  }, [loaded.data, studentId, sessionId, identity]);
-  const action = async (name: string, answer?: unknown) => { if (state) await runAction(state, name, answer); };
+  const review = useWordbookLocalReview(studentId, sessionId, request);
+  useEffect(() => { setError(""); retryRequest.current = null; busyRef.current = false; setBusy(false);
+    return () => { identityRef.current = ""; }; }, [identity]);
   const retry = async () => {
-    if (busyRef.current) return;
+    if (busyRef.current || review.pending) return;
     busyRef.current = true; setBusy(true); setError("");
     try {
       retryRequest.current ??= crypto.randomUUID();
-      const next = await request<ReviewState>(`${ROOT}/${sessionId}`, { action: "retry", requestId: retryRequest.current });
+      const next = await request<ReviewRound>(`${ROOT}/${sessionId}`, { action: "retry", requestId: retryRequest.current });
+      saveLocalReview(localStorage, localReview(studentId!, next));
       if (identityRef.current === identity) router.push(`${SETUP}/${next.session.session_id}`);
     } catch (e) { if (identityRef.current === identity) setError(e instanceof Error ? e.message : "创建失败。"); }
     finally { busyRef.current = false; if (identityRef.current === identity) setBusy(false); }
   };
-  return <WordbookReviewWorkspace key={identity} state={state} busy={busy} error={error || loaded.error}
-    onAction={action} onRetry={() => void retry()} onReload={() => { transition.current?.abort(); busyRef.current = false; setBusy(false);
-      setRestoring(true); setSubmitted(null); setRevision(v => v + 1); }} />;
+  return <WordbookReviewWorkspace key={identity} state={review.state} busy={busy} error={error || review.error}
+    onAction={review.action} onRetry={() => void retry()} onReload={() => void review.reload()}
+    pending={review.pending} syncError={review.syncError} syncing={review.syncing} onSyncRetry={review.retrySync} />;
 }
 function Pagination({ page, total, pageSize, disabled, onChange }: { page: number; total: number; pageSize: number; disabled: boolean; onChange: (page: number) => void }) {
   const pages = Math.max(1, Math.ceil(total / pageSize));
@@ -234,7 +208,7 @@ export function WordbookReviewHistory() {
   const [page, setPage] = useState(1), [revision, setRevision] = useState(0);
   const history = useReviewRead<ReviewHistory>(`${ROOT}?action=history&page=${page}`, revision);
   return <div className="grid min-w-0 gap-5"><Navigation label="复习历史" /><Link href={SETUP} className="student-button-primary justify-self-start">开始新复习</Link>
-    {history.loading ? <p className="text-sm text-student-muted">正在加载复习历史…</p> : null}<Failure error={history.error} retry={() => setRevision(v => v + 1)} />
+    <PendingReviews />{history.loading ? <p className="text-sm text-student-muted">正在加载复习历史…</p> : null}<Failure error={history.error} retry={() => setRevision(v => v + 1)} />
     {history.data?.items.map(session => <section key={session.session_id} className={`student-card grid min-w-0 gap-3 p-4 ${session.domain === "reading" ? "reading-theme" : ""}`}>
       <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-bold">{session.domain === "reading" ? "Reading" : "Writing"} · {reviewRangeLabel(session)}</h2><Sources domain={session.domain} sources={session.source_types} /></div>
       <p className="break-words text-xs text-student-muted">{new Date(session.started_at).toLocaleString()} · {session.status === "completed" ? "已完成" : "未完成"}</p>

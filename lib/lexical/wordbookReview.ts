@@ -26,6 +26,14 @@ export type ReviewSession = { session_id: string; domain: WordbookDomain; source
   status: "active" | "completed"; total: number; answered: number; parent_session_id: string | null };
 export type ReviewState = { session: ReviewSession; summary: ReviewSummary; composition: { spellingPos: number; meaningChoice: number }; item: ReviewItem;
   flow?: { phase: "study" | "test" | "result"; position: number } };
+// Authorized review clients deliberately receive the fixed round's answers.
+// This is vocabulary practice, not an examination or an anti-cheating boundary.
+export type ReviewCard = ReviewItem & { expected: { expression: string; pos: string | null; standardPos: string | null;
+  meaning: string; definitionEn: string | null; correctOptionId: string | null; examples: { text: string; kind: string }[] };
+  targetForms: string[] };
+export type ReviewRound = ReviewState & { cards: ReviewCard[] };
+export type ReviewCommand = { id: string; action: "study_next" | "repeat" | "start_test" | "answer" | "advance";
+  itemId: string; answer?: ReviewAnswer["student"] };
 export type ReviewAvailability = { total: number; spellingPos: number; meaningChoice: number; unavailable: number;
   reasons: Record<string, number>; posOptions: ReviewOption[] };
 export type ReviewHistory = { items: (ReviewSession & { summary: ReviewSummary })[]; total: number; page: number; pageSize: number };

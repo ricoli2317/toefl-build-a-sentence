@@ -8,7 +8,7 @@ const flow=async(db,s,action='read',item=null,answer=null,user=h.U)=>
 test('examples preserve exact source text, word boundaries, all repeated targets and a single continuous spelling blank',()=>{
   assert.deepEqual(reviewExample('Run, then RUN daily.','run',false),[{text:'Run',target:true},{text:', then '},{text:'RUN',target:true},{text:' daily.'}]);
   assert.deepEqual(reviewExample('We take   care daily.','take care',true),[{text:'We '},{text:'',target:true},{text:' daily.'}]);
-  assert.equal(reviewExample('The runner runs.','run',true),null);
+  assert.deepEqual(reviewExample('The runner runs.','run',true),[{text:'The runner runs.'}]);
   assert.equal(spellingShape('take care-of'), '____ ____-__');
   const raw={flow:{phase:'test'},item:{kind:'spelling_pos'},presentation:{expression:'run',meaning:'运行',pos:'verb',examples:[{kind:'sentence',text:'We run daily.'}]}};
   const projected=presentReviewState(raw);
@@ -130,16 +130,12 @@ test('actual setup/session/history handlers run the full flow against isolated S
     for(const source of ['ctw','rdl','rap','bas','write_email','academic_discussion'])
       await h.save(db,{source,expression:`word${source}`,pos:'noun',meaning:'词条'});
     const ts=require('typescript'),vm=require('node:vm');let user=h.U;
-    const rpcArgs={wordbook_review_availability:['p_student','p_settings'],wordbook_review_create:['p_student','p_settings','p_request','p_parent'],
-      wordbook_review_flow_state:['p_student','p_session','p_action','p_item','p_answer'],wordbook_review_history:['p_student','p_page']};
-    const client={rpc:async(name,args)=>{try{
-      const values=rpcArgs[name].map(k=>args[k]&&typeof args[k]==='object'?JSON.stringify(args[k]):args[k]);
-      return {data:(await db.query(`select ${name}(${values.map((_,i)=>'$'+(i+1)).join(',')}) result`,values)).rows[0].result};
-    }catch(error){return {error};}}};
+    const client=require('./helpers/wordbookReviewApiFixture.cjs').client(db);
     const load=file=>{const exports={};vm.runInNewContext(ts.transpileModule(h.read(file),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports,URL,Request,require(name){
       if(name.includes('attemptServer'))return {requireReadingAttemptStudent:async()=>({userId:user}),readingAttemptJson:(body,init)=>({body,status:init?.status??200})};
       if(name.includes('supabase/server'))return {createServiceSupabase:()=>client};
       if(name.endsWith('wordbookReview.server'))return require('../lib/lexical/wordbookReview.server.ts');
+      if(name.endsWith('wordbookReviewRound.server'))return require('../lib/lexical/wordbookReviewRound.server.ts');
       if(name.endsWith('wordbookReviewPresentation'))return require('../lib/lexical/wordbookReviewPresentation.ts');
       if(name.endsWith('wordbookReview'))return require('../lib/lexical/wordbookReview.ts');throw Error(name);
     }});return exports;};

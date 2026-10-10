@@ -1,0 +1,77 @@
+{
+  "scope": "student-wordbook-local-grading-and-immersive-ui",
+  "date": "2026-10-10",
+  "automated": {
+    "engine": "isolated PGlite; Node test runner",
+    "passed": 31,
+    "failed": 0,
+    "skipped": 0,
+    "files": [
+      "tests/studentWordbookReview.test.js",
+      "tests/studentWordbookReviewImmersive.test.cjs",
+      "tests/studentWordbookReviewTiming.test.cjs"
+    ],
+    "typecheck": "passed",
+    "targetedLint": "passed",
+    "coverage": [
+      "local spelling normalization vs original SQL including Unicode whitespace and lowercase",
+      "independent spelling/POS7, choice and empty-answer grading",
+      "original click+1000ms deadline restored after refresh",
+      "ordered queue acknowledgements and idempotent replay",
+      "immutable full-round cards and owner-scoped API projection",
+      "storage failure and corrupted pending record remain visible",
+      "transport cause preserved; safe read retry and durable-write retry separated",
+      "legacy completed rounds remain viewable"
+    ]
+  },
+  "browser": {
+    "engine": "Google Chrome, localhost:3001",
+    "viewports": ["390x844", "320x568", "1440x900"],
+    "realRounds": [
+      {"id": "78caf6b9-f33b-4316-99cd-c6cf7d147583", "source": "ctw", "answers": 2, "completed": true},
+      {"id": "def4d18b-9878-4079-868a-0cdc91ce2380", "source": "rap", "answers": 1, "completed": true, "lostResponseAfterCommitReplay": "passed"}
+    ],
+    "visibleTimingMs": [
+      {"case": "real Reading spelling to next", "feedback": 28.4, "next": 1009.8, "injectedPersistenceDelay": 3000},
+      {"case": "real Reading choice to result", "feedback": 27.5, "result": 1014.6},
+      {"case": "isolated offline Writing spelling to next", "feedback": 27.2, "next": 1010.6},
+      {"case": "isolated desktop spelling to next", "feedback": 24.3, "next": 1008.1, "injectedPersistenceDelay": 2500}
+    ],
+    "waitingButton": {"heightPx": 44, "sameBounds": true, "disabled": true},
+    "passed": [
+      "immediate independent component colors without verdict icons",
+      "Reading/Writing choice theme + soft orange; centered option text",
+      "empty answers highlight correct option only",
+      "pending queue and local feedback/cursor survive full reload",
+      "automatic recovery from failed requests and same-command replay after commit",
+      "two tabs simultaneous start/answer/advance create one ordered queue without stale replay",
+      "native spelling caret, arrows, backspace and selection replacement; no outer focus rectangle",
+      "keyboard visualViewport simulation uses same input DOM, no scaling, vertical scrolling and no horizontal overflow",
+      "keyboard close restores one-screen layout",
+      "immersive settings preserve filters, counts, history and navigation",
+      "real Reading wordbook table visible cells vertically middle"
+    ],
+    "yield": {
+      "realSavedMeaning": "产量",
+      "actualSurface": "yields",
+      "sameSenseSavedExampleRead": true,
+      "highlightAndMask": "passed with isolated client round using the real historical card",
+      "productionContentChanged": false
+    }
+  },
+  "notVerified": [
+    "physical iPhone Safari and actual software keyboard",
+    "original production iPhone request failure's precise network cause",
+    "real Writing end-to-end grading was not exercised; Writing UI used isolated fixed cards",
+    "cross-tab locking on older browsers without navigator.locks"
+  ],
+  "boundaries": {
+    "databaseMigrationRequired": false,
+    "productionSqlExecuted": false,
+    "fixedPoolOrDistractorAlgorithmChanged": false,
+    "commitPushDeploy": false,
+    "markdownDocumentsCreated": false,
+    "screenshotsTracked": false,
+    "closedBrowserRecovery": "pending operations persist on this browser; reopen the same round to resume synchronization"
+  }
+}

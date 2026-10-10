@@ -32,6 +32,22 @@ test('history default form has no date bounds, Today/month UI or changed day/ran
   const html=renderToStaticMarkup(React.createElement(StudentDateSelection,{draft:{start:'2026-06-01',end:'2026-06-02'},onDraftChange(){},onApply(){}}));
   assert.doesNotMatch(html,/min="|max="|今天|有收藏活动/);assert.match(html,/查看范围统计/);
 });
+test('immersive setup opts into an inline calendar without a popover; default history still uses its existing popover',()=>{
+  let popovers=0;
+  const {StudentDateSelection:Selector}=compile('components/student/StudentDateSelection.tsx',{
+    '@/components/teacher/TeacherPopover':{TeacherPopover:({children})=>{popovers++;return children(()=>{});}},
+    '@/lib/studentDates':dates,react:{...React,useLayoutEffect:React.useEffect}
+  });
+  const props={draft:{start:'2026-10-01',end:'2026-10-08'},onDraftChange(){},onApply(){},bounds:{min:'2026-07-01',max:'2026-10-10'},
+    activity:{month:new Date(2026,9,1),dates:['2026-10-01'],onMonthChange(){},showToday:true},hideHints:true,inline:true};
+  const inline=renderToStaticMarkup(React.createElement(Selector,props));
+  assert.equal(popovers,0);assert.match(inline,/应用时间段/);assert.match(inline,/data-activity-dot/);assert.match(inline,/!text-base/);
+  assert.match(inline,/aria-label="下个月" disabled/);assert.match(inline,/aria-label="2026-10-11"[^>]*disabled/);
+  const single=renderToStaticMarkup(React.createElement(Selector,{...props,singleDay:true}));
+  assert.match(single,/应用日期/);assert.doesNotMatch(single,/aria-label="结束日期"/);
+  const history=renderToStaticMarkup(React.createElement(Selector,{...props,inline:false}));
+  assert.equal(popovers,1);assert.match(history,/查看范围统计/);assert.doesNotMatch(history,/应用时间段/);
+});
 test('Reading calendar primary-button shadow follows its theme without modifying shared history or Writing styles',()=>{
   const component=fs.readFileSync(path.join(__dirname,'../components/student/StudentWordbook.tsx'),'utf8');
   const css=fs.readFileSync(path.join(__dirname,'../components/student/StudentWordbook.module.css'),'utf8');

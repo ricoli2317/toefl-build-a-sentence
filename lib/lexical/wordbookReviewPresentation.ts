@@ -4,19 +4,21 @@ export type ReviewExamplePart = { text: string; target?: boolean };
 export type ReviewPresentation = { expression: string; pos: string | null; meaning: string;
   examples: { text: string; kind: string }[] };
 
-/** Only an exact, word-bounded saved target can authorize showing an example.
- * Uncertain inflections/fragments are omitted, never guessed or AI-generated. */
-export function reviewExample(text: string, expression: string, mask: boolean): ReviewExamplePart[] | null {
-  const escaped = expression.trim().split(/\s+/).map(s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+");
-  if (!escaped) return null;
-  const pattern = new RegExp(`(?<![A-Za-z])${escaped}(?![A-Za-z])`, "gi");
+/** Saved examples are content, not proof to re-authorize. A known occurrence
+ * surface (e.g. yields for yield) decorates that same saved sense. No guessing. */
+export function reviewExample(text: string, expression: string, mask: boolean, forms: string[] = []): ReviewExamplePart[] | null {
+  if (!text.trim()) return null;
+  const escaped = Array.from(new Set([expression, ...forms].filter(s => s.trim()).map(s => s.trim())))
+    .sort((a, b) => b.length - a.length).map(s => s.split(/\s+/).map(s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("\\s+")).join("|");
+  if (!escaped) return [{ text }];
+  const pattern = new RegExp(`(?<![A-Za-z])(?:${escaped})(?![A-Za-z])`, "gi");
   const parts: ReviewExamplePart[] = []; let offset = 0;
   for (const match of Array.from(text.matchAll(pattern))) {
     if (match.index! > offset) parts.push({ text: text.slice(offset, match.index) });
     parts.push({ text: mask ? "" : match[0], target: true });
     offset = match.index! + match[0].length;
   }
-  if (!parts.length) return null;
+  if (!parts.length) return [{ text }];
   if (offset < text.length) parts.push({ text: text.slice(offset) });
   return parts;
 }

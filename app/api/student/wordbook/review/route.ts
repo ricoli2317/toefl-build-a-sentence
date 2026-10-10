@@ -2,6 +2,8 @@ import { requireReadingAttemptStudent, readingAttemptJson } from "@/lib/reading/
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { parseReviewSettings, reviewObject, reviewPage, reviewUuid, ReviewError } from "@/lib/lexical/wordbookReview";
 import { reviewRpc } from "@/lib/lexical/wordbookReview.server";
+import { readReviewRound } from "@/lib/lexical/wordbookReviewRound.server";
+import type { ReviewState } from "@/lib/lexical/wordbookReview";
 
 export const dynamic = "force-dynamic";
 function fail(error: unknown) {
@@ -32,8 +34,10 @@ export async function POST(request: Request) {
   try {
     const body = reviewObject(await request.json(), ["settings", "requestId"]);
     const settings = parseReviewSettings(body.settings), requestId = reviewUuid(body.requestId);
-    return readingAttemptJson(await reviewRpc(createServiceSupabase(), "wordbook_review_create", {
+    const db = createServiceSupabase();
+    const created = await reviewRpc(db, "wordbook_review_create", {
       p_student: auth.userId, p_settings: settings, p_request: requestId, p_parent: null
-    }));
+    }) as ReviewState;
+    return readingAttemptJson(await readReviewRound(db, auth.userId, created.session.session_id));
   } catch (error) { return fail(error); }
 }
