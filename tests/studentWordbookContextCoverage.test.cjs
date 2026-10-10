@@ -54,14 +54,14 @@ test('fixed spaces never consume input; hyphens are hidden, editable and count t
   assert.equal(gradeReview(card,{spelling:'dropXoff',pos:'noun'}).assessments.spelling,false);
   assert.equal(gradeReview(card,{spelling:'drop-off',pos:'noun'}).correct,true);
 });
-test('context display is a pure stored-data mapping: no motivated or participle special case',()=>{
-  assert.deepEqual(wordbookContextForm(reviewed),{expression:'motivated',contextPos:'verb',contextMeaningZh:'有动力的',contextDefinitionEn:'Give reason to act.'});
+test('context display uses canonical identity and stored sense without a motivated special case',()=>{
+  assert.deepEqual(wordbookContextForm(reviewed,{canonical_expression:'motivate'}),{expression:'motivate',contextPos:'verb',contextMeaningZh:'有动力的',contextDefinitionEn:'Give reason to act.'});
   assert.equal(reviewed.context_pos,'verb');
   for(const patch of [{occurrence_id:h.uuid()},{context_meaning_zh:'激励'},{source_type:'rdl'},{context_pos:'adjective'}]){
-    const o={...reviewed,...patch};assert.equal(wordbookContextForm(o).contextPos,o.context_pos);
+    const o={...reviewed,...patch};assert.equal(wordbookContextForm(o,{canonical_expression:'motivate'}).contextPos,o.context_pos);
   }
   for(const [expression,pos] of [['interested','adjective'],['involved','verb'],['involved','adjective'],['yields','noun'],['record','verb'],['record','noun']])
-    assert.equal(wordbookContextForm({...reviewed,occurrence_id:h.uuid(),surface_text:expression,context_pos:pos}).contextPos,pos);
+    assert.equal(wordbookContextForm({...reviewed,occurrence_id:h.uuid(),surface_text:expression,context_pos:pos},{canonical_expression:expression}).contextPos,pos);
 });
 test('lookup renders corrected stored POS/form and canonical identity; orphan saved examples remain visible',()=>{
   const ts=require('typescript'),vm=require('node:vm'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
@@ -71,7 +71,7 @@ test('lookup renders corrected stored POS/form and canonical identity; orphan sa
   const result={status:'matched',match:'exact_token',entry:{entry_id:targetEntry,canonical_expression:'motivated',expression_type:'word',lemma:'motivated'},occurrence:corrected};
   const html=renderToStaticMarkup(React.createElement(exports.LexicalLookupCard,{state:{selected:'motivated',result}}));
   assert.match(html,/>motivated<\/p>/);assert.match(html,/>adjective<\/p>/);assert.doesNotMatch(html,/标准词条：/);assert.match(html,/有动力的/);assert.equal(result.occurrence.context_pos,'adjective');
-  const item={expression:'motivated',sourceTypes:['academic_discussion'],senses:[{senseId:'s',contextPos:'adjective',contextMeaningZh:'有动力的',contextDefinitionEn:null,exampleIds:['old'],contextForms:[{...wordbookContextForm(corrected),occurrenceId:reviewed.occurrence_id,sourceType:'academic_discussion',exampleIds:[]}]}],examples:[{exampleId:'old',text:'An older saved example.',sourceTypes:['academic_discussion']}]};
+  const item={expression:'motivated',sourceTypes:['academic_discussion'],senses:[{senseId:'s',contextPos:'adjective',contextMeaningZh:'有动力的',contextDefinitionEn:null,exampleIds:['old'],contextForms:[{...wordbookContextForm(corrected,result.entry),occurrenceId:reviewed.occurrence_id,sourceType:'academic_discussion',exampleIds:[]}]}],examples:[{exampleId:'old',text:'An older saved example.',sourceTypes:['academic_discussion']}]};
   const rows=wordbookContextRows(item);assert.equal(rows.length,2);assert.equal(rows[0].expression,'motivated');assert.equal(rows[1].example.text,'An older saved example.');
 });
 test('coverage RPC failures return actionable 409 messages rather than a generic service error',async()=>{

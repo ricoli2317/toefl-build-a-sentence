@@ -220,7 +220,7 @@ export function LexicalLookupCard({ state, query = state.selected, onQueryChange
   onWordbookSaveContext?: () => void;
 }) {
   const matched = state.result?.status === "matched" ? state.result : null;
-  const context = matched ? wordbookContextForm(matched.occurrence) : null;
+  const context = matched ? wordbookContextForm(matched.occurrence, matched.entry) : null;
   return <div aria-live="polite">
     <form className="mb-3 flex items-center gap-2" onSubmit={(event) => { event.preventDefault(); onSearch?.(); }}>
       <input aria-label="Lookup query" className="min-w-0 flex-1 rounded-lg border border-student-border bg-white px-3 py-2 text-sm text-student-text outline-none focus:border-student-primary focus:ring-2 focus:ring-student-primary-soft"
@@ -243,7 +243,6 @@ export function LexicalLookupCard({ state, query = state.selected, onQueryChange
     </div> : null}
     {state.wordbookError || state.wordbookMessage ? <p className={`mt-2 text-xs ${state.wordbookError ? "text-student-error" : "text-student-primary"}`} role="status">{state.wordbookError ?? state.wordbookMessage}</p> : null}
     {matched ? <>
-      {matched.entry.canonical_expression !== context?.expression ? <p className="mt-1 text-xs text-student-muted">标准词条：{matched.entry.canonical_expression}</p> : null}
       <p className="mt-2 text-xs font-semibold text-student-primary">{context?.contextPos}</p>
       <p className="mt-2 leading-6">{context?.contextMeaningZh}</p>
       <p className="mt-2 leading-6 text-student-muted">{context?.contextDefinitionEn}</p>

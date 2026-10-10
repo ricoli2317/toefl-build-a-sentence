@@ -3,7 +3,7 @@ import { ReviewError, type ReviewAnswer, type ReviewCard, type ReviewRound, type
 import { reviewRpc } from "./wordbookReview.server.ts";
 
 type Snapshot = ReviewCard["expected"] & { testedSources: string[]; posOptions: ReviewCard["options"];
-  options: ReviewCard["options"]; evidence?: { occurrence_id: string; source_type: string; lexical_entry_id: string }[] };
+   options: ReviewCard["options"]; surfaceForms?: string[]; evidence?: { occurrence_id: string; source_type: string; lexical_entry_id: string }[] };
 type ItemRow = { item_id: string; position: number; kind: ReviewCard["kind"]; snapshot: Snapshot };
 
 /** Read only the authenticated owner's immutable round, never redraw candidates.
@@ -48,7 +48,7 @@ export async function readReviewRound(db: SupabaseClient, student: string, sessi
     return { itemId: row.item_id, position: row.position, kind: row.kind, sourceTypes: s.testedSources,
       prompt: row.kind === "spelling_pos" ? s.meaning : s.expression,
       options: row.kind === "spelling_pos" ? s.posOptions : s.options.map(o => ({ id: o.id, text: o.text })), expected,
-      targetForms: Array.from(new Set([s.expression, ...(s.evidence ?? []).map(e => {
+      targetForms: Array.from(new Set([s.expression, ...(s.surfaceForms ?? []), ...(s.evidence ?? []).map(e => {
         const form = forms.get(e.occurrence_id);
         return form?.entry_id === e.lexical_entry_id && form.source_type === e.source_type ? form.surface_text : null;
       }).filter((v): v is string => Boolean(v))])),

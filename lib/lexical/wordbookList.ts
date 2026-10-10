@@ -33,7 +33,7 @@ export function wordbookContextRows(item: WordbookItem) {
     return groups.flatMap(({ form, matched }) => {
       return (matched.length ? matched : [null]).map((example, index) => ({
         sense: form ? { ...sense, contextPos: form.contextPos, contextMeaningZh: form.contextMeaningZh, contextDefinitionEn: form.contextDefinitionEn } : sense,
-        expression: form?.expression ?? item.expression, sources: form ? [form.sourceType] : item.sourceTypes,
+        expression: item.expression, sources: form ? [form.sourceType] : item.sourceTypes,
         contextId: form?.occurrenceId ?? sense.senseId, example, first: index === 0, span: Math.max(1, matched.length)
       }));
     });

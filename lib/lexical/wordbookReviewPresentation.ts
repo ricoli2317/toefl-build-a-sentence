@@ -2,7 +2,7 @@ import type { ReviewState } from "./wordbookReview.ts";
 
 export type ReviewExamplePart = { text: string; target?: boolean };
 export type ReviewPresentation = { expression: string; pos: string | null; meaning: string;
-  examples: { text: string; kind: string }[] };
+  examples: { text: string; kind: string }[]; surfaceForms?: string[] };
 
 /** Saved examples are content, not proof to re-authorize. A known occurrence
  * surface (e.g. yields for yield) decorates that same saved sense. No guessing. */
@@ -33,7 +33,7 @@ export function presentReviewState(raw: ReviewState & { presentation: ReviewPres
   const study = state.flow?.phase === "study";
   const mask = !study && state.item.kind === "spelling_pos";
   const examples = [...(presentation.examples ?? [])].sort((a, b) => Number(b.kind === "sentence") - Number(a.kind === "sentence"));
-  const example = examples.map(e => reviewExample(e.text, presentation.expression, mask)).find(Boolean) ?? null;
+  const example = examples.map(e => reviewExample(e.text, presentation.expression, mask, presentation.surfaceForms)).find(Boolean) ?? null;
   return { ...state, item: { ...state.item, example,
     ...(study ? { study: { expression: presentation.expression, pos: presentation.pos, meaning: presentation.meaning } }
       : state.item.kind === "spelling_pos" ? { spellingShape: spellingShape(presentation.expression) } : {}) } };
