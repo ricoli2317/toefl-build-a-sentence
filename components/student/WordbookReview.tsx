@@ -89,9 +89,9 @@ export function WordbookReviewSetup({ initialDomain }: { initialDomain: Wordbook
   const router = useRouter(), { request, studentId } = useReviewRequest();
   const [domain, setDomain] = useState(initialDomain);
   const [selections, setSelections] = useState<Record<WordbookDomain, string[]>>({ reading: REVIEW_SOURCES.reading.map(s => s.id), writing: REVIEW_SOURCES.writing.map(s => s.id) });
-  const [mode, setMode] = useState<ReviewSettings["mode"]>("random"), [count, setCount] = useState("10");
+  const [mode, setMode] = useState<"date" | "random">("random"), [count, setCount] = useState("10");
   const [custom, setCustom] = useState(false), [today, setToday] = useState(() => startOfLocalDay());
-  const [draft, setDraft] = useState({ start: "", end: "" }), [range, setRange] = useState({ start: "", end: "" });
+  const [draft, setDraft] = useState({ start: "", end: "" });
   const [month, setMonth] = useState(() => startOfLocalDay()), [revision, setRevision] = useState(0);
   const [busy, setBusy] = useState(false), [error, setError] = useState("");
   const pending = useRef<{ identity: string; id: string } | null>(null), busyRef = useRef(false);
@@ -102,10 +102,13 @@ export function WordbookReviewSetup({ initialDomain }: { initialDomain: Wordbook
   useEffect(() => { if (allRef.current) allRef.current.indeterminate = sources.length > 0 && sources.length < 3; }, [sources]);
   useEffect(() => { setError(""); pending.current = null; }, [studentId]);
   const validCount = /^[1-9]\d{0,5}$/.test(count);
-  const settings: ReviewSettings = { domain, sources: [...sources].sort(), mode, timeZone,
+  const range = boundedDateDraft(draft, bounds);
+  // One UI tab, the same existing API modes: a first click is a date and a
+  // completed selection is a range (unless both endpoints are the same day).
+  const settings: ReviewSettings = { domain, sources: [...sources].sort(), mode: mode === "random" ? mode : range?.start === range?.end ? "date" : "range", timeZone,
     ...(mode === "random" ? { count: validCount ? Number(count) : 1 } : { ...range }) };
   const settingsKey = JSON.stringify(settings);
-  const validRange = mode === "random" || Boolean(boundedDateDraft(range, bounds)) && (mode !== "date" || range.start === range.end);
+  const validRange = mode === "random" || Boolean(range);
   const available = useReviewRead<ReviewAvailability>(sources.length && validRange ? `${ROOT}?${new URLSearchParams({ action: "availability", settings: settingsKey })}` : null, revision);
   const dates = useReviewRead<{ dates: string[] }>(mode === "random" ? null : `/api/student/wordbook/activity-dates?${new URLSearchParams({ domain, month: formatDateInputValue(month).slice(0, 7), timeZone })}`);
   const canStart = sources.length > 0 && validRange && !available.loading && Boolean(available.data?.total)
@@ -144,9 +147,9 @@ export function WordbookReviewSetup({ initialDomain }: { initialDomain: Wordbook
         </fieldset>
         </fieldset>
         <fieldset disabled={busy} className={setupStyles.range}><legend className={setupStyles.label}>复习范围</legend>
-          <div className={setupStyles.modes}>{([['date', '指定日期'], ['range', '指定时间段'], ['random', '随机数量']] as const).map(([m, label]) =>
+          <div className={setupStyles.modes}>{([['date', '指定日期'], ['random', '随机数量']] as const).map(([m, label]) =>
             <button type="button" aria-pressed={mode === m} key={m} className={setupStyles.mode}
-              onClick={() => { setMode(m); setError(""); setDraft({ start: "", end: "" }); setRange({ start: "", end: "" }); }}>{label}</button>)}</div>
+              onClick={() => { setMode(m); setError(""); setDraft({ start: "", end: "" }); }}>{label}</button>)}</div>
           <div className={setupStyles.rangeBody}>
           {mode === "random" ? <><div className={setupStyles.quantities}>{[10, 20, 50].map(n => <button type="button" key={n} aria-label={`${n} 个`} aria-pressed={!custom && count === String(n)}
             className={setupStyles.quantity} onClick={() => { setCustom(false); setCount(String(n)); }}><span className={setupStyles.quantityValue}>{n}</span><span className={setupStyles.quantityUnit}>个词条</span></button>)}
@@ -154,12 +157,11 @@ export function WordbookReviewSetup({ initialDomain }: { initialDomain: Wordbook
             {custom ? <label className={setupStyles.customCount}>自定义数量<input inputMode="numeric" value={count} onChange={e => setCount(e.target.value)} /><span aria-hidden="true">个词条</span></label> : null}
             {!validCount ? <p role="status" className={setupStyles.message}>数量必须为正整数。</p> : null}
             {available.data && validCount && Number(count) > available.data.total ? <p role="status" className={setupStyles.message}>实际可复习 {available.data.total} 个，不能开始 {count} 个词条的复习。</p> : null}
-          </> : <><StudentDateSelection singleDay={mode === "date"} draft={draft}
-            hideHints inline
-            onDraftChange={v => setDraft(mode === "date" ? { start: v.start, end: v.start } : v)} bounds={bounds} rangeLabel="选择时间段"
-            onApply={close => { const v = boundedDateDraft(draft, bounds); if (v) { setRange(v); close(); } }}
+          </> : <><StudentDateSelection draft={draft}
+            hideHints inline hideApply
+            onDraftChange={setDraft} bounds={bounds}
             activity={{ month, onMonthChange: v => setMonth(boundedCalendarMonth(v, bounds)), dates: dates.data?.dates ?? [], error: dates.error, loading: dates.loading, showToday: true, resetMonthOnOpen: true }} />
-            <p className="text-sm text-student-muted" role="status">{range.start ? range.start === range.end ? `已选择 ${range.start}` : `已选择 ${range.start} — ${range.end}` : "请选择日期并应用"}</p></>}
+            <p className="text-sm text-student-muted" role="status">{range ? range.start === range.end ? `已选择 ${range.start}` : `已选择 ${range.start} — ${range.end}` : "请选择日期"}</p></>}
           </div>
         </fieldset>
       </div>

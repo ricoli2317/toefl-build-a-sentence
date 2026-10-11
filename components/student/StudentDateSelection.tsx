@@ -8,10 +8,10 @@ import { addDays, boundedCalendarMonth, boundedDateDraft, formatDateInputValue, 
 export const DATE_BUTTON_CLASS = "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white text-student-muted transition hover:border-student-primary-border hover:text-student-primary";
 
 // Shared calendar interaction; callers retain their existing apply/query rules.
-export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, activityLabel = "收藏活动", activity, bounds, singleDay = false, hideHints = false, inline = false }: {
+export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, activityLabel = "收藏活动", activity, bounds, singleDay = false, hideHints = false, inline = false, hideApply = false }: {
   draft: { start: string; end: string };
   onDraftChange: (draft: { start: string; end: string }) => void;
-  onApply: (close: () => void) => void;
+  onApply?: (close: () => void) => void;
   onClear?: () => void;
   hint?: string;
   rangeLabel?: string;
@@ -20,17 +20,18 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
   singleDay?: boolean;
   hideHints?: boolean;
   inline?: boolean;
+  hideApply?: boolean;
   activity?: { month: Date; dates: string[]; onMonthChange: (month: Date) => void; onOpenChange?: (open: boolean) => void; error?: string; loading?: boolean; showToday?: boolean; resetMonthOnOpen?: boolean };
 }) {
   const [month, setMonth] = useState(() => parseDateInputValue(draft.start) ?? startOfLocalDay());
   const calendar = activity ?? { month, dates: [], onMonthChange: setMonth };
   const valid = !bounds || Boolean(boundedDateDraft(draft, bounds));
-  const content = (close: () => void) => <form className={inline ? "grid min-w-0 gap-5" : "grid gap-3"} onSubmit={event => { event.preventDefault(); if (valid) onApply(close); }}>
+  const content = (close: () => void) => <form className={inline ? "grid min-w-0 gap-5" : "grid gap-3"} onSubmit={event => { event.preventDefault(); if (valid && !hideApply) onApply?.(close); }}>
       {!inline ? <p className="text-sm font-bold text-student-text">日期选择</p> : null}
       <ActivityMonth activity={calendar} activityLabel={activityLabel} draft={draft} onDraftChange={onDraftChange} bounds={bounds} singleDay={singleDay} hideHints={hideHints || !activity} inline={inline} />
       {!hideHints ? <p className="text-xs leading-5 text-student-muted">{hint ?? (singleDay ? "点击日期选择单日。" : "点击一次选择单日，点击两次选择范围；再次点击重新选择。")}</p> : null}
       {bounds && (draft.start || draft.end) && !valid ? <p role="status" className="text-xs text-student-error">请选择 {bounds.min} 至 {bounds.max} 内的有效日期，结束日期不能早于开始日期。</p> : null}
-      <button className={inline ? "student-button-secondary min-h-11 w-full" : "teacher-button-primary w-full"} disabled={!draft.start || !valid} type="submit">查看</button>
+      {!hideApply ? <button className={inline ? "student-button-secondary min-h-11 w-full" : "teacher-button-primary w-full"} disabled={!draft.start || !valid} type="submit">查看</button> : null}
       {onClear ? <button className="student-button-secondary" type="button" onClick={() => { onClear(); close(); }}>清除日期选择</button> : null}
     </form>;
   if (inline) return content(() => {});
@@ -48,6 +49,9 @@ function ActivityMonth({ activity, activityLabel, draft, onDraftChange, bounds, 
   inline?: boolean;
 }) {
   const root = useRef<HTMLDivElement>(null);
+  // Preview belongs to the calendar only: never update the caller's draft,
+  // applied filters or availability request while the pointer moves.
+  const [hover, setHover] = useState<{ start: string; date: string } | null>(null);
   useLayoutEffect(() => {
     if (inline) return;
     const panel = root.current?.closest<HTMLElement>('[role="dialog"]');
@@ -79,12 +83,15 @@ function ActivityMonth({ activity, activityLabel, draft, onDraftChange, bounds, 
   const arrowClass = `${DATE_BUTTON_CLASS} ${inline ? "!h-11 !w-11" : ""} shrink-0 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:border-student-border disabled:hover:text-student-muted`;
   const count = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
   const marked = new Set(activity.dates);
-  return <div ref={root} className="grid gap-2">
+  const preview = !singleDay && draft.start && !draft.end && hover?.start === draft.start ? hover : null;
+  const previewStart = preview && (preview.date < draft.start ? preview.date : draft.start);
+  const previewEnd = preview && (preview.date > draft.start ? preview.date : draft.start);
+  return <div ref={root} className="grid gap-2" onMouseLeave={() => setHover(null)}>
     <div className="flex items-center gap-1">
-      <button aria-label="上个月" disabled={Boolean(bounds && monthKey <= bounds.min.slice(0, 7))} className={arrowClass} type="button" onClick={() => activity.onMonthChange(new Date(first.getFullYear(), first.getMonth() - 1, 1))}><ChevronLeft size={16} /></button>
+      <button aria-label="上个月" disabled={Boolean(bounds && monthKey <= bounds.min.slice(0, 7))} className={arrowClass} type="button" onClick={() => { setHover(null); activity.onMonthChange(new Date(first.getFullYear(), first.getMonth() - 1, 1)); }}><ChevronLeft size={16} /></button>
       <span className="min-w-0 flex-1 whitespace-nowrap text-center text-sm font-semibold">{first.getFullYear()}年{first.getMonth() + 1}月</span>
-      <button aria-label="下个月" disabled={Boolean(bounds && monthKey >= bounds.max.slice(0, 7))} className={arrowClass} type="button" onClick={() => activity.onMonthChange(new Date(first.getFullYear(), first.getMonth() + 1, 1))}><ChevronRight size={16} /></button>
-       {activity.showToday ? <button className={`student-button-secondary ${inline ? "!min-h-11" : "!min-h-9"} shrink-0 !px-2 !py-1 text-xs`} type="button" onClick={() => activity.onMonthChange(startOfLocalDay())}>今天</button> : null}
+      <button aria-label="下个月" disabled={Boolean(bounds && monthKey >= bounds.max.slice(0, 7))} className={arrowClass} type="button" onClick={() => { setHover(null); activity.onMonthChange(new Date(first.getFullYear(), first.getMonth() + 1, 1)); }}><ChevronRight size={16} /></button>
+       {activity.showToday ? <button className={`student-button-secondary ${inline ? "!min-h-11" : "!min-h-9"} shrink-0 !px-2 !py-1 text-xs`} type="button" onClick={() => { setHover(null); activity.onMonthChange(startOfLocalDay()); }}>今天</button> : null}
     </div>
     <div className="grid grid-cols-7 gap-1 text-center text-xs">
       {["日", "一", "二", "三", "四", "五", "六"].map(day => <span className="text-student-muted" key={day}>{day}</span>)}
@@ -93,12 +100,15 @@ function ActivityMonth({ activity, activityLabel, draft, onDraftChange, bounds, 
         const key = formatDateInputValue(addDays(first, i));
         const selected = key >= draft.start && key <= (draft.end || draft.start);
         const disabled = Boolean(bounds && (key < bounds.min || key > bounds.max));
+        const previewed = Boolean(!disabled && previewStart && previewEnd && key >= previewStart && key <= previewEnd);
+        const highlighted = selected || previewed;
         const isToday = activity.showToday && key === today;
-        return <button aria-label={`${key}${marked.has(key) ? `，有${activityLabel}` : ""}`} aria-current={isToday ? "date" : undefined} aria-pressed={selected} disabled={disabled} key={key} type="button"
-           className={`relative ${inline ? "h-11 text-sm" : "h-9"} rounded-lg pb-1 transition hover:bg-student-primary-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent ${selected ? "bg-student-primary-soft" : ""} ${selected || isToday ? "text-student-primary" : "text-student-text"} ${isToday ? "ring-1 ring-inset ring-student-primary" : ""}`}
-          onClick={() => onDraftChange(singleDay ? { start: key, end: key }
+        return <button aria-label={`${key}${marked.has(key) ? `，有${activityLabel}` : ""}`} aria-current={isToday ? "date" : undefined} aria-pressed={selected} data-range-preview={previewed || undefined} disabled={disabled} key={key} type="button"
+           className={`relative ${inline ? "h-11 text-sm" : "h-9"} rounded-lg pb-1 transition hover:bg-student-primary-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent ${highlighted ? "bg-student-primary-soft" : ""} ${highlighted || isToday ? "text-student-primary" : "text-student-text"} ${isToday ? "ring-1 ring-inset ring-student-primary" : ""}`}
+          onMouseEnter={() => { if (!disabled && !singleDay && draft.start && !draft.end) setHover({ start: draft.start, date: key }); }}
+          onClick={() => { setHover(null); onDraftChange(singleDay ? { start: key, end: key }
             : !draft.start || draft.end ? { start: key, end: "" }
-            : key < draft.start ? { start: key, end: draft.start } : { start: draft.start, end: key })}>{i + 1}
+            : key < draft.start ? { start: key, end: draft.start } : { start: draft.start, end: key }); }}>{i + 1}
           {marked.has(key) ? <span aria-hidden="true" data-activity-dot className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-student-primary" /> : null}
         </button>;
       })}

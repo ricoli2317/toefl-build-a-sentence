@@ -40,6 +40,8 @@ function picker(overrides = {}) {
     assert.ok(!target.props.disabled, `button ${label} is enabled`);
     target.props.onClick(); render();
   };
+  const hover = label => { const target = button(label); assert.ok(target); target.props.onMouseEnter(); render(); };
+  const leave = () => { nodes.find(node => node.props?.onMouseLeave).props.onMouseLeave(); render(); };
   const submit = () => {
     const action = nodes.find(node => node.type === "button" && node.props.type === "submit");
     assert.equal(action.props.children, "查看");
@@ -48,7 +50,7 @@ function picker(overrides = {}) {
     render();
   };
   render();
-  return { props, render, button, click, submit, changes, applied,
+  return { props, render, button, click, hover, leave, submit, changes, applied,
     get nodes() { return nodes; }, get closed() { return closed; } };
 }
 
@@ -136,6 +138,58 @@ test("a caller without activity data still has a selectable calendar and working
   const view = picker({ activity: undefined, draft: { start: "2026-10-03", end: "2026-10-03" } });
   view.click("上个月"); view.click("2026-09-29"); view.submit();
   assert.deepEqual(view.applied[0], { start: "2026-09-29", end: "2026-09-29" });
+});
+
+test("hover dynamically previews forward/backward ranges without changing the draft or applying", () => {
+  const view = picker();
+  view.hover("2026-10-07");
+  assert.equal(view.button("2026-10-07").props["data-range-preview"], undefined);
+  view.click("2026-10-03");
+  view.hover("2026-10-07");
+  for (let day = 1; day <= 11; day++) {
+    const button = view.button(`2026-10-${String(day).padStart(2, "0")}`);
+    assert.equal(Boolean(button.props["data-range-preview"]), day >= 3 && day <= 7);
+    assert.equal(button.props["aria-pressed"], day === 3);
+    if (day >= 3 && day <= 7) assert.match(button.props.className, /bg-student-primary-soft/);
+  }
+  view.hover("2026-10-05");
+  assert.equal(view.button("2026-10-07").props["data-range-preview"], undefined);
+  view.hover("2026-10-01");
+  assert.ok(view.button("2026-10-02").props["data-range-preview"]);
+  assert.equal(view.button("2026-10-04").props["data-range-preview"], undefined);
+  assert.deepEqual(view.props.draft, { start: "2026-10-03", end: "" });
+  assert.equal(view.changes.length, 1); assert.equal(view.applied.length, 0);
+  view.leave();
+  assert.equal(view.button("2026-10-02").props["data-range-preview"], undefined);
+  assert.equal(view.button("2026-10-03").props["aria-pressed"], true);
+});
+
+test("cross-month hover preserves the first click and the second click commits only its own date", () => {
+  const view = picker();
+  view.click("2026-10-03"); view.hover("2026-10-07"); view.click("上个月");
+  assert.equal(view.button("2026-09-30").props["data-range-preview"], undefined);
+  view.hover("2026-09-29");
+  assert.ok(view.button("2026-09-30").props["data-range-preview"]);
+  assert.deepEqual(view.props.draft, { start: "2026-10-03", end: "" });
+  view.click("2026-09-28");
+  assert.deepEqual(view.props.draft, { start: "2026-09-28", end: "2026-10-03" });
+  view.hover("2026-09-20");
+  assert.equal(view.button("2026-09-20").props["data-range-preview"], undefined);
+  assert.equal(view.button("2026-09-30").props["aria-pressed"], true);
+  view.click("下个月"); view.click("2026-10-03"); view.hover("2026-10-12");
+  assert.equal(view.button("2026-10-11").props["data-range-preview"], undefined);
+});
+
+test("inline auto-apply callers can omit 查看 without changing other selectors", () => {
+  const view = picker({ inline: true, hideApply: true, onApply: undefined });
+  assert.equal(view.button("查看"), undefined);
+  view.click("2026-10-03"); view.hover("2026-10-07"); view.click("2026-10-07");
+  assert.deepEqual(view.props.draft, { start: "2026-10-03", end: "2026-10-07" });
+  assert.equal(view.applied.length, 0);
+  const single = picker({ singleDay: true });
+  single.click("2026-10-03"); single.hover("2026-10-07");
+  assert.equal(single.button("2026-10-07").props["data-range-preview"], undefined);
+  assert.ok(single.button("查看"));
 });
 
 test("student and teacher practice/wordbook/history surfaces all reuse the same selector", () => {
