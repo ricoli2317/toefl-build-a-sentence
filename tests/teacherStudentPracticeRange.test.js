@@ -495,13 +495,13 @@ test("range API is binding-scoped, lightweight, and never reads content", () => 
 test("range view keeps the date area and adds no route change", () => {
   const component = read("components/teacher/TeacherStudentPracticeSection.tsx");
   // One picker control, same icon button size/style/position.
-  assert.match(component, /<TeacherPopover/);
-  assert.match(component, /sr-only">选择日期/);
+  assert.match(component, /<StudentDateSelection draft=\{dateDraft\}/);
+  const dateSelection = read("components/student/StudentDateSelection.tsx");
+  assert.match(dateSelection, /<TeacherPopover/);
+  assert.match(dateSelection, /sr-only">选择日期/);
   assert.match(component, /h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white/);
-  assert.match(component, /aria-label="开始日期"/);
-  assert.match(component, /aria-label="结束日期"/);
-  assert.match(component, /查看当天/);
-  assert.match(component, /查看范围统计/);
+  assert.doesNotMatch(dateSelection, /type="date"|aria-label="开始日期"|aria-label="结束日期"/);
+  assert.match(dateSelection, /type="submit">查看<\/button>/);
   assert.match(component, /上一天/);
   assert.match(component, /下一天/);
   assert.match(component, /今天/);

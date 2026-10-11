@@ -28,9 +28,10 @@ test('bounded calendar disables arrows at both endpoints and dates after today, 
   assert.match(render(9),/aria-label="下个月" disabled=""/);assert.match(render(9),/aria-label="2026-10-09"[^>]*disabled/);
   assert.doesNotMatch(render(7),/aria-label="[上下]个月" disabled/);assert.match(render(7),/>今天<\/button>/);
 });
-test('history default form has no date bounds, Today/month UI or changed day/range controls',()=>{
+test('default date picker has a calendar without imposing bounds or activity queries',()=>{
   const html=renderToStaticMarkup(React.createElement(StudentDateSelection,{draft:{start:'2026-06-01',end:'2026-06-02'},onDraftChange(){},onApply(){}}));
-  assert.doesNotMatch(html,/min="|max="|今天|有收藏活动/);assert.match(html,/查看范围统计/);
+  assert.doesNotMatch(html,/min="|max="|今天|有收藏活动|type="date"/);assert.match(html,/>查看<\/button>/);
+  assert.match(html,/aria-label="上个月"/);assert.match(html,/aria-label="2026-06-01"/);
 });
 test('immersive setup opts into an inline calendar without a popover; default history still uses its existing popover',()=>{
   let popovers=0;
@@ -41,12 +42,12 @@ test('immersive setup opts into an inline calendar without a popover; default hi
   const props={draft:{start:'2026-10-01',end:'2026-10-08'},onDraftChange(){},onApply(){},bounds:{min:'2026-07-01',max:'2026-10-10'},
     activity:{month:new Date(2026,9,1),dates:['2026-10-01'],onMonthChange(){},showToday:true},hideHints:true,inline:true};
   const inline=renderToStaticMarkup(React.createElement(Selector,props));
-  assert.equal(popovers,0);assert.match(inline,/应用时间段/);assert.match(inline,/data-activity-dot/);assert.match(inline,/!text-base/);
+  assert.equal(popovers,0);assert.match(inline,/>查看<\/button>/);assert.match(inline,/data-activity-dot/);assert.doesNotMatch(inline,/type="date"/);
   assert.match(inline,/aria-label="下个月" disabled/);assert.match(inline,/aria-label="2026-10-11"[^>]*disabled/);
   const single=renderToStaticMarkup(React.createElement(Selector,{...props,singleDay:true}));
-  assert.match(single,/应用日期/);assert.doesNotMatch(single,/aria-label="结束日期"/);
+  assert.match(single,/>查看<\/button>/);assert.doesNotMatch(single,/aria-label="结束日期"/);
   const history=renderToStaticMarkup(React.createElement(Selector,{...props,inline:false}));
-  assert.equal(popovers,1);assert.match(history,/查看范围统计/);assert.doesNotMatch(history,/应用时间段/);
+  assert.equal(popovers,1);assert.match(history,/>查看<\/button>/);assert.doesNotMatch(history,/应用时间段|查看范围统计|查看当天/);
 });
 test('Reading calendar primary-button shadow follows its theme without modifying shared history or Writing styles',()=>{
   const component=fs.readFileSync(path.join(__dirname,'../components/student/StudentWordbook.tsx'),'utf8');

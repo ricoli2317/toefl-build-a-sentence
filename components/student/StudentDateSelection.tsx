@@ -1,14 +1,14 @@
 "use client";
 
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { TeacherPopover } from "@/components/teacher/TeacherPopover";
-import { addDays, boundedCalendarMonth, boundedDateDraft, formatDateInputValue, startOfLocalDay, type StudentDateBounds } from "@/lib/studentDates";
+import { addDays, boundedCalendarMonth, boundedDateDraft, formatDateInputValue, parseDateInputValue, startOfLocalDay, type StudentDateBounds } from "@/lib/studentDates";
 
 export const DATE_BUTTON_CLASS = "inline-flex h-9 w-9 items-center justify-center rounded-lg border border-student-border bg-white text-student-muted transition hover:border-student-primary-border hover:text-student-primary";
 
-// Practice history's existing form, with an OPTIONAL activity month extension.
-export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, rangeLabel = "查看范围统计", activityLabel = "收藏活动", activity, bounds, singleDay = false, hideHints = false, inline = false }: {
+// Shared calendar interaction; callers retain their existing apply/query rules.
+export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, hint, activityLabel = "收藏活动", activity, bounds, singleDay = false, hideHints = false, inline = false }: {
   draft: { start: string; end: string };
   onDraftChange: (draft: { start: string; end: string }) => void;
   onApply: (close: () => void) => void;
@@ -22,21 +22,15 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
   inline?: boolean;
   activity?: { month: Date; dates: string[]; onMonthChange: (month: Date) => void; onOpenChange?: (open: boolean) => void; error?: string; loading?: boolean; showToday?: boolean; resetMonthOnOpen?: boolean };
 }) {
+  const [month, setMonth] = useState(() => parseDateInputValue(draft.start) ?? startOfLocalDay());
+  const calendar = activity ?? { month, dates: [], onMonthChange: setMonth };
   const valid = !bounds || Boolean(boundedDateDraft(draft, bounds));
   const content = (close: () => void) => <form className={inline ? "grid min-w-0 gap-5" : "grid gap-3"} onSubmit={event => { event.preventDefault(); if (valid) onApply(close); }}>
       {!inline ? <p className="text-sm font-bold text-student-text">日期选择</p> : null}
-      {activity ? <ActivityMonth activity={activity} activityLabel={activityLabel} draft={draft} onDraftChange={onDraftChange} bounds={bounds} hideHints={hideHints} inline={inline} /> : null}
-      <div className={inline && !singleDay ? "grid min-w-0 grid-cols-2 gap-3" : "grid min-w-0 gap-3"}>
-      <label className="grid gap-1.5 text-xs font-semibold text-student-muted">开始日期
-        <input aria-label="开始日期" className={`teacher-input w-full min-w-0 ${inline ? "min-h-11 !text-base" : ""}`} min={bounds?.min} max={bounds?.max} onChange={event => onDraftChange({ ...draft, start: event.target.value })} type="date" value={draft.start} />
-      </label>
-      {!singleDay ? <label className="grid gap-1.5 text-xs font-semibold text-student-muted">结束日期（可不填）
-        <input aria-label="结束日期" className={`teacher-input w-full min-w-0 ${inline ? "min-h-11 !text-base" : ""}`} min={bounds ? draft.start > bounds.min && draft.start <= bounds.max ? draft.start : bounds.min : undefined} max={bounds?.max} onChange={event => onDraftChange({ ...draft, end: event.target.value })} type="date" value={draft.end} />
-      </label> : null}
-      </div>
-      {!hideHints ? <p className="text-xs leading-5 text-student-muted">{hint ?? "同一天按单日详情查看；起止不同则显示范围统计。"}</p> : null}
+      <ActivityMonth activity={calendar} activityLabel={activityLabel} draft={draft} onDraftChange={onDraftChange} bounds={bounds} singleDay={singleDay} hideHints={hideHints || !activity} inline={inline} />
+      {!hideHints ? <p className="text-xs leading-5 text-student-muted">{hint ?? (singleDay ? "点击日期选择单日。" : "点击一次选择单日，点击两次选择范围；再次点击重新选择。")}</p> : null}
       {bounds && (draft.start || draft.end) && !valid ? <p role="status" className="text-xs text-student-error">请选择 {bounds.min} 至 {bounds.max} 内的有效日期，结束日期不能早于开始日期。</p> : null}
-      <button className={inline ? "student-button-secondary min-h-11 w-full" : "teacher-button-primary w-full"} disabled={!draft.start || !valid} type="submit">{inline ? singleDay ? "应用日期" : "应用时间段" : !draft.end || draft.end === draft.start ? "查看当天" : rangeLabel}</button>
+      <button className={inline ? "student-button-secondary min-h-11 w-full" : "teacher-button-primary w-full"} disabled={!draft.start || !valid} type="submit">查看</button>
       {onClear ? <button className="student-button-secondary" type="button" onClick={() => { onClear(); close(); }}>清除日期选择</button> : null}
     </form>;
   if (inline) return content(() => {});
@@ -44,11 +38,12 @@ export function StudentDateSelection({ draft, onDraftChange, onApply, onClear, h
     menuAlign={activity ? "left" : "right"} menuClassName="w-[304px] max-w-[calc(100vw-2rem)] p-4" panelRole="dialog">{content}</TeacherPopover>;
 }
 
-function ActivityMonth({ activity, activityLabel, draft, onDraftChange, bounds, hideHints, inline = false }: {
+function ActivityMonth({ activity, activityLabel, draft, onDraftChange, bounds, singleDay = false, hideHints, inline = false }: {
   activity: NonNullable<Parameters<typeof StudentDateSelection>[0]["activity"]>;
   activityLabel: string;
   draft: { start: string; end: string }; onDraftChange: (draft: { start: string; end: string }) => void;
   bounds?: StudentDateBounds;
+  singleDay?: boolean;
   hideHints?: boolean;
   inline?: boolean;
 }) {
@@ -101,11 +96,13 @@ function ActivityMonth({ activity, activityLabel, draft, onDraftChange, bounds, 
         const isToday = activity.showToday && key === today;
         return <button aria-label={`${key}${marked.has(key) ? `，有${activityLabel}` : ""}`} aria-current={isToday ? "date" : undefined} aria-pressed={selected} disabled={disabled} key={key} type="button"
            className={`relative ${inline ? "h-11 text-sm" : "h-9"} rounded-lg pb-1 transition hover:bg-student-primary-soft disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent ${selected ? "bg-student-primary-soft" : ""} ${selected || isToday ? "text-student-primary" : "text-student-text"} ${isToday ? "ring-1 ring-inset ring-student-primary" : ""}`}
-          onClick={() => onDraftChange({ start: key, end: key })}>{i + 1}
+          onClick={() => onDraftChange(singleDay ? { start: key, end: key }
+            : !draft.start || draft.end ? { start: key, end: "" }
+            : key < draft.start ? { start: key, end: draft.start } : { start: draft.start, end: key })}>{i + 1}
           {marked.has(key) ? <span aria-hidden="true" data-activity-dot className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-student-primary" /> : null}
         </button>;
       })}
     </div>
-    {!hideHints || activity.error || activity.loading ? <p aria-live="polite" className="text-xs text-student-muted">{activity.error ?? (activity.loading ? "正在加载活动日期…" : `圆点表示有${activityLabel}；范围可在下方输入。`)}</p> : null}
+    {!hideHints || activity.error || activity.loading ? <p aria-live="polite" className="text-xs text-student-muted">{activity.error ?? (activity.loading ? "正在加载活动日期…" : `圆点表示有${activityLabel}。`)}</p> : null}
   </div>;
 }
