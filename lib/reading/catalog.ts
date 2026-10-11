@@ -1,6 +1,5 @@
 import type { ReadingModule } from "./types.ts";
 import { READING_PRODUCT_NAMES } from "./product.ts";
-import { assertCanonicalRdlTitle } from "./rdlTitles.ts";
 import { assertCanonicalCtwTitle } from "./ctwTitles.ts";
 import { countOccurrenceDates, type OccurrenceDateCount } from "../catalogOccurrenceDates.ts";
 import type { StudentPracticeItemStateRow } from "../studentPracticeItemState.ts";
@@ -149,9 +148,9 @@ export function buildReadingCatalogPublicPayload(input: {
       const occurrenceDates = occurrenceDateCounts.map(({ date }) => date);
       const title = item.module === "ctw"
         ? assertCanonicalCtwTitle(item.title ?? "", `CTW catalog title for ${item.logical_item_id}`)
-        : item.module === "rdl"
-          ? assertCanonicalRdlTitle(item.title ?? "", `RDL catalog title for ${item.logical_item_id}`)
-          : item.title?.trim() || READING_PRODUCT_NAMES[item.module];
+        // Read stored RDL/RAP titles without applying import-time validation:
+        // acronyms or brand casing must not make the whole directory fail.
+        : item.title?.trim() || READING_PRODUCT_NAMES[item.module];
       return {
         itemId: item.logical_item_id,
         taskType: item.module,
