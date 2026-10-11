@@ -45,6 +45,7 @@ export const READ_AN_ACADEMIC_PASSAGE_HEADERS = [
   "passage_json",
   "question_order",
   "question_type",
+  "question_category",
   "question_stem",
   "raw_display_text",
   "passage_highlights_json",

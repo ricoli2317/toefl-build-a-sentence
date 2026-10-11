@@ -56,18 +56,23 @@ Import never creates materials or touches R2.
 
 Fixed header:
 
-`source_label,occurrence_date,year_month,source_module,source_order,source_group_id,source_question_number,passage_id,passage_title,passage_json,question_order,question_type,question_stem,raw_display_text,passage_highlights_json,options_json,correct_option_id,insert_sentence,insertion_anchors_json,correct_anchor_id,target_paragraph_id,correct_sentence_id`
+`source_label,occurrence_date,year_month,source_module,source_order,source_group_id,catalog_category,source_question_number,passage_id,passage_title,passage_json,question_order,question_type,question_category,question_stem,raw_display_text,passage_highlights_json,options_json,correct_option_id,insert_sentence,insertion_anchors_json,correct_anchor_id,target_paragraph_id,correct_sentence_id`
 
 One row is one question; equal common/group fields form one complete passage + question group. Every row in a group repeats the same `passage_id`, real `passage_title`, and semantically identical `passage_json`. A conflict rejects the full group.
 
 - `passage_json`: array of `{paragraphId,paragraphOrder,text,rawText,sentences}`; each sentence is `{sentenceId,sentenceOrder,text}`. Sentence boundaries are final and TPS never re-splits text.
-- `passage_highlights_json`: new exports must provide a per-question array of `{paragraphId,startOffset,endOffset}`. Offsets are zero-based, end-exclusive Unicode code-point positions in that paragraph's exact `text`. Use `[]` only when the authoritative source has no highlight for the question. Legacy RAP CSVs without this column remain importable and supply no authoritative ranges. TPS never derives these ranges from question type, stem, or passage wording.
+- `question_category`: required for each RAP question, independent from material-level `catalog_category`. Exact allowed values are 事实信息题、否定信息题、主旨题、词汇题、选句题、句子简化题、指代题、推断题、修辞目的题、句子插入题 (defined in `lib/reading/questionCategory.ts`). Missing, blank, or unknown values reject the group; TPS never guesses a category. `rap_sentence_selection` requires 选句题, `rap_sentence_insertion` requires 句子插入题, and `rap_multiple_choice` cannot use either structural category. These checks do not replace structure/reference validation. CTW/RDL do not require this column.
+- `passage_highlights_json`: new exports must provide a per-question array of `{paragraphId,startOffset,endOffset}`. Offsets are zero-based, end-exclusive Unicode code-point positions in that paragraph's exact `text`. Use `[]` only when the authoritative source has no highlight for the question. RAP CSVs without this highlight column remain importable and supply no authoritative ranges, but `question_category` is still required. TPS never derives these ranges from question type, stem, or passage wording.
 - `rap_multiple_choice`: fill `options_json` and `correct_option_id`.
 - `rap_sentence_insertion`: fill `insert_sentence`, `insertion_anchors_json`, and `correct_anchor_id`. Anchors are `{anchorId,anchorOrder,paragraphId,boundaryIndex,afterSentenceId}` and describe text/sentence boundaries, never pixels.
 - `rap_sentence_selection`: fill `target_paragraph_id` and `correct_sentence_id`; the sentence must belong to that paragraph.
 - Fields irrelevant to a question type remain empty, but their header columns remain present.
 
 ## Import behavior
+
+RAP NEW ONLY CSVs have already been deduplicated upstream. TPS still runs all existing database duplicate and source-binding safety checks; `question_category` does not enter any fingerprint or duplicate decision. Classification is written only when a new canonical question is inserted, never in the RPC's conflict-update clause. This interface does not add existing-canonical classification updates or occurrence-only reuse.
+
+Before using the new RAP field, manually apply `supabase/reading_rap_question_category_import_20261011.sql`, then run the read-only `supabase/reading_rap_question_category_import_verify_20261011.sql`. The increment patches only the deployed RPC's question INSERT mapping and refuses an unexpected mapping; do not reapply the older full `reading_csv_import.sql` to production.
 
 A complete CTW interaction, RDL material/question group, or RAP passage/question group is one logical item and one atomic database transaction. All three adapters normalize to the existing `ReadingImportPackage`, then share the existing validation and SHA-256 global grouping logic.
 

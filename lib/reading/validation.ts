@@ -13,6 +13,7 @@ import {
 import { fingerprintReadingSourceOccurrence } from "./grouping.ts";
 import { isRdlMaterialType } from "./materialTypes.ts";
 import { buildCtwLogicalIdentity } from "./ctwLogicalIdentity.ts";
+import { isReadingQuestionCategory } from "./questionCategory.ts";
 
 type RecordValue = Record<string, unknown>;
 
@@ -35,7 +36,10 @@ export class ReadingValidationError extends Error {
   }
 }
 
-export function validateReadingImportPackage(input: unknown): ReadingImportPackage {
+export function validateReadingImportPackage(
+  input: unknown,
+  options: { requireRapQuestionCategory?: boolean } = {}
+): ReadingImportPackage {
   const root = record(input, "$", {});
   if (root.schemaVersion !== 2) fail("schemaVersion must be 2", "$.schemaVersion", {});
 
@@ -90,7 +94,8 @@ export function validateReadingImportPackage(input: unknown): ReadingImportPacka
       `$.questions[${index}]`,
       context,
       materialIds,
-      passageById
+      passageById,
+      options.requireRapQuestionCategory === true
     );
     if (question.logicalItemId !== logicalItemId) {
       fail("logicalItemId must match package item", `$.questions[${index}].logicalItemId`, {
@@ -410,7 +415,8 @@ function validateQuestion(
   path: string,
   context: ValidationContext,
   materialIds: Set<string>,
-  passageById: Map<string, ReadingPassage>
+  passageById: Map<string, ReadingPassage>,
+  requireRapQuestionCategory: boolean
 ): ReadingQuestion {
   const question = record(value, path, context);
   const questionId = nonEmptyString(question.questionId, `${path}.questionId`, context);
@@ -427,6 +433,27 @@ function validateQuestion(
   nullableString(question.rawDisplayText, `${path}.rawDisplayText`, questionContext);
   const payloadPath = `${path}.payload`;
   const payload = record(question.payload, payloadPath, questionContext);
+
+  if (question.questionType.startsWith("rap_")) {
+    const category = question.questionCategory;
+    const categoryPath = `${path}.questionCategory`;
+    // Historical packages used by dedup/review may omit classification. Never
+    // infer it from their structure; CSV and new-canonical boundaries require it.
+    if (requireRapQuestionCategory || (category !== undefined && category !== null)) {
+      if (!isReadingQuestionCategory(category)) {
+        fail("question_category must be one of the fixed 10 RAP categories", categoryPath, questionContext);
+      }
+      if (question.questionType === "rap_sentence_selection" && category !== "选句题") {
+        fail("rap_sentence_selection requires question_category 选句题", categoryPath, questionContext);
+      }
+      if (question.questionType === "rap_sentence_insertion" && category !== "句子插入题") {
+        fail("rap_sentence_insertion requires question_category 句子插入题", categoryPath, questionContext);
+      }
+      if (question.questionType === "rap_multiple_choice" && (category === "选句题" || category === "句子插入题")) {
+        fail("rap_multiple_choice cannot use structural question_category 选句题 or 句子插入题", categoryPath, questionContext);
+      }
+    }
+  }
 
   switch (question.questionType) {
     case "ctw":

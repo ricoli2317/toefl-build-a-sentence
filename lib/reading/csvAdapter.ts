@@ -17,6 +17,7 @@ import type { ReadingCsvType } from "./csvSchemas.ts";
 import { isRdlMaterialType } from "./materialTypes.ts";
 import { reconcileIncomingRdlTitle } from "./rdlTitles.ts";
 import { stripRapSentenceSelectionInstruction } from "./reviewDiff.ts";
+import { isReadingQuestionCategory } from "./questionCategory.ts";
 
 export type ReadingCsvFailure = {
   rowNumber: number;
@@ -86,7 +87,7 @@ export function adaptReadingCsv(input: {
       }
       sourceIdentities.set(identity, group.groupId);
       const packageData = groupReadingSourceOccurrences([candidate]).packages[0];
-      validateReadingImportPackage(packageData);
+      validateReadingImportPackage(packageData, { requireRapQuestionCategory: true });
       candidates.push(candidate);
     } catch (error) {
       failures.push({
@@ -277,6 +278,7 @@ function buildCandidate(
     const common = {
       questionId: temporaryId(occurrenceId, "q", index + 1),
       questionOrder: positiveInteger(required(row, "question_order"), "question_order"),
+      questionCategory: rapQuestionCategory(row),
       stem: required(row, "question_stem"),
       rawDisplayText: optional(row, "raw_display_text"),
       sourceQuestionStart: sourceNumber,
@@ -421,6 +423,16 @@ function rapHighlights(row: Record<string, string>): {
       };
     })
   };
+}
+
+function rapQuestionCategory(row: Record<string, string>) {
+  const category = row.question_category?.trim();
+  const location = `CSV row ${row.__rowNumber} question_order=${row.question_order} source_question_number=${row.source_question_number}`;
+  if (!category) throw new Error(`${location}: Missing question_category`);
+  if (!isReadingQuestionCategory(category)) {
+    throw new Error(`${location}: invalid question_category ${JSON.stringify(category)}`);
+  }
+  return category;
 }
 
 function isVersionedCanonicalMaterialPair(material: ReadingMaterial) {

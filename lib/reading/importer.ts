@@ -24,6 +24,7 @@ import {
 import { compareCtwPackageLogicalIdentity } from "./ctwLogicalIdentity.ts";
 import { assertCanonicalCtwTitle, assertIncomingCtwTitle } from "./ctwTitles.ts";
 import { buildReadingCatalogSearchText } from "./catalogSearchText.ts";
+import type { ReadingQuestionCategory } from "./questionCategory.ts";
 
 export type ReadingImportResult = {
   logicalItemId: string;
@@ -905,7 +906,13 @@ export async function importReadingPackage(
     await upsertRows(
       supabase,
       "reading_questions",
-      rows.reading_questions.filter((row) => row.question_id === questionId),
+      rows.reading_questions.filter((row) => row.question_id === questionId).map((row) => {
+        // The legacy direct-upsert entry point must also preserve an existing
+        // canonical's classification, even when incoming content supplies one.
+        if (!existingQuestionIds.has(questionId)) return row;
+        const { question_category: _category, ...existingRow } = row;
+        return existingRow;
+      }),
       "question_id",
       logicalItemId,
       questionId
@@ -1013,6 +1020,11 @@ export function prepareReadingPackageAtomicImport(
   } = {}
 ): PreparedReadingAtomicImport {
   const packageData = validateReadingImportPackage(input);
+  if (options.expectedLogicalItemAction === "create_new"
+    || (options.expectedLogicalItemAction !== "reuse_existing"
+      && packageData.occurrences.some((occurrence) => occurrence.sourceKind === "reading_csv"))) {
+    validateReadingImportPackage(packageData, { requireRapQuestionCategory: true });
+  }
   validateCanonicalImportTitles(packageData, options.expectedLogicalItemAction);
   const rows = buildReadingImportRowsUnchecked(packageData, options.createdBy);
   if (options.firstSeen) {
@@ -1253,6 +1265,7 @@ function questionRow(question: ReadingQuestion) {
     question_order: question.questionOrder,
     module: moduleFor(question),
     question_type: question.questionType,
+    question_category: null as ReadingQuestionCategory | null,
     stem: question.stem,
     raw_display_text: question.rawDisplayText,
     passage_highlight_ranges: rapHighlightRanges(question),
@@ -1276,12 +1289,14 @@ function questionRow(question: ReadingQuestion) {
     case "rap_multiple_choice":
       return {
         ...base,
+        question_category: question.questionCategory ?? null,
         passage_id: question.payload.passageId,
         correct_option_id: question.payload.correctOptionId
       };
     case "rap_sentence_insertion":
       return {
         ...base,
+        question_category: question.questionCategory ?? null,
         passage_id: question.payload.passageId,
         insert_sentence: question.payload.insertSentence,
         correct_anchor_id: question.payload.correctAnchorId
@@ -1289,6 +1304,7 @@ function questionRow(question: ReadingQuestion) {
     case "rap_sentence_selection":
       return {
         ...base,
+        question_category: question.questionCategory ?? null,
         passage_id: question.payload.passageId,
         target_paragraph_id: question.payload.targetParagraphId,
         correct_sentence_id: question.payload.correctSentenceId

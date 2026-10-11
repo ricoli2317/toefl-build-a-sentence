@@ -266,6 +266,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
         return {
           ...base,
           questionType: "rap_multiple_choice",
+          questionCategory: sourceQuestion.questionCategory,
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
             highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),
@@ -288,6 +289,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
         return {
           ...base,
           questionType: "rap_sentence_insertion",
+          questionCategory: sourceQuestion.questionCategory,
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
             highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),
@@ -302,6 +304,7 @@ function remapCanonicalContent(candidate: ReadingSourceOccurrenceCandidate, logi
         return {
           ...base,
           questionType: "rap_sentence_selection",
+          questionCategory: sourceQuestion.questionCategory,
           payload: {
             passageId: requiredMap(passageMap, sourceQuestion.payload.passageId).passageId,
             highlightRanges: remapHighlightRanges(sourceQuestion.payload.highlightRanges, paragraphIds),

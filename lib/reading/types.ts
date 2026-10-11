@@ -1,4 +1,5 @@
 import type { RdlMaterialType } from "./materialTypes.ts";
+import type { ReadingQuestionCategory } from "./questionCategory.ts";
 
 export const READING_QUESTION_TYPES = [
   "ctw",
@@ -159,7 +160,7 @@ export type RapMultipleChoiceQuestion = ReadingQuestionBase<"rap_multiple_choice
   highlightRangesAuthoritative?: boolean;
   options: ReadingOption[];
   correctOptionId: string;
-}>;
+}> & RapQuestionCategoryFields;
 
 export type RapSentenceInsertionQuestion = ReadingQuestionBase<"rap_sentence_insertion", {
   passageId: string;
@@ -169,7 +170,7 @@ export type RapSentenceInsertionQuestion = ReadingQuestionBase<"rap_sentence_ins
   insertSentence: string;
   anchors: ReadingInsertionAnchor[];
   correctAnchorId: string;
-}>;
+}> & RapQuestionCategoryFields;
 
 export type RapSentenceSelectionQuestion = ReadingQuestionBase<"rap_sentence_selection", {
   passageId: string;
@@ -178,7 +179,12 @@ export type RapSentenceSelectionQuestion = ReadingQuestionBase<"rap_sentence_sel
   highlightRangesAuthoritative?: boolean;
   targetParagraphId: string;
   correctSentenceId: string;
-}>;
+}> & RapQuestionCategoryFields;
+
+type RapQuestionCategoryFields = {
+  /** Required for incoming RAP CSV/new canonicals; optional on historical packages. */
+  questionCategory?: ReadingQuestionCategory | null;
+};
 
 export type ReadingQuestion =
   | CtwQuestion
