@@ -33,6 +33,7 @@ import {
   type IncrementalStagePlanBatch
 } from "../lib/lexical/incremental/stageRunner.ts";
 import { buildDeltaPlan } from "../lib/lexical/incremental/deltaPlan.ts";
+import { assertCanonicalPlanCompatibility } from "../lib/lexical/incremental/canonicalCompatibility.ts";
 import {
   assertProductionBaselineIntegrity,
   blockIdentityKey,
@@ -106,18 +107,9 @@ async function readCanonicalBlocksArtifact(): Promise<CanonicalLexicalBlock[]> {
   }));
 }
 
-function canonicalSignature(blocks: CanonicalLexicalBlock[]) {
-  return baselineRowsSha256([...blocks].sort((left, right) => {
-    const a = `${left.sourceType}:${left.sourceItemId}:${left.contentBlockId}`;
-    const b = `${right.sourceType}:${right.sourceItemId}:${right.contentBlockId}`;
-    return a < b ? -1 : a > b ? 1 : 0;
-  }).map(block => ({ source_type: block.sourceType, source_item_id: block.sourceItemId, content_block_id: block.contentBlockId,
-    block_kind: block.blockKind, text: block.text, anchors: block.anchors ?? [] })));
-}
-
 async function verifyLiveCanonical(db: ReturnType<typeof createServiceSupabase>, expected: CanonicalLexicalBlock[]) {
   const current = enumerateCanonicalLexicalBlocks(await loadCanonicalLexicalInputs(db, { assetBaseUrl: process.env.READING_ASSET_BASE_URL }));
-  if (canonicalSignature(current) !== canonicalSignature(expected)) throw new Error("Canonical source drifted since planning; refuse stale delta publication/import.");
+  return assertCanonicalPlanCompatibility(expected, current);
 }
 
 async function loadDeltaPlanArtifact() {
@@ -644,9 +636,9 @@ async function commandImport() {
   const { snapshot: baseline } = await loadFullBaseline();
   const db = createServiceSupabase();
   const preflight = preflightIncrementalImport(dataset, baseline, await readFullProductionSnapshot(db));
-  await verifyLiveCanonical(db, await readCanonicalBlocksArtifact());
+  const canonicalPreflight = await verifyLiveCanonical(db, await readCanonicalBlocksArtifact());
   if (!process.argv.includes("--write")) {
-    console.log(JSON.stringify({ ...incrementalImportPlanDescription(dataset), preflight, manifest: "lexical-incremental-import-manifest-v1" }, null, 2));
+    console.log(JSON.stringify({ ...incrementalImportPlanDescription(dataset), preflight, canonical_preflight: canonicalPreflight, manifest: "lexical-incremental-import-manifest-v1" }, null, 2));
     return;
   }
   const url = process.env.SUPABASE_DB_URL;

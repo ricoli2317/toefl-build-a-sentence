@@ -40,7 +40,11 @@ For later sync cycles, set a new `LEXICAL_INCREMENTAL_RUN` name consistently for
 command and worker (for example `2026-10-next`). Its immutable workspace lives under
 `tmp/lexical-incremental/runs/<name>/`. Never delete or overwrite a previous run to start
 another cycle. The first run uses the default root without this variable.
-Finalization and import both re-enumerate canonical sources read-only and refuse source drift.
+Finalization and import both re-enumerate canonical sources read-only: every planned block's
+identity, kind, exact text and anchors must remain identical, with no duplicate identities.
+Extra blocks are allowed only for wholly new source items absent from the planned canonical
+corpus; they are deferred to a later run and never added to this run's artifacts. Additions
+inside planned items, modifications, deletions and invalid blocks still fail closed.
 Full production snapshots use bounded primary-key keyset pages (no deep OFFSET scans),
 then sort locally under the unchanged full-row SHA-256 contract. Pagination never refreshes
 or substitutes the frozen baseline; malformed/non-advancing pages fail closed.
