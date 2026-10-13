@@ -100,6 +100,49 @@ changes cannot be smuggled through this review mechanism.
 
 Enrichment stays skipped: new entries use the production V1 legal empty arrays.
 
+## Complete hyphenated compounds
+
+The frozen Layer-1 tokenizer intentionally preserves separately selectable components
+(`eco` / `friendly`, `fun` / `filled`). That is not complete compound coverage.
+Every canonical lexical hyphen compound also requires an exact full-span occurrence:
+`eco-friendly`, `fun-filled`, `meat-eating`, etc. A larger containing expression is not
+a substitute. Generate the compound's POS, concise Chinese meaning and English definition
+as a whole from its original canonical context, never by joining component definitions.
+
+Stage inputs expose `required_hyphenated_compounds`. MWE acceptance, post-QA validation,
+delta publication QA, and import artifact loading independently enforce this coverage.
+QA may correct compound fields but cannot remove mandatory coverage. The import loader
+recomputes from canonical text even for an older manifest claiming `import_ready`.
+Existing accepted artifacts remain immutable; do not rewrite historical checkpoints to
+make them satisfy a new coverage gate.
+
+Detection handles ASCII, Unicode hyphen and non-breaking hyphen with exact UTF-16 offsets;
+repeated uses count separately. Spaced separators, en/em dashes, dates and numeric ranges
+are not lexical compounds. Explicit person-name coverage exclusions remain excluded.
+
+For an explicitly requested missing-compound repair after a run was imported:
+
+```sh
+LEXICAL_INCREMENTAL_RUN=UNIQUE_REPAIR_RUN pnpm lexical:hyphen-repair audit --source-run IMPORTED_RUN
+# Author compound-annotations.json from the audit's missing spans and canonical contexts.
+LEXICAL_INCREMENTAL_RUN=UNIQUE_REPAIR_RUN pnpm lexical:hyphen-repair finalize
+LEXICAL_INCREMENTAL_RUN=UNIQUE_REPAIR_RUN pnpm lexical:hyphen-repair import
+# Only the user-authorized production operation:
+LEXICAL_INCREMENTAL_RUN=UNIQUE_REPAIR_RUN pnpm lexical:hyphen-repair import --write
+```
+
+Repair audit covers all canonical blocks of the source run's new/changed items, including
+an existing material if only its option changed. It captures a fresh full-row baseline and
+uses only production canonical tables and registered R2 references. Finalization validates
+the new expressions against frozen component-token alignment, consolidates against current
+entries, and binds every artifact by SHA-256. Only the newly authored expression fields
+pass through the frozen semantic parser; existing component rows are used for alignment,
+not renormalized or reannotated to change legacy production conventions. Repair import is a separate **append-only**
+transaction: no block writes, no occurrence replacement, no entry updates. Existing rows
+(including component tokens, context text, JSON fields and audit timestamps) must retain
+their full-row hashes before and after. Partial/mixed application and semantic/baseline drift
+fail closed; an exact applied rerun is zero-write. Both dry-run and write recheck live sources.
+
 ## Import transaction
 
 `delta-import.sql` is a single `BEGIN … COMMIT` transaction:

@@ -4,6 +4,7 @@ import { blockIdentityKey, type ProductionEntryRow, type ProductionBlockRow, typ
 import type { DeltaPlan } from "./deltaPlan.ts";
 import { occurrenceIdentityOf, type DeltaConsolidation } from "./consolidation.ts";
 import type { DeltaConflict } from "./consolidation.ts";
+import { hyphenatedCoverage } from "../hyphenated.ts";
 
 export type DeltaQaReport = {
   production_baseline_health: Record<string, number>;
@@ -18,6 +19,8 @@ export type DeltaQaReport = {
     duplicate_exact_span: number;
     missing_entry_mapping: number;
     missing_delta_block: number;
+    hyphenated_compounds: number;
+    missing_hyphenated_occurrence: number;
   };
   layer2: {
     occurrences: number;
@@ -140,6 +143,7 @@ export function runDeltaQa(input: {
     if (!layer1Spans.has(tokenKey)) missingEligibleToken += 1;
   });
   const layer1Count = input.occurrences.filter((occurrence) => occurrence.layer === 1).length;
+  const hyphens = hyphenatedCoverage(input.works.map(work => work.block), input.occurrences);
 
   const unchangedKeys = new Set(input.deltaPlan.unchanged_blocks.map((block) =>
     `${block.source_type}:${block.source_item_id}:${block.content_block_id}`));
@@ -169,7 +173,9 @@ export function runDeltaQa(input: {
       slice_mismatch: sliceMismatch,
       duplicate_exact_span: duplicateExactSpan,
       missing_entry_mapping: missingEntryMapping,
-      missing_delta_block: missingDeltaBlock
+      missing_delta_block: missingDeltaBlock,
+      hyphenated_compounds: hyphens.total,
+      missing_hyphenated_occurrence: hyphens.missing.length
     },
     layer2: {
       occurrences: input.occurrences.filter((occurrence) => occurrence.layer === 2).length,
@@ -203,6 +209,7 @@ export function runDeltaQa(input: {
     report.delta_coverage.duplicate_exact_span,
     report.delta_coverage.missing_entry_mapping,
     report.delta_coverage.missing_delta_block,
+    report.delta_coverage.missing_hyphenated_occurrence,
     report.consolidation.orphan_delta_occurrences,
     report.write_safety.unchanged_blocks_in_artifacts,
     report.write_safety.unchanged_occurrence_spans_in_delta,

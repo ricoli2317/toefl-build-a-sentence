@@ -6,6 +6,7 @@ import type {
   LexicalOccurrenceArtifact
 } from "./generationTypes.ts";
 import { lexicalEntryContentIssues, lexicalSemanticIssues } from "./semantic.ts";
+import { hyphenatedCoverage } from "./hyphenated.ts";
 
 export type LexicalBlockQa = {
   sourceType: string;
@@ -19,6 +20,7 @@ export type LexicalBlockQa = {
   coveragePercent: number;
   invalidSpans: number;
   duplicateExactSpans: number;
+  missingHyphenatedOccurrences: number;
   generationStatus: "generated" | "needs_review" | "failed";
   reasons: string[];
 };
@@ -61,7 +63,9 @@ export function qaLexicalBlock(
     duplicateExactSpans ? `duplicate_exact_spans:${duplicateExactSpans}` : null,
     blockOccurrences.some((occurrence) => occurrence.review_status === "needs_review") ? "occurrence_needs_review" : null
   ].filter((value): value is string => value !== null);
-  const failed = Boolean(failedReason) || missing.length > 0 || invalidSpans > 0 || duplicateExactSpans > 0;
+  const hyphens = hyphenatedCoverage([work.block], blockOccurrences);
+  if (hyphens.missing.length) reasons.push(`missing_hyphenated_occurrences:${hyphens.missing.length}`);
+  const failed = Boolean(failedReason) || missing.length > 0 || invalidSpans > 0 || duplicateExactSpans > 0 || hyphens.missing.length > 0;
   return {
     sourceType: work.block.sourceType,
     sourceItemId: work.block.sourceItemId,
@@ -74,6 +78,7 @@ export function qaLexicalBlock(
     coveragePercent: eligible.length === 0 ? 100 : ((eligible.length - missing.length) / eligible.length) * 100,
     invalidSpans,
     duplicateExactSpans,
+    missingHyphenatedOccurrences: hyphens.missing.length,
     generationStatus: failed ? "failed" : reasons.length ? "needs_review" : "generated",
     reasons
   };

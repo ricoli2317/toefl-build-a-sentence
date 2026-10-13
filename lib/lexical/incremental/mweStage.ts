@@ -7,6 +7,7 @@ import { validateAnnotationBatch } from "../annotation.ts";
 import { LEXICAL_AGENT_MWE_SCHEMA_VERSION, tokenAnnotationsFromOccurrences } from "../agentProtocol.ts";
 import { LEXICAL_GENERATION_VERSION, type LexicalBlockWork, type LexicalOccurrenceArtifact } from "../generationTypes.ts";
 import { createHash } from "node:crypto";
+import { assertHyphenatedCoverage } from "../hyphenated.ts";
 
 export type IncrementalMweWork = {
   annotation_batch_id: string;
@@ -78,7 +79,7 @@ export async function buildMweStage(root: string, deltaPlanSha256: string) {
         annotation_sha256: annotationSha,
         source_type: annotationBatch.source_type,
         blocks: works.map(workInputIdentity),
-        instruction: "Layer 2 only: return every block_key with expressions[], never tokens. Include only independently learnable fixed expressions, collocations, academic/writing patterns, phrasal verbs, idioms and multiword proper names; no ordinary compositional phrases. Use exact UTF-16 source slices."
+        instruction: "Layer 2 only: return every block_key with expressions[], never tokens. Include independently learnable fixed expressions, collocations, academic/writing patterns, phrasal verbs, idioms and multiword proper names; no ordinary compositional phrases. Also mandatory: every required_hyphenated_compound needs its own complete exact-span expression, even if contained in a larger expression. Interpret the compound as a whole in its canonical context, never concatenate component meanings. Keep all frozen component tokens. Use exact UTF-16 source slices."
       },
       work
     });
@@ -126,6 +127,7 @@ export async function validateMweStageOutput(
   const expressionsByKey = new Map(blocks.map((block) => [block.block_key, block.expressions]));
   const combined = tokenBlocks.map((block) => ({ ...block, expressions: expressionsByKey.get(block.block_key) ?? [] }));
   const occurrences = validateAnnotationBatch(work.works, { blocks: combined });
+  assertHyphenatedCoverage(work.works.map(item => item.block), occurrences);
   const layer1 = occurrences.filter((occurrence) => occurrence.layer === 1);
   if (JSON.stringify(layer1) !== JSON.stringify(annotationCheckpoint.occurrences)) {
     throw new Error("Layer-1 annotation mutation detected in the MWE stage.");

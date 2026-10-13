@@ -68,6 +68,7 @@ import { productionId, BLOCK_COLUMNS, ENTRY_COLUMNS, OCCURRENCE_COLUMNS } from "
 import { LEXICAL_GENERATION_VERSION, type LexicalOccurrenceArtifact } from "../lib/lexical/generationTypes.ts";
 import type { CanonicalLexicalBlock } from "../lib/lexical/types.ts";
 import { createServiceSupabase } from "../lib/supabase/server.ts";
+import { assertHyphenatedCoverage } from "../lib/lexical/hyphenated.ts";
 
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();
@@ -600,6 +601,12 @@ async function loadImportDataset(): Promise<{ dataset: IncrementalImportDataset;
   if (!qa.import_ready || qa.consolidation.unresolved_conflicts !== 0 || manifest.unresolved_conflicts !== 0) throw new Error("Publication QA is not import-ready.");
   const blocks = await readJsonl<Record<string, any>>(file("delta-source-blocks.jsonl"));
   const occurrences = await readJsonl<Record<string, any>>(file("delta-occurrences.jsonl"));
+  // Recompute from immutable canonical text, not a claimed QA counter. Legacy manifests
+  // must pass the same gate; component tokens or a containing phrase cannot satisfy it.
+  const plannedBlocks = await readCanonicalBlocksArtifact();
+  const deltaKeys = new Set(blocks.map(block => `${block.source_type}:${block.source_item_id}:${block.content_block_id}`));
+  assertHyphenatedCoverage(plannedBlocks.filter(block => deltaKeys.has(`${block.sourceType}:${block.sourceItemId}:${block.contentBlockId}`)),
+    occurrences as ProductionOccurrenceRow[]);
   const removed = await readJsonl<Record<string, any>>(file("delta-removals.jsonl"));
   const meta: Record<string, string> = {
     unrelated_blocks_sha256: manifest.baseline.unrelated_blocks_sha256,

@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { LEXICAL_GENERATION_VERSION, type LexicalBlockWork } from "../generationTypes.ts";
 import { lexicalSemanticProvenanceMatches } from "../provenance.ts";
 import { LEXICAL_AGENT_ANNOTATION_SCHEMA_VERSION, LEXICAL_AGENT_PROTOCOL_VERSION } from "../agentProtocol.ts";
+import { hyphenatedCompounds } from "../hyphenated.ts";
 
 export const INCREMENTAL_AGENT_SCHEMA_ANNOTATION = LEXICAL_AGENT_ANNOTATION_SCHEMA_VERSION;
 
@@ -42,6 +43,7 @@ export function workInputIdentity(work: LexicalBlockWork) {
     block_kind: work.block.blockKind,
     source_text_hash: work.sourceTextHash,
     text: work.block.text,
+    required_hyphenated_compounds: hyphenatedCompounds(work.block).map(({ start_offset, end_offset, surface_text }) => ({ start_offset, end_offset, surface_text })),
     eligible_tokens: work.tokens.filter((token) => !token.excluded).map((token) => ({
       candidate_id: token.candidateId,
       surface_text: token.surfaceText,

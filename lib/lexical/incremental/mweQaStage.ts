@@ -11,6 +11,7 @@ import { normalizeLexicalExpression } from "../normalize.ts";
 import { lexicalEntryKey } from "../generationTypes.ts";
 import { stagePaths } from "./paths.ts";
 import type { IncrementalAnnotationCheckpoint } from "./annotationStage.ts";
+import { assertHyphenatedCoverage } from "../hyphenated.ts";
 
 export const INCREMENTAL_MWE_QA_SCHEMA_VERSION = "lexical-mwe-expression-qa-v1";
 export const MWE_QA_ISSUE_TYPES = ["over_collected", "wrong_expression_type", "wrong_learning_value", "wrong_pos",
@@ -194,7 +195,8 @@ export async function buildMweQaStage(root: string, deltaPlanSha256: string) {
           "PASS means the expression is independently learnable and every field is correct.",
           "ISSUE requires issue_types and a concise_reason; over_collected expressions must use recommended_action remove.",
           "correct requires concrete corrections limited to expression_type, learning_value, context_pos, canonical_expression, lemma, context_meaning_zh, context_definition_en.",
-          "Never mutate expression_identity, offsets or surface_text."
+          "Never mutate expression_identity, offsets or surface_text.",
+          "Complete hyphenated lexical compounds are mandatory exact-span coverage; correct their fields rather than remove them as ordinary compositional phrases. Larger containing expressions are not a substitute."
         ].join(" "),
         expressions: batchExpressions
       },
@@ -306,6 +308,7 @@ export async function validateMweQaStageOutput(
       }) };
     });
     const validated = validateAnnotationBatch(work.works, { blocks });
+    assertHyphenatedCoverage(work.works.map(item => item.block), validated);
     if (JSON.stringify(validated.filter(value => value.layer === 1)) !== JSON.stringify(annotation.occurrences)) throw new Error("MWE QA mutated Layer-1 annotations.");
   }
   return {
