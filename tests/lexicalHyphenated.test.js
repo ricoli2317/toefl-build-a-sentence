@@ -1,10 +1,11 @@
 const assert = require('node:assert/strict');
 const test = require('node:test');
-const { hyphenatedCompounds, hyphenatedCoverage, assertHyphenatedCoverage } = require('../lib/lexical/hyphenated.ts');
+const { hyphenatedCompounds, hyphenatedCoverage, assertHyphenatedCoverage, validateApprovedHyphenatedSpans, approvedHyphenatedCoverage } = require('../lib/lexical/hyphenated.ts');
 const { tokenizeCanonicalBlock } = require('../lib/lexical/tokenize.ts');
 const { qaLexicalBlock } = require('../lib/lexical/qa.ts');
 const { matchLexicalSelection } = require('../lib/lexical/lookup.ts');
 const { validateAnnotationBatch } = require('../lib/lexical/annotation.ts');
+const { parseLexicalAnnotationPayload, validateAndMaterializeBlockAnnotation } = require('../lib/lexical/annotation.ts');
 const { buildDeltaPlan } = require('../lib/lexical/incremental/deltaPlan.ts');
 const { consolidateIncrementalDelta } = require('../lib/lexical/incremental/consolidation.ts');
 const { runDeltaQa } = require('../lib/lexical/incremental/deltaQa.ts');
@@ -81,4 +82,28 @@ test('incremental publication fails closed on full token coverage but missing hy
   assert.throws(()=>qa([]),/missing_hyphenated_occurrence.*1/);
   const report=qa([compound]);assert.equal(report.import_ready,true);assert.equal(report.delta_coverage.hyphenated_compounds,1);assert.equal(report.delta_coverage.missing_hyphenated_occurrence,0);
   assert.deepEqual(annotationStageInput([work],'batch','sig',incrementalAgentProvenance()).blocks[0].required_hyphenated_compounds,[{start_offset:0,end_offset:12,surface_text:'eco-friendly'}]);
+});
+
+test('audited numeric compound exceptions are exact-span, context-bound and do not alter frozen tokens', () => {
+  for (const word of ['10-page','15-page','2-hour','250-word','mid-2020s','CRISPR-Cas9',"CRISPR-Cas9's"]) {
+    const b=block(`Use ${word} here.`),work=tokenizeCanonicalBlock(b),start=b.text.indexOf(word);
+    const approved={...span(b,start,start+word.length),context_text:b.text};
+    assert.doesNotThrow(()=>validateApprovedHyphenatedSpans([b],[approved]));
+    const tokens=work.tokens.map(t=>({candidate_id:t.candidateId,context_pos:'noun',context_meaning_zh:'原有组成词',context_definition_en:'The original component meaning.',
+      canonical_expression:t.surfaceText,lemma:t.surfaceText,expression_type:'word',needs_review:false,review_notes:null}));
+    const expressions=[{start_offset:start,end_offset:start+word.length,surface_text:word,context_pos:'adjective',context_meaning_zh:'完整复合词义',context_definition_en:'A definition of the entire contextual compound.',
+      canonical_expression:word,lemma:word,expression_type:'phrase',learning_value:'fixed_expression',needs_review:false,review_notes:null}];
+    const [annotation]=parseLexicalAnnotationPayload({blocks:[{block_key:`rdl:item:${b.contentBlockId}`,tokens,expressions}]});
+    const before=validateAndMaterializeBlockAnnotation(work,{...annotation,expressions:[]});
+    const after=validateAndMaterializeBlockAnnotation(work,annotation,{approvedHyphenatedSpans:[approved]});
+    assert.deepEqual(after.filter(o=>o.layer===1),before);
+    assert.equal(after.filter(o=>o.layer===2)[0].surface_text,word);
+    assert.equal(approvedHyphenatedCoverage([b],after,[approved]).missing.length,0);
+    if(word !== 'mid-2020s' && !word.endsWith("'s")) assert.throws(()=>validateAndMaterializeBlockAnnotation(work,annotation,{approvedHyphenatedSpans:[]}),/align/);
+    for(const changed of [{...approved,context_text:'different'},{...approved,surface_text:'other'},{...approved,start_offset:start+1}])
+      assert.throws(()=>validateApprovedHyphenatedSpans([b],[changed]));
+    assert.throws(()=>validateApprovedHyphenatedSpans([b],[approved,approved]),/duplicate/);
+  }
+  const b=block('one two 2026-10-13 555-0168');
+  for (const word of ['one two','2026-10-13','555-0168']) {const start=b.text.indexOf(word);assert.throws(()=>validateApprovedHyphenatedSpans([b],[{...span(b,start,start+word.length),context_text:b.text}]),/eligible hyphenated/);}
 });

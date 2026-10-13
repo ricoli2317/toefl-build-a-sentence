@@ -9,6 +9,7 @@ import {
 } from "./generationTypes.ts";
 import { normalizeLexicalExpression } from "./normalize.ts";
 import { lexicalSemanticIssues } from "./semantic.ts";
+import { validateApprovedHyphenatedSpans, type HyphenatedCompound } from "./hyphenated.ts";
 
 const POS_VALUES = new Set<string>(LEXICAL_POS_VALUES);
 const TOKEN_TYPES = new Set<string>(["word", "proper_noun"]);
@@ -252,13 +253,16 @@ function reviewNotes(...values: Array<string | null | undefined>) {
 
 export function validateAndMaterializeBlockAnnotation(
   work: LexicalBlockWork,
-  annotation: ModelBlockAnnotation
+  annotation: ModelBlockAnnotation,
+  options?: { approvedHyphenatedSpans: HyphenatedCompound[] }
 ): LexicalOccurrenceArtifact[] {
   const blockKey = lexicalBlockKey(work);
   if (annotation.block_key !== blockKey) {
     throw new LexicalAnnotationValidationError(`Annotation block key mismatch: expected ${blockKey}.`);
   }
   const eligibleTokens = work.tokens.filter((token) => !token.excluded);
+  const approvedNumeric = options ? validateApprovedHyphenatedSpans([work.block], options.approvedHyphenatedSpans)
+    .filter(span => /[0-9]/.test(span.surface_text)) : [];
   const tokenById = new Map(eligibleTokens.map((token) => [token.candidateId, token]));
   const annotationsById = new Map<string, ModelTokenAnnotation>();
   for (const token of annotation.tokens) {
@@ -310,9 +314,11 @@ export function validateAndMaterializeBlockAnnotation(
       throw new LexicalAnnotationValidationError(`${blockKey} MWE does not match its exact UTF-16 slice.`);
     }
     const coveredTokens = eligibleTokens.filter((token) => token.startOffset >= startOffset && token.endOffset <= endOffset);
-    if (coveredTokens.length < 2 || coveredTokens[0].startOffset !== startOffset || coveredTokens[coveredTokens.length - 1].endOffset !== endOffset) {
+    const approvedNumericSpan = approvedNumeric.some(span => span.start_offset === startOffset && span.end_offset === endOffset && span.surface_text === expression.surface_text);
+    if (!approvedNumericSpan && (coveredTokens.length < 2 || coveredTokens[0].startOffset !== startOffset || coveredTokens[coveredTokens.length - 1].endOffset !== endOffset)) {
       throw new LexicalAnnotationValidationError(`${blockKey} MWE must align to at least two eligible lexical tokens.`);
     }
+    if (approvedNumericSpan && coveredTokens.length < 1) throw new LexicalAnnotationValidationError(`${blockKey} approved compound has no lexical component.`);
     if (coveredTokens.some((token) => token.excluded)) {
       throw new LexicalAnnotationValidationError(`${blockKey} MWE overlaps an excluded person-name token.`);
     }

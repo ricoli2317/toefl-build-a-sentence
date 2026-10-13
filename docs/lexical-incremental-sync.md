@@ -143,6 +143,27 @@ transaction: no block writes, no occurrence replacement, no entry updates. Exist
 their full-row hashes before and after. Partial/mixed application and semantic/baseline drift
 fail closed; an exact applied rerun is zero-write. Both dry-run and write recheck live sources.
 
+Historical repair may carry an explicit `approved-repair-spans.jsonl` whitelist from a
+completed audit. It is hash-bound into the publication and dataset, must cover every
+ordinary missing compound in scoped blocks, and cannot include already-covered spans.
+This permits individually reviewed numeric lexical forms such as `10-page`, `mid-2020s`
+or `CRISPR-Cas9` without changing the frozen Layer-1 tokenizer or granting an arbitrary
+single-token MWE exception. Materialization only accepts the exact whitelisted canonical
+hyphen span and context; ordinary MWE validation remains unchanged. Explicit excluded
+source items are rejected by finalization and import dataset validation. A history repair
+does not silently sync new materials or include product codes excluded by its audit.
+
+An audit regex can also match ASCII punctuation at title/description or clause boundaries
+(`efficiency-but`, `order-the`). Independent semantic QA must not invent glossary meanings
+for these fragments. A history repair can carry exact, hash-bound
+`nonlexical-scope-reviews.json` decisions after original-context adjudication. The original
+approved inventory and batch outputs remain immutable; the publication separately reports
+lexical insertions, adjudicated nonlexical exclusions, and any raw detector misses. Reviews
+cannot skip other spans, change canonical text or cover unreviewed missing compounds.
+All batch inputs, original outputs, QA, reviewed outputs and receipts are bound into the
+repair manifest when the staged semantic protocol is used. These decisions are lexical
+repair overlays, not edits to Reading-owned canonical assets or a generic exclusion rule.
+
 ## Import transaction
 
 `delta-import.sql` is a single `BEGIN … COMMIT` transaction:

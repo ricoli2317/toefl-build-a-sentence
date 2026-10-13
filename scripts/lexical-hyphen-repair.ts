@@ -8,7 +8,7 @@ import { tokenizeCanonicalBlock } from "../lib/lexical/tokenize.ts";
 import { parseLexicalAnnotationPayload, validateAndMaterializeBlockAnnotation } from "../lib/lexical/annotation.ts";
 import { tokenAnnotationsFromOccurrences } from "../lib/lexical/agentProtocol.ts";
 import { lexicalEntryKey, type LexicalOccurrenceArtifact } from "../lib/lexical/generationTypes.ts";
-import { hyphenatedCompounds, hyphenatedCoverage, assertHyphenatedCoverage } from "../lib/lexical/hyphenated.ts";
+import { hyphenatedCompounds, hyphenatedCoverage, type HyphenatedCompound } from "../lib/lexical/hyphenated.ts";
 import { incrementalFile, incrementalRoot } from "../lib/lexical/incremental/paths.ts";
 import { incrementalAgentProvenance } from "../lib/lexical/incremental/envelope.ts";
 import { lexicalSemanticProvenanceMatches } from "../lib/lexical/provenance.ts";
@@ -16,7 +16,7 @@ import { readJsonl, readRequiredJson, writeJsonAtomic, writeJsonlAtomic, writeAt
 import { readFullProductionSnapshot, assertProductionBaselineIntegrity } from "../lib/lexical/incremental/productionBaseline.server.ts";
 import { fullSnapshotHashes, type FullProductionSnapshot } from "../lib/lexical/incremental/importBaseline.ts";
 import { consolidateIncrementalDelta, deltaEntryRow, deltaOccurrenceRow, occurrenceIdentityOf } from "../lib/lexical/incremental/consolidation.ts";
-import { validateHyphenRepair, validateHyphenRepairSemanticQa, preflightHyphenRepair, buildHyphenRepairSql, type HyphenRepairDataset } from "../lib/lexical/incremental/hyphenRepair.ts";
+import { validateHyphenRepair, missingHyphenRepairSpans, hyphenRepairCoverage, validateHyphenRepairSemanticQa, preflightHyphenRepair, buildHyphenRepairSql, type HyphenRepairDataset, type ReviewedNonlexicalHyphenSpan } from "../lib/lexical/incremental/hyphenRepair.ts";
 import type { CanonicalLexicalBlock } from "../lib/lexical/types.ts";
 
 const file = (...parts: string[]) => incrementalFile(process.cwd(), ...parts);
@@ -25,6 +25,22 @@ async function snapshot(): Promise<FullProductionSnapshot> {
 }
 async function liveCanonical() {
   return enumerateCanonicalLexicalBlocks(await loadCanonicalLexicalInputs(createServiceSupabase(), { assetBaseUrl: process.env.READING_ASSET_BASE_URL, onProgress: console.log }));
+}
+async function semanticReceiptArtifacts() {
+  if (!await fileExists(file("semantic-receipts.json"))) return null;
+  const receipts = await readRequiredJson<any>(file("semantic-receipts.json"));
+  if (!Array.isArray(receipts.artifacts) || receipts.plan_sha256 !== await sha256File(file("semantic-plan.json"))) throw Error("Semantic receipt plan binding changed.");
+  const seen = new Set<string>();
+  for (const artifact of receipts.artifacts) {
+    if (!/^semantic\/(?:rdl|rap)-[0-9]{2}\/(?:input|output|annotation-receipt|qa|reviewed-output|reviewed-qa|qa-receipt|reviewed-scope)\.json$/.test(artifact.path)
+      || seen.has(artifact.path) || artifact.sha256 !== await sha256File(file(artifact.path))) throw Error("Semantic batch receipt artifact changed.");
+    seen.add(artifact.path);
+  }
+  return { receipts, artifacts: [
+    { path: "semantic-plan.json", sha256: await sha256File(file("semantic-plan.json")) },
+    { path: "semantic-receipts.json", sha256: await sha256File(file("semantic-receipts.json")) },
+    ...receipts.artifacts
+  ] as { path: string; sha256: string }[] };
 }
 async function audit() {
   const sourceRun = process.argv[process.argv.indexOf("--source-run") + 1];
@@ -55,7 +71,16 @@ async function finalize() {
   const metadata = await readRequiredJson<any>(file("baseline.json"));
   if (JSON.stringify(fullSnapshotHashes(baseline)) !== JSON.stringify(metadata.hashes)) throw Error("Captured baseline changed.");
   const blocks = await readRequiredJson<CanonicalLexicalBlock[]>(file("canonical.json"));
-  const missing = hyphenatedCoverage(blocks, baseline.occurrences).missing;
+  const approved = await fileExists(file("approved-repair-spans.jsonl")) ? await readJsonl<HyphenatedCompound>(file("approved-repair-spans.jsonl")) : undefined;
+  const audit = await readRequiredJson<any>(file("audit.json"));
+  if (approved && approved.length !== audit.approved_count) throw Error("Approved repair count differs from the captured audit.");
+  const nonlexical = await fileExists(file("nonlexical-scope-reviews.json")) ? await readRequiredJson<{ reviews: ReviewedNonlexicalHyphenSpan[]; input_sha256: Record<string, string> }>(file("nonlexical-scope-reviews.json")) : undefined;
+  if (nonlexical) {
+    for (const [name, key] of [["canonical.json", "canonical"], ["audit.json", "audit"], ["approved-repair-spans.jsonl", "approved"]]) {
+      if (nonlexical.input_sha256?.[key] !== await sha256File(file(name))) throw Error("Nonlexical scope review input binding changed.");
+    }
+  }
+  const missing = missingHyphenRepairSpans(blocks, baseline.occurrences, approved, nonlexical?.reviews);
   const annotations = await readRequiredJson<any>(file("compound-annotations.json"));
   if (!lexicalSemanticProvenanceMatches(annotations.provenance, incrementalAgentProvenance())) throw Error("Repair semantic provenance mismatch.");
   const semanticQa = await readRequiredJson<any>(file("compound-semantic-qa.json"));
@@ -67,10 +92,13 @@ async function finalize() {
   if (!Array.isArray(annotations.blocks) || annotations.blocks.length !== targeted.length || new Set(annotations.blocks.map((b: any) => b.block_key)).size !== targeted.length) throw Error("Repair annotation block coverage mismatch.");
   const occurrences: LexicalOccurrenceArtifact[] = [];
   const entries = new Map(baseline.entries.map(e => [e.entry_id, e]));
+  const spanKey = (o: { source_type: string; source_item_id: string; content_block_id: string; start_offset: number; end_offset: number }) =>
+    JSON.stringify([o.source_type, o.source_item_id, o.content_block_id, o.start_offset, o.end_offset]);
+  const frozenOccurrences = new Map(baseline.occurrences.map(o => [spanKey(o), o]));
   for (const b of targeted) {
     const work = tokenizeCanonicalBlock(b);
     const layer1 = work.tokens.filter(t => !t.excluded).map(t => {
-      const o = baseline.occurrences.find(o => o.source_type === t.sourceType && o.source_item_id === t.sourceItemId && o.content_block_id === t.contentBlockId && o.start_offset === t.startOffset && o.end_offset === t.endOffset);
+      const o = frozenOccurrences.get(JSON.stringify([t.sourceType, t.sourceItemId, t.contentBlockId, t.startOffset, t.endOffset]));
       const e = o && entries.get(o.entry_id);
       if (!o || !e) throw Error(`Missing frozen component token: ${t.candidateId}`);
       return { ...o, layer: 1, canonical_expression: e.canonical_expression, lemma: e.lemma,
@@ -88,7 +116,9 @@ async function finalize() {
       if (token.expression_type !== "word" && token.expression_type !== "proper_noun") throw Error("Frozen component is not a lexical token.");
       return { ...token, expression_type: token.expression_type };
     });
-    const materialized = validateAndMaterializeBlockAnnotation(work, { ...parsed, tokens: componentTokens });
+    const materialized = validateAndMaterializeBlockAnnotation(work, { ...parsed, tokens: componentTokens }, approved ? {
+      approvedHyphenatedSpans: approved.filter(o => o.source_type === b.sourceType && o.source_item_id === b.sourceItemId && o.content_block_id === b.contentBlockId)
+    } : undefined);
     occurrences.push(...materialized.filter(o => o.layer === 2));
   }
   const consolidated = consolidateIncrementalDelta({ occurrences, productionEntries: baseline.entries });
@@ -96,16 +126,29 @@ async function finalize() {
   const data: HyphenRepairDataset = { version: "lexical-hyphen-repair-v1", blocks,
     entries: consolidated.newEntries.map(deltaEntryRow),
     occurrences: consolidated.occurrences.map(o => deltaOccurrenceRow(o, consolidated.assignments.get(occurrenceIdentityOf(o))!.entry_id)),
-    baseline: { hashes: metadata.hashes, counts: { entries: baseline.entries.length, blocks: baseline.blocks.length, occurrences: baseline.occurrences.length } } };
+    baseline: { hashes: metadata.hashes, counts: { entries: baseline.entries.length, blocks: baseline.blocks.length, occurrences: baseline.occurrences.length } },
+    ...(approved ? { approved_spans: approved, excluded_source_items: audit.excluded_source_items ?? [],
+      ...(nonlexical ? { nonlexical_reviews: nonlexical.reviews } : {}) } : {}) };
   validateHyphenRepair(data, baseline);
+  const semanticReceipts = await semanticReceiptArtifacts();
+  if (semanticReceipts && (semanticReceipts.receipts.lexical_occurrences !== data.occurrences.length
+    || semanticReceipts.receipts.approved_occurrences !== approved?.length
+    || semanticReceipts.receipts.nonlexical_excluded !== (nonlexical?.reviews.length ?? 0))) throw Error("Semantic receipt inventory differs from the repair dataset.");
   await writeJsonAtomic(file("repair-dataset.json"), data);
   await writeAtomic(file("repair-import.sql"), buildHyphenRepairSql(data));
   const artifacts = [];
   for (const name of ["baseline.json", "baseline-entries.jsonl", "baseline-blocks.jsonl", "baseline-occurrences.jsonl", "canonical.json", "audit.json", "compound-annotations.json", "compound-semantic-qa.json", "repair-dataset.json", "repair-import.sql"]) artifacts.push({ path: name, sha256: await sha256File(file(name)) });
-  const coverage = assertHyphenatedCoverage(blocks, [...baseline.occurrences, ...data.occurrences]);
+  if (approved) artifacts.push({ path: "approved-repair-spans.jsonl", sha256: await sha256File(file("approved-repair-spans.jsonl")) });
+  if (nonlexical) artifacts.push({ path: "nonlexical-scope-reviews.json", sha256: await sha256File(file("nonlexical-scope-reviews.json")) });
+  if (semanticReceipts) artifacts.push(...semanticReceipts.artifacts);
+  const coverage = hyphenRepairCoverage(data, [...baseline.occurrences, ...data.occurrences]);
   const manifest = { version: data.version, created_at: new Date().toISOString(), import_ready: true, provenance: annotations.provenance,
     added_occurrences: data.occurrences.length, new_entries: data.entries.length, reused_entries: consolidated.reusedEntries.length,
-    hyphenated_compounds: coverage.total, missing_after: 0, semantic_qa: semanticQaResult, existing_rows_updated_or_deleted: 0, artifacts };
+    hyphenated_compounds: coverage.ordinary_total, missing_after: coverage.ordinary_missing.length, semantic_qa: semanticQaResult, existing_rows_updated_or_deleted: 0,
+    ...(approved ? { approved_occurrences: approved.length, approved_missing_after: coverage.approved_missing.length,
+      reviewed_nonlexical_spans: coverage.reviewed_nonlexical, raw_missing_after: coverage.raw_ordinary_missing,
+      excluded_source_items: data.excluded_source_items } : {}),
+    ...(semanticReceipts ? { semantic_receipts_bound: true } : {}), artifacts };
   await writeJsonAtomic(file("repair-manifest.json"), manifest);
   console.log(JSON.stringify(manifest, null, 2));
 }
@@ -113,11 +156,27 @@ async function finalize() {
 async function importRepair() {
   const manifest = await readRequiredJson<any>(file("repair-manifest.json"));
   const required = ["baseline.json", "baseline-entries.jsonl", "baseline-blocks.jsonl", "baseline-occurrences.jsonl", "canonical.json", "audit.json", "compound-annotations.json", "compound-semantic-qa.json", "repair-dataset.json", "repair-import.sql"];
+  if (manifest.approved_occurrences !== undefined) required.push("approved-repair-spans.jsonl");
+  if (manifest.reviewed_nonlexical_spans) required.push("nonlexical-scope-reviews.json");
+  if (manifest.semantic_receipts_bound) {
+    const semantic = await semanticReceiptArtifacts();
+    if (!semantic) throw Error("Publication is missing semantic receipts.");
+    required.push(...semantic.artifacts.map(a => a.path));
+  }
   if (manifest.version !== "lexical-hyphen-repair-v1" || !manifest.import_ready || !Array.isArray(manifest.artifacts)
     || manifest.artifacts.length !== required.length || new Set(manifest.artifacts.map((a: any) => a.path)).size !== required.length
     || required.some(name => !manifest.artifacts.some((a: any) => a.path === name))) throw Error("Incomplete repair manifest.");
   for (const artifact of manifest.artifacts) if (await sha256File(file(artifact.path)) !== artifact.sha256) throw Error("Repair artifact changed.");
   const data = await readRequiredJson<HyphenRepairDataset>(file("repair-dataset.json"));
+  if (data.approved_spans) {
+    const approved = await readJsonl<HyphenatedCompound>(file("approved-repair-spans.jsonl"));
+    if (JSON.stringify(approved) !== JSON.stringify(data.approved_spans) || manifest.approved_occurrences !== approved.length
+      || JSON.stringify(manifest.excluded_source_items) !== JSON.stringify(data.excluded_source_items)) throw Error("Approved repair scope binding changed.");
+  } else if (manifest.approved_occurrences !== undefined) throw Error("Repair dataset is missing the approved scope.");
+  if (data.nonlexical_reviews) {
+    const reviewed = await readRequiredJson<{ reviews: ReviewedNonlexicalHyphenSpan[] }>(file("nonlexical-scope-reviews.json"));
+    if (JSON.stringify(reviewed.reviews) !== JSON.stringify(data.nonlexical_reviews) || manifest.reviewed_nonlexical_spans !== reviewed.reviews.length) throw Error("Nonlexical scope review binding changed.");
+  } else if (manifest.reviewed_nonlexical_spans) throw Error("Repair dataset is missing nonlexical scope reviews.");
   const baseline = await snapshot();
   validateHyphenRepair(data, baseline);
   if (await readFile(file("repair-import.sql"), "utf8") !== buildHyphenRepairSql(data)) throw Error("Repair SQL does not reproduce.");

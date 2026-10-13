@@ -1,7 +1,7 @@
 import { baselineRowsSha256, baselineRowsHashSql, BASELINE_HASH_SQL } from "./baselineHash.ts";
 import { fullSnapshotHashes, type FullProductionSnapshot } from "./importBaseline.ts";
 import { ENTRY_COLUMNS, OCCURRENCE_COLUMNS } from "../production.ts";
-import { assertHyphenatedCoverage, hyphenatedCoverage } from "../hyphenated.ts";
+import { hyphenatedCoverage, approvedHyphenatedCoverage, type HyphenatedCompound } from "../hyphenated.ts";
 import { canonicalSourceTextHash } from "../hash.ts";
 import { lexicalSemanticIssues } from "../semantic.ts";
 import type { CanonicalLexicalBlock } from "../types.ts";
@@ -15,8 +15,62 @@ export type HyphenRepairDataset = {
   blocks: CanonicalLexicalBlock[];
   entries: ReturnType<typeof deltaEntryRow>[];
   occurrences: ReturnType<typeof deltaOccurrenceRow>[];
+  /** Optional reviewed whitelist for a history audit, including numeric hyphen spans. */
+  approved_spans?: HyphenatedCompound[];
+  excluded_source_items?: string[];
+  /** Exact source punctuation junctions adjudicated during independent semantic QA. */
+  nonlexical_reviews?: ReviewedNonlexicalHyphenSpan[];
   baseline: { hashes: ReturnType<typeof fullSnapshotHashes>; counts: { entries: number; blocks: number; occurrences: number } };
 };
+
+export type ReviewedNonlexicalHyphenSpan = HyphenatedCompound & {
+  decision: "not_lexical_compound";
+  reason: string;
+  source_text_hash: string;
+  review_input_sha256: string;
+  review_output_sha256: string;
+};
+
+const repairSpanKey = (o: HyphenatedCompound) => JSON.stringify([o.source_type, o.source_item_id, o.content_block_id, o.start_offset, o.end_offset, o.surface_text]);
+
+function reviewedNonlexicalKeys(blocks: CanonicalLexicalBlock[], approved: HyphenatedCompound[] | undefined, reviews?: ReviewedNonlexicalHyphenSpan[]) {
+  if (!reviews?.length) return new Set<string>();
+  if (!approved) throw new Error("Nonlexical scope reviews require an audit-bound approved inventory.");
+  const approvedKeys = new Set(approved.map(repairSpanKey));
+  const seen = new Set<string>();
+  for (const review of reviews) {
+    const key = repairSpanKey(review);
+    const block = blocks.find(b => b.sourceType === review.source_type && b.sourceItemId === review.source_item_id && b.contentBlockId === review.content_block_id);
+    if (seen.has(key) || !approvedKeys.has(key) || !block || review.decision !== "not_lexical_compound" || !review.reason?.trim()
+      || review.context_text !== block.text || block.text.slice(review.start_offset, review.end_offset) !== review.surface_text
+      || review.source_text_hash !== canonicalSourceTextHash(block.text)
+      || !/^[a-f0-9]{64}$/.test(review.review_input_sha256) || !/^[a-f0-9]{64}$/.test(review.review_output_sha256)) throw new Error("Invalid, duplicate, or stale nonlexical scope review.");
+    seen.add(key);
+  }
+  return seen;
+}
+
+export function missingHyphenRepairSpans(blocks: CanonicalLexicalBlock[], occurrences: FullProductionSnapshot["occurrences"], approved?: HyphenatedCompound[], reviews?: ReviewedNonlexicalHyphenSpan[]) {
+  const ordinary = hyphenatedCoverage(blocks, occurrences).missing;
+  if (!approved) {
+    if (reviews?.length) throw new Error("Nonlexical scope reviews require an audit-bound approved inventory.");
+    return ordinary;
+  }
+  const coverage = approvedHyphenatedCoverage(blocks, occurrences, approved);
+  const required = new Set(coverage.missing.map(repairSpanKey));
+  if (ordinary.some(o => !required.has(repairSpanKey(o))) || coverage.covered) throw new Error("Approved repair whitelist is incomplete or includes already-covered spans.");
+  const excluded = reviewedNonlexicalKeys(blocks, approved, reviews);
+  return coverage.missing.filter(o => !excluded.has(repairSpanKey(o)));
+}
+
+export function hyphenRepairCoverage(data: Pick<HyphenRepairDataset, "blocks" | "approved_spans" | "nonlexical_reviews">, occurrences: FullProductionSnapshot["occurrences"]) {
+  const excluded = reviewedNonlexicalKeys(data.blocks, data.approved_spans, data.nonlexical_reviews);
+  const ordinary = hyphenatedCoverage(data.blocks, occurrences);
+  const approved = data.approved_spans ? approvedHyphenatedCoverage(data.blocks, occurrences, data.approved_spans) : ordinary;
+  return { ordinary_total: ordinary.total, approved_total: approved.total, reviewed_nonlexical: excluded.size,
+    raw_ordinary_missing: ordinary.missing.length, ordinary_missing: ordinary.missing.filter(o => !excluded.has(repairSpanKey(o))),
+    approved_missing: approved.missing.filter(o => !excluded.has(repairSpanKey(o))) };
+}
 
 export function validateHyphenRepairSemanticQa(qa: Row, annotations: Row) {
   const expected = annotations.blocks.flatMap((b: Row) => b.expressions.map((e: Row) => ({ ...e, block_key: b.block_key })));
@@ -38,7 +92,10 @@ export function validateHyphenRepair(data: HyphenRepairDataset, baseline: FullPr
   if (JSON.stringify(data.baseline.hashes) !== JSON.stringify(fullSnapshotHashes(baseline))
     || JSON.stringify(data.baseline.counts) !== JSON.stringify({ entries: baseline.entries.length, blocks: baseline.blocks.length, occurrences: baseline.occurrences.length })) throw new Error("Repair baseline binding mismatch.");
   const key = (o: Row) => JSON.stringify([o.source_type, o.source_item_id, o.content_block_id, o.start_offset, o.end_offset]);
-  const missing = hyphenatedCoverage(data.blocks, baseline.occurrences).missing;
+  const excluded = new Set(data.excluded_source_items ?? []);
+  if (data.blocks.some(b => excluded.has(b.sourceItemId)) || data.occurrences.some(o => excluded.has(o.source_item_id))
+    || data.approved_spans?.some(o => excluded.has(o.source_item_id))) throw new Error("Repair includes an explicitly excluded source item.");
+  const missing = missingHyphenRepairSpans(data.blocks, baseline.occurrences, data.approved_spans, data.nonlexical_reviews);
   if (missing.length !== data.occurrences.length || new Set(data.occurrences.map(key)).size !== missing.length) throw new Error("Repair is not exactly the missing compound set.");
   const entries = new Map([...baseline.entries, ...data.entries].map(e => [e.entry_id, e]));
   for (const b of data.blocks) {
@@ -62,7 +119,8 @@ export function validateHyphenRepair(data: HyphenRepairDataset, baseline: FullPr
     if (baselineEntryIds.has(row.entry_id) || newIds.has(row.entry_id) || identities.has(identity(row)) || !usedEntries.has(row.entry_id)) throw new Error("Repair entry collision or unused entry.");
     newIds.add(row.entry_id); identities.add(identity(row));
   }
-  assertHyphenatedCoverage(data.blocks, [...baseline.occurrences, ...data.occurrences]);
+  const coverage = hyphenRepairCoverage(data, [...baseline.occurrences, ...data.occurrences]);
+  if (coverage.ordinary_missing.length || coverage.approved_missing.length) throw new Error("Repair did not cover every approved lexical compound.");
 }
 
 const projection = (row: Row, columns: readonly string[]) => Object.fromEntries(columns.map(c => [c, row[c]]));

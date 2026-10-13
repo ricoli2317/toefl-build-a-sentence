@@ -3,9 +3,10 @@ const test = require('node:test');
 const path = require('node:path');
 const { fullSnapshotHashes } = require('../lib/lexical/incremental/importBaseline.ts');
 const { sortBlocks, sortEntries, sortOccurrences } = require('../lib/lexical/incremental/productionBaseline.server.ts');
-const { validateHyphenRepair, validateHyphenRepairSemanticQa, preflightHyphenRepair, buildHyphenRepairSql } = require('../lib/lexical/incremental/hyphenRepair.ts');
+const { validateHyphenRepair, missingHyphenRepairSpans, hyphenRepairCoverage, validateHyphenRepairSemanticQa, preflightHyphenRepair, buildHyphenRepairSql } = require('../lib/lexical/incremental/hyphenRepair.ts');
 const { productionId, ENTRY_COLUMNS, OCCURRENCE_COLUMNS } = require('../lib/lexical/production.ts');
 const { canonicalSourceTextHash } = require('../lib/lexical/hash.ts');
+const { hyphenatedCompounds } = require('../lib/lexical/hyphenated.ts');
 const PGlite = process.env.LEXICAL_SQL_TEST_PGLITE ? require(path.resolve(process.env.LEXICAL_SQL_TEST_PGLITE)).PGlite : null;
 const engineTest = (name,fn) => test(name,{skip:!PGlite},fn);
 const schema = `
@@ -66,6 +67,45 @@ test('append-only repair covers exactly missing compounds, retains components an
  assert.doesNotMatch(sql,/UPDATE public\.|DELETE FROM public\./);
  assert.match(sql,/pg_advisory_xact_lock\(7631043\)/);
  assert.match(sql,/Repair mixed fresh\/applied/);
+});
+
+test('audited repair whitelist is closed to extra spans, omissions, covered rows and excluded sources', () => {
+ const baseline=baselineFixture(),data=dataFor(baseline);
+ data.approved_spans=hyphenatedCompounds(b);data.excluded_source_items=['excluded-green-chemistry'];
+ assert.doesNotThrow(()=>validateHyphenRepair(data,baseline));
+ assert.equal(missingHyphenRepairSpans(data.blocks,baseline.occurrences,data.approved_spans).length,1);
+ for(const mutate of [d=>d.approved_spans=[],d=>d.approved_spans.push(d.approved_spans[0]),d=>d.excluded_source_items=['item'],d=>d.approved_spans[0].context_text='other']) {
+  const changed=structuredClone(data);mutate(changed);assert.throws(()=>validateHyphenRepair(changed,baseline));
+ }
+ const existing={...baseline,occurrences:[...baseline.occurrences,...data.occurrences]};
+ assert.throws(()=>missingHyphenRepairSpans(data.blocks,existing.occurrences,data.approved_spans),/already-covered/);
+});
+
+test('numeric audited repair appends a whole compound rather than changing the single Latin component', () => {
+ const nb={...b,text:'10-page'};
+ const baseline={entries:[e('page')],blocks:[{...baselineFixture().blocks[0],source_text_hash:canonicalSourceTextHash(nb.text)}],occurrences:[{...o('page',3,7),context_text:nb.text}]};
+ const data={...dataFor(baseline),blocks:[nb],entries:[e('10-page','phrase')],occurrences:[{...o('10-page',0,7,'phrase'),context_text:nb.text}],
+  approved_spans:[{source_type:'rdl',source_item_id:'item',content_block_id:nb.contentBlockId,start_offset:0,end_offset:7,surface_text:'10-page',context_text:nb.text}]};
+ assert.doesNotThrow(()=>validateHyphenRepair(data,baseline));
+ assert.equal(preflightHyphenRepair(data,baseline,baseline).state,'fresh');
+ assert.throws(()=>validateHyphenRepair({...data,approved_spans:undefined},baseline),/exactly the missing/);
+});
+
+test('nonlexical punctuation review must be exact, contextual, hash-bound, and never create a fake entry', () => {
+ const nb={...b,text:'eco-friendly word order-the arrangement.'};
+ const baseline=baselineFixture();baseline.blocks[0].source_text_hash=canonicalSourceTextHash(nb.text);
+ baseline.occurrences=baseline.occurrences.map(o=>({...o,context_text:nb.text}));
+ const approved=hyphenatedCompounds(nb),junction=approved.find(o=>o.surface_text==='order-the');
+ const review={...junction,decision:'not_lexical_compound',reason:'The hyphen separates word order from its explanatory appositive.',source_text_hash:canonicalSourceTextHash(nb.text),review_input_sha256:'1'.repeat(64),review_output_sha256:'2'.repeat(64)};
+ const data={...dataFor(baseline),blocks:[nb],occurrences:dataFor(baseline).occurrences.map(o=>({...o,context_text:nb.text})),approved_spans:approved,nonlexical_reviews:[review]};
+ assert.doesNotThrow(()=>validateHyphenRepair(data,baseline));
+ const coverage=hyphenRepairCoverage(data,[...baseline.occurrences,...data.occurrences]);
+ assert.equal(coverage.reviewed_nonlexical,1);assert.equal(coverage.raw_ordinary_missing,1);assert.equal(coverage.ordinary_missing.length,0);assert.equal(coverage.approved_missing.length,0);
+ for(const mutate of [d=>d.nonlexical_reviews=[],d=>d.nonlexical_reviews[0].reason='',d=>d.nonlexical_reviews[0].source_text_hash='bad',d=>d.nonlexical_reviews[0].review_output_sha256='bad',d=>d.nonlexical_reviews.push(d.nonlexical_reviews[0]),d=>d.nonlexical_reviews[0].context_text='other',d=>d.approved_spans=undefined]) {
+  const changed=structuredClone(data);mutate(changed);assert.throws(()=>validateHyphenRepair(changed,baseline));
+ }
+ const fake={...o('order-the',junction.start_offset,junction.end_offset,'phrase'),context_text:nb.text};
+ assert.throws(()=>validateHyphenRepair({...data,entries:[...data.entries,e('order-the','phrase')],occurrences:[...data.occurrences,fake]},baseline),/exactly the missing/);
 });
 
 async function insert(db,table,row) {
