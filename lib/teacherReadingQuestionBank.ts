@@ -6,7 +6,6 @@ import type { StudentReadingPracticePayload } from "./reading/studentPractice.ts
 import type { ReadingModule } from "./reading/types.ts";
 import { READING_PRODUCT_NAMES } from "./reading/product.ts";
 import { assertCanonicalCtwTitle } from "./reading/ctwTitles.ts";
-import { assertCanonicalRdlTitle } from "./reading/rdlTitles.ts";
 import type { OccurrenceDateCount } from "./catalogOccurrenceDates.ts";
 
 export const TEACHER_READING_BANK_PAGE_SIZE = 10;
@@ -128,11 +127,7 @@ export function readingBankItemTitle(input: {
       `CTW title for ${input.displayNumber}`
     );
   }
-  if (input.module === "rdl") {
-    return assertCanonicalRdlTitle(
-      input.title ?? "",
-      `RDL title for ${input.displayNumber}`
-    );
-  }
+  // Match the student catalog read path: preserve stored RDL/RAP display
+  // titles; import-time casing rules must not block the teacher/admin bank.
   return input.title?.trim() || READING_PRODUCT_NAMES[input.module];
 }

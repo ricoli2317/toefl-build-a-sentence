@@ -14,6 +14,40 @@ const {
 const ROOT = path.resolve(__dirname, "..");
 const read = (file) => fs.readFileSync(path.join(ROOT, file), "utf8");
 
+test("teacher/admin RDL catalog preserves brand, acronym and accented titles just like the student catalog", () => {
+  const { buildReadingCatalogPublicPayload } = require("../lib/reading/catalog.ts");
+  const { assertCanonicalRdlTitle } = require("../lib/reading/rdlTitles.ts");
+  for (const title of [
+    "FitLife Gym Membership",
+    "AI-Generated Art On Campus",
+    "Dorm Room Décor Inspiration"
+  ]) {
+    const row = {
+      logical_item_id: "rdl-title-fixture", module: "rdl", title,
+      first_seen_date: "2026-04-07", first_seen_source_label: "4.7A",
+      first_seen_source_order: 1, question_count: 3, scored_item_count: 3
+    };
+    const studentItem = buildReadingCatalogPublicPayload({ taskType: "rdl", items: [row] }).items[0];
+    assert.equal(readingBankItemTitle({
+      module: "rdl", title, displayNumber: studentItem.displayNumber
+    }), studentItem.title);
+    assert.equal(studentItem.title, title);
+    assert.equal(row.title, title);
+    // The read-path fix does not relax production/import validation.
+    assert.throws(() => assertCanonicalRdlTitle(title), /capitalize every English word/);
+  }
+});
+
+test("teacher/admin display fallback matches student behavior without changing CTW or RAP", () => {
+  const { READING_PRODUCT_NAMES } = require("../lib/reading/product.ts");
+  for (const title of [null, "", "   "]) {
+    assert.equal(readingBankItemTitle({ module: "rdl", title, displayNumber: "001" }), READING_PRODUCT_NAMES.rdl);
+  }
+  assert.throws(() => readingBankItemTitle({ module: "ctw", title: null, displayNumber: "001" }), /must not be empty/);
+  const title = "The Complete History of a Very Ancient Ecosystem";
+  assert.equal(readingBankItemTitle({ module: "rap", title, displayNumber: "001" }), title);
+});
+
 test("answer-key presentations format every Reading question type without a student answer", () => {
   const presentations = buildReadingAnswerKeyPresentations({
     questions: [
