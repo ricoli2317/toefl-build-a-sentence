@@ -131,10 +131,9 @@ export function CtwVocabularyHistory() {
   return <div className="grid gap-5"><VocabularyNavigation label="测试历史" />
     {history.loading ? <p className="text-sm text-student-muted">正在加载测试历史…</p> : null}
     <VocabularyFailure error={history.error || (local.owner === studentId ? local.error : undefined)} retry={history.retry} />
-    {pending.some(p => p.status === "active") ? <p role="status" className="text-sm text-student-muted">本机未完成或待同步的复习可恢复；尚未确认保存的结果不计入正式成绩。</p> : null}
     {extra.length ? <section aria-label="本机待恢复记录" className="grid gap-4"><WordbookReviewHistoryList history={{ items: extra, total: extra.length, page: 1, pageSize: 10 }} showSources={false} showPartialAccuracy rangeLabel={ctwRangeLabel} resultHref={id => href(id, extra)} /></section> : null}
     {shown ? <WordbookReviewHistoryList history={shown} showSources={false} showPartialAccuracy rangeLabel={ctwRangeLabel} resultHref={id => href(id, shown.items)} /> : null}
-    <div className="flex items-center justify-between gap-3 text-sm"><span>第 {page} 页</span><div className="flex gap-2">
+    <div className="flex items-center justify-between gap-3 text-sm font-medium"><span>第 {page} 页</span><div className="flex gap-2">
       <button type="button" className="student-button-secondary" disabled={page <= 1 || history.loading} onClick={() => setPage(value => value - 1)}>上一页</button>
       <button type="button" className="student-button-secondary" disabled={!history.data || page * 10 >= history.data.total || history.loading} onClick={() => setPage(value => value + 1)}>下一页</button></div></div>
   </div>;

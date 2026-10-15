@@ -55,3 +55,27 @@ explicitly authorized acceptance tool, not a CI test. It uses the normal local
 login UI and real production-backed API, and creates five final attempts. It
 refuses an existing acceptance report to prevent accidental duplicate runs.
 `verify-ctw-phase3-real-account.cjs` remains historical v1-only tooling.
+
+## Additional regular-form review: life
+
+The user additionally excludes `life → lives`, like `leaf → leaves`, from extra
+spelling tests. `irregular-spelling-adjustments.json` includes this cumulative
+offline delta; the original attachment stays unchanged. Existing production
+installations need ONLY the new manual
+`supabase/ctw_vocabulary_life_regular_form_fix.sql` and its read-only Verify,
+not a rerun of previously executed migrations or a bulk import.
+
+The administrator confirmed that the life patch was applied and its Verify
+passed on 2026-10-15. Keep both SQL files as the record of this correction;
+this confirmation does not require another execution or a vocabulary reimport.
+
+The audit now checks simple `+s/es/d/ed`, consonant-y `ies/ied`, consonant-doubling
+past spellings and the user-defined `f/fe → ves` exclusions. Per the user's
+explicit clarification, multi-variant forms stay all-required: burn's
+`burnt/burned` and learn's `learnt/learned` are intentionally retained. QA is
+offline only; it never filters the frontend or invents runtime accepted answers.
+
+New rounds and new wrong-word retries read the corrected database form set.
+Existing started rounds keep their fixed snapshots, and historical scores and
+answers are never regraded. To see the correction in an already-open study
+session, begin a new round after the administrator applies the life patch.

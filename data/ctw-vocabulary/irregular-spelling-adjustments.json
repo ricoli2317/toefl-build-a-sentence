@@ -5,6 +5,7 @@
   "changes": [
     {"word":"craftsperson","before":[{"form_type":"plural","answers":["craftspeople","craftspersons"]}],"after":[{"form_type":"plural","answers":["craftspeople"]}],"reason":"按用户 review 仅保留 craftspeople；不更名原形 craftsperson。"},
     {"word":"millennium","before":[{"form_type":"plural","answers":["millennia","millenniums"]}],"after":[{"form_type":"plural","answers":["millennia"]}],"reason":"按用户 review 仅保留 millennia。"},
-    {"word":"leaf","before":[{"form_type":"plural","answers":["leaves"]}],"after":[],"reason":"按用户指定的 TPS 规则，leaf→leaves 视为规则变化，不设附加题；原形仍测试。"}
+    {"word":"leaf","before":[{"form_type":"plural","answers":["leaves"]}],"after":[],"reason":"按用户指定的 TPS 规则，leaf→leaves 视为规则变化，不设附加题；原形仍测试。"},
+    {"word":"life","before":[{"form_type":"plural","answers":["lives"]}],"after":[],"reason":"按用户补充确认，life→lives 与 leaf→leaves 同属 TPS 不单独考察的规则变化；移除附加复数题，原形和全部义项、例句不变。"}
   ]
 }

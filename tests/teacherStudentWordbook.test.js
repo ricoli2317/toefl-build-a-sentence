@@ -245,7 +245,14 @@ test('history and result reuse student displays without resume, retry, new-round
   const f = fixture(); const session = f.tables.student_wordbook_review_sessions[0];
   const history = { items: [{ ...session, summary }, { ...session, session_id: sid(88), status: 'active', summary }], total: 2 };
   const html = renderToStaticMarkup(React.createElement(WordbookReviewHistoryList, { history, readOnly: true, resultHref: id => `/teacher/result/${id}` }));
-  assert.match(html, /查看结果/); assert.match(html, /查看已保存记录/); assert.match(html, /答对 4/);
+  assert.match(html, /查看结果/); assert.match(html, /查看已保存记录/); assert.match(html, /答对 <span class="font-bold tabular-nums">4<\/span>/);
+  assert.match(html, /<h2 class="text-2xl font-bold leading-snug">/);
+  assert.match(html, /text-sm font-medium text-student-muted/);
+  assert.match(html, /text-base font-medium leading-relaxed/);
+  assert.match(html, /text-xl font-bold tabular-nums/);
+  const studentHistory = renderToStaticMarkup(React.createElement(WordbookReviewHistoryList, { history }));
+  const withoutActions = markup => markup.replace(/<a\b[^>]*>.*?<\/a>/g, '');
+  assert.equal(withoutActions(html), withoutActions(studentHistory), 'teacher and student share identical history content and typography');
   assert.doesNotMatch(html, /恢复复习|开始新复习|href="\/student/);
   const { WordbookReviewResult } = compile('components/student/WordbookReviewWorkspace.tsx', { ...commonMocks,
     './WordbookReviewWorkspace.module.css': {}, '@/lib/lexical/wordbookReviewInput': {} });

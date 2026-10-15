@@ -7,11 +7,13 @@ const store=require('../lib/ctw-vocabulary/store.server.ts');
 const input=require('../lib/ctw-vocabulary/input.ts');
 const presentation=require('../lib/lexical/wordbookReviewPresentation.ts');
 const TARGET={kind:'cefr_list',group:'B1',listNumber:4};
-async function setup(){const db=await fixture();try{
+async function setup({lifeFix=true}={}){const db=await fixture();try{
   await db.exec(read('outputs/ctw-vocabulary-phase3/ctw-vocabulary-phase3-install.sql'));
   await db.exec(read('supabase/ctw_vocabulary_phase3_start_owner_fix.sql'));
   await db.exec(read('supabase/ctw_vocabulary_american_spelling.sql'));
   await db.exec(read('supabase/ctw_vocabulary_american_spelling_verify.sql'));
+  if(lifeFix){await db.exec(read('supabase/ctw_vocabulary_life_regular_form_fix.sql'));
+    await db.exec(read('supabase/ctw_vocabulary_life_regular_form_verify.sql'));}
   await db.exec(read('supabase/ctw_vocabulary_review_sync.sql'));
   await db.exec(read('supabase/ctw_vocabulary_review_sync_verify.sql'));return db;
 }catch(e){await db.close();throw e;}}
@@ -206,7 +208,7 @@ test('actual new Next handlers authenticate before validation/service access, re
   assert.equal((await session.GET(get('?round=1'),params)).status,200);assert.equal(calls.at(-1).args[1],U);
   assert.equal(services,2);
 });
-test('all 1032 words / 90 stored groups / 87 displayed rows use the same study, test, local and saved-result answers',()=>{
+test('all 1032 words / 89 stored groups / 86 displayed rows use the same study, test, local and saved-result answers',()=>{
   let groups=0;
   for(const row of source().rows){
     const entry={...row,entry_id:randomUUID(),list_number:1,list_position:1,source_sha256:'a'.repeat(64)},card=review.ctwReviewCard(entry,0);
@@ -222,7 +224,7 @@ test('all 1032 words / 90 stored groups / 87 displayed rows use the same study, 
       const student=answer(card);student.spellings[group.id]=group.accepted.map(s=>s.toUpperCase()).join(' / ');verify(student);
       const wrong=answer(card);wrong.spellings[group.id]='';verify(wrong);}
   }
-  assert.equal(groups,87);assert.equal(source().rows.reduce((n,row)=>n+row.irregular_forms.length,0),90);
+  assert.equal(groups,86);assert.equal(source().rows.reduce((n,row)=>n+row.irregular_forms.length,0),89);
 });
 test('history pages are bounded summaries with deterministic ordering; duplicate install aborts without altering completed data',async()=>{
   const db=await setup();try{
@@ -252,10 +254,13 @@ test('reviewed tense rows require ALL variants; only same-length slots may permu
     assert.equal(local.gradeReview(c,answer(c)).correct,true);const partial=answer(c);partial.spellings.past=c.spellingGroups[1].accepted[0];assert.equal(local.gradeReview(c,partial).correct,false);}
   assert.deepEqual(card('craftsperson').spellingGroups[1].accepted,['craftspeople']);assert.deepEqual(card('millennium').spellingGroups[1].accepted,['millennia']);
   assert.equal(card('leaf').spellingGroups.length,1);
+  assert.equal(card('life').spellingGroups.length,1);
   assert.ok(!Object.values(require('../lib/ctw-vocabulary/round.ts').FORM_LABELS).some(label=>/式|第一人称|第二人称|情态动词/.test(label)));
 });
 test('only the three reviewed vocabulary rows change, with repeat-safe SQL and full historical snapshot/progress/membership preservation',async()=>{
   const {source:originalSource}=require('./helpers/ctwVocabularyFixture.cjs');const db=await fixture();try{
+    const beforeLifeReview=require('../lib/ctw-vocabulary/spelling-review.ts').applyVocabularySpellingReview(originalSource().rows,
+      require('../data/ctw-vocabulary/irregular-spelling-adjustments.json').changes.filter(change=>change.word!=='life'));
     await db.exec(read('outputs/ctw-vocabulary-phase3/ctw-vocabulary-phase3-install.sql'));
     const e=(await db.query("select * from ctw_vocabulary_entries where word='get'")).rows[0],id=randomUUID();
     const original=await store.saveVocabularyAttempt(client(db,'service_role'),U,{attemptId:id,mode:'base_form',source:{kind:'list',listNumber:1},
@@ -272,10 +277,10 @@ test('only the three reviewed vocabulary rows change, with repeat-safe SQL and f
     const changed=[];for(let i=0;i<previous.length;i++){
       const {irregular_forms:a,...restA}=previous[i],{irregular_forms:b,...restB}=after[i];assert.deepEqual(restA,restB);
       if(JSON.stringify(a)!==JSON.stringify(b))changed.push(after[i].word);
-      assert.deepEqual(b,source().rows.find(e=>e.word===after[i].word).irregular_forms);
+      assert.deepEqual(b,beforeLifeReview.find(e=>e.word===after[i].word).irregular_forms);
     }
     assert.deepEqual(changed,['craftsperson','leaf','millennium']);
-    assert.equal(originalSource().rows.filter(row=>row.irregular_forms.length).length,47);assert.equal(source().rows.filter(row=>row.irregular_forms.length).length,46);
+    assert.equal(originalSource().rows.filter(row=>row.irregular_forms.length).length,47);assert.equal(beforeLifeReview.filter(row=>row.irregular_forms.length).length,46);
     assert.deepEqual((await db.query('select * from ctw_vocabulary_cefr_memberships order by entry_id')).rows,memberships);
     assert.deepEqual((await db.query('select * from student_ctw_vocabulary_list_progress')).rows,progress);
     assert.deepEqual(await store.readVocabularyResult(client(db,'authenticated',U),U,id),original);
@@ -338,10 +343,85 @@ test('actual shared workspace renders every tested form in study, hides spelling
     if(row.word==='be'){assert.equal((study.match(/<tbody>.*?<\/tbody>/g)||[]).length,1);assert.equal((testing.match(/role="group"/g)||[]).length,4);
       assert.equal((testing.match(/<input /g)||[]).length,7);assert.ok(!/第一人称|第二人称|过去式/.test(study+testing));}
   }
-  assert.equal(reviewed,46);
+  assert.equal(reviewed,45);
   // take is intentionally NOT added to the real vocabulary. Synthetic UI QA.
   const take={...source().rows.find(e=>e.word==='get'),word:'take',entry_id:randomUUID(),list_number:1,list_position:1,source_sha256:'a'.repeat(64),
     irregular_forms:[{form_type:'past',answers:['took']},{form_type:'past_participle',answers:['taken']}]};
   const round=review.createCtwReviewRound(randomUUID(),{kind:'list',listNumber:1},[take]),html=render(local.reviewLocalState(local.localReview(U,round)));
   assert.ok(html.includes('took'));assert.ok(html.includes('taken'));assert.equal(local.gradeReview(round.cards[0],answer(round.cards[0])).correct,true);
+});
+test('wrong-word detail uses stronger type and orange student spellings without coloring labels or changing saved answers',()=>{
+  const ts=require('typescript'),vm=require('node:vm'),React=require('react'),{renderToStaticMarkup}=require('react-dom/server');
+  const exported={},mocks={
+    'react/jsx-runtime':require('react/jsx-runtime'),
+    './WordbookReviewWorkspace':{WordbookReviewResult:({children})=>React.createElement('div',null,children)},
+    '@/lib/ctw-vocabulary/review':review,
+    '@/lib/ctw-vocabulary/round':require('../lib/ctw-vocabulary/round.ts')
+  };
+  vm.runInNewContext(ts.transpileModule(read('components/student/CtwVocabularyReviewResult.tsx'),
+    {compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,
+    {exports:exported,require:name=>{assert.ok(Object.hasOwn(mocks,name),name);return mocks[name];}});
+  const entries=['debate','shape'].map(word=>({...source().rows.find(e=>e.word===word),entry_id:randomUUID(),list_number:1,list_position:1,source_sha256:'a'.repeat(64)}));
+  const round=review.createCtwReviewRound(randomUUID(),{kind:'list',listNumber:1},entries);
+  round.cards[0].answer=local.gradeReview(round.cards[0],{spellings:{base:'argue'}});
+  round.cards[1].answer=local.gradeReview(round.cards[1],{spellings:{base:'shape'}});
+  const before=JSON.stringify(round);
+  const html=renderToStaticMarkup(React.createElement(exported.CtwVocabularyReviewResult,{round,state:{},onRetry:()=>{}}));
+  assert.match(html,/text-sm font-medium leading-relaxed text-student-muted/);
+  assert.match(html,/<span class="font-semibold">你的拼写：<\/span><span class="font-semibold text-student-error" data-student-spelling="true">argue<\/span>/);
+  assert.match(html,/<span class="font-semibold">正确拼写：<\/span><strong>debate<\/strong>/);
+  assert.equal((html.match(/<article /g)||[]).length,1);
+  assert.equal(JSON.stringify(round),before);
+});
+test('regular-form QA scans the entire library, flags life only as a single regular form, and retains approved burn/learn variants',()=>{
+  const {source:originalSource}=require('./helpers/ctwVocabularyFixture.cjs'),qa=require('../lib/ctw-vocabulary/spelling-review.ts');
+  const changes=require('../data/ctw-vocabulary/irregular-spelling-adjustments.json').changes;
+  const before=qa.auditRegularVocabularyForms(qa.applyVocabularySpellingReview(originalSource().rows,changes.filter(change=>change.word!=='life')));
+  assert.deepEqual([before.words,before.wordsWithForms,before.formGroups,before.spellings],[1032,46,90,97]);
+  assert.deepEqual(before.singleRegularForms.map(f=>[f.word,f.formType,f.answer]),[['life','plural','lives']]);
+  const after=qa.auditRegularVocabularyForms(source().rows);
+  assert.deepEqual([after.words,after.wordsWithForms,after.formGroups,after.spellings],[1032,45,89,96]);
+  assert.deepEqual(after.singleRegularForms,[]);
+  assert.deepEqual(after.findings.map(f=>[f.word,f.formType,f.answer,f.decision]),[
+    ['burn','past','burned','keep-multiple-variants'],['burn','past_participle','burned','keep-multiple-variants'],
+    ['learn','past','learned','keep-multiple-variants'],['learn','past_participle','learned','keep-multiple-variants']]);
+});
+test('regular-form QA recognizes s/es/d/ed, y-to-i and TPS f/fe rules without stripping genuine irregular forms',()=>{
+  const {regularVocabularyInflection:rule}=require('../lib/ctw-vocabulary/spelling-review.ts');
+  for(const[word,type,value]of[['cat','plural','cats'],['box','plural','boxes'],['watch','present_third_person_singular','watches'],
+    ['library','plural','libraries'],['study','past','studied'],['carry','past_participle','carried'],['live','past','lived'],['walk','past','walked'],
+    ['leaf','plural','leaves'],['life','plural','lives'],['stop','past','stopped']])assert.ok(rule(word,type,value),word+':'+value);
+  for(const[word,type,value]of[['have','present_third_person_singular','has'],['have','past','had'],['say','past','said'],['lay','past','laid'],
+    ['feed','past','fed'],['lead','past','led'],['show','past_participle','shown'],['be','past_participle','been'],['cut','past','cut'],
+    ['craftsperson','plural','craftspeople'],['millennium','plural','millennia'],['get','past_participle','gotten'],['good','comparative','better']])assert.equal(rule(word,type,value),null,word+':'+value);
+});
+test('life-only SQL is guarded and repeat-safe, keeps all other content/history/active snapshots, and new rounds and retry have no plural test',async()=>{
+  const db=await setup({lifeFix:false});try{
+    const c=client(db,'authenticated',U),e=(await db.query("select * from ctw_vocabulary_entries where word='life'")).rows[0];
+    const oldRound=await create(db,{kind:'list',listNumber:1});assert.equal(oldRound.cards.find(c=>c.expected.expression==='life').spellingGroups.length,2);
+    const id=randomUUID(),oldResult=await store.saveVocabularyAttempt(client(db,'service_role'),U,{attemptId:id,mode:'base_form',source:{kind:'list',listNumber:1},
+      answers:[{entryId:e.entry_id,spelling:'life',irregularSpellings:[{formType:'plural',spelling:'lifes'}]}]});
+    const before=(await db.query('select * from ctw_vocabulary_entries order by word')).rows;
+    const progress=(await db.query('select * from student_ctw_vocabulary_list_progress order by student_id,edition,cefr_group,list_number')).rows;
+    const members=(await db.query('select * from ctw_vocabulary_cefr_memberships order by entry_id')).rows;
+    const sessions=(await db.query('select * from student_ctw_vocabulary_review_sessions order by session_id')).rows;
+    await db.query("update ctw_vocabulary_entries set irregular_forms=$1::jsonb where word='life'",[JSON.stringify([{form_type:'plural',answers:['unexpected']}])]);
+    await assert.rejects(db.exec(read('supabase/ctw_vocabulary_life_regular_form_fix.sql')),/CTW_LIFE_FORM_DRIFT/);await db.exec('rollback');
+    await db.query("update ctw_vocabulary_entries set irregular_forms=$1::jsonb where word='life'",[JSON.stringify(e.irregular_forms)]);
+    await db.exec(read('supabase/ctw_vocabulary_life_regular_form_fix.sql'));await db.exec(read('supabase/ctw_vocabulary_life_regular_form_verify.sql'));
+    const after=(await db.query('select * from ctw_vocabulary_entries order by word')).rows;
+    assert.deepEqual(after,before.map(row=>row.word==='life'?{...row,irregular_forms:[]}:row));
+    await db.exec(read('supabase/ctw_vocabulary_life_regular_form_fix.sql'));assert.deepEqual((await db.query('select * from ctw_vocabulary_entries order by word')).rows,after);
+    assert.deepEqual((await db.query('select * from student_ctw_vocabulary_list_progress order by student_id,edition,cefr_group,list_number')).rows,progress);
+    assert.deepEqual((await db.query('select * from ctw_vocabulary_cefr_memberships order by entry_id')).rows,members);
+    assert.deepEqual((await db.query('select * from student_ctw_vocabulary_review_sessions order by session_id')).rows,sessions);
+    assert.deepEqual(await store.readVocabularyResult(c,U,id),oldResult);
+    const historical=await server.readCtwReview(c,U,id);assert.equal(historical.summary.incorrect,1);assert.deepEqual(historical.cards[0].spellingGroups[1].accepted,['lives']);
+    const next=await create(db,{kind:'list',listNumber:1});const life=next.cards.find(card=>card.expected.expression==='life');
+    assert.equal(life.spellingGroups.length,1);assert.deepEqual(life.studySenses.map(s=>s.meaning),e.senses.map(s=>s.meaning_zh));
+    assert.deepEqual(life.studySenses.map(s=>s.example),e.senses.map(s=>s.example_en));assert.equal(local.gradeReview(life,{spellings:{base:'life'}}).correct,true);
+    const retry=await create(db,{kind:'list',listNumber:1},U,randomUUID(),id);assert.equal(retry.cards.length,1);assert.equal(retry.cards[0].spellingGroups.length,1);
+    await complete(db,retry);assert.equal((await store.readVocabularyResult(c,U,retry.session.session_id)).correct_count,1);
+    assert.deepEqual(await store.readVocabularyResult(c,U,id),oldResult);
+  }finally{await db.close();}
 });
