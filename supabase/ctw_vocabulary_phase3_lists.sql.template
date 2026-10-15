@@ -1,0 +1,163 @@
+-- Manual incremental install AFTER Phase 2. Do NOT run against production automatically.
+-- No word copies, content updates, reimports, or changes to Phase 2 constraints.
+begin;
+set local lock_timeout = '10s';
+set local statement_timeout = '120s';
+do $$ begin
+  if to_regclass('public.ctw_vocabulary_entries') is null
+    or to_regclass('public.student_ctw_vocabulary_attempts') is null then
+    raise exception 'CTW_VOCAB_PHASE2_REQUIRED';
+  end if;
+end $$;
+-- Keep initialization and future imports mutually exclusive for this short transaction.
+lock table public.ctw_vocabulary_entries in share row exclusive mode;
+
+create table public.ctw_vocabulary_cefr_memberships (
+  entry_id uuid primary key references public.ctw_vocabulary_entries(entry_id) on delete restrict,
+  cefr_group text not null check (cefr_group in ('A1','A2','B1','B2','C1-C2')),
+  list_number integer not null check (list_number > 0),
+  list_position smallint not null check (list_position between 1 and 50),
+  unique(cefr_group,list_number,list_position)
+);
+-- TEMPLATE ONLY: build-ctw-cefr-lists.py substitutes the audited, fixed mapping.
+-- Do not execute this template directly. Use the generated installation SQL.
+insert into public.ctw_vocabulary_cefr_memberships(entry_id,cefr_group,list_number,list_position)
+select e.entry_id,m.cefr_group,m.list_number,m.list_position
+from jsonb_to_recordset('__CTW_CEFR_MAPPING__'::jsonb) as m(word text,cefr_group text,list_number integer,list_position smallint)
+join public.ctw_vocabulary_entries e on e.normalized_word=m.word
+  and (case when e.cefr in ('C1','C2') then 'C1-C2' else e.cefr end)=m.cefr_group;
+do $$ begin
+  if (select count(*) from public.ctw_vocabulary_cefr_memberships) <> (select count(*) from public.ctw_vocabulary_entries)
+    or (select count(*) from public.ctw_vocabulary_cefr_memberships) <> 1032 then
+    raise exception 'CTW_VOCAB_CEFR_MAPPING_BASELINE_MISMATCH';
+  end if;
+end $$;
+
+create table public.student_ctw_vocabulary_list_progress (
+  student_id uuid not null references auth.users(id) on delete cascade,
+  edition text not null check (edition in ('mixed','cefr')),
+  cefr_group text not null,
+  list_number integer not null check (list_number > 0),
+  started_at timestamptz not null default now(),
+  best_accuracy numeric check (best_accuracy between 0 and 100),
+  completed_entry_ids uuid[],
+  primary key(student_id,edition,cefr_group,list_number),
+  check ((edition='mixed' and cefr_group='') or (edition='cefr' and cefr_group in ('A1','A2','B1','B2','C1-C2')))
+);
+alter table public.ctw_vocabulary_cefr_memberships enable row level security;
+alter table public.student_ctw_vocabulary_list_progress enable row level security;
+create policy ctw_cefr_active_read on public.ctw_vocabulary_cefr_memberships for select to authenticated using (
+  (select exists(select 1 from public.profiles where id=(select auth.uid()) and is_active
+    and role::text in ('student','teacher','admin')))
+);
+create policy ctw_list_own_progress on public.student_ctw_vocabulary_list_progress for select to authenticated using (
+  student_id=(select auth.uid()) and (select exists(select 1 from public.profiles where id=(select auth.uid())
+    and is_active and role::text in ('student','teacher','admin')))
+);
+revoke all on public.ctw_vocabulary_cefr_memberships,public.student_ctw_vocabulary_list_progress from public,anon,authenticated,service_role;
+grant select on public.ctw_vocabulary_cefr_memberships,public.student_ctw_vocabulary_list_progress to authenticated;
+grant select on public.ctw_vocabulary_cefr_memberships to service_role;
+
+create function ctw_vocab_private.append_cefr_membership()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare g text; n integer; p smallint;
+begin
+  g := case when new.cefr in ('C1','C2') then 'C1-C2' else new.cefr end;
+  perform pg_advisory_xact_lock(hashtextextended('ctw-vocabulary-cefr:'||g,0));
+  select list_number,list_position into n,p from public.ctw_vocabulary_cefr_memberships
+    where cefr_group=g order by list_number desc,list_position desc limit 1;
+  if n is null then n:=1; p:=0; end if;
+  if p=50 then n:=n+1; p:=0; end if;
+  insert into public.ctw_vocabulary_cefr_memberships values(new.entry_id,g,n,p+1);
+  return new;
+end $$;
+revoke all on function ctw_vocab_private.append_cefr_membership() from public,anon,authenticated,service_role;
+create trigger ctw_vocabulary_append_cefr after insert on public.ctw_vocabulary_entries
+  for each row execute function ctw_vocab_private.append_cefr_membership();
+
+create function ctw_vocab_private.list_entry_ids(e text,g text,n integer)
+returns uuid[] language sql stable set search_path = '' as $$
+  select array_agg(entry_id order by entry_id) from (
+    select entry_id from public.ctw_vocabulary_entries where e='mixed' and g='' and list_number=n
+    union all
+    select entry_id from public.ctw_vocabulary_cefr_memberships where e='cefr' and cefr_group=g and list_number=n
+  ) members
+$$;
+revoke all on function ctw_vocab_private.list_entry_ids(text,text,integer) from public,anon,authenticated,service_role;
+
+-- Small directory response: no senses, examples, answer history or member IDs.
+create function public.read_ctw_vocabulary_lists_v1(p_edition text)
+returns jsonb language sql stable security invoker set search_path = '' as $$
+  with membership as (
+    select 'mixed'::text edition,''::text cefr_group,list_number,entry_id from public.ctw_vocabulary_entries where p_edition='mixed'
+    union all
+    select 'cefr',cefr_group,list_number,entry_id from public.ctw_vocabulary_cefr_memberships where p_edition='cefr'
+  ), lists as (
+    select edition,cefr_group,list_number,count(*) n,array_agg(entry_id order by entry_id) ids
+      from membership group by edition,cefr_group,list_number
+  ) select jsonb_build_object('lists',coalesce(jsonb_agg(jsonb_build_object(
+    'edition',l.edition,'group',l.cefr_group,'listNumber',l.list_number,'count',l.n,
+    'status',case when p.completed_entry_ids=l.ids then 'completed'
+      when p.started_at is not null then 'in_progress' else 'not_started' end,
+    'bestAccuracy',p.best_accuracy
+  ) order by case l.cefr_group when '' then 0 when 'A1' then 1 when 'A2' then 2 when 'B1' then 3 when 'B2' then 4 else 5 end,l.list_number),'[]'::jsonb))
+  from lists l left join public.student_ctw_vocabulary_list_progress p
+    on p.student_id=(select auth.uid()) and p.edition=l.edition and p.cefr_group=l.cefr_group and p.list_number=l.list_number
+$$;
+revoke all on function public.read_ctw_vocabulary_lists_v1(text) from public,anon,authenticated,service_role;
+grant execute on function public.read_ctw_vocabulary_lists_v1(text) to authenticated;
+
+-- Authenticated self-only start. Marking progress and reading this List are atomic.
+create function public.start_ctw_vocabulary_list_v1(p_edition text,p_group text,p_list integer)
+returns jsonb language plpgsql security definer set search_path = '' as $$
+declare owner_id uuid; ids uuid[]; items jsonb;
+begin
+  owner_id:=auth.uid();
+  if owner_id is null or not exists(select 1 from public.profiles where id=owner_id and is_active
+    and role::text in ('student','teacher','admin')) then raise exception 'CTW_VOCAB_AUTH'; end if;
+  ids:=ctw_vocab_private.list_entry_ids(p_edition,p_group,p_list);
+  if ids is null or cardinality(ids)>50 then raise exception 'CTW_VOCAB_LIST_NOT_FOUND'; end if;
+  insert into public.student_ctw_vocabulary_list_progress(student_id,edition,cefr_group,list_number)
+    values(owner_id,p_edition,p_group,p_list) on conflict do nothing;
+  select jsonb_agg(jsonb_build_object('entry_id',e.entry_id,'word',e.word,'list_number',e.list_number,
+    'list_position',e.list_position,'cefr',e.cefr,'senses',e.senses,'irregular_forms',e.irregular_forms,'source_sha256',e.source_sha256)
+    order by coalesce(m.list_position,e.list_position)) into items
+    from public.ctw_vocabulary_entries e left join public.ctw_vocabulary_cefr_memberships m
+      on p_edition='cefr' and m.entry_id=e.entry_id where e.entry_id=any(ids);
+  return jsonb_build_object('items',items);
+end $$;
+revoke all on function public.start_ctw_vocabulary_list_v1(text,text,integer) from public,anon,authenticated,service_role;
+grant execute on function public.start_ctw_vocabulary_list_v1(text,text,integer) to authenticated;
+
+-- NO SQL spelling grading. Scores below were verified by the shared server JS.
+-- AFTER INSERT means attempt + progress either BOTH commit or BOTH roll back.
+create function ctw_vocab_private.record_list_result()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare s jsonb; e text; g text; n integer; ids uuid[]; submitted_ids uuid[]; accuracy numeric;
+begin
+  s:=new.answers->0->'source';
+  if s is null or s->>'kind' not in ('list','cefr_list') then return new; end if;
+  if new.mode<>'base_form' then raise exception 'CTW_VOCAB_INVALID_LIST_RESULT'; end if;
+  e:=case when s->>'kind'='list' then 'mixed' else 'cefr' end;
+  g:=case when e='mixed' then '' else s->>'group' end;
+  n:=(s->>'listNumber')::integer;
+  ids:=ctw_vocab_private.list_entry_ids(e,g,n);
+  select array_agg((a->>'entryId')::uuid order by (a->>'entryId')::uuid) into submitted_ids from jsonb_array_elements(new.answers) a;
+  if ids is null or not submitted_ids <@ ids or cardinality(submitted_ids)<>(select count(distinct x) from unnest(submitted_ids) x)
+    then raise exception 'CTW_VOCAB_INVALID_LIST_RESULT'; end if;
+  -- An older round can finish after append. Preserve its real history, but it
+  -- cannot mark the updated List complete or register a partial-list best score.
+  if submitted_ids<>ids then return new; end if;
+  accuracy:=100.0*new.correct_count/new.answer_count;
+  insert into public.student_ctw_vocabulary_list_progress(student_id,edition,cefr_group,list_number,best_accuracy,completed_entry_ids)
+    values(new.student_id,e,g,n,accuracy,case when new.correct_count=new.answer_count then ids end)
+    on conflict(student_id,edition,cefr_group,list_number) do update
+      set best_accuracy=greatest(public.student_ctw_vocabulary_list_progress.best_accuracy,excluded.best_accuracy),
+        completed_entry_ids=coalesce(excluded.completed_entry_ids,public.student_ctw_vocabulary_list_progress.completed_entry_ids);
+  return new;
+end $$;
+revoke all on function ctw_vocab_private.record_list_result() from public,anon,authenticated,service_role;
+create trigger ctw_vocabulary_record_list_result after insert on public.student_ctw_vocabulary_attempts
+  for each row execute function ctw_vocab_private.record_list_result();
+notify pgrst,'reload schema';
+commit;

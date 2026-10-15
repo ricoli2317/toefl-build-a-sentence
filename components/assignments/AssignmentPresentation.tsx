@@ -27,11 +27,14 @@ export function AssignmentStatusBadge({
   className = "",
   completedCount,
   lifecycleStatus,
+  label,
   totalCount
 }: {
   className?: string;
   completedCount: number;
   lifecycleStatus?: WritingAssignmentLifecycleStatus;
+  /** Optional wording only; all existing badge styles and default labels stay unchanged. */
+  label?: string;
   totalCount: number;
 }) {
   const progress = assignmentGroupProgress({ completedCount, lifecycleStatus, totalCount });
@@ -40,7 +43,7 @@ export function AssignmentStatusBadge({
       className={`rounded-full px-3 py-1 text-xs font-bold ${progress.badgeClass} ${className}`.trim()}
       data-assignment-group-status={progress.badge}
     >
-      {progress.label}
+      {label ?? progress.label}
     </span>
   );
 }

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BookOpen,
   BookMarked,
@@ -12,6 +12,7 @@ import {
   ListChecks,
   Home,
   Menu,
+  ChevronDown,
   X
 } from "lucide-react";
 import clsx from "clsx";
@@ -119,7 +120,7 @@ const navigationSections: Array<{ items: NavigationItem[]; label?: string; tone?
       {
         href: STUDENT_ROUTES.wordbook,
         icon: BookMarked,
-        label: STUDENT_UI_TEXT.wordbook,
+        label: "词汇学习",
         match: (path) => path.startsWith(STUDENT_ROUTES.wordbook)
       },
       {
@@ -158,6 +159,7 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
   const { displayName, role } = useCurrentAccount();
   const [menuOpen, setMenuOpen] = useState(false);
   const immersive =
+    pathname.startsWith(`${STUDENT_ROUTES.ctwVocabulary}/session/`) ||
     pathname === "/student/wordbook/review" ||
     /^\/student\/wordbook\/review\/[0-9a-f-]{36}$/i.test(pathname) ||
     pathname.startsWith("/student/write-email/practice/") ||
@@ -273,6 +275,10 @@ function StudentNavItem({
   searchParams: { get(name: string): string | null };
 }) {
   const Icon = item.icon;
+  const vocabulary = item.href === STUDENT_ROUTES.wordbook;
+  const vocabularyActive = pathname.startsWith(STUDENT_ROUTES.wordbook) || pathname.startsWith(STUDENT_ROUTES.ctwVocabulary);
+  const [expanded, setExpanded] = useState(vocabularyActive);
+  useEffect(() => { if (vocabularyActive) setExpanded(true); }, [pathname, vocabularyActive]);
   const active = item.match?.(pathname, searchParams) ?? false;
   const className = clsx(
     "relative flex min-h-11 items-center gap-3 rounded-xl px-3 text-[13px] font-semibold transition",
@@ -288,6 +294,21 @@ function StudentNavItem({
       <span className="min-w-0 flex-1">{item.label}</span>
     </>
   );
+
+  if (vocabulary) return <div>
+    <button type="button" aria-expanded={expanded} aria-controls="student-vocabulary-menu"
+      className={clsx("flex min-h-11 w-full items-center gap-3 rounded-xl px-3 text-left text-[13px] font-semibold", vocabularyActive ? "text-student-primary" : "text-student-muted hover:bg-student-bg")}
+      onClick={() => setExpanded(value => !value)}>
+      <BookMarked aria-hidden="true" size={20} strokeWidth={1.9} /><span className="flex-1">词汇学习</span>
+      <ChevronDown aria-hidden="true" size={16} className={expanded ? "rotate-180" : ""} />
+    </button>
+    {expanded ? <div id="student-vocabulary-menu" className="ml-6 grid gap-1 border-l border-student-border pl-2">
+      {[{ href: STUDENT_ROUTES.wordbook, label: STUDENT_UI_TEXT.wordbook }, { href: STUDENT_ROUTES.ctwVocabulary, label: "填词题词表" }].map(child =>
+        <Link key={child.href} href={child.href} aria-current={pathname.startsWith(child.href) ? "page" : undefined}
+          className={clsx("flex min-h-11 items-center rounded-xl px-3 text-[13px] font-semibold", pathname.startsWith(child.href) ? "bg-student-primary-soft text-student-primary" : "text-student-muted hover:bg-student-bg")}
+          onClick={() => { beginStudentNavigationTrace(child.href); onNavigate(); }}>{child.label}</Link>)}
+    </div> : null}
+  </div>;
 
   return (
     <Link

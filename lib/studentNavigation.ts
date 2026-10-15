@@ -18,7 +18,8 @@ export const STUDENT_ROUTES = {
   grammarPractice: "/student/grammar-practice",
   questionCategoryPractice: "/student/question-category-practice",
   wrongQuestions: "/student/wrong-questions",
-  wordbook: "/student/wordbook"
+  wordbook: "/student/wordbook",
+  ctwVocabulary: "/student/ctw-vocabulary"
 } as const;
 
 export type StudentBreadcrumbItem = {

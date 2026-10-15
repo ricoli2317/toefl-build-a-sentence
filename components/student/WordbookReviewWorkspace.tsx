@@ -8,6 +8,39 @@ import { constrainReviewSpelling, insertReviewSpelling, spellingInputValue } fro
 
 const SETUP = "/student/wordbook/review";
 
+/** Shared viewport handling keeps native mobile inputs mounted during keyboard changes. */
+export function useReviewViewport() {
+  const [viewport, setViewport] = useState<{ height: number; top: number }>();
+  const [keyboard, setKeyboard] = useState(false);
+  const workspace = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const bodyOverflow = document.body.style.overflow, htmlOverflow = document.documentElement.style.overflow;
+    let baseline = window.innerHeight;
+    const update = () => {
+      const height = window.visualViewport?.height ?? window.innerHeight;
+      const focused = document.activeElement instanceof HTMLInputElement && workspace.current?.contains(document.activeElement);
+      if (!focused) baseline = window.innerHeight;
+      const open = Boolean(focused && Math.max(baseline, window.innerHeight, document.documentElement.clientHeight) - height > 120);
+      setKeyboard(open); setViewport({ height, top: window.visualViewport?.offsetTop ?? 0 });
+      document.body.style.overflow = open ? "hidden auto" : "hidden";
+      document.documentElement.style.overflow = open ? "hidden auto" : "hidden";
+    };
+    update(); window.visualViewport?.addEventListener("resize", update); window.visualViewport?.addEventListener("scroll", update); window.addEventListener("resize", update);
+    document.addEventListener("focusin", update); document.addEventListener("focusout", update);
+    return () => { document.body.style.overflow = bodyOverflow; document.documentElement.style.overflow = htmlOverflow;
+      window.visualViewport?.removeEventListener("resize", update); window.visualViewport?.removeEventListener("scroll", update); window.removeEventListener("resize", update);
+      document.removeEventListener("focusin", update); document.removeEventListener("focusout", update); };
+  }, []);
+  return { workspace, viewport, keyboard };
+}
+
+export function ReviewProgress({ study, total, progress }: { study: boolean; total: number; progress: number }) {
+  return <div role="progressbar" aria-label={study ? "单词复习进度" : "测试进度"} aria-valuemin={0} aria-valuemax={total} aria-valuenow={progress}
+    className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-student-primary-soft">
+    <div className="h-full rounded-full bg-student-primary transition-[width]" style={{ width: `${progress / Math.max(1, total) * 100}%` }} />
+  </div>;
+}
+
 /** One native input preserves keyboard, deletion, paste, selection and IME.
  * Fixed spaces are layout; the submitted value restores them from the shape. */
 export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, feedback }: {
@@ -155,32 +188,12 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
 }) {
   const [spelling, setSpelling] = useState(""), [selected, setSelected] = useState("");
   const [exampleOpen, setExampleOpen] = useState(false), [confirmSkip, setConfirmSkip] = useState(false);
-  const [viewport, setViewport] = useState<{ height: number; top: number }>();
-  const [keyboard, setKeyboard] = useState(false);
-  const workspace = useRef<HTMLElement>(null);
+  const { workspace, viewport, keyboard } = useReviewViewport();
   const skipButton = useRef<HTMLButtonElement>(null);
   const item = state?.item, phase = state?.flow?.phase;
   const wasConfirming = useRef(false);
   useEffect(() => { if (wasConfirming.current && !confirmSkip) skipButton.current?.focus(); wasConfirming.current = confirmSkip; }, [confirmSkip]);
   useLayoutEffect(() => { setSpelling(""); setSelected(""); setExampleOpen(false); setConfirmSkip(false); }, [item?.itemId, phase]);
-  useEffect(() => {
-    const bodyOverflow = document.body.style.overflow, htmlOverflow = document.documentElement.style.overflow;
-    let baseline = window.innerHeight;
-    const update = () => {
-      const height = window.visualViewport?.height ?? window.innerHeight;
-      const focused = document.activeElement instanceof HTMLInputElement && workspace.current?.contains(document.activeElement);
-      if (!focused) baseline = window.innerHeight;
-      const open = Boolean(focused && Math.max(baseline, window.innerHeight, document.documentElement.clientHeight) - height > 120);
-      setKeyboard(open); setViewport({ height, top: window.visualViewport?.offsetTop ?? 0 });
-      document.body.style.overflow = open ? "hidden auto" : "hidden";
-      document.documentElement.style.overflow = open ? "hidden auto" : "hidden";
-    };
-    update(); window.visualViewport?.addEventListener("resize", update); window.visualViewport?.addEventListener("scroll", update); window.addEventListener("resize", update);
-    document.addEventListener("focusin", update); document.addEventListener("focusout", update);
-    return () => { document.body.style.overflow = bodyOverflow; document.documentElement.style.overflow = htmlOverflow;
-      window.visualViewport?.removeEventListener("resize", update); window.visualViewport?.removeEventListener("scroll", update); window.removeEventListener("resize", update);
-      document.removeEventListener("focusin", update); document.removeEventListener("focusout", update); };
-  }, []);
   const study = phase === "study", result = phase === "result", last = item?.position === state?.session.total;
   const progress = result ? state?.session.total ?? 0 : study ? item?.position ?? 0 : state?.session.answered ?? 0;
   return <section ref={workspace} aria-label="生词本复习" data-keyboard={keyboard} className={`${keyboard ? "relative min-h-screen overflow-x-hidden" : "fixed inset-x-0 top-0 h-[100dvh] overflow-hidden"} flex min-w-0 flex-col bg-white text-student-text ${state?.session.domain === "reading" ? "reading-theme" : ""}`}
@@ -188,10 +201,7 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
     <div ref={node => { if (confirmSkip) node?.setAttribute("inert", ""); else node?.removeAttribute("inert"); }} aria-hidden={confirmSkip || undefined}
       className={`mx-auto flex ${keyboard ? "min-h-screen" : "h-full"} w-full max-w-3xl min-w-0 flex-col gap-4 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] sm:gap-6 sm:px-10 sm:pb-8 sm:pt-6`}>
       <header className="flex shrink-0 items-center gap-4">
-        <div role="progressbar" aria-label={study ? "单词复习进度" : "测试进度"} aria-valuemin={0} aria-valuemax={state?.session.total ?? 1} aria-valuenow={progress}
-          className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-student-primary-soft">
-          <div className="h-full rounded-full bg-student-primary transition-[width]" style={{ width: `${progress / (state?.session.total ?? 1) * 100}%` }} />
-        </div>
+        <ReviewProgress study={study} total={state?.session.total ?? 1} progress={progress} />
         {study ? <button ref={skipButton} type="button" disabled={busy} className="shrink-0 text-sm text-student-primary hover:underline" onClick={() => setConfirmSkip(true)}>跳过复习</button> : null}
         {!result ? <Link href={`${SETUP}/history`} className="shrink-0 text-sm text-student-primary hover:underline">暂停</Link> : null}
       </header>
