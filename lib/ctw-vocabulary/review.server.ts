@@ -18,7 +18,7 @@ export function parseCtwReviewStart(value: unknown) {
 export function parseCtwReviewCommand(value: unknown): ReviewCommand {
   if (!exactKeys(value, ["id", "action", "itemId"], ["answer"]) || typeof value.id !== "string" || !UUID_PATTERN.test(value.id)
     || typeof value.itemId !== "string" || !UUID_PATTERN.test(value.itemId)
-    || !["study_next", "repeat", "start_test", "answer", "advance"].includes(String(value.action))) throw new VocabularyInputError();
+    || !["study_previous", "study_next", "repeat", "start_test", "answer", "advance"].includes(String(value.action))) throw new VocabularyInputError();
   if (value.action === "answer") {
     if (!exactKeys(value.answer, ["spellings"]) || !value.answer.spellings || typeof value.answer.spellings !== "object" || Array.isArray(value.answer.spellings)
       || Object.keys(value.answer.spellings).length > 12 || Object.values(value.answer.spellings).some(s => typeof s !== "string" || s.length > 200 || s.includes("\0"))) throw new VocabularyInputError();

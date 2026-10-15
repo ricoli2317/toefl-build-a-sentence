@@ -205,11 +205,11 @@ export function WordbookReviewResult({ state, busy = false, onRetry = () => {}, 
 }
 
 export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry, onReload, pending = 0, syncError, onSyncRetry,
-  spellingOnly = false, pauseHref = `${SETUP}/history`, resultView, draft, onDraftChange }: {
+  spellingOnly = false, pauseHref = `${SETUP}/history`, resultView, draft, onDraftChange, skipStudyLabel = "跳过复习" }: {
   state?: ReviewState; busy: boolean; error?: string;
   onAction: (action: string, answer?: unknown) => Promise<void>; onRetry: () => void; onReload: () => void;
   pending?: number; syncError?: string; onSyncRetry?: () => void;
-  spellingOnly?: boolean; pauseHref?: string; resultView?: ReactNode; draft?: ReviewAnswer["student"];
+  spellingOnly?: boolean; pauseHref?: string; resultView?: ReactNode; draft?: ReviewAnswer["student"]; skipStudyLabel?: string;
   onDraftChange?: (value: ReviewAnswer["student"]) => void;
 }) {
   const [spelling, setSpelling] = useState(""), [selected, setSelected] = useState("");
@@ -230,8 +230,8 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
     <div ref={node => { if (confirmSkip) node?.setAttribute("inert", ""); else node?.removeAttribute("inert"); }} aria-hidden={confirmSkip || undefined}
       className={`mx-auto flex ${keyboard ? "min-h-screen" : "h-full"} w-full max-w-3xl min-w-0 flex-col gap-4 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] sm:gap-6 sm:px-10 sm:pb-8 sm:pt-6`}>
       <header className="flex shrink-0 items-center gap-4">
-        <ReviewProgress study={study} total={state?.session.total ?? 1} progress={progress} showNumbers={spellingOnly} />
-        {study ? <button ref={skipButton} type="button" disabled={busy} className="shrink-0 text-sm text-student-primary hover:underline" onClick={() => setConfirmSkip(true)}>跳过复习</button> : null}
+        <ReviewProgress study={study} total={state?.session.total ?? 1} progress={progress} showNumbers={spellingOnly || study} />
+        {study ? <button ref={skipButton} type="button" disabled={busy} className="shrink-0 text-sm text-student-primary hover:underline" onClick={() => setConfirmSkip(true)}>{skipStudyLabel}</button> : null}
         {!result ? <Link href={pauseHref} className="shrink-0 text-sm text-student-primary hover:underline">暂停</Link> : null}
       </header>
       <FitContent keyboard={keyboard} scroll={spellingOnly}>{!state ? <div className="text-center">{!error ? "正在恢复复习…" : null}</div> : result ? resultView ?? <WordbookReviewResult state={state} busy={busy || pending > 0} pending={pending > 0} onRetry={onRetry} /> : item ?
@@ -276,9 +276,9 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
          </div> : null}
        </div>
       {!result && item ? <footer className="grid shrink-0 gap-3">
-        {study ? <div className={`grid gap-3 ${last ? "grid-cols-2" : "grid-cols-1"}`}>
-          {last ? <button type="button" disabled={busy} className="student-button-secondary h-11" onClick={() => void onAction("repeat")}>再看一遍</button> : null}
-          <button type="button" disabled={busy} className="student-button-primary h-11" onClick={() => void onAction(last ? "start_test" : "study_next")}>{last ? "开始测试" : "下一个"}</button>
+        {study ? <div className="grid grid-cols-2 gap-3" aria-label="学习导航">
+          <button type="button" disabled={busy || item.position <= 1} className="student-button-secondary h-11 min-w-0" onClick={() => void onAction("study_previous")}>上一个</button>
+          <button type="button" disabled={busy} className="student-button-primary h-11 min-w-0" onClick={() => void onAction(last ? "start_test" : "study_next")}>下一个</button>
         </div> : <button type="button" disabled={busy || Boolean(item.answer?.correct)} className="student-button-primary h-11 w-full"
           onPointerDown={event => {
             // Keep the keyboard layout steady until click runs. Native blur on

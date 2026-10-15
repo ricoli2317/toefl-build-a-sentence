@@ -373,6 +373,35 @@ test('wrong-word detail uses stronger type and orange student spellings without 
   assert.equal((html.match(/<article /g)||[]).length,1);
   assert.equal(JSON.stringify(round),before);
 });
+test('CTW study_previous replays the shared cursor, ACK retries are idempotent, and server-only resume retains 3→2→3 without results',async()=>{
+  const db=await setup();try{
+    const round=await create(db),id=round.session.session_id;
+    let state=local.localReview(U,round);
+    const historical=(await db.query('select * from student_ctw_vocabulary_attempts order by attempt_id')).rows;
+    const act=async action=>{
+      const command={id:randomUUID(),action,itemId:state.round.cards[state.position-1].itemId};
+      state=local.applyReviewAction(state,command);
+      assert.deepEqual(server.parseCtwReviewCommand(command),command);
+      assert.deepEqual(await server.syncCtwReview(client(db,'service_role'),U,id,command),{acknowledged:command.id});
+      assert.deepEqual(await server.syncCtwReview(client(db,'service_role'),U,id,command),{acknowledged:command.id});
+      state=local.acknowledgeReview(state,command);
+      const saved=await server.readCtwReview(client(db,'authenticated',U),U,id);
+      assert.equal(saved.flow.position,state.position);assert.equal(saved.flow.phase,state.phase);return saved;
+    };
+    assert.equal(local.applyReviewAction(state,{id:randomUUID(),action:'study_previous',itemId:state.round.cards[0].itemId}),state);
+    await act('study_next');await act('study_next');assert.equal(state.position,3);
+    const back=await act('study_previous');assert.equal(back.flow.position,2);assert.equal(local.localReview(U,back).position,2);
+    await act('study_next');assert.equal(state.position,3);
+    assert.equal(state.round.session.session_id,id);assert.deepEqual(state.answers,{});assert.deepEqual(state.deadlines,{});assert.equal(state.queue.length,0);
+    assert.equal((await db.query('select count(*)::int n from student_ctw_vocabulary_review_sessions')).rows[0].n,1);
+    assert.deepEqual((await db.query('select * from student_ctw_vocabulary_attempts order by attempt_id')).rows,historical);
+    const row=(await db.query('select revision,receipts from student_ctw_vocabulary_review_sessions where session_id=$1',[id])).rows[0];
+    assert.equal(row.revision,4);assert.equal(Object.keys(row.receipts).length,4);
+    await act('start_test');assert.equal(state.position,1);assert.equal(state.phase,'test');
+    assert.equal(local.applyReviewAction(state,{id:randomUUID(),action:'study_previous',itemId:state.round.cards[0].itemId}),state);
+    assert.throws(()=>server.parseCtwReviewCommand({id:randomUUID(),action:'study_previous',itemId:state.round.cards[0].itemId,answer:{spellings:{}}}));
+  }finally{await db.close();}
+});
 test('regular-form QA scans the entire library, flags life only as a single regular form, and retains approved burn/learn variants',()=>{
   const {source:originalSource}=require('./helpers/ctwVocabularyFixture.cjs'),qa=require('../lib/ctw-vocabulary/spelling-review.ts');
   const changes=require('../data/ctw-vocabulary/irregular-spelling-adjustments.json').changes;

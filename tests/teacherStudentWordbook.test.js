@@ -205,7 +205,8 @@ test('direct student review writes cannot impersonate the viewed student; target
   }
   assert.equal(calls.length, 0);
   for (const body of [{ action: 'retry', requestId: sid(9) }, { action: 'start_test', itemId: sid(2) },
-    { action: 'study_next', itemId: sid(2) }, { action: 'repeat', itemId: sid(2) }, { action: 'advance', itemId: sid(2) },
+    { action: 'study_previous', itemId: sid(2) }, { action: 'study_next', itemId: sid(2) }, { action: 'repeat', itemId: sid(2) }, { action: 'advance', itemId: sid(2) },
+    { action: 'sync', command: { id: sid(9), itemId: sid(2), action: 'study_previous' } },
     { action: 'answer', itemId: sid(2), answer: { optionId: sid(3) } },
     { action: 'sync', command: { id: sid(9), itemId: sid(2), action: 'answer', answer: { optionId: sid(3) } } }]) {
     assert.equal((await session.POST(post(body), { params: { sessionId: sid(1) } })).status, 404);

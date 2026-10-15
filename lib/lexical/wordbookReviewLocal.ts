@@ -61,6 +61,7 @@ export function applyReviewAction(local: LocalReview, command: ReviewCommand, cl
   if (command.itemId !== card.itemId || local.phase === "result") return local;
   let next = { ...local, revision: local.revision + 1, queue: [...local.queue, command] };
   switch (command.action) {
+    case "study_previous": if (local.phase !== "study" || local.position <= 1) return local; next.position--; break;
     case "study_next": if (local.phase !== "study" || local.position === local.round.cards.length) return local; next.position++; break;
     case "repeat": if (local.phase !== "study" || local.position !== local.round.cards.length) return local; next.position = 1; break;
     case "start_test": if (local.phase !== "study") return local; next.phase = "test"; next.position = Math.min(local.round.cards.length, Object.keys(local.answers).length + 1); break;
@@ -77,6 +78,7 @@ export function applyReviewAction(local: LocalReview, command: ReviewCommand, cl
       if (local.position === local.round.cards.length) next.phase = "result"; else next.position++;
       if (local.draft) delete next.draft;
       break;
+    default: return local;
   }
   return next;
 }

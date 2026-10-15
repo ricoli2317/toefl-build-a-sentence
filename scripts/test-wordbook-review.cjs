@@ -7,6 +7,7 @@ const files = [
   'tests/studentWordbookReview.test.js',
   'tests/studentWordbookReviewImmersive.test.cjs',
   'tests/studentWordbookReviewTiming.test.cjs',
+  'tests/studentWordbookReviewStudyNavigation.test.cjs',
   'tests/studentWordbookReviewTimeout.test.js',
   'tests/studentWordbookReviewPos7.test.js',
   'tests/studentWordbookReviewOccurrenceChoice.test.cjs',

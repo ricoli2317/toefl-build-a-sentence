@@ -35,7 +35,7 @@ export type ReviewCard = ReviewItem & { expected: { expression: string; pos: str
   meaning: string; definitionEn: string | null; correctOptionId: string | null; examples: { text: string; kind: string }[] };
   targetForms: string[] };
 export type ReviewRound = ReviewState & { cards: ReviewCard[]; metadata?: Record<string, unknown> };
-export type ReviewCommand = { id: string; action: "study_next" | "repeat" | "start_test" | "answer" | "advance";
+export type ReviewCommand = { id: string; action: "study_previous" | "study_next" | "repeat" | "start_test" | "answer" | "advance";
   itemId: string; answer?: ReviewAnswer["student"] };
 export type ReviewAvailability = { total: number; spellingPos: number; meaningChoice: number; unavailable: number;
   reasons: Record<string, number>; posOptions: ReviewOption[]; sourceCounts?: Record<string, number>;

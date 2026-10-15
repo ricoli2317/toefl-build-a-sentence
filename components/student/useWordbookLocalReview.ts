@@ -82,24 +82,33 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
 
   const reload = useCallback(async (force = false) => {
     if (!owner) return;
-    const mine = generation.current; setError("");
+    const mine = generation.current, atStart = current.current; setError("");
+    // A round fetch can outlive navigation/restoration in this or another tab.
+    // Commit under the same edit lock and prefer the latest durable cursor;
+    // never let a delayed server/cache snapshot overwrite a newer local edit.
+    const restore = (value: LocalReview) => locked(lock, () => {
+      if (mine !== generation.current || !active.current) return;
+      const saved = readLocalReview(localStorage, owner, session, namespace);
+      const latest = saved ?? (current.current !== atStart ? current.current : undefined) ?? value;
+      if (!saved && latest.phase !== "result") saveLocalReview(localStorage, latest, namespace);
+      publish(latest);
+      if (latest.queue.length) pumpRef.current();
+    });
     try {
       const pending = readLocalReview(localStorage, owner, session, namespace);
-      if (pending) { publish(pending); pumpRef.current(); return; }
+      if (pending) { await restore(pending); return; }
       const migrated = await adapter?.restoreLegacy?.(owner, session, requestRef.current);
       if (mine !== generation.current || !active.current) return;
-      if (migrated) { saveLocalReview(localStorage, migrated, namespace); publish(migrated); pumpRef.current(); return; }
+      if (migrated) { await restore(migrated); return; }
       const url = `${root}/${session}?round=1`;
       if (force) invalidate(adapter ? adapter.cacheKey(url, owner) : wordbookReadCacheKey(url, { studentId: owner }));
       const round = await requestRef.current<ReviewRound>(url);
       if (mine !== generation.current || !active.current) return;
       if (!Array.isArray(round.cards) || round.cards.length !== round.session.total) throw new Error("本轮题目未完整读取，请重试。");
-      const value = localReview(owner, round);
       // Persist correct-feedback recovery even if it predates the local flow.
-      if (value.phase !== "result") saveLocalReview(localStorage, value, namespace);
-      publish(value);
+      await restore(localReview(owner, round));
     } catch (e) { if (mine === generation.current && active.current) setError(e instanceof Error ? e.message : "读取失败，请重试。"); }
-  }, [owner, session, publish, invalidate, namespace, root, adapter]);
+  }, [owner, session, publish, invalidate, namespace, root, adapter, lock]);
   useEffect(() => {
     const mine = ++generation.current; active.current = true; worker.current = false; current.current = undefined;
     setLocal(undefined); setError("");
@@ -125,19 +134,23 @@ export function useWordbookLocalReview(owner: string | null, session: string, re
       window.removeEventListener("online", wake); window.removeEventListener("storage", changed); window.removeEventListener("pageshow", wake); };
   }, [identity, owner, session, namespace, adapter, reload, publish]);
 
+  const itemId = local?.owner === owner && local.round.session.session_id === session
+    ? local.round.cards[local.position - 1].itemId : undefined;
+  const phase = local?.phase;
+  const revision = local?.revision;
   const action = useCallback(async (name: string, answer?: unknown) => {
     const clickedAt = Date.now();
-    const itemId = current.current?.round.cards[(current.current?.position ?? 1) - 1]?.itemId;
     if (!itemId) return;
     try {
-      await edit(value => applyReviewAction(value, { id: crypto.randomUUID(), action: name as ReviewCommand["action"],
+      // Bind clicks/timers to the card AND phase that produced the callback.
+      // A queued old event must not act on whichever card is current later.
+      await edit(value => value.phase !== phase || value.revision !== revision ? value : applyReviewAction(value, { id: crypto.randomUUID(), action: name as ReviewCommand["action"],
         itemId, ...(answer === undefined ? {} : { answer: answer as ReviewCommand["answer"] }) }, clickedAt));
       setError(""); pumpRef.current();
     } catch (e) { setError(e instanceof Error ? e.message : "本地作答保存失败，请重试。"); }
-  }, [edit]);
-  const itemId = local?.round.cards[local.position - 1].itemId;
+  }, [edit, itemId, phase, revision]);
   const correct = itemId && local?.answers[itemId]?.correct;
-  const phase = local?.phase, deadline = itemId ? local?.deadlines[itemId] ?? 0 : 0;
+  const deadline = itemId ? local?.deadlines[itemId] ?? 0 : 0;
   useEffect(() => {
     if (phase !== "test" || !correct || !itemId) return;
     const timer = setTimeout(() => void action("advance"), Math.max(0, deadline - Date.now()));

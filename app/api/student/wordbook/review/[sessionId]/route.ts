@@ -48,7 +48,7 @@ export async function POST(request: Request, context: { params: { sessionId: str
       const body = reviewObject(value, ["action", "command"]);
       const command = reviewObject(body.command, ["id", "action", "itemId", "answer"]);
       reviewUuid(command.id); const itemId = reviewUuid(command.itemId);
-      if (!["study_next", "repeat", "start_test", "answer", "advance"].includes(String(command.action))) throw new ReviewError("REVIEW_INVALID", 400, "无效同步操作。");
+      if (!["study_previous", "study_next", "repeat", "start_test", "answer", "advance"].includes(String(command.action))) throw new ReviewError("REVIEW_INVALID", 400, "无效同步操作。");
       if (command.action === "answer") {
         const answer = reviewObject(command.answer, ["spelling", "pos", "optionId"]);
         // The existing submit is idempotent per item and preserves authoritative
@@ -75,7 +75,7 @@ export async function POST(request: Request, context: { params: { sessionId: str
       return readingAttemptJson(await readReviewRound(db, auth.userId, created.session.session_id));
     }
     const body = reviewObject(value, ["action", "itemId", "answer"]);
-    if (["study_next", "repeat", "start_test", "advance"].includes(String(body.action))) {
+    if (["study_previous", "study_next", "repeat", "start_test", "advance"].includes(String(body.action))) {
       if (body.answer !== undefined) throw new ReviewError("REVIEW_INVALID", 400, "无效参数。");
       return readingAttemptJson(await flow(auth.userId, sessionId, String(body.action), reviewUuid(body.itemId)));
     }
