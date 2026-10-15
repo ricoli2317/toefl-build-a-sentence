@@ -247,14 +247,15 @@ test('input shapes allow every accepted alternative length, phrases, hyphens and
   }
   for(const word of ['per capita','long-term','people']) assert.ok(source().rows.some(e=>e.word===word));
 });
-test('durable round restores exact learning/test set, draft and pending submit; bad storage/owner never silently replace state',()=>{
+test('old v1 pending batches remain readable for one-way migration; bad storage/owner never silently replace state',()=>{
   const entry={entry_id:randomUUID(),word:'get',list_number:1,list_position:1,cefr:'A1',senses:[],irregular_forms:[{form_type:'past',answers:['got']}],source_sha256:'a'.repeat(64)};
   const data=new Map(),storage={setItem:(k,v)=>data.set(k,v),getItem:k=>data.get(k)??null},id=randomUUID();
-  const local=round.createVocabularyRound(U,id,base,[entry]);round.writeVocabularyRound(storage,local);
+  const local={version:1,owner:U,attemptId:id,source:base,entries:[entry],phase:'study',index:0,answers:[],
+    draft:{entryId:entry.entry_id,spelling:'',irregularSpellings:[{formType:'past',spelling:''}]}};
+  storage.setItem(round.roundKey(U,id),JSON.stringify(local));
   assert.deepEqual(round.readVocabularyRound(storage,U,id),local);assert.equal(round.readVocabularyRound(storage,V,id),null);
   local.phase='saving';local.answers=[{entryId:entry.entry_id,spelling:'get',irregularSpellings:[{formType:'past',spelling:'got'}]}];
-  round.writeVocabularyRound(storage,local);assert.equal(round.vocabularySubmission(round.readVocabularyRound(storage,U,id)).attemptId,id);
-  assert.throws(()=>round.writeVocabularyRound({setItem:()=>{throw Error('quota')}},local),/quota/);
+  storage.setItem(round.roundKey(U,id),JSON.stringify(local));assert.equal(round.readVocabularyRound(storage,U,id).answers[0].spelling,'get');
   data.set(round.roundKey(U,id),'bad');assert.throws(()=>round.readVocabularyRound(storage,U,id));
 });
 test('UI uses the exact shared assignment badge and native spelling component; no independent setting/sample route remains',()=>{
@@ -262,10 +263,11 @@ test('UI uses the exact shared assignment badge and native spelling component; n
   assert.match(ui,/<AssignmentStatusBadge/);assert.match(ui,/label=\{list.status === "not_started" \? "未开始"/);
   assert.doesNotMatch(ui,/CtwVocabularySetup|开始测试<|\/sample/);
   assert.equal(fs.existsSync('app/student/ctw-vocabulary/test/page.tsx'),false);
-  assert.match(workspace,/<LetterSpelling/);assert.match(workspace,/<ReviewProgress/);assert.match(workspace,/useReviewViewport/);
+  assert.match(workspace,/<WordbookReviewWorkspace/);assert.match(workspace,/useCtwReview/);
+  const shared=read('components/student/WordbookReviewWorkspace.tsx');assert.match(shared,/<LetterSpelling/);assert.match(shared,/<ReviewProgress/);assert.match(shared,/useReviewViewport/);
   assert.doesNotMatch(workspace,/radiogroup|<Options|item\.example/);
   const badge=read('components/assignments/AssignmentPresentation.tsx');assert.match(badge,/label \?\? progress.label/);
   assert.equal(round.POS_LABELS.verb,'v.');assert.equal(round.POS_LABELS.preposition,'prep.');
-  assert.match(workspace,/aria-label="原形拼写"/);assert.doesNotMatch(ui+workspace,/Base form/);
-  assert.match(workspace,/entry.irregular_forms.length > 0 \? <p[^>]*>原形<\/p> : null/);
+  assert.doesNotMatch(ui+workspace,/Base form/);
+  assert.match(read('lib/ctw-vocabulary/review.ts'),/groups.length \? \{ label: "原形" \} : \{\}/);
 });

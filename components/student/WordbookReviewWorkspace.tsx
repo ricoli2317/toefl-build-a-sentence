@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
-import { reviewPercent, type ReviewItem, type ReviewOption, type ReviewState } from "@/lib/lexical/wordbookReview";
+import { reviewPercent, type ReviewAnswer, type ReviewItem, type ReviewOption, type ReviewSpellingGroup, type ReviewState } from "@/lib/lexical/wordbookReview";
 import styles from "./WordbookReviewWorkspace.module.css";
 import { constrainReviewSpelling, insertReviewSpelling, spellingInputValue } from "@/lib/lexical/wordbookReviewInput";
 
@@ -34,17 +34,19 @@ export function useReviewViewport() {
   return { workspace, viewport, keyboard };
 }
 
-export function ReviewProgress({ study, total, progress }: { study: boolean; total: number; progress: number }) {
-  return <div role="progressbar" aria-label={study ? "单词复习进度" : "测试进度"} aria-valuemin={0} aria-valuemax={total} aria-valuenow={progress}
+export function ReviewProgress({ study, total, progress, showNumbers = false }: { study: boolean; total: number; progress: number; showNumbers?: boolean }) {
+  const bar = <div role="progressbar" aria-label={study ? "单词复习进度" : "测试进度"} aria-valuemin={0} aria-valuemax={total} aria-valuenow={progress}
     className="h-1.5 min-w-0 flex-1 overflow-hidden rounded-full bg-student-primary-soft">
     <div className="h-full rounded-full bg-student-primary transition-[width]" style={{ width: `${progress / Math.max(1, total) * 100}%` }} />
   </div>;
+  return showNumbers ? <div className="min-w-0 flex-1"><p className="mb-1 text-center text-sm font-medium tabular-nums text-student-text">{progress}/{total}</p>{bar}</div> : bar;
 }
 
 /** One native input preserves keyboard, deletion, paste, selection and IME.
  * Fixed spaces are layout; the submitted value restores them from the shape. */
-export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, feedback }: {
+export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, feedback, compact = false }: {
   shape: string; value: string; onChange: (value: string) => void; disabled: boolean; onConfirm: () => void; feedback?: "correct" | "wrong";
+  compact?: boolean;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [focused, setFocused] = useState(false), [selection, setSelection] = useState({ start: spellingInputValue(value).length, end: spellingInputValue(value).length });
@@ -70,7 +72,7 @@ export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, fe
   if (focused && cursor === typed.length && cursor >= editable) layout.push({ space: false, position: editable + 1 });
   const slots = layout.map(({ space, position }, key) => {
     const index = space ? position : position - 1, letter = space ? undefined : typed[index];
-    return <span key={key} data-slot={key} data-input-offset={index} data-fixed-space={space || undefined} data-typed={Boolean(letter)} className={`relative inline-flex h-11 items-center justify-center text-2xl font-medium ${space ? "w-4" : index < editable ? "w-6 border-b-2 border-student-text/60 pb-1" : "w-3"} ${!space && index >= cursor && index < end ? styles.selectedLetter : ""}`}>
+    return <span key={key} data-slot={key} data-input-offset={index} data-fixed-space={space || undefined} data-typed={Boolean(letter)} className={`relative inline-flex h-11 items-center justify-center ${compact ? "text-xl sm:text-2xl" : "text-2xl"} font-medium ${space ? "w-4" : index < editable ? `${compact ? "w-4 sm:w-6" : "w-6"} border-b-2 border-student-text/60 pb-1` : "w-3"} ${!space && index >= cursor && index < end ? styles.selectedLetter : ""}`}>
       {letter ?? "\u00a0"}{!space && focused && !disabled && index === cursor ? <span data-caret className={styles.caret} /> : null}
     </span>;
   });
@@ -84,7 +86,7 @@ export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, fe
     if (hit) { const position = typed.slice(0, Number(hit.dataset.inputOffset)).join("").length; node.setSelectionRange(position, position); }
     select();
   }}>
-    <div aria-hidden="true" className="pointer-events-none flex min-w-0 flex-wrap justify-center gap-x-1.5 gap-y-2 pb-2">
+    <div aria-hidden="true" className={`pointer-events-none flex min-w-0 flex-wrap justify-center ${compact ? "gap-x-1 sm:gap-x-1.5" : "gap-x-1.5"} gap-y-2 pb-2`}>
       {slots}
     </div>
     <input ref={input} aria-label="英文拼写" value={displayValue} onChange={e => {
@@ -115,6 +117,23 @@ export function LetterSpelling({ shape, value, onChange, disabled, onConfirm, fe
       autoComplete="off" autoCapitalize="none" autoCorrect="off" spellCheck={false} maxLength={300}
       onKeyDown={event => { if (event.key === "Enter" && !composing.current && !event.nativeEvent.isComposing && event.keyCode !== 229) { event.preventDefault(); event.currentTarget.blur(); onConfirm(); } }} />
   </div>;
+}
+
+/** Multiple required forms remain one row and reuse the original native input.
+ * The durable row value includes fixed slash separators, never user-editable. */
+export function ReviewSpellingRow({ group, value, onChange, disabled, onConfirm, feedback }: {
+  group: ReviewSpellingGroup; value: string; onChange: (value: string) => void; disabled: boolean;
+  onConfirm: () => void; feedback?: "correct" | "wrong";
+}) {
+  const shapes = group.requiredAll ? group.shapes ?? [group.shape] : [group.shape];
+  const values = group.requiredAll ? value.split("/").map(part => part.trim()) : [value];
+  return <div className="min-w-0 overflow-x-auto"><div className="mx-auto flex w-max min-w-full items-center justify-center gap-2 sm:gap-3">
+    {shapes.map((shape, index) => <div key={index} className="flex shrink-0 items-center gap-2 sm:gap-3">
+      {index > 0 ? <span aria-hidden="true" className="pb-2 text-xl font-medium text-student-muted">/</span> : null}
+      <LetterSpelling shape={shape} compact={shapes.length > 1} value={values[index] ?? ""} disabled={disabled} feedback={feedback} onConfirm={onConfirm}
+        onChange={next => onChange(group.requiredAll ? shapes.map((_, n) => n === index ? next : values[n] ?? "").join(" / ") : next)} />
+    </div>)}
+  </div></div>;
 }
 
 function Options({ item, selected, onChange, busy }: { item: ReviewItem; selected: string; onChange: (id: string) => void; busy: boolean }) {
@@ -149,71 +168,89 @@ function Example({ item }: { item: ReviewItem }) {
 
 /** Fit rather than scroll/truncate. All source text stays in the card, including
  * very long expressions/examples. ResizeObserver also reacts to font loading. */
-function FitContent({ children, keyboard = false }: { children: ReactNode; keyboard?: boolean }) {
+function FitContent({ children, keyboard = false, scroll = false }: { children: ReactNode; keyboard?: boolean; scroll?: boolean }) {
   const stage = useRef<HTMLDivElement>(null), content = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   useLayoutEffect(() => {
     const outer = stage.current, inner = content.current;
-    if (!outer || !inner) return;
+    if (!outer || !inner || scroll) return;
     const fit = () => setScale(Math.min(1, outer.clientHeight / Math.max(1, inner.offsetHeight), outer.clientWidth / Math.max(1, inner.scrollWidth)));
     const observer = new ResizeObserver(fit); observer.observe(outer); observer.observe(inner); fit();
     return () => observer.disconnect();
-  }, [keyboard]);
+  }, [keyboard, scroll]);
   // Keep the exact same input DOM while toggling keyboard layout. Reparenting
   // it here would blur Safari's input and immediately dismiss the keyboard.
-  return <div ref={stage} className={keyboard ? "min-w-0 shrink-0 py-8" : "relative flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden"}>
-    <div ref={content} className={keyboard ? "w-full" : "absolute w-full"} style={keyboard ? undefined : { transform: `scale(${scale})`, transformOrigin: "center" }}>{children}</div>
+  return <div ref={stage} className={keyboard ? "min-w-0 shrink-0 py-8" : scroll ? "flex min-h-0 min-w-0 flex-1 overflow-y-auto py-6" : "relative flex min-h-0 min-w-0 flex-1 items-center justify-center overflow-hidden"}>
+    <div ref={content} className={keyboard ? "w-full" : scroll ? "my-auto w-full" : "absolute w-full"} style={keyboard || scroll ? undefined : { transform: `scale(${scale})`, transformOrigin: "center" }}>{children}</div>
   </div>;
 }
 
-export function WordbookReviewResult({ state, busy = false, onRetry = () => {}, pending = false, readOnly = false }: {
+export function WordbookReviewResult({ state, busy = false, onRetry = () => {}, pending = false, readOnly = false,
+  spellingOnly = false, setupHref = SETUP, historyHref = `${SETUP}/history`, children }: {
   state: ReviewState; busy?: boolean; onRetry?: () => void; pending?: boolean; readOnly?: boolean;
+  spellingOnly?: boolean; setupHref?: string; historyHref?: string; children?: ReactNode;
 }) {
   const s = state.summary;
   return <div data-review-persistence={pending ? "local" : "saved"} aria-label={pending ? "本轮本地结果，尚未全部保存" : "本轮已保存结果"} className="grid gap-8 text-center">
     <div><p className="text-sm text-student-muted">整体正确率</p><p className="mt-2 text-6xl font-bold text-student-primary">{reviewPercent(s.correct, state.session.total)}</p></div>
-    <dl className="grid grid-cols-3 gap-3">{[["词条总数", state.session.total], ["答对", s.correct], ["答错", s.incorrect]].map(([label, value]) =>
+    {pending && spellingOnly ? <p role="status" className="text-sm text-student-muted">本轮本地结果，尚未全部保存。同步确认后才计入正式成绩。</p> : null}
+    <dl className="grid grid-cols-3 gap-3">{[["词条总数", state.session.total], [spellingOnly ? "完全正确" : "答对", s.correct], [spellingOnly ? "错误词条" : "答错", s.incorrect]].map(([label, value]) =>
       <div key={label}><dt className="text-sm text-student-muted">{label}</dt><dd className="mt-2 text-3xl font-semibold">{value}</dd></div>)}</dl>
-    <dl className="grid gap-3 border-t border-student-border pt-6 text-sm">{[["拼写", s.spellingCorrect, s.spellingTotal], ["词性", s.posCorrect, s.posTotal], ["选择", s.choiceCorrect, s.choiceTotal]].map(([label, correct, total]) =>
-      <div key={label} className="flex justify-between gap-3"><dt>{label}</dt><dd className="font-semibold">{correct}/{total} · {reviewPercent(Number(correct), Number(total))}</dd></div>)}</dl>
-    {!readOnly ? <div className="grid gap-3 sm:grid-cols-3"><button type="button" className="student-button-primary h-11" disabled={busy || !s.incorrect} onClick={onRetry}>错词再练</button>
-      <Link className="student-button-secondary h-11" href={SETUP}>新一轮复习</Link><Link className="student-button-secondary h-11" href={`${SETUP}/history`}>复习历史</Link></div> : null}
+    {!spellingOnly ? <dl className="grid gap-3 border-t border-student-border pt-6 text-sm">{[["拼写", s.spellingCorrect, s.spellingTotal], ["词性", s.posCorrect, s.posTotal], ["选择", s.choiceCorrect, s.choiceTotal]].map(([label, correct, total]) =>
+      <div key={label} className="flex justify-between gap-3"><dt>{label}</dt><dd className="font-semibold">{correct}/{total} · {reviewPercent(Number(correct), Number(total))}</dd></div>)}</dl> : null}
+    {!readOnly ? <div className={`grid gap-3 ${!spellingOnly || s.incorrect > 0 ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}>{!spellingOnly || s.incorrect > 0 ? <button type="button" className="student-button-primary h-11" disabled={busy || !s.incorrect} onClick={onRetry}>错词再练</button> : null}
+      <Link className="student-button-secondary h-11" href={setupHref}>{spellingOnly ? "返回填词题词表" : "新一轮复习"}</Link><Link className="student-button-secondary h-11" href={historyHref}>{spellingOnly ? "测试历史" : "复习历史"}</Link></div> : null}
+    {children}
   </div>;
 }
 
-export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry, onReload, pending = 0, syncError, onSyncRetry }: {
+export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry, onReload, pending = 0, syncError, onSyncRetry,
+  spellingOnly = false, pauseHref = `${SETUP}/history`, resultView, draft, onDraftChange }: {
   state?: ReviewState; busy: boolean; error?: string;
   onAction: (action: string, answer?: unknown) => Promise<void>; onRetry: () => void; onReload: () => void;
   pending?: number; syncError?: string; onSyncRetry?: () => void;
+  spellingOnly?: boolean; pauseHref?: string; resultView?: ReactNode; draft?: ReviewAnswer["student"];
+  onDraftChange?: (value: ReviewAnswer["student"]) => void;
 }) {
   const [spelling, setSpelling] = useState(""), [selected, setSelected] = useState("");
+  const [spellings, setSpellings] = useState<Record<string, string>>({});
+  const draftRef = useRef(draft); draftRef.current = draft;
   const [exampleOpen, setExampleOpen] = useState(false), [confirmSkip, setConfirmSkip] = useState(false);
   const { workspace, viewport, keyboard } = useReviewViewport();
   const skipButton = useRef<HTMLButtonElement>(null);
   const item = state?.item, phase = state?.flow?.phase;
+  const groupedAnswer = { spellings: Object.fromEntries((item?.spellingGroups ?? []).map(group => [group.id, spellings[group.id] ?? ""])) };
   const wasConfirming = useRef(false);
   useEffect(() => { if (wasConfirming.current && !confirmSkip) skipButton.current?.focus(); wasConfirming.current = confirmSkip; }, [confirmSkip]);
-  useLayoutEffect(() => { setSpelling(""); setSelected(""); setExampleOpen(false); setConfirmSkip(false); }, [item?.itemId, phase]);
+  useLayoutEffect(() => { setSpelling(""); setSelected(""); setSpellings(draftRef.current?.spellings ?? {}); setExampleOpen(false); setConfirmSkip(false); }, [item?.itemId, phase]);
   const study = phase === "study", result = phase === "result", last = item?.position === state?.session.total;
   const progress = result ? state?.session.total ?? 0 : study ? item?.position ?? 0 : state?.session.answered ?? 0;
-  return <section ref={workspace} aria-label="生词本复习" data-keyboard={keyboard} className={`${keyboard ? "relative min-h-screen overflow-x-hidden" : "fixed inset-x-0 top-0 h-[100dvh] overflow-hidden"} flex min-w-0 flex-col bg-white text-student-text ${state?.session.domain === "reading" ? "reading-theme" : ""}`}
+  return <section ref={workspace} aria-label={spellingOnly ? "填词题词表学习与测试" : "生词本复习"} data-keyboard={keyboard} className={`${keyboard ? "relative min-h-screen overflow-x-hidden" : "fixed inset-x-0 top-0 h-[100dvh] overflow-hidden"} flex min-w-0 flex-col bg-white text-student-text ${state?.session.domain === "reading" ? "reading-theme" : ""}`}
     style={!keyboard && viewport ? { height: viewport.height, top: viewport.top } : undefined}>
     <div ref={node => { if (confirmSkip) node?.setAttribute("inert", ""); else node?.removeAttribute("inert"); }} aria-hidden={confirmSkip || undefined}
       className={`mx-auto flex ${keyboard ? "min-h-screen" : "h-full"} w-full max-w-3xl min-w-0 flex-col gap-4 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] sm:gap-6 sm:px-10 sm:pb-8 sm:pt-6`}>
       <header className="flex shrink-0 items-center gap-4">
-        <ReviewProgress study={study} total={state?.session.total ?? 1} progress={progress} />
+        <ReviewProgress study={study} total={state?.session.total ?? 1} progress={progress} showNumbers={spellingOnly} />
         {study ? <button ref={skipButton} type="button" disabled={busy} className="shrink-0 text-sm text-student-primary hover:underline" onClick={() => setConfirmSkip(true)}>跳过复习</button> : null}
-        {!result ? <Link href={`${SETUP}/history`} className="shrink-0 text-sm text-student-primary hover:underline">暂停</Link> : null}
+        {!result ? <Link href={pauseHref} className="shrink-0 text-sm text-student-primary hover:underline">暂停</Link> : null}
       </header>
-      <FitContent keyboard={keyboard}>{!state ? <div className="text-center">{!error ? "正在恢复复习…" : null}</div> : result ? <WordbookReviewResult state={state} busy={busy || pending > 0} pending={pending > 0} onRetry={onRetry} /> : item ?
+      <FitContent keyboard={keyboard} scroll={spellingOnly}>{!state ? <div className="text-center">{!error ? "正在恢复复习…" : null}</div> : result ? resultView ?? <WordbookReviewResult state={state} busy={busy || pending > 0} pending={pending > 0} onRetry={onRetry} /> : item ?
         <div className="grid min-w-0 gap-6 sm:gap-8">
           {study && item.study ? <>
             <div className="grid gap-3 text-center"><h1 className="text-4xl font-bold leading-tight [overflow-wrap:anywhere] sm:text-5xl">{item.study.expression}</h1>
-              <p className="text-lg">{item.study.pos}</p><p className="text-2xl font-semibold leading-relaxed [overflow-wrap:anywhere] sm:text-3xl">{item.study.meaning}</p></div>
-            <Example item={item} />
+              {!item.study.senses ? <><p className="text-lg">{item.study.pos}</p><p className="text-2xl font-semibold leading-relaxed [overflow-wrap:anywhere] sm:text-3xl">{item.study.meaning}</p></> : null}</div>
+            {item.study.senses ? <div className="grid gap-8">{item.study.senses.map((sense, index) => <div key={index} className="grid gap-3"><p className="text-xl font-semibold sm:text-2xl"><span className="mr-3 text-lg font-medium text-student-muted sm:text-xl">{sense.pos}</span>{sense.meaning}</p><p className="text-base leading-7 sm:text-lg sm:leading-8">{sense.example}</p></div>)}</div> : <Example item={item} />}
+            {item.spellingGroups?.some(group => group.id !== "base") ? <section aria-label="不规则变化" className="grid gap-3 border-t border-student-border pt-5">
+              <h2 className="text-lg font-semibold">不规则变化</h2>
+              <table className="w-full text-left text-base"><thead className="text-sm font-medium text-student-muted"><tr><th scope="col" className="pb-2 font-medium">形式</th><th scope="col" className="pb-2 font-medium">拼写</th></tr></thead>
+                <tbody>{item.spellingGroups.filter(group => group.id !== "base").map(group => <tr key={group.id} className="border-t border-student-border">
+                  <th scope="row" className="py-3 pr-4 font-medium">{group.label}</th><td className="py-3 text-lg font-bold [overflow-wrap:anywhere]">{group.accepted.join(" / ")}</td>
+                </tr>)}</tbody>
+              </table>
+            </section> : null}
           </> : <>
-            <div className="grid min-w-0 gap-3 text-center"><h1 className="text-3xl font-bold leading-relaxed [overflow-wrap:anywhere] sm:text-4xl">{item.prompt}</h1>
-              <button type="button" aria-expanded={exampleOpen} className="justify-self-center text-sm text-student-primary hover:underline" onClick={() => setExampleOpen(v => !v)}>例句</button>
+            <div className="grid min-w-0 gap-3 text-center"><h1 className={`${spellingOnly ? "whitespace-pre-line text-2xl sm:text-3xl" : "text-3xl sm:text-4xl"} font-bold leading-relaxed [overflow-wrap:anywhere]`}>{item.prompt}</h1>
+              {!spellingOnly ? <button type="button" aria-expanded={exampleOpen} className="justify-self-center text-sm text-student-primary hover:underline" onClick={() => setExampleOpen(v => !v)}>例句</button> : null}
               {exampleOpen ? <Example item={item} /> : null}</div>
             {item.kind === "spelling_pos" ? <div className="grid gap-3">
               <LetterSpelling shape={item.spellingShape ?? ""} value={item.answer?.student.spelling ?? spelling} onChange={setSpelling} disabled={busy || Boolean(item.answer)}
@@ -221,7 +258,14 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
                 onConfirm={() => void onAction("answer", { spelling, pos: selected })} />
               {item.answer && !item.answer.assessments.spelling ? <p className="text-center text-lg font-semibold text-student-primary [overflow-wrap:anywhere]">{item.answer.expression}</p> : null}
             </div> : null}
-            <Options item={item} selected={item.answer?.student.pos ?? item.answer?.student.optionId ?? selected} onChange={setSelected} busy={busy} />
+            {item.kind === "spelling" ? <div className="grid gap-6">{item.spellingGroups?.map(group => <div key={group.id} role="group" aria-label={group.label ?? "英文拼写"} className="grid gap-3">
+              <ReviewSpellingRow group={group} value={item.answer?.student.spellings?.[group.id] ?? spellings[group.id] ?? ""} disabled={busy || Boolean(item.answer)}
+                onChange={value => { const next = { ...spellings, [group.id]: value }; setSpellings(next); onDraftChange?.({ spellings: next }); }}
+                onConfirm={() => void onAction("answer", groupedAnswer)}
+                feedback={item.answer ? item.answer.assessments[group.id] ? "correct" : "wrong" : undefined} />
+              {group.label ? <p className="text-center text-sm text-student-muted">{group.label}</p> : null}
+              {item.answer && !item.answer.assessments[group.id] ? <p className="text-center text-lg font-semibold text-student-primary">{group.accepted.join(" / ")}</p> : null}
+            </div>)}</div> : <Options item={item} selected={item.answer?.student.pos ?? item.answer?.student.optionId ?? selected} onChange={setSelected} busy={busy} />}
           </>}
         </div> : null}</FitContent>
       {error ? <div role="alert" className="shrink-0 text-center text-sm text-student-error [overflow-wrap:anywhere]">{error}
@@ -235,9 +279,15 @@ export function WordbookReviewWorkspace({ state, busy, error, onAction, onRetry,
         {study ? <div className={`grid gap-3 ${last ? "grid-cols-2" : "grid-cols-1"}`}>
           {last ? <button type="button" disabled={busy} className="student-button-secondary h-11" onClick={() => void onAction("repeat")}>再看一遍</button> : null}
           <button type="button" disabled={busy} className="student-button-primary h-11" onClick={() => void onAction(last ? "start_test" : "study_next")}>{last ? "开始测试" : "下一个"}</button>
-        </div> : <button type="button" disabled={busy || Boolean(item.answer?.correct)} className="student-button-primary h-11 w-full" onClick={() => {
+        </div> : <button type="button" disabled={busy || Boolean(item.answer?.correct)} className="student-button-primary h-11 w-full"
+          onPointerDown={event => {
+            // Keep the keyboard layout steady until click runs. Native blur on
+            // pointer-down can otherwise move this button out from under the
+            // pointer before the click is dispatched on mobile.
+            if (spellingOnly && document.activeElement instanceof HTMLInputElement) event.preventDefault();
+          }} onClick={() => {
           (document.activeElement as HTMLElement)?.blur();
-          void onAction(item.answer ? "advance" : "answer", item.answer ? undefined : item.kind === "spelling_pos" ? { spelling, pos: selected } : { optionId: selected });
+          void onAction(item.answer ? "advance" : "answer", item.answer ? undefined : item.kind === "spelling" ? groupedAnswer : item.kind === "spelling_pos" ? { spelling, pos: selected } : { optionId: selected });
         }}>{item.answer?.correct ? last ? "即将查看结果" : "即将进入下一题" : item.answer ? "下一个" : "确定"}</button>}
       </footer> : null}
     </div>

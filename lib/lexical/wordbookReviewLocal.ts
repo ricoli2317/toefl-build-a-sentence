@@ -3,7 +3,7 @@ import { reviewExample, spellingShape } from "./wordbookReviewPresentation.ts";
 
 export type LocalReview = { version: 1; owner: string; round: ReviewRound; phase: "study" | "test" | "result";
   position: number; answers: Record<string, ReviewAnswer>; deadlines: Record<string, number>;
-  queue: ReviewCommand[]; confirmed: number; revision: number;
+  queue: ReviewCommand[]; confirmed: number; revision: number; draft?: ReviewAnswer["student"];
   syncFailure?: { count: number; message: string; detail: string; requiresIntervention: boolean } };
 // Matches Postgres wordbook_review_spelling: collapse POSIX whitespace, btrim
 // ASCII space, lowercase. Do NOT normalize punctuation, apostrophes or NFKC.
@@ -13,12 +13,22 @@ export const normalizeReviewSpelling = (text: string) => Array.from(text
   // PostgreSQL simple Unicode lowercase is per-character: no contextual final
   // sigma or JS's multi-codepoint dotted-I expansion.
   .map(char => char === "İ" ? "i" : char.toLowerCase()).join("");
+/** A row has fixed-length input slots. Every form is required, with permutation
+ * allowed only between equally long slots. Duplicates cannot satisfy two forms. */
+export function gradeReviewSpellingSet(expected: string[], spelling: string) {
+  const actual = spelling.split("/").map(normalizeReviewSpelling), normalized = expected.map(normalizeReviewSpelling);
+  if (actual.length !== normalized.length || actual.some((value, index) => Array.from(value).length !== Array.from(normalized[index]).length)) return false;
+  const sorted = [...normalized].sort();
+  return [...actual].sort().every((value, index) => value === sorted[index]);
+}
 export function gradeReview(card: ReviewRound["cards"][number], student: ReviewAnswer["student"], at = new Date().toISOString()): ReviewAnswer {
   const e = card.expected;
-  const assessments: Record<string, boolean> = card.kind === "spelling_pos"
+  const assessments: Record<string, boolean> = card.kind === "spelling" ? Object.fromEntries((card.spellingGroups ?? []).map(group =>
+    [group.id, group.requiredAll ? gradeReviewSpellingSet(group.accepted, student.spellings?.[group.id] ?? "")
+      : group.accepted.some(expected => normalizeReviewSpelling(student.spellings?.[group.id] ?? "") === normalizeReviewSpelling(expected))])) : card.kind === "spelling_pos"
     ? { spelling: normalizeReviewSpelling(student.spelling ?? "") === normalizeReviewSpelling(e.expression), pos: student.pos === e.pos }
     : { meaning_choice: student.optionId === e.correctOptionId };
-  return { ...e, student, assessments, correct: Object.values(assessments).every(Boolean), submittedAt: at };
+  return { ...e, student, assessments, correct: Object.keys(assessments).length > 0 && Object.values(assessments).every(Boolean), submittedAt: at };
 }
 export function localReview(owner: string, round: ReviewRound): LocalReview {
   return { version: 1, owner, round, phase: round.session.status === "completed" && round.flow?.phase === "study" ? "result"
@@ -33,6 +43,7 @@ export function reviewLocalState(local: LocalReview): ReviewState {
     const a = local.answers[c.itemId]; if (!a) continue;
     summary[a.correct ? "correct" : "incorrect"]++;
     if (c.kind === "spelling_pos") { summary.spellingTotal++; summary.posTotal++; summary.spellingCorrect += Number(a.assessments.spelling); summary.posCorrect += Number(a.assessments.pos); }
+    else if (c.kind === "spelling") { summary.spellingTotal++; summary.spellingCorrect += Number(a.correct); }
     else { summary.choiceTotal++; summary.choiceCorrect += Number(a.assessments.meaning_choice); }
   }
   const study = local.phase === "study";
@@ -41,7 +52,8 @@ export function reviewLocalState(local: LocalReview): ReviewState {
   return { session: { ...local.round.session, answered: Object.keys(local.answers).length,
       status: local.phase === "result" ? "completed" : "active" }, summary, composition: local.round.composition,
     flow: { phase: local.phase, position: local.position }, item: { ...card, example, spellingShape: spellingShape(e.expression),
-      answer: study ? undefined : local.answers[card.itemId], ...(study ? { study: { expression: e.expression, pos: e.standardPos, meaning: e.meaning } } : {}) } };
+      answer: study ? undefined : local.answers[card.itemId], ...(study ? { study: { expression: e.expression, pos: e.standardPos, meaning: e.meaning,
+        ...(card.studySenses ? { senses: card.studySenses } : {}) } } : {}) } };
 }
 /** Pure local transition; command IDs are assigned before durable publication. */
 export function applyReviewAction(local: LocalReview, command: ReviewCommand, clickedAt = Date.now()): LocalReview {
@@ -63,13 +75,14 @@ export function applyReviewAction(local: LocalReview, command: ReviewCommand, cl
       if (local.phase !== "test" || !local.answers[card.itemId]) return local;
       if (local.answers[card.itemId].correct && (local.deadlines[card.itemId] ?? 0) > clickedAt) return local;
       if (local.position === local.round.cards.length) next.phase = "result"; else next.position++;
+      if (local.draft) delete next.draft;
       break;
   }
   return next;
 }
-export const localReviewKey = (owner: string, session: string) => `tps:wordbook-review:pending:${owner}:${session}`;
-export function readLocalReview(storage: Pick<Storage, "getItem">, owner: string, session: string): LocalReview | null {
-  const raw = storage.getItem(localReviewKey(owner, session)); if (!raw) return null;
+export const localReviewKey = (owner: string, session: string, namespace = "wordbook-review") => `tps:${namespace}:pending:${owner}:${session}`;
+export function readLocalReview(storage: Pick<Storage, "getItem">, owner: string, session: string, namespace = "wordbook-review"): LocalReview | null {
+  const raw = storage.getItem(localReviewKey(owner, session, namespace)); if (!raw) return null;
   let value: LocalReview;
   try { value = JSON.parse(raw) as LocalReview; }
   catch { throw new Error("本地待同步记录无法读取，请勿清除浏览器数据，稍后重试。"); }
@@ -77,8 +90,8 @@ export function readLocalReview(storage: Pick<Storage, "getItem">, owner: string
     || !Array.isArray(value.round.cards) || value.position < 1 || value.position > value.round.cards.length) throw new Error("本地待同步记录无法读取，请勿清除浏览器数据，稍后重试。");
   return value;
 }
-export function saveLocalReview(storage: Pick<Storage, "setItem">, value: LocalReview) {
-  try { storage.setItem(localReviewKey(value.owner, value.round.session.session_id), JSON.stringify(value)); }
+export function saveLocalReview(storage: Pick<Storage, "setItem">, value: LocalReview, namespace = "wordbook-review") {
+  try { storage.setItem(localReviewKey(value.owner, value.round.session.session_id, namespace), JSON.stringify(value)); }
   catch { throw new Error("浏览器无法保存待同步记录（空间不足或存储被禁用）。本次操作未确认，请恢复存储后重试。"); }
 }
 export function acknowledgeReview(local: LocalReview, command: ReviewCommand): LocalReview {

@@ -26,6 +26,30 @@ export function spellingShape(expression: string) {
   // Spaces are fixed layout; every other character (including '-') is tested.
   return Array.from(expression).map(char => /\s/.test(char) ? char : "_").join("");
 }
+
+/** Test-only protection, using example masking's case/word-boundary matcher.
+ * Remove collocation hints, not unrelated clauses or Chinese translations. */
+export function protectedReviewPrompt(text: string, expression: string, forms: string[] = []) {
+  const leaks = (value: string) => reviewExample(value, expression, true, forms)?.some(part => part.target) ?? false;
+  const strip = (value: string) => (reviewExample(value, expression, true, forms) ?? []).map(part => part.target ? "" : part.text).join("");
+  let safe = text, previous: string;
+  do {
+    previous = safe;
+    safe = safe.replace(/（[^（）]*）|\([^()]*\)/g, part => {
+      if (!leaks(part)) return part;
+      const clauses = part.slice(1, -1).split(/[；;]/).map(clause => {
+        if (!leaks(clause)) return clause;
+        const translation = clause.match(/^([A-Za-z][A-Za-z\s./…'’\-]*?)[：:]\s*(.+)$/);
+        if (translation && leaks(translation[1])) return strip(translation[2]);
+        if (/^\s*(?:(?:常用于|用于|常用复数|常用|如)\s*)?[A-Za-z][A-Za-z\s./…'’\-]*(?:\s*等)?\s*$/.test(clause)) return "";
+        return strip(clause);
+      }).filter(clause => clause.trim());
+      return clauses.length ? `${part[0]}${clauses.join("；")}${part.slice(-1)}` : "";
+    });
+  } while (previous !== safe);
+  return strip(safe)
+    .replace(/ {2,}/g, " ").trim().replace(/^[；;，,\s]+|[；;，,\s]+$/g, "");
+}
 /** Explicit API allowlist: raw spelling and unmasked examples never cross the
  * test boundary; study deliberately exposes the same saved source sense. */
 export function presentReviewState(raw: ReviewState & { presentation: ReviewPresentation }): ReviewState {

@@ -1,3 +1,7 @@
+// HISTORICAL Phase 3 v1 batch-flow acceptance ONLY. Its selectors and batch
+// endpoint expectations do not apply to the unified review flow. Do not use
+// this script to accept the new flow or manufacture new production records.
+// Use verify-ctw-phase3-browser.cjs for isolated local acceptance instead.
 // EXPLICITLY OPT-IN: creates real study progress and four real test results.
 // No route mocks, SQL writes, service keys, score injection or local state edits.
 // Authenticates only through the normal localhost UI. Use after Next says Ready.

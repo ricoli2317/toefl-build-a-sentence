@@ -1,0 +1,10 @@
+{
+  "standard": "TPS-REVIEWED-2026-10-15",
+  "testing": {"multipleForms":"all-required","sameLengthOrder":"any","sameTense":"one-row","pastLabel":"过去时","thirdPersonLabel":"第三人称单数"},
+  "originalSourceSha256": "09480ce1a52a79906082df9cd0503396c4b334850587f8c95e8629ce63eb38c6",
+  "changes": [
+    {"word":"craftsperson","before":[{"form_type":"plural","answers":["craftspeople","craftspersons"]}],"after":[{"form_type":"plural","answers":["craftspeople"]}],"reason":"按用户 review 仅保留 craftspeople；不更名原形 craftsperson。"},
+    {"word":"millennium","before":[{"form_type":"plural","answers":["millennia","millenniums"]}],"after":[{"form_type":"plural","answers":["millennia"]}],"reason":"按用户 review 仅保留 millennia。"},
+    {"word":"leaf","before":[{"form_type":"plural","answers":["leaves"]}],"after":[],"reason":"按用户指定的 TPS 规则，leaf→leaves 视为规则变化，不设附加题；原形仍测试。"}
+  ]
+}

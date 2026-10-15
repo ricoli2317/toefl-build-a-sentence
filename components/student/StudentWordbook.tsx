@@ -169,12 +169,12 @@ export function WordbookView({ access, readOnly = false, domains = ["reading", "
   </div>;
 }
 
-export function useWordbookRead<T>(url: string | null, revision: number, access: WordbookReadAccess) {
+export function useWordbookRead<T>(url: string | null, revision: number, access: WordbookReadAccess, cacheKey?: string) {
   const { getSession, sessionReady, studentId } = access;
   const studentCache = useOptionalStudentDataCache();
   const teacherCache = useOptionalTeacherDataCache();
   const cache = teacherCache ?? studentCache;
-  const key = wordbookReadCacheKey(url, access);
+  const key = cacheKey ?? wordbookReadCacheKey(url, access);
   // The owning layout and actor/student key already isolate cached payloads.
   // A remounted teacher page may still be restoring its token: render a cache
   // hit immediately, but wait for readiness before making any new request.

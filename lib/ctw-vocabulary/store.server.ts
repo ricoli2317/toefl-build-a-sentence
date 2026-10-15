@@ -5,19 +5,21 @@ import { CEFR_LEVELS, gradeVocabularySpelling, vocabularyAcceptedAnswers,
 import type { WordQuery } from "./input.ts";
 import type { ListSource, VocabularyListCard } from "./model.ts";
 
-const WORD_COLUMNS = "entry_id,word,list_number,list_position,cefr,senses,irregular_forms,source_sha256";
+export const WORD_COLUMNS = "entry_id,word,list_number,list_position,cefr,senses,irregular_forms,source_sha256";
 export const SUMMARY_COLUMNS = "attempt_id,mode,submitted_at,answer_count,correct_count,list_numbers,cefr_levels";
 const RESULT_COLUMNS = `${SUMMARY_COLUMNS},answers`;
 export class VocabularyStoreError extends Error {
   code: string;
   constructor(code: string) { super(code); this.code = code; }
 }
-function databaseError(error: { code?: string; message?: string } | null) {
+export function databaseError(error: { code?: string; message?: string } | null) {
   if (!error) return;
   if (["42P01", "42883", "PGRST202", "PGRST205"].includes(error.code ?? ""))
     throw new VocabularyStoreError("CTW_VOCAB_UNAVAILABLE");
   if (error.message?.includes("CTW_VOCAB_LIST_NOT_FOUND")) throw new VocabularyStoreError("CTW_VOCAB_LIST_NOT_FOUND");
   if (error.message?.includes("CTW_VOCAB_INVALID_LIST_RESULT")) throw new VocabularyStoreError("CTW_VOCAB_INVALID_LIST_RESULT");
+  const reviewCode = error.message?.match(/CTW_REVIEW_[A-Z_]+/)?.[0];
+  if (reviewCode) throw new VocabularyStoreError(reviewCode);
   throw new VocabularyStoreError("CTW_VOCAB_DATABASE_ERROR");
 }
 export async function readVocabularyCatalog(client: SupabaseClient): Promise<VocabularyCatalog> {

@@ -25,7 +25,7 @@ export type VocabularyListCard = { edition: "mixed" | "cefr"; group: string; lis
 export type FormSpelling = { formType: IrregularFormType; spelling: string };
 export type SpellingAnswer = { entryId: string; spelling: string; formType?: IrregularFormType; irregularSpellings?: FormSpelling[] };
 export type AttemptSubmission = { attemptId: string; mode: SpellingMode; answers: SpellingAnswer[]; source?: RoundSource };
-export type GradedForm = FormSpelling & { acceptedAnswers: string[]; correct: boolean };
+export type GradedForm = FormSpelling & { acceptedAnswers: string[]; correct: boolean; requiredAll?: boolean };
 export type GradedAnswer = SpellingAnswer & { word: string; listNumber: number; listPosition: number;
   cefr: Cefr; senses: VocabularySense[]; acceptedAnswers: string[]; correct: boolean; sourceSha256: string;
   baseCorrect?: boolean; irregularResults?: GradedForm[]; source?: RoundSource };

@@ -1,15 +1,21 @@
 "use client";
-
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { BookText } from "lucide-react";
+import { useStudentDataCache } from "@/components/StudentDataCache";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
-import { StudentNavigation } from "./StudentUI";
-import { useVocabularyRead, useVocabularyRequest } from "./useCtwVocabulary";
-import type { AttemptResult, AttemptSummary, ListSource, VocabularyListCard, VocabularyEntry } from "@/lib/ctw-vocabulary/model";
 import { AssignmentStatusBadge } from "@/components/assignments/AssignmentPresentation";
-import { createVocabularyRound, FORM_LABELS, POS_LABELS, listLabel, roundKey, sourceReturnHref, VOCABULARY_API as API,
-  VOCABULARY_ROOT as ROOT, vocabularyResultGroups, writeVocabularyRound } from "@/lib/ctw-vocabulary/round";
+import { StudentNavigation } from "./StudentUI";
+import { WordbookReviewHistoryList } from "./WordbookReview";
+import { CtwVocabularyReviewResult } from "./CtwVocabularyReviewResult";
+import { useVocabularyRead, useVocabularyRequest } from "./useCtwVocabulary";
+import { useCtwRetry } from "./useCtwReview";
+import { gradeReview, localReview, localReviewKey, reviewLocalState, saveLocalReview, type LocalReview } from "@/lib/lexical/wordbookReviewLocal";
+import type { ReviewHistory, ReviewRound } from "@/lib/lexical/wordbookReview";
+import { CTW_REVIEW_NAMESPACE, CTW_REVIEW_ROOT, createCtwReviewRound, ctwCacheKey, ctwLegacyRowValues, ctwMetadata, ctwRangeLabel } from "@/lib/ctw-vocabulary/review";
+import type { ListSource, VocabularyListCard } from "@/lib/ctw-vocabulary/model";
+import { listLabel, readVocabularyRound, roundKey, sourceReturnHref, VOCABULARY_API as API, VOCABULARY_ROOT as ROOT } from "@/lib/ctw-vocabulary/round";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 
 export function VocabularyFailure({ error, retry }: { error?: string; retry?: () => void }) {
@@ -17,129 +23,119 @@ export function VocabularyFailure({ error, retry }: { error?: string; retry?: ()
     {retry ? <button type="button" className="student-button-secondary justify-self-start" onClick={retry}>重试</button> : null}</div> : null;
 }
 export function VocabularyNavigation({ label, backHref = ROOT }: { label?: string; backHref?: string }) {
-  return <StudentNavigation backHref={backHref} crumbs={[
-    { label: "学生首页", href: STUDENT_ROUTES.home },
-    { label: "填词题词表", ...(label ? { href: ROOT } : {}) }, ...(label ? [{ label }] : [])
-  ]} />;
+  return <StudentNavigation backHref={backHref} crumbs={[{ label: "学生首页", href: STUDENT_ROUTES.home },
+    { label: "填词题词表", ...(label ? { href: ROOT } : {}) }, ...(label ? [{ label }] : [])]} />;
 }
-function useStartVocabularyRound() {
-  const router = useRouter(), { request, studentId } = useVocabularyRequest();
-  const [busy, setBusy] = useState(false), [error, setError] = useState("");
-  const lock = useRef(false);
-  const start = async (source: ListSource) => {
-    if (lock.current || !studentId) return;
-    lock.current = true; setBusy(true); setError("");
-    try {
-      const data = await request<{ items: VocabularyEntry[] }>(`${API}/lists/start`, source);
-      const round = createVocabularyRound(studentId, crypto.randomUUID(), source, data.items);
-      try { writeVocabularyRound(localStorage, round); } catch { throw new Error("无法保存本机进度，请允许浏览器本地存储后重试。"); }
-      router.push(`${ROOT}/session/${round.attemptId}`);
-    } catch (e) { setError(e instanceof Error ? e.message : "创建失败，请重试。"); }
-    finally { lock.current = false; setBusy(false); }
-  };
-  return { start, busy, error };
+function sourceOf(card: VocabularyListCard): ListSource {
+  return card.edition === "mixed" ? { kind: "list", listNumber: card.listNumber }
+    : { kind: "cefr_list", group: card.group as "A1" | "A2" | "B1" | "B2" | "C1-C2", listNumber: card.listNumber };
 }
-export function VocabularyPendingRounds() {
-  const { studentId } = useVocabularyRequest();
-  const [ids, setIds] = useState<string[]>([]);
-  useEffect(() => {
-    const update = () => {
-      const pending: string[] = [];
-      try {
-        if (studentId) for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (!key?.startsWith(roundKey(studentId, ""))) continue;
-          const value = JSON.parse(localStorage.getItem(key) ?? "null");
-          if (value?.owner === studentId && value.phase !== "saved") pending.push(value.attemptId);
-        }
-      } catch { /* Workspace reports storage errors without discarding progress. */ }
-      setIds(pending);
-    };
-    update(); window.addEventListener("focus", update); window.addEventListener("storage", update);
-    return () => { window.removeEventListener("focus", update); window.removeEventListener("storage", update); };
-  }, [studentId]);
-  return ids.length ? <div className="grid gap-2 text-sm">{ids.map(id => <Link key={id} className="text-student-primary underline" href={`${ROOT}/session/${id}`}>继续未完成的学习 / 测试</Link>)}</div> : null;
+/** Both editions use exactly this card. Status Badge is the unmodified shared
+ * Assignment badge; typography changes apply only to the card's other fields. */
+export function CtwVocabularyListCard({ list, onClick }: { list: VocabularyListCard; onClick: () => void }) {
+  return <button type="button" onClick={onClick} className="student-card student-card-interactive grid min-w-0 gap-4 rounded-2xl p-5 text-left hover:border-student-primary-border sm:p-6">
+    <span className="flex items-center justify-between gap-2"><span className="text-2xl font-bold leading-tight sm:text-[26px]">{listLabel(list.listNumber)}</span>
+      <AssignmentStatusBadge completedCount={list.status === "completed" ? 2 : list.status === "in_progress" ? 1 : 0} totalCount={2}
+        label={list.status === "not_started" ? "未开始" : undefined} /></span>
+    <span className="flex flex-wrap items-center gap-3 text-base font-medium text-student-text sm:text-lg">
+      {list.edition === "cefr" ? <span className="student-chip">{list.group.replace("-", "–")}</span> : null}
+      <span className="inline-flex items-center gap-2"><BookText aria-hidden="true" size={21} className="text-student-muted" />{list.count} 个词条</span>
+    </span>
+    <span className="flex items-center justify-between gap-2 border-t border-student-border pt-3"><span className="text-sm font-medium text-student-text sm:text-base">历史最高正确率</span>
+      <span className={`text-xl font-bold tabular-nums sm:text-2xl ${list.bestAccuracy === 100 ? "text-emerald-700" : "text-student-text"}`}>{list.bestAccuracy === null ? "—" : `${Number(list.bestAccuracy.toFixed(2))}%`}</span></span>
+  </button>;
 }
 export function CtwVocabularyCatalog() {
-  const params = useSearchParams(), router = useRouter();
-  const edition = params.get("tab") === "cefr" ? "cefr" : "mixed";
-  const catalog = useVocabularyRead<{ lists: VocabularyListCard[] }>(`${API}/lists?edition=${edition}`);
-  const { start, busy, error } = useStartVocabularyRound();
-  const [selected, setSelected] = useState<VocabularyListCard | null>(null);
-  const retryCatalog = catalog.retry;
-  useEffect(() => { window.addEventListener("focus", retryCatalog); return () => window.removeEventListener("focus", retryCatalog); }, [retryCatalog]);
-  return <div className="grid gap-6">
-    <VocabularyNavigation backHref={STUDENT_ROUTES.home} />
+  const params = useSearchParams(), router = useRouter(), { request, studentId } = useVocabularyRequest();
+  const { updateData, markStale } = useStudentDataCache();
+  const edition = params.get("tab") === "cefr" ? "cefr" : "mixed", url = `${API}/lists?edition=${edition}`;
+  const catalog = useVocabularyRead<{ lists: VocabularyListCard[] }>(url);
+  const [selected, setSelected] = useState<VocabularyListCard | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState("");
+  const lock = useRef(false), pending = useRef<{ key: string; id: string }>();
+  const start = async () => {
+    if (!selected || !studentId || lock.current) return;
+    lock.current = true; setBusy(true); setError("");
+    try {
+      const source = sourceOf(selected), key = JSON.stringify([studentId, source]);
+      if (pending.current?.key !== key) pending.current = { key, id: crypto.randomUUID() };
+      const round = await request<ReviewRound>(CTW_REVIEW_ROOT, { source, requestId: pending.current.id });
+      saveLocalReview(localStorage, localReview(studentId, round), CTW_REVIEW_NAMESPACE);
+      updateData<{ lists: VocabularyListCard[] }>(ctwCacheKey(url), value => ({ lists: value.lists.map(list => list.group === selected.group && list.listNumber === selected.listNumber
+        ? { ...list, status: list.status === "not_started" ? "in_progress" : list.status } : list) }));
+      markStale(ctwCacheKey(CTW_REVIEW_ROOT)); router.push(`${ROOT}/session/${round.session.session_id}`);
+    } catch (e) { setError(e instanceof Error ? e.message : "开始失败，请重试。"); }
+    finally { lock.current = false; setBusy(false); }
+  };
+  return <div className="grid gap-6"><VocabularyNavigation backHref={STUDENT_ROUTES.home} />
     <div className="flex flex-wrap items-end justify-between gap-3"><div role="tablist" aria-label="词表版本" className="flex gap-1 border-b border-student-border">
-      {([['mixed','乱序版'],['cefr','CEFR']] as const).map(([value,label]) => <button type="button" key={value} role="tab" aria-selected={edition === value}
+      {([['mixed','乱序版'],['cefr','CEFR']] as const).map(([value, label]) => <button type="button" key={value} role="tab" aria-selected={edition === value}
         className={`border-b-2 px-5 py-3 text-sm font-semibold ${edition === value ? "border-student-primary text-student-primary" : "border-transparent text-student-muted"}`}
-        onClick={() => { setSelected(null); router.replace(value === "cefr" ? `${ROOT}?tab=cefr` : ROOT, { scroll: false }); }}>{label}</button>)}
-    </div><Link href={`${ROOT}/history`} className="student-button-secondary">测试历史</Link></div>
-    <VocabularyPendingRounds />
-    {catalog.loading ? <p className="text-sm text-student-muted">正在加载词表…</p> : null}
-    <VocabularyFailure error={catalog.error} retry={catalog.retry} />
-    <div role="tabpanel" aria-label={edition === "mixed" ? "乱序版词表" : "CEFR 词表"} className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-4">{catalog.data?.lists.map(list =>
-      <button type="button" key={`${list.group}:${list.listNumber}`} className="student-card student-card-interactive grid min-h-[164px] content-start gap-3 p-4 text-left sm:p-5"
-        onClick={() => setSelected(list)}><span className="text-lg font-bold">{listLabel(list.listNumber)}</span>
-        <span className="text-sm text-student-muted">{list.count} 词</span>
-        <span className="flex flex-wrap items-center gap-2">
-          {edition === "cefr" ? <span className="student-chip text-xs">{list.group === "C1-C2" ? "C1–C2" : list.group}</span> : null}
-          <AssignmentStatusBadge completedCount={list.status === "completed" ? 2 : list.status === "in_progress" ? 1 : 0}
-            totalCount={2} label={list.status === "not_started" ? "未开始" : undefined} />
-        </span><span className="text-xs leading-5 text-student-muted">历史最高正确率：{list.bestAccuracy === null ? "—" : `${Number(list.bestAccuracy.toFixed(2))}%`}</span></button>)}</div>
-    <ConfirmDialog open={selected !== null} title={`开始学习 ${selected?.group ? `${selected.group === "C1-C2" ? "C1–C2" : selected.group} ` : ""}${listLabel(selected?.listNumber ?? 1)}？`} confirmText="确认" cancelText="取消"
-      confirming={busy} error={error} onCancel={() => { if (!busy) setSelected(null); }}
-      onConfirm={() => { if (selected) void start(selected.edition === "mixed" ? { kind: "list", listNumber: selected.listNumber }
-        : { kind: "cefr_list", group: selected.group as "A1" | "A2" | "B1" | "B2" | "C1-C2", listNumber: selected.listNumber }); }} />
+        onClick={() => { setSelected(null); setError(""); router.replace(value === "cefr" ? `${ROOT}?tab=cefr` : ROOT, { scroll: false }); }}>{label}</button>)}</div>
+      <Link href={`${ROOT}/history`} className="student-button-secondary">测试历史</Link></div>
+    {catalog.loading ? <p className="text-sm text-student-muted">正在加载词表…</p> : null}<VocabularyFailure error={catalog.error} retry={catalog.retry} />
+    <div role="tabpanel" aria-label={edition === "mixed" ? "乱序版词表" : "CEFR 词表"} className="grid grid-cols-1 gap-4 min-[560px]:grid-cols-2 xl:grid-cols-3">
+      {catalog.data?.lists.map(list => <CtwVocabularyListCard key={`${list.group}:${list.listNumber}`} list={list} onClick={() => setSelected(list)} />)}</div>
+    <ConfirmDialog open={Boolean(selected)} title={`开始学习 ${selected?.group ? `${selected.group.replace("-", "–")} ` : ""}${listLabel(selected?.listNumber ?? 1)}？`}
+      confirmText="确认" cancelText="取消" confirming={busy} error={error} onCancel={() => { if (!busy) setSelected(null); }} onConfirm={() => void start()} />
   </div>;
-}
-export function CtwVocabularyResultView({ result }: { result: AttemptResult }) {
-  const groups = vocabularyResultGroups(result), correct = groups.filter(group => group.correct).length;
-  const source = result.answers[0]?.source, backHref = sourceReturnHref(source);
-  return <div className="grid gap-8">
-    <VocabularyNavigation label="测试结果" backHref={backHref} />
-    <div className="reading-theme grid gap-8 text-center" data-vocabulary-persistence="saved">
-      <div><p className="text-sm text-student-muted">正确率</p><p className="mt-2 text-6xl font-bold text-student-primary">{Math.round(correct / Math.max(1, groups.length) * 100)}%</p></div>
-      <dl className="grid grid-cols-3 gap-3">{[["词条总数", groups.length], ["完全正确", correct], ["错误词条", groups.length - correct]].map(([label, value]) =>
-        <div key={label}><dt className="text-sm text-student-muted">{label}</dt><dd className="mt-2 text-3xl font-semibold">{value}</dd></div>)}</dl>
-      <div className="flex flex-wrap justify-center gap-3"><Link href={backHref} className="student-button-primary">返回填词题词表</Link>
-        <Link href={`${ROOT}/history`} className="student-button-secondary">测试历史</Link></div>
-    </div>
-    <section aria-label="拼写详情" className="grid gap-4"><h2 className="text-lg font-bold">错词详情与拼写结果</h2>
-      {[...groups].sort((a, b) => Number(a.correct) - Number(b.correct)).map(group => <article key={group.entryId} className="student-card grid gap-3 p-5 [overflow-wrap:anywhere]">
-        <header className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-xl font-bold">{group.word}</h3>
-          <span className={group.correct ? "text-sm text-student-primary" : "text-sm text-student-error"}>{group.correct ? "完全正确" : "错误词条"}</span></header>
-        <div className="grid gap-1 text-sm text-student-muted">{group.senses.map((sense, i) => <p key={i}>{POS_LABELS[sense.pos]} · {sense.meaning_zh}</p>)}</div>
-        {group.answers.map((answer, i) => <div key={i} className="grid gap-2 text-sm">
-          <SpellingResult label={answer.formType ? FORM_LABELS[answer.formType] : answer.irregularResults?.length ? "原形" : "拼写"} spelling={answer.spelling}
-            accepted={answer.acceptedAnswers} correct={answer.baseCorrect ?? answer.correct} />
-          {answer.irregularResults?.map(form => <SpellingResult key={form.formType} label={FORM_LABELS[form.formType]} spelling={form.spelling} accepted={form.acceptedAnswers} correct={form.correct} />)}
-        </div>)}
-      </article>)}
-    </section>
-  </div>;
-}
-function SpellingResult({ label, spelling, accepted, correct }: { label: string; spelling: string; accepted: string[]; correct: boolean }) {
-  return <div className="grid gap-1 border-t border-student-border pt-2"><p><span className="font-semibold">{label}</span> · <span className={correct ? "text-student-primary" : "text-student-error"}>{correct ? "正确" : "错误"}</span></p>
-    <p>你的拼写：{spelling || "未填写"}</p><p>正确拼写：<strong>{accepted.join(" / ")}</strong></p></div>;
 }
 export function CtwVocabularyResult({ attemptId }: { attemptId: string }) {
-  const result = useVocabularyRead<AttemptResult>(`${API}/attempts/${encodeURIComponent(attemptId)}`);
-  return <>{result.loading ? <p className="text-sm text-student-muted">正在读取已保存结果…</p> : null}<VocabularyFailure error={result.error} retry={result.retry} />
-    {result.data ? <CtwVocabularyResultView result={result.data} /> : null}</>;
+  const result = useVocabularyRead<ReviewRound>(`${CTW_REVIEW_ROOT}/${encodeURIComponent(attemptId)}?round=1`), retry = useCtwRetry();
+  return <div className="grid gap-6"><VocabularyNavigation label="测试结果" backHref={result.data ? sourceReturnHref(ctwMetadata(result.data).source) : ROOT} />
+    {result.loading ? <p className="text-sm text-student-muted">正在读取已保存结果…</p> : null}
+    <VocabularyFailure error={result.error || retry.error} retry={result.retry} />
+    {result.data?.session.status === "completed" ? <CtwVocabularyReviewResult round={result.data} state={result.data} busy={retry.busy} onRetry={() => void retry.retry(result.data!)} />
+      : result.data ? <div role="status" className="grid justify-items-start gap-3"><p>本轮尚未完成，不能作为已保存的最终成绩。</p><Link className="student-button-secondary" href={`${ROOT}/session/${attemptId}`}>恢复复习</Link></div> : null}
+  </div>;
+}
+function pendingHistory(owner: string): ReviewHistory["items"] {
+  const items: ReviewHistory["items"] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i); if (!key) continue;
+    if (key.startsWith(roundKey(owner, ""))) {
+      const old = readVocabularyRound(localStorage, owner, key.slice(roundKey(owner, "").length));
+      if (!old || old.phase === "saved" || old.source.kind === "cefr") continue;
+      const round = createCtwReviewRound(old.attemptId, old.source, old.entries), state = localReview(owner, round);
+      for (const a of old.answers) {
+        const card = round.cards.find(c => c.itemId === a.entryId)!;
+        state.answers[a.entryId] = gradeReview(card, { spellings: { base: a.spelling,
+          ...ctwLegacyRowValues(card, old.entries.find(entry => entry.entry_id === a.entryId)!, a.irregularSpellings) } });
+      }
+      const projected = reviewLocalState(state);
+      items.push({ ...projected.session, status: "active", started_at: "", summary: projected.summary, ...{ source: old.source } });
+      continue;
+    }
+    if (!key.startsWith(localReviewKey(owner, "", CTW_REVIEW_NAMESPACE))) continue;
+    const saved = JSON.parse(localStorage.getItem(key) ?? "null") as LocalReview | null;
+    if (!saved || saved.owner !== owner || !saved.round || !Array.isArray(saved.queue)) throw new Error("本地待同步记录无法读取，请勿清理浏览器数据。");
+    if (saved.phase === "result" && !saved.queue.length) continue;
+    const projected = reviewLocalState(saved);
+    items.push({ ...projected.session, status: "active", summary: projected.summary,
+      ...{ source: ctwMetadata(saved.round).source } });
+  }
+  return items;
 }
 export function CtwVocabularyHistory() {
-  const [page, setPage] = useState(1);
-  const history = useVocabularyRead<{ items: AttemptSummary[]; hasMore: boolean }>(`${API}/attempts?page=${page}&pageSize=10`);
-  return <div className="grid gap-5"><VocabularyNavigation label="测试历史" /><VocabularyPendingRounds />
-    {history.loading ? <p className="text-sm text-student-muted">正在加载测试历史…</p> : null}<VocabularyFailure error={history.error} retry={history.retry} />
-    {history.data?.items.map(item => <Link key={item.attempt_id} className="student-card student-card-interactive flex flex-wrap items-center justify-between gap-3 p-5"
-      href={`${ROOT}/results/${item.attempt_id}`}><div className="grid gap-2"><strong>{new Date(item.submitted_at).toLocaleString("zh-CN")}</strong>
-        <span className="text-sm text-student-muted">{item.list_numbers.map(listLabel).join("、")} · {item.cefr_levels.join(" / ")}</span></div>
-      <span className="text-sm text-student-primary">查看结果</span></Link>)}
-    {history.data && !history.data.items.length ? <p className="text-sm text-student-muted">暂无已保存的测试记录。</p> : null}
+  const [page, setPage] = useState(1), { studentId } = useVocabularyRequest();
+  const history = useVocabularyRead<ReviewHistory>(`${CTW_REVIEW_ROOT}?page=${page}`);
+  const [local, setLocal] = useState<{ owner: string | null; items: ReviewHistory["items"]; error?: string }>({ owner: null, items: [] });
+  useEffect(() => { const read = () => { try { setLocal({ owner: studentId, items: studentId ? pendingHistory(studentId) : [] }); }
+    catch (e) { setLocal({ owner: studentId, items: [], error: e instanceof Error ? e.message : "本地进度读取失败。" }); } };
+    read(); window.addEventListener("storage", read); return () => window.removeEventListener("storage", read);
+  }, [studentId]);
+  const pending = local.owner === studentId ? local.items : [];
+  const items = history.data?.items.map(item => pending.find(p => p.session_id === item.session_id) ?? item) ?? [];
+  const extra = page === 1 ? pending.filter(p => !items.some(item => item.session_id === p.session_id)) : [];
+  const shown: ReviewHistory | undefined = history.data ? { ...history.data, items } : undefined;
+  const href = (id: string, list: ReviewHistory["items"]) => `${ROOT}/${list.find(s => s.session_id === id)?.status === "completed" ? "results" : "session"}/${id}`;
+  return <div className="grid gap-5"><VocabularyNavigation label="测试历史" />
+    {history.loading ? <p className="text-sm text-student-muted">正在加载测试历史…</p> : null}
+    <VocabularyFailure error={history.error || (local.owner === studentId ? local.error : undefined)} retry={history.retry} />
+    {pending.some(p => p.status === "active") ? <p role="status" className="text-sm text-student-muted">本机未完成或待同步的复习可恢复；尚未确认保存的结果不计入正式成绩。</p> : null}
+    {extra.length ? <section aria-label="本机待恢复记录" className="grid gap-4"><WordbookReviewHistoryList history={{ items: extra, total: extra.length, page: 1, pageSize: 10 }} showSources={false} showPartialAccuracy rangeLabel={ctwRangeLabel} resultHref={id => href(id, extra)} /></section> : null}
+    {shown ? <WordbookReviewHistoryList history={shown} showSources={false} showPartialAccuracy rangeLabel={ctwRangeLabel} resultHref={id => href(id, shown.items)} /> : null}
     <div className="flex items-center justify-between gap-3 text-sm"><span>第 {page} 页</span><div className="flex gap-2">
       <button type="button" className="student-button-secondary" disabled={page <= 1 || history.loading} onClick={() => setPage(value => value - 1)}>上一页</button>
-      <button type="button" className="student-button-secondary" disabled={!history.data?.hasMore || history.loading} onClick={() => setPage(value => value + 1)}>下一页</button></div></div>
+      <button type="button" className="student-button-secondary" disabled={!history.data || page * 10 >= history.data.total || history.loading} onClick={() => setPage(value => value + 1)}>下一页</button></div></div>
   </div>;
 }
