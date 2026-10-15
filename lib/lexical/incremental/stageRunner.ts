@@ -12,6 +12,7 @@ import {
 import { LEXICAL_GENERATION_VERSION } from "../generationTypes.ts";
 import { incrementalAgentProvenance, type IncrementalAgentProvenance } from "./envelope.ts";
 import { incrementalFile, stagePaths, type IncrementalStage } from "./paths.ts";
+import { loadIncrementalNonlexicalReviews } from "./nonlexicalReview.ts";
 
 export const INCREMENTAL_STAGE_PLAN_VERSION = "lexical-incremental-agent-plan-v1";
 
@@ -32,6 +33,7 @@ export type IncrementalStagePlan = {
   provenance: IncrementalAgentProvenance;
   created_at: string;
   source_plan_sha256: string | null;
+  nonlexical_review_sha256?: string;
   batches: IncrementalStagePlanBatch[];
 };
 
@@ -81,6 +83,7 @@ export type StageBatchInput = {
 export async function initStage(root: string, stage: IncrementalStage, options: {
   sourcePlanSha256: string | null;
   provenance?: IncrementalAgentProvenance;
+  nonlexicalReviewSha256?: string | null;
   batches: StageBatchInput[];
 }) {
   const paths = stagePaths(root, stage);
@@ -95,6 +98,7 @@ export async function initStage(root: string, stage: IncrementalStage, options: 
     provenance: options.provenance ?? incrementalAgentProvenance(),
     created_at: new Date().toISOString(),
     source_plan_sha256: options.sourcePlanSha256,
+    ...(options.nonlexicalReviewSha256 ? { nonlexical_review_sha256: options.nonlexicalReviewSha256 } : {}),
     batches: []
   };
   for (let index = 0; index < options.batches.length; index += 1) {
@@ -137,6 +141,10 @@ export async function loadStage(root: string, stage: IncrementalStage) {
   }
   if (plan.source_plan_sha256 && await sha256File(incrementalFile(root, "delta-plan.json")) !== plan.source_plan_sha256) {
     throw new Error(`Incremental ${stage} source delta plan changed after stage creation.`);
+  }
+  if (stage !== "annotation") {
+    const review = await loadIncrementalNonlexicalReviews(root);
+    if ((plan.nonlexical_review_sha256 ?? null) !== review.sha256) throw new Error(`Immutable ${stage} nonlexical review changed after stage creation.`);
   }
   for (const batch of plan.batches) {
     if (await sha256File(paths.inputPath(batch.batch_id)) !== batch.input_sha256

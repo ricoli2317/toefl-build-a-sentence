@@ -68,7 +68,7 @@ import { productionId, BLOCK_COLUMNS, ENTRY_COLUMNS, OCCURRENCE_COLUMNS } from "
 import { LEXICAL_GENERATION_VERSION, type LexicalOccurrenceArtifact } from "../lib/lexical/generationTypes.ts";
 import type { CanonicalLexicalBlock } from "../lib/lexical/types.ts";
 import { createServiceSupabase } from "../lib/supabase/server.ts";
-import { assertHyphenatedCoverage } from "../lib/lexical/hyphenated.ts";
+import { assertIncrementalHyphenatedCoverage, loadIncrementalNonlexicalReviews, NONLEXICAL_REVIEW_FILE } from "../lib/lexical/incremental/nonlexicalReview.ts";
 
 const execFileAsync = promisify(execFile);
 const ROOT = process.cwd();
@@ -394,6 +394,7 @@ async function commandFinalize() {
   await assertStageComplete(ROOT, "annotation");
   await assertStageComplete(ROOT, "mwe");
   await assertStageComplete(ROOT, "mwe-qa");
+  const nonlexical = await loadIncrementalNonlexicalReviews(ROOT);
 
   const annotationOccurrences = await collectAnnotationOccurrences();
   const mweLayer2 = await collectMweLayer2();
@@ -480,7 +481,8 @@ async function commandFinalize() {
     layer2Qa: { removed: qaRemoved, corrected: qaCorrected, pass: qaPass, status: mweLayer2.length ? "applied" : "not_applicable" },
     productionOccurrences: liveOccurrences,
     productionEntries: liveEntries,
-    productionBlocks: liveBlocks
+    productionBlocks: liveBlocks,
+    nonlexicalReviews: nonlexical.reviews
   });
 
   const boundDataset = bindImportBaseline({
@@ -516,6 +518,7 @@ async function commandFinalize() {
     "baseline-snapshot.json", "baseline-full-blocks.jsonl", "baseline-full-entries.jsonl", "baseline-full-occurrences.jsonl", "delta-identity-resolutions.jsonl"
   ];
   const artifacts = [];
+  if (nonlexical.sha256) artifactNames.push(NONLEXICAL_REVIEW_FILE, "independent-nonlexical-review.json");
   for (const name of artifactNames) {
     artifacts.push({ artifact_path: name, sha256: await sha256File(file(name)) });
   }
@@ -527,6 +530,7 @@ async function commandFinalize() {
     complete: true,
     import_ready: qa.import_ready,
     unresolved_conflicts: qa.consolidation.unresolved_conflicts,
+    ...(nonlexical.sha256 ? { nonlexical_review_sha256: nonlexical.sha256, reviewed_nonlexical_spans: nonlexical.reviews.length } : {}),
     coverage: qa.delta_coverage,
     consolidation: {
       reused_entries: consolidation.reusedEntries.length,
@@ -588,6 +592,10 @@ async function loadImportDataset(): Promise<{ dataset: IncrementalImportDataset;
     "delta-source-blocks.jsonl", "delta-occurrences.jsonl", "delta-new-entries.jsonl", "delta-entry-mapping.jsonl", "delta-removals.jsonl",
     "delta-import-plan.jsonl", "delta-import-meta.json", "delta-qa.json", "delta-import.sql", "baseline-snapshot.json",
     "baseline-full-blocks.jsonl", "baseline-full-entries.jsonl", "baseline-full-occurrences.jsonl", "delta-identity-resolutions.jsonl"];
+  const nonlexical = await loadIncrementalNonlexicalReviews(ROOT);
+  if ((manifest.nonlexical_review_sha256 ?? null) !== nonlexical.sha256
+    || (manifest.reviewed_nonlexical_spans ?? 0) !== nonlexical.reviews.length) throw new Error("Publication nonlexical review binding changed.");
+  if (nonlexical.sha256) requiredArtifacts.push(NONLEXICAL_REVIEW_FILE, "independent-nonlexical-review.json");
   const artifactNames = manifest.artifacts?.map((artifact: Record<string, unknown>) => artifact.artifact_path);
   if (manifest.version !== "lexical-incremental-import-manifest-v1" || !Array.isArray(artifactNames)
     || artifactNames.length !== requiredArtifacts.length || new Set(artifactNames).size !== requiredArtifacts.length
@@ -605,8 +613,8 @@ async function loadImportDataset(): Promise<{ dataset: IncrementalImportDataset;
   // must pass the same gate; component tokens or a containing phrase cannot satisfy it.
   const plannedBlocks = await readCanonicalBlocksArtifact();
   const deltaKeys = new Set(blocks.map(block => `${block.source_type}:${block.source_item_id}:${block.content_block_id}`));
-  assertHyphenatedCoverage(plannedBlocks.filter(block => deltaKeys.has(`${block.sourceType}:${block.sourceItemId}:${block.contentBlockId}`)),
-    occurrences as ProductionOccurrenceRow[]);
+  assertIncrementalHyphenatedCoverage(plannedBlocks.filter(block => deltaKeys.has(`${block.sourceType}:${block.sourceItemId}:${block.contentBlockId}`)),
+    occurrences as ProductionOccurrenceRow[], nonlexical.reviews);
   const removed = await readJsonl<Record<string, any>>(file("delta-removals.jsonl"));
   const meta: Record<string, string> = {
     unrelated_blocks_sha256: manifest.baseline.unrelated_blocks_sha256,

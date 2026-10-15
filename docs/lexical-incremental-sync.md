@@ -116,6 +116,33 @@ recomputes from canonical text even for an older manifest claiming `import_ready
 Existing accepted artifacts remain immutable; do not rewrite historical checkpoints to
 make them satisfy a new coverage gate.
 
+### Explicit nonlexical punctuation adjudication
+
+A detector hit at a source punctuation junction (for example a subject-line delimiter)
+must not be given an invented compound definition. Before building MWE, an independently
+reviewed exact span may be recorded in `nonlexical-scope-reviews.json` with version
+`lexical-incremental-nonlexical-review-v1`. The artifact binds the delta plan, complete
+canonical block artifact and `independent-nonlexical-review.json` by SHA-256. Each decision
+includes the exact source/block identity, UTF-16 offsets, surface, complete canonical
+context, source text SHA-256, `not_lexical_compound` decision and a concrete reason;
+provenance uses the configured incremental agent contract. The independent record must
+adjudicate the same exact span and source hash. The minimal protocol currently accepts
+one independently adjudicated span per run, not an unrestricted exclusion inventory.
+
+Only new/changed delta blocks qualify. Duplicate, unknown, stale, extra-field and
+out-of-scope decisions fail closed. MWE and MWE QA plans freeze the review artifact's
+SHA-256; adding, deleting or modifying reviews after those plans exist is rejected.
+MWE inputs separate reviewed nonlexical spans from mandatory compounds. MWE acceptance,
+post-QA validation, publication QA and import loading independently recompute coverage:
+unreviewed lexical compounds remain mandatory, and a reviewed nonlexical span cannot
+be published as an exact lexical occurrence. QA separately reports raw detector spans,
+reviewed exclusions and required lexical compounds. The manifest binds both review
+artifacts. Without a review artifact, the original complete-coverage gate is unchanged.
+
+This is an explicit semantic review overlay, not a tokenizer change, a global regex
+exception, a canonical source edit or permission to omit genuine compounds. Original
+component tokens, offsets, semantics, checkpoints and production entries stay intact.
+
 Detection handles ASCII, Unicode hyphen and non-breaking hyphen with exact UTF-16 offsets;
 repeated uses count separately. Spaced separators, en/em dashes, dates and numeric ranges
 are not lexical compounds. Explicit person-name coverage exclusions remain excluded.

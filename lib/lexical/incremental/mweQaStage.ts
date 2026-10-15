@@ -11,7 +11,7 @@ import { normalizeLexicalExpression } from "../normalize.ts";
 import { lexicalEntryKey } from "../generationTypes.ts";
 import { stagePaths } from "./paths.ts";
 import type { IncrementalAnnotationCheckpoint } from "./annotationStage.ts";
-import { assertHyphenatedCoverage } from "../hyphenated.ts";
+import { assertIncrementalHyphenatedCoverage, loadIncrementalNonlexicalReviews, scopedNonlexicalReviews } from "./nonlexicalReview.ts";
 
 export const INCREMENTAL_MWE_QA_SCHEMA_VERSION = "lexical-mwe-expression-qa-v1";
 export const MWE_QA_ISSUE_TYPES = ["over_collected", "wrong_expression_type", "wrong_learning_value", "wrong_pos",
@@ -126,6 +126,7 @@ export function packMweQaExpressions(expressions: IncrementalQaExpression[], max
 export async function buildMweQaStage(root: string, deltaPlanSha256: string) {
   await assertStageComplete(root, "mwe");
   const provenance = incrementalAgentProvenance();
+  const nonlexical = await loadIncrementalNonlexicalReviews(root);
   const { plan: mwePlan, paths: mwePaths } = await loadStage(root, "mwe");
   const expressions: IncrementalQaExpression[] = [];
   for (const batch of mwePlan.batches) {
@@ -203,7 +204,7 @@ export async function buildMweQaStage(root: string, deltaPlanSha256: string) {
       work: batchExpressions
     };
   });
-  return await initStage(root, "mwe-qa", { sourcePlanSha256: deltaPlanSha256, provenance, batches: inputs });
+  return await initStage(root, "mwe-qa", { sourcePlanSha256: deltaPlanSha256, provenance, batches: inputs, nonlexicalReviewSha256: nonlexical.sha256 });
 }
 
 const object = (value: unknown): value is Record<string, any> =>
@@ -308,7 +309,9 @@ export async function validateMweQaStageOutput(
       }) };
     });
     const validated = validateAnnotationBatch(work.works, { blocks });
-    assertHyphenatedCoverage(work.works.map(item => item.block), validated);
+    const blocksForCoverage = work.works.map(item => item.block);
+    const nonlexical = await loadIncrementalNonlexicalReviews(root);
+    assertIncrementalHyphenatedCoverage(blocksForCoverage, validated, scopedNonlexicalReviews(blocksForCoverage, nonlexical.reviews));
     if (JSON.stringify(validated.filter(value => value.layer === 1)) !== JSON.stringify(annotation.occurrences)) throw new Error("MWE QA mutated Layer-1 annotations.");
   }
   return {

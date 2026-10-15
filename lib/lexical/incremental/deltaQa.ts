@@ -4,7 +4,7 @@ import { blockIdentityKey, type ProductionEntryRow, type ProductionBlockRow, typ
 import type { DeltaPlan } from "./deltaPlan.ts";
 import { occurrenceIdentityOf, type DeltaConsolidation } from "./consolidation.ts";
 import type { DeltaConflict } from "./consolidation.ts";
-import { hyphenatedCoverage } from "../hyphenated.ts";
+import { incrementalHyphenatedCoverage, type IncrementalNonlexicalReview } from "./nonlexicalReview.ts";
 
 export type DeltaQaReport = {
   production_baseline_health: Record<string, number>;
@@ -21,6 +21,8 @@ export type DeltaQaReport = {
     missing_delta_block: number;
     hyphenated_compounds: number;
     missing_hyphenated_occurrence: number;
+    raw_hyphenated_spans: number;
+    reviewed_nonlexical_spans: number;
   };
   layer2: {
     occurrences: number;
@@ -62,6 +64,7 @@ export function runDeltaQa(input: {
   productionOccurrences: ProductionOccurrenceRow[];
   productionEntries: ProductionEntryRow[];
   productionBlocks: ProductionBlockRow[];
+  nonlexicalReviews?: IncrementalNonlexicalReview[];
 }): DeltaQaReport {
   if (input.baselineDrift) throw new Error(`Production baseline drifted after delta generation: ${input.baselineDrift}`);
   for (const field of ["orphan_occurrences", "missing_blocks", "duplicate_spans", "duplicate_entry_identity",
@@ -143,7 +146,7 @@ export function runDeltaQa(input: {
     if (!layer1Spans.has(tokenKey)) missingEligibleToken += 1;
   });
   const layer1Count = input.occurrences.filter((occurrence) => occurrence.layer === 1).length;
-  const hyphens = hyphenatedCoverage(input.works.map(work => work.block), input.occurrences);
+  const hyphens = incrementalHyphenatedCoverage(input.works.map(work => work.block), input.occurrences, input.nonlexicalReviews);
 
   const unchangedKeys = new Set(input.deltaPlan.unchanged_blocks.map((block) =>
     `${block.source_type}:${block.source_item_id}:${block.content_block_id}`));
@@ -175,6 +178,8 @@ export function runDeltaQa(input: {
       missing_entry_mapping: missingEntryMapping,
       missing_delta_block: missingDeltaBlock,
       hyphenated_compounds: hyphens.total,
+      raw_hyphenated_spans: hyphens.raw_total,
+      reviewed_nonlexical_spans: hyphens.reviewed_nonlexical,
       missing_hyphenated_occurrence: hyphens.missing.length
     },
     layer2: {
