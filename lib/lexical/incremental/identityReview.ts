@@ -9,6 +9,7 @@ import { baselineRowsSha256 } from "./baselineHash.ts";
 import { occurrenceIdentityOf } from "./consolidation.ts";
 import type { ProductionEntryRow } from "./productionBaseline.server.ts";
 import type { IncrementalAgentProvenance } from "./envelope.ts";
+import { productionId } from "../production.ts";
 
 export type EntryIdentityResolution = {
   source_occurrence_id: string;
@@ -17,6 +18,8 @@ export type EntryIdentityResolution = {
   identity_variant: string;
   concise_reason: string;
   provenance: IncrementalAgentProvenance;
+  /** Explicit spelling convention for a genuinely NEW base; not permission to change its meaning/lemma. */
+  new_entry_convention?: { canonical_expression: string; lemma: string };
 };
 
 /** Explicit, revision-bound identity review overlay; frozen checkpoints and production stay intact. */
@@ -32,25 +35,41 @@ export function applyReviewedEntryIdentities(input: {
   const overlays = new Map<string, LexicalOccurrenceArtifact>();
   const identityVariantAssignments = new Map<string, string>();
   const allowed = ["source_occurrence_id", "source_occurrence_sha256", "entry_id", "identity_variant", "concise_reason", "provenance"].sort().join(",");
+  const equivalent = (a: string, b: string) => normalizeLexicalExpression(a, "word") === normalizeLexicalExpression(b, "word");
   for (const resolution of input.resolutions) {
     const original = originals.get(resolution.source_occurrence_id);
-    const entry = entries.get(resolution.entry_id);
-    if (Object.keys(resolution).sort().join(",") !== allowed || !original || !entry || overlays.has(resolution.source_occurrence_id)
+    if (original && original.layer !== 1) throw new Error("Identity convention review is Layer-1 only; Layer-2 corrections require the existing MWE QA validator.");
+    const convention = resolution.new_entry_convention;
+    let entry = entries.get(resolution.entry_id);
+    if (convention) {
+      if (!original || Object.keys(convention).sort().join(",") !== "canonical_expression,lemma"
+        || typeof convention.canonical_expression !== "string" || typeof convention.lemma !== "string"
+        || entry || input.productionEntries.some(e => e.normalized_expression === original.normalized_expression && e.expression_type === original.expression_type)
+        || resolution.identity_variant !== "" || resolution.entry_id !== productionId("entry", original.entry_key)) {
+        throw new Error("Invalid new-entry spelling convention; production identity must not be replaced or invented.");
+      }
+      entry = { entry_id: resolution.entry_id, canonical_expression: convention.canonical_expression,
+        normalized_expression: original.normalized_expression, expression_type: original.expression_type,
+        lemma: convention.lemma, identity_variant: "" } as ProductionEntryRow;
+    }
+    const expectedKeys = convention ? [...allowed.split(","), "new_entry_convention"].sort().join(",") : allowed;
+    if (Object.keys(resolution).sort().join(",") !== expectedKeys || !original || !entry || overlays.has(resolution.source_occurrence_id)
       || baselineRowsSha256([original]) !== resolution.source_occurrence_sha256 || !resolution.concise_reason?.trim()
       || entry.identity_variant !== resolution.identity_variant || entry.normalized_expression !== original.normalized_expression
       || entry.expression_type !== original.expression_type || !lexicalSemanticProvenanceMatches(resolution.provenance, input.provenance)) {
       throw new Error("Invalid, stale, duplicate, or identity-changing reviewed entry resolution.");
     }
-    // This overlay is deliberately case/convention-only, not a loophole for re-annotating senses.
-    if (entry.canonical_expression.toLocaleLowerCase("en-US") !== original.canonical_expression.toLocaleLowerCase("en-US")
-      || (entry.lemma ?? "").toLocaleLowerCase("en-US") !== original.lemma.toLocaleLowerCase("en-US")) {
+    // Only the already-frozen identity normalizer's case/whitespace/curly-apostrophe equivalence.
+    // No stemming, POS/type changes, sense edits, variant invention, or semantic lemma changes.
+    if (!equivalent(entry.canonical_expression, original.canonical_expression)
+      || !equivalent(entry.lemma ?? "", original.lemma)) {
       throw new Error("Identity review cannot silently change canonical/lemma semantic identity.");
     }
     const corrected = { ...original, canonical_expression: entry.canonical_expression, lemma: entry.lemma ?? "" };
     const normalized = normalizeLexicalExpression(corrected.canonical_expression, corrected.expression_type);
     if (normalized !== entry.normalized_expression || lexicalSemanticIssues(corrected).length) throw new Error("Reviewed entry convention violates frozen semantic validators.");
     overlays.set(resolution.source_occurrence_id, { ...corrected, normalized_expression: normalized, entry_key: lexicalEntryKey(normalized, corrected.expression_type) });
-    identityVariantAssignments.set(resolution.source_occurrence_id, entry.identity_variant);
+    if (!convention) identityVariantAssignments.set(resolution.source_occurrence_id, entry.identity_variant);
   }
   const occurrences = input.occurrences.map(row => overlays.get(occurrenceIdentityOf(row)) ?? row);
   const layer1 = occurrences.filter(row => row.layer === 1);

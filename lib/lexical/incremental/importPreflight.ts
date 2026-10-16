@@ -42,3 +42,10 @@ export function preflightIncrementalImport(data: IncrementalImportDataset, befor
     || live.occurrences.length !== Number(data.meta.final_occurrences_count)) throw new Error("Read-only import preflight: applied rows do not equal the complete staged post-state.");
   return { state: "applied", compatible: true, production_writes: 0 };
 }
+
+/** A successful dry-run of a fresh delta is NOT proof that the import completed. */
+export function postVerifyIncrementalImport(data: IncrementalImportDataset, before: FullProductionSnapshot, live: FullProductionSnapshot) {
+  const proof = preflightIncrementalImport(data, before, live);
+  if (!["applied", "no_delta"].includes(proof.state)) throw new Error("Lexical delta has not been imported; checkpoint must not advance.");
+  return { ...proof, verified: true as const };
+}

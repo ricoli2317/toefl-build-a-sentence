@@ -51,14 +51,16 @@ import {
 import {
   consolidateIncrementalDelta,
   deriveIncrementalOccurrence,
+  deltaOccurrenceRow,
   occurrenceIdentityOf
 } from "../lib/lexical/incremental/consolidation.ts";
 import { assembleDeltaArtifacts } from "../lib/lexical/incremental/assemble.ts";
 import { bindImportBaseline, fullSnapshotHashes, type FullProductionSnapshot } from "../lib/lexical/incremental/importBaseline.ts";
 import { baselineRowsSha256 } from "../lib/lexical/incremental/baselineHash.ts";
-import { preflightIncrementalImport } from "../lib/lexical/incremental/importPreflight.ts";
+import { preflightIncrementalImport, postVerifyIncrementalImport } from "../lib/lexical/incremental/importPreflight.ts";
 import { applyReviewedEntryIdentities, type EntryIdentityResolution } from "../lib/lexical/incremental/identityReview.ts";
 import { runDeltaQa } from "../lib/lexical/incremental/deltaQa.ts";
+import { applyLayer1SemanticReviews, LAYER1_REVIEW_FILE, type Layer1SemanticReview } from "../lib/lexical/incremental/layer1Review.ts";
 import { buildIncrementalImportSql, incrementalImportPlanDescription, type IncrementalImportDataset } from "../lib/lexical/incremental/importer.ts";
 import { incrementalFile, INCREMENTAL_STAGES, type IncrementalStage } from "../lib/lexical/incremental/paths.ts";
 import { enumerateCanonicalLexicalBlocks } from "../lib/lexical/enumerateCanonicalBlocks.server.ts";
@@ -426,7 +428,10 @@ async function commandFinalize() {
   const productionEntries = await readJsonl<ProductionEntryRow>(file("production-entries.jsonl"));
   const resolutions = await fileExists(file("entry-identity-resolutions.jsonl")) ? await readJsonl<EntryIdentityResolution>(file("entry-identity-resolutions.jsonl")) : [];
   const reviewed = applyReviewedEntryIdentities({ works, occurrences, productionEntries, resolutions, provenance: (await loadStage(ROOT, "annotation")).plan.provenance });
-  occurrences = reviewed.occurrences;
+  const semanticReviews = await fileExists(file(LAYER1_REVIEW_FILE)) ? await readJsonl<Layer1SemanticReview>(file(LAYER1_REVIEW_FILE)) : [];
+  const semanticReview = applyLayer1SemanticReviews({ works, canonicalBlocks, occurrences: reviewed.occurrences, reviews: semanticReviews,
+    provenance: (await loadStage(ROOT, "annotation")).plan.provenance });
+  occurrences = semanticReview.occurrences;
   const { identityVariantAssignments } = reviewed;
   const consolidation = consolidateIncrementalDelta({ occurrences, productionEntries, identityVariantAssignments });
   await writeJsonlAtomic(file("delta-consolidation-input.jsonl"), occurrences);
@@ -518,6 +523,7 @@ async function commandFinalize() {
     "baseline-snapshot.json", "baseline-full-blocks.jsonl", "baseline-full-entries.jsonl", "baseline-full-occurrences.jsonl", "delta-identity-resolutions.jsonl"
   ];
   const artifacts = [];
+  if (semanticReviews.length) artifactNames.push(LAYER1_REVIEW_FILE);
   if (nonlexical.sha256) artifactNames.push(NONLEXICAL_REVIEW_FILE, "independent-nonlexical-review.json");
   for (const name of artifactNames) {
     artifacts.push({ artifact_path: name, sha256: await sha256File(file(name)) });
@@ -530,6 +536,7 @@ async function commandFinalize() {
     complete: true,
     import_ready: qa.import_ready,
     unresolved_conflicts: qa.consolidation.unresolved_conflicts,
+    semantic_review: semanticReview.summary,
     ...(nonlexical.sha256 ? { nonlexical_review_sha256: nonlexical.sha256, reviewed_nonlexical_spans: nonlexical.reviews.length } : {}),
     coverage: qa.delta_coverage,
     consolidation: {
@@ -593,6 +600,8 @@ async function loadImportDataset(): Promise<{ dataset: IncrementalImportDataset;
     "delta-import-plan.jsonl", "delta-import-meta.json", "delta-qa.json", "delta-import.sql", "baseline-snapshot.json",
     "baseline-full-blocks.jsonl", "baseline-full-entries.jsonl", "baseline-full-occurrences.jsonl", "delta-identity-resolutions.jsonl"];
   const nonlexical = await loadIncrementalNonlexicalReviews(ROOT);
+  const semanticReviews = await fileExists(file(LAYER1_REVIEW_FILE)) ? await readJsonl<Layer1SemanticReview>(file(LAYER1_REVIEW_FILE)) : [];
+  if (semanticReviews.length) requiredArtifacts.push(LAYER1_REVIEW_FILE);
   if ((manifest.nonlexical_review_sha256 ?? null) !== nonlexical.sha256
     || (manifest.reviewed_nonlexical_spans ?? 0) !== nonlexical.reviews.length) throw new Error("Publication nonlexical review binding changed.");
   if (nonlexical.sha256) requiredArtifacts.push(NONLEXICAL_REVIEW_FILE, "independent-nonlexical-review.json");
@@ -612,6 +621,30 @@ async function loadImportDataset(): Promise<{ dataset: IncrementalImportDataset;
   // Recompute from immutable canonical text, not a claimed QA counter. Legacy manifests
   // must pass the same gate; component tokens or a containing phrase cannot satisfy it.
   const plannedBlocks = await readCanonicalBlocksArtifact();
+  if (occurrences.some(row => row.review_status === "needs_review")) throw new Error("Unresolved semantic reviews block import, even for a previously import-ready manifest.");
+  // Re-derive reviewed Layer 1 from immutable accepted checkpoints, not the publication's claims.
+  if (manifest.stage_plans?.annotation_sha256 !== await sha256File(file("agent", "annotation", "plan.json"))) {
+    throw new Error("Publication annotation plan changed since semantic review.");
+  }
+  await verifyStageCheckpoints(ROOT, "annotation", (output, batch) => validateStageOutput("annotation", batch.batch_id, batch, output));
+  const originalLayer1 = (await collectAnnotationOccurrences()).map(deriveIncrementalOccurrence);
+  const resolutions = await readJsonl<EntryIdentityResolution>(file("delta-identity-resolutions.jsonl"));
+  const provenance = (await loadStage(ROOT, "annotation")).plan.provenance;
+  const works = deltaWorks(await loadDeltaPlanArtifact(), plannedBlocks);
+  const identityReviewed = applyReviewedEntryIdentities({ works, occurrences: originalLayer1,
+    productionEntries: await readJsonl<ProductionEntryRow>(file("production-entries.jsonl")), resolutions, provenance });
+  const reviewedLayer1 = applyLayer1SemanticReviews({ works, canonicalBlocks: plannedBlocks, occurrences: identityReviewed.occurrences,
+    reviews: semanticReviews, provenance });
+  if (JSON.stringify(manifest.semantic_review ?? { reviewed: 0, confirmed: 0, corrected: 0, unresolved: 0 }) !== JSON.stringify(reviewedLayer1.summary)) {
+    throw new Error("Publication semantic review summary differs from canonical replay.");
+  }
+  const byId = new Map(occurrences.map(row => [row.occurrence_id, row]));
+  for (const expected of reviewedLayer1.occurrences) {
+    const row = byId.get(productionId("occurrence", occurrenceIdentityOf(expected)));
+    if (!row || baselineRowsSha256([row]) !== baselineRowsSha256([deltaOccurrenceRow(expected, String(row.entry_id))])) {
+      throw new Error("Published Layer-1 row differs from accepted annotation plus validated review.");
+    }
+  }
   const deltaKeys = new Set(blocks.map(block => `${block.source_type}:${block.source_item_id}:${block.content_block_id}`));
   assertIncrementalHyphenatedCoverage(plannedBlocks.filter(block => deltaKeys.has(`${block.sourceType}:${block.sourceItemId}:${block.contentBlockId}`)),
     occurrences as ProductionOccurrenceRow[], nonlexical.reviews);
@@ -677,6 +710,20 @@ async function commandImport() {
   console.log("Incremental lexical import committed and verified inside one transaction.");
 }
 
+/** Read-only post-import proof using the SAME manifest loader/canonical/preflight gates. */
+async function commandPostVerify() {
+  const { dataset, manifest, sql } = await loadImportDataset();
+  if (!manifest.complete || !manifest.import_ready || await readFile(file("delta-import.sql"), "utf8") !== sql) {
+    throw new Error("Publication/SQL is not import-ready or does not reproduce.");
+  }
+  const { snapshot: baseline } = await loadFullBaseline();
+  const db = createServiceSupabase();
+  const proof = postVerifyIncrementalImport(dataset, baseline, await readFullProductionSnapshot(db));
+  const canonical = await verifyLiveCanonical(db, await readCanonicalBlocksArtifact());
+  console.log(JSON.stringify({ ...proof,
+    manifest_sha256: await sha256File(file("manifest.json")), canonical }, null, 2));
+}
+
 async function main() {
   const command = process.argv[2];
   switch (command) {
@@ -695,9 +742,18 @@ async function main() {
       return console.log(JSON.stringify(await verifyStageCheckpoints(ROOT, stage, (output, batch) => validateStageOutput(stage, batch.batch_id, batch, output)), null, 2));
     }
     case "finalize": return await commandFinalize();
+    case "verify-publication": {
+      const { dataset, manifest, sql } = await loadImportDataset();
+      if (!manifest.complete || !manifest.import_ready || await readFile(file("delta-import.sql"), "utf8") !== sql) {
+        throw new Error("Local publication is incomplete or SQL does not reproduce.");
+      }
+      return console.log(JSON.stringify({ local_only: true, remote_reads: 0, production_writes: 0,
+        verified: true, semantic_review: manifest.semantic_review, occurrences: dataset.occurrences.length }, null, 2));
+    }
     case "import": return await commandImport();
+    case "post-verify": return await commandPostVerify();
     default:
-      throw new Error("Usage: lexical-incremental {plan|capture-baseline|verify-baseline|stage-annotation|stage-mwe|stage-mwe-qa|next|accept|abort|status|verify-checkpoints|finalize|import}");
+      throw new Error("Usage: lexical-incremental {plan|capture-baseline|verify-baseline|stage-annotation|stage-mwe|stage-mwe-qa|next|accept|abort|status|verify-checkpoints|finalize|import|post-verify}");
   }
 }
 

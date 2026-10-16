@@ -32,9 +32,14 @@ pnpm lexical:incremental verify-checkpoints --stage annotation  # replay validat
 pnpm lexical:incremental finalize             # consolidation + QA + import artifacts + manifest
 pnpm lexical:incremental import               # dry run: artifact checks + read-only live baseline preflight
 pnpm lexical:incremental import --write       # explicit production write (requires SUPABASE_DB_URL)
+pnpm lexical:incremental post-verify          # read-only exact applied/no-delta proof; never advances a checkpoint itself
 ```
 
 `lexical:incremental-import` is the dry-run alias for `pnpm lexical:incremental import`.
+
+For coordinated CTW vocabulary + lexical maintenance, use
+[vocabulary-maintenance.md](vocabulary-maintenance.md). The coordinator invokes these
+same stages/importer; it does not replace the lexical baseline or semantic protocol.
 
 For later sync cycles, set a new `LEXICAL_INCREMENTAL_RUN` name consistently for every CLI
 command and worker (for example `2026-10-next`). Its immutable workspace lives under
@@ -97,6 +102,42 @@ Resolutions reuse the exact matching production variant ID; they never overwrite
 Case-only canonical/lemma convention overlays replay the frozen validators and preserve
 original checkpoints, offsets, surface text and contextual semantics. New senses or lemma
 changes cannot be smuggled through this review mechanism.
+
+The same explicit hash-bound review may record `new_entry_convention` with
+`canonical_expression` and `lemma` for a genuinely missing base identity (for example,
+initial-capital program name vs its lowercase URL path). Its target ID must equal
+`productionId("entry", entry_key)`, its variant must be empty, and **no** production
+identity of that normalized expression/type may exist. This is not permission to create
+a homograph variant or alter a lemma: only equivalence already recognized by the frozen
+normalizer (case, whitespace, straight/curly apostrophes) is accepted. The original
+checkpoint bytes, offsets, types and contextual semantics remain unchanged; validators
+are replayed. Existing identities still require the exact existing production entry ID.
+This convention overlay is explicitly Layer-1 only; Layer-2 identity corrections must
+pass through the existing MWE QA validator instead of bypassing canonical-work replay.
+
+### Layer-1 semantic review
+
+`needs_review` is not publication approval. Finalize and import refuse any unresolved
+occurrence, including publications made before this gate was introduced. A reviewed
+Layer-1 correction is separate from identity review and MWE QA:
+
+- `layer1-semantic-reviews.jsonl` records one `confirm` or `correct` decision for every
+  flagged occurrence, bound to its full original-row SHA-256 and stage provenance.
+- Each decision quotes immutable canonical evidence from the same source item, with
+  block identity and text hash. Related passage/question blocks can resolve an isolated
+  vocabulary option or pronoun; no invented source context is added to the occurrence.
+- Only `context_pos`, `context_meaning_zh` and `context_definition_en` may be corrected.
+  Source, offsets, surface, canonical/lemma, entry identity, type and generation version
+  cannot change. Reviewed notes retain the original flag for audit.
+- The original complete-token annotation validator replays every affected block. A
+  source-level review reason cannot be cleared by this overlay. Accepted checkpoints
+  and earlier publications remain unchanged; publish a separate review revision.
+- The importer replays the accepted annotation plus identity and semantic reviews and
+  compares the resulting Layer-1 rows to the publication, not just its claimed counters.
+
+`lexical:incremental verify-publication` validates local artifact hashes, semantic review
+replay and reproducible SQL only: **no remote reads, no database connection, no writes**.
+It does not replace import-time live canonical/baseline guards or post-import proof.
 
 Enrichment stays skipped: new entries use the production V1 legal empty arrays.
 

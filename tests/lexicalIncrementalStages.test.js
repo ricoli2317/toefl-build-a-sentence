@@ -14,6 +14,7 @@ const { applyReviewedEntryIdentities }=require('../lib/lexical/incremental/ident
 const { incrementalAgentProvenance }=require('../lib/lexical/incremental/envelope.ts');
 const { validateAnnotationBatch }=require('../lib/lexical/annotation.ts');
 const { consolidateIncrementalDelta }=require('../lib/lexical/incremental/consolidation.ts');
+const { productionId }=require('../lib/lexical/production.ts');
 
 async function workspace(fn,count=2) {
  const parent=path.join(__dirname,'..','tmp','lexical-incremental','fixtures');
@@ -166,6 +167,8 @@ test('identity replay is independent of finalized lexical offset ordering and re
  assert.deepEqual(result.occurrences.map(row=>row.start_offset),[0,10,2,4,6,8]);
  assert.ok(result.occurrences.every(row=>row.canonical_expression==='Q'));
  assert.throws(()=>applyReviewedEntryIdentities({...args,works:[]}),/no canonical work/);
+ const layer2={...occurrences[0],layer:2};
+ assert.throws(()=>applyReviewedEntryIdentities({...args,works:[],occurrences:[layer2],resolutions:[{...resolutions[0],source_occurrence_sha256:baselineRowsSha256([layer2])}]}),/Layer-1 only/);
 });
 
 test('hash-bound homograph review chooses the exact existing variant without overwriting entry semantics',()=>{
@@ -188,4 +191,39 @@ test('hash-bound homograph review chooses the exact existing variant without ove
  const explicitBase=applyReviewedEntryIdentities({...args,resolutions:[{...resolution,entry_id:base.entry_id,identity_variant:''}]});
  assert.equal(explicitBase.identityVariantAssignments.has(resolution.source_occurrence_id),true);
  assert.equal(explicitBase.identityVariantAssignments.get(resolution.source_occurrence_id),'');
+});
+
+test('reviewed new-base case convention keeps frozen checkpoints and semantics, refuses existing identities/lemma changes',()=>{
+ const works=tokenizeCanonicalBlocks([{sourceType:'rdl',sourceItemId:'item',contentBlockId:'material:m',blockKind:'rdl_material',text:'Paws paws'}]);
+ const occurrences=validateAnnotationBatch(works,{blocks:[{block_key:'rdl:item:material:m',tokens:works[0].tokens.filter(t=>!t.excluded).map((t,i)=>({
+  candidate_id:t.candidateId,context_pos:'proper_noun',context_meaning_zh:'项目名称组成',context_definition_en:'A component of a program name.',
+  canonical_expression:i?'paws':'Paws',lemma:i?'paws':'Paws',expression_type:'proper_noun',needs_review:false,review_notes:null})),expressions:[]}]});
+ const original=JSON.stringify(occurrences),provenance=incrementalAgentProvenance({}),row=occurrences[1];
+ const r={source_occurrence_id:'rdl:item:material:m:5:9',source_occurrence_sha256:baselineRowsSha256([row]),
+  entry_id:productionId('entry',row.entry_key),identity_variant:'',concise_reason:'Both exact mentions name the same program, retain formal initial capital.',provenance,
+  new_entry_convention:{canonical_expression:'Paws',lemma:'Paws'}};
+ const args={works,occurrences,productionEntries:[],resolutions:[r],provenance};
+ const reviewed=applyReviewedEntryIdentities(args),result=consolidateIncrementalDelta({occurrences:reviewed.occurrences,productionEntries:[]});
+ assert.equal(result.conflicts.length,0);assert.equal(result.newEntries.length,1);assert.equal(result.newEntries[0].canonical_expression,'Paws');
+ assert.equal(JSON.stringify(occurrences),original);assert.equal(reviewed.occurrences[1].context_meaning_zh,row.context_meaning_zh);
+ assert.throws(()=>applyReviewedEntryIdentities({...args,productionEntries:[{entry_id:'existing',normalized_expression:'paws',expression_type:'proper_noun',identity_variant:''}]}),/Invalid new-entry/);
+ for(const patch of [{entry_id:'random'},{identity_variant:'invented'},{new_entry_convention:{canonical_expression:'Paws',lemma:'paw'}},
+  {new_entry_convention:{canonical_expression:'Other',lemma:'Paws'}},{source_occurrence_sha256:'stale'}]){
+  assert.throws(()=>applyReviewedEntryIdentities({...args,resolutions:[{...r,...patch}]}));
+ }
+ assert.throws(()=>applyReviewedEntryIdentities({...args,works:[]}),/no canonical work/);
+});
+
+test('reviewed curly apostrophe convention reuses the same normalized identity, never changes a possessive into its base noun',()=>{
+ const works=tokenizeCanonicalBlocks([{sourceType:'rdl',sourceItemId:'item',contentBlockId:'material:m',blockKind:'rdl_material',text:"week's"}]);
+ const t=works[0].tokens.find(t=>!t.excluded);
+ const occurrences=validateAnnotationBatch(works,{blocks:[{block_key:'rdl:item:material:m',tokens:[{candidate_id:t.candidateId,context_pos:'noun',
+  context_meaning_zh:'周的',context_definition_en:'Belonging to or associated with a week.',canonical_expression:"week's",lemma:"week's",expression_type:'word',needs_review:false,review_notes:null}],expressions:[]}]});
+ const provenance=incrementalAgentProvenance({}),entry={entry_id:'existing',canonical_expression:'week’s',normalized_expression:"week's",expression_type:'word',lemma:'week’s',identity_variant:''};
+ const r={source_occurrence_id:'rdl:item:material:m:0:6',source_occurrence_sha256:baselineRowsSha256(occurrences),entry_id:entry.entry_id,
+  identity_variant:'',concise_reason:'Straight/curly apostrophes share the frozen normalized identity; preserve production typography only.',provenance};
+ const args={works,occurrences,productionEntries:[entry],resolutions:[r],provenance},reviewed=applyReviewedEntryIdentities(args);
+ assert.equal(reviewed.occurrences[0].lemma,'week’s');assert.equal(reviewed.occurrences[0].surface_text,"week's");
+ assert.equal(consolidateIncrementalDelta({occurrences:reviewed.occurrences,productionEntries:[entry]}).conflicts.length,0);
+ assert.throws(()=>applyReviewedEntryIdentities({...args,productionEntries:[{...entry,lemma:'week'}]}),/semantic identity/);
 });

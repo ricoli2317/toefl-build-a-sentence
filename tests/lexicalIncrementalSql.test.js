@@ -3,7 +3,7 @@ const test = require('node:test');
 const path = require('node:path');
 const { buildIncrementalImportSql } = require('../lib/lexical/incremental/importer.ts');
 const { bindImportBaseline } = require('../lib/lexical/incremental/importBaseline.ts');
-const { preflightIncrementalImport } = require('../lib/lexical/incremental/importPreflight.ts');
+const { preflightIncrementalImport, postVerifyIncrementalImport } = require('../lib/lexical/incremental/importPreflight.ts');
 const { baselineValue, baselineRowsSha256, baselineRowsHashSql, BASELINE_HASH_SQL } = require('../lib/lexical/incremental/baselineHash.ts');
 const { ENTRY_COLUMNS, BLOCK_COLUMNS, OCCURRENCE_COLUMNS, productionId } = require('../lib/lexical/production.ts');
 const { canonicalSourceTextHash } = require('../lib/lexical/hash.ts');
@@ -118,9 +118,11 @@ engineTest('actual PostgreSQL: exact replacement, unchanged zero writes, idempot
  const { db,data,before }=await fixture();
  try {
   assert.equal(preflightIncrementalImport(data,before,before).state,'fresh');
+  assert.throws(()=>postVerifyIncrementalImport(data,before,before),/not been imported/);
   await executeImport(db,buildIncrementalImportSql(data));
   const after=await snapshot(db);
   assert.equal(preflightIncrementalImport(data,before,after).state,'applied');
+  assert.equal(postVerifyIncrementalImport(data,before,after).verified,true);
   assert.deepEqual(after.blocks.find(row=>row.source_item_id==='same'),before.blocks.find(row=>row.source_item_id==='same'));
   assert.deepEqual(after.occurrences.find(row=>row.source_item_id==='same'),before.occurrences.find(row=>row.source_item_id==='same'));
   assert.equal(after.blocks.length,3); assert.equal(after.occurrences.length,3); assert.equal(after.entries.length,2);
@@ -130,6 +132,27 @@ engineTest('actual PostgreSQL: exact replacement, unchanged zero writes, idempot
   assert.deepEqual(await snapshot(db),after);
   assert.deepEqual((await db.query('SELECT * FROM mutation_audit')).rows,audit);
  } finally { await db.close(); }
+});
+
+engineTest('actual PostgreSQL: pre-existing Admin semantics and wordbook canonical associations/snapshots survive a delta',async()=>{
+ const {db,data}=await fixture();
+ try {
+  // Admin change predates this plan; preserve it, not the generator's old defaults.
+  await db.exec(`UPDATE lexical_entries SET common_senses='[{"meaning_zh":"人工已审核"}]',review_status='reviewed' WHERE canonical_expression='old';
+   CREATE TABLE student_wordbook_entries(wordbook_entry_id uuid PRIMARY KEY, snapshot jsonb NOT NULL);
+   CREATE TABLE student_wordbook_canonical_links(wordbook_entry_id uuid REFERENCES student_wordbook_entries,
+     lexical_entry_id uuid REFERENCES lexical_entries, PRIMARY KEY(wordbook_entry_id,lexical_entry_id));`);
+  await db.query('INSERT INTO student_wordbook_entries VALUES($1,$2::jsonb)',[id('saved'),JSON.stringify({example:'Old changed-block example.',meaning:'历史义项'})]);
+  await db.query('INSERT INTO student_wordbook_canonical_links VALUES($1,$2)',[id('saved'),id('old')]);
+  const before=await snapshot(db),bound=bindImportBaseline(data,before);
+  const history=async()=>({entries:(await db.query('SELECT * FROM student_wordbook_entries')).rows,
+    links:(await db.query('SELECT * FROM student_wordbook_canonical_links')).rows});
+  const saved=await history(),admin=before.entries.find(e=>e.entry_id===id('old'));
+  await executeImport(db,buildIncrementalImportSql(bound));
+  assert.deepEqual((await snapshot(db)).entries.find(e=>e.entry_id===id('old')),admin);
+  assert.deepEqual(await history(),saved);
+  assert.equal(postVerifyIncrementalImport(bound,before,await snapshot(db)).verified,true);
+ } finally {await db.close();}
 });
 
 engineTest('actual PostgreSQL: changed-block occurrence semantic drift aborts before writes',async()=>{

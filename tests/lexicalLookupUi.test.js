@@ -24,6 +24,8 @@ const ui = compile('components/lexical/LexicalLookup.tsx', {
   '@/lib/lexical/lookup': require('../lib/lexical/lookup.ts'),
   '@/lib/lexical/lookupCapabilities': require('../lib/lexical/lookupCapabilities.ts'),
   '@/lib/lexical/position': require('../lib/lexical/position.ts'),
+  '@/lib/lexical/wordbookContextForm': require('../lib/lexical/wordbookContextForm.ts'),
+  '@/lib/cacheInvalidation': { publishCacheInvalidation: () => {} },
   react: { ...React,useLayoutEffect:React.useEffect }
 });
 test('shared lookup card renders only canonical expression, context POS, Chinese meaning and English definition', () => {
@@ -129,14 +131,16 @@ test('provider interaction sends one canonical selection request, aborts stale r
   };
   hookReact.useLayoutEffect = hookReact.useEffect;
   let selected = { startOffset:0,endOffset:5,selectedText:'green',blockText:'green energy' };
-  let getSession = async () => ({ data:{ session:{ access_token:'fixture-token' } } });
+  let getSession = async () => ({ data:{ session:{ access_token:'fixture-token',user:{id:'11111111-1111-4111-8111-111111111111'} } } });
   const renderer = compile('components/lexical/LexicalLookup.tsx', {
     react:hookReact,
     '@/lib/supabase/client':{ createBrowserSupabase:() => ({ auth:{ getSession:() => getSession() } }) },
     '@/lib/lexical/selection':{ domCanonicalLexicalSelection:() => selected ? ({ ...selected,contentBlockId:'question:q:stem' }) : null },
     '@/lib/lexical/lookup':{ parseLookupRequest },
     '@/lib/lexical/lookupCapabilities':require('../lib/lexical/lookupCapabilities.ts'),
-    '@/lib/lexical/position':require('../lib/lexical/position.ts')
+    '@/lib/lexical/position':require('../lib/lexical/position.ts'),
+    '@/lib/lexical/wordbookContextForm':require('../lib/lexical/wordbookContextForm.ts'),
+    '@/lib/cacheInvalidation':{publishCacheInvalidation:()=>{}}
   });
   class FakeNode {}
   class FakeElement extends FakeNode {

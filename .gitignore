@@ -36,6 +36,7 @@ pnpm-debug.log*
 /tmp/writing-review-c3-production/
 /tmp/lexical-v1/
 /tmp/lexical-incremental/
+/tmp/vocabulary-maintenance/
 
 # Reading assets are prepared outside TPS; production runtime reads them from R2
 /public/reading/rdl/
@@ -66,6 +67,9 @@ pnpm-debug.log*
 **/screenshots/
 
 # one-off delivery / audit / acceptance reports (keep local)
+/docs/vocabulary-maintenance-audit.md
+/docs/vocabulary-maintenance-tests.md
+/docs/examples/vocabulary-maintenance.config.json
 /outputs/**/*.md
 /docs/student-wordbook-v1-phase-a1.md
 /docs/student-wordbook-v1-phase-a2.md
