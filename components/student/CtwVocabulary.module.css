@@ -1,0 +1,95 @@
+.catalog {
+  display: grid;
+  /* Choose columns from information width, then share all remaining space. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 14rem), 1fr));
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.card {
+  display: grid;
+  min-width: 0;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--student-border);
+  border-radius: 1rem;
+  background: white;
+  text-align: left;
+  color: var(--student-text);
+  box-shadow: 0 1px 2px rgb(23 32 51 / 3.5%);
+  transition: 200ms;
+}
+
+.heading, .metadata, .count, .best {
+  display: flex;
+  align-items: center;
+}
+
+.heading, .best {
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.heading > :last-child {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.card .status {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.metadata {
+  min-height: 1.75rem;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--student-muted);
+}
+
+.level {
+  border-radius: 999px;
+  padding: 0.25rem 0.625rem;
+  background: var(--student-primary-soft);
+  color: var(--student-primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+}
+
+.level + .count {
+  border-left: 1px solid var(--student-border);
+  padding-left: 0.75rem;
+}
+
+.count {
+  gap: 0.375rem;
+  white-space: nowrap;
+}
+
+.count strong {
+  color: var(--student-text);
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.best {
+  border-top: 1px solid var(--student-border);
+  padding-top: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+}
+
+.best strong {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}

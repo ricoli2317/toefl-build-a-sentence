@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Eye, RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useStudentDataCache } from "@/components/StudentDataCache";
 import { useWordbookRead, useWordbookViewState, wordbookReadCacheKey, type WordbookReadAccess } from "./StudentWordbook";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { StudentNavigation } from "./StudentUI";
+import { PracticeHistoryAccuracy, PracticeHistoryBadge, PracticeHistoryRow, PracticeHistoryRows } from "@/components/shared/PracticeHistoryRows";
 import { StudentDateSelection } from "./StudentDateSelection";
 import { boundedCalendarMonth, boundedDateDraft, browserTimeZone, formatDateInputValue, startOfLocalDay } from "@/lib/studentDates";
-import { REVIEW_SOURCES, reviewPercent, reviewRangeLabel, reviewCoverageMessage,
+import { REVIEW_SOURCES, reviewCoverageMessage,
   type ReviewAvailability, type ReviewHistory, type ReviewSettings, type ReviewRound } from "@/lib/lexical/wordbookReview";
 import { WordbookReviewWorkspace } from "./WordbookReviewWorkspace";
 import { useWordbookLocalReview } from "./useWordbookLocalReview";
@@ -18,6 +20,7 @@ import { localReview, saveLocalReview } from "@/lib/lexical/wordbookReviewLocal"
 import type { WordbookDomain } from "@/lib/lexical/wordbookList";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import setupStyles from "./WordbookReviewSetup.module.css";
+import historyStyles from "./WordbookReviewHistory.module.css";
 
 const ROOT = "/api/student/wordbook/review";
 const SETUP = "/student/wordbook/review";
@@ -57,8 +60,8 @@ function Failure({ error, retry }: { error?: string; retry?: () => void }) {
     {retry ? <button type="button" onClick={retry} className="student-button-secondary justify-self-start">重试</button> : null}</div> : null;
 }
 function Sources({ domain, sources }: { domain: WordbookDomain; sources: string[] }) {
-  return <span className="flex flex-wrap gap-1.5">{sources.map(source => <span key={source} className="student-chip text-xs">
-    {REVIEW_SOURCES[domain].find(s => s.id === source)?.label ?? source}</span>)}</span>;
+  return <span className="flex flex-wrap gap-1.5">{sources.map(source => <PracticeHistoryBadge key={source} reading={domain === "reading"}>
+    {REVIEW_SOURCES[domain].find(s => s.id === source)?.label ?? source}</PracticeHistoryBadge>)}</span>;
 }
 
 function PendingReviews() {
@@ -258,16 +261,38 @@ export function WordbookReviewHistoryView({ access, domains = ["reading", "writi
   </>;
 }
 
-export function WordbookReviewHistoryList({ history, readOnly = false, resultHref = id => `${SETUP}/${id}`, rangeLabel, showSources = true, showPartialAccuracy = false }: {
+function reviewHistoryTitle(session: ReviewHistory["items"][number]) {
+  return session.mode === "retry" ? "错词再练" : session.mode === "random" ? "随机数量" : "指定日期";
+}
+
+export function WordbookReviewHistoryList({ history, readOnly = false, resultHref = id => `${SETUP}/${id}`, rangeLabel, badges, showSources = true, showPartialAccuracy = false }: {
   history: ReviewHistory; readOnly?: boolean; resultHref?: (id: string) => string;
-  rangeLabel?: (session: ReviewHistory["items"][number]) => string; showSources?: boolean; showPartialAccuracy?: boolean;
+  rangeLabel?: (session: ReviewHistory["items"][number]) => string; badges?: (session: ReviewHistory["items"][number]) => React.ReactNode;
+  showSources?: boolean; showPartialAccuracy?: boolean;
 }) {
-  return <>{history.items.map(session => <section key={session.session_id} className={`student-card grid min-w-0 gap-3 p-5 sm:p-6 ${session.domain === "reading" ? "reading-theme" : ""}`}>
-      <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-2xl font-bold leading-snug">{rangeLabel ? rangeLabel(session) : <>{session.domain === "reading" ? "Reading" : "Writing"} · {reviewRangeLabel(session)}</>}</h2>{showSources ? <Sources domain={session.domain} sources={session.source_types} /> : null}</div>
-      <p className="break-words text-sm font-medium text-student-muted">{Number.isNaN(Date.parse(session.started_at)) ? "时间未记录" : new Date(session.started_at).toLocaleString()} · <span className="font-semibold text-student-text">{session.status === "completed" ? "已完成" : "未完成"}</span></p>
-      <p className="text-base font-medium leading-relaxed">进度 <span className="font-bold tabular-nums">{session.answered}/{session.total}</span> · 答对 <span className="font-bold tabular-nums">{session.summary.correct}</span> · {session.status === "completed" || showPartialAccuracy ? <>{session.status === "completed" ? "正确率" : "当前正确率"} <span className="text-xl font-bold tabular-nums">{reviewPercent(session.summary.correct, session.status === "completed" ? session.total : session.answered)}</span>{session.status !== "completed" ? " · 成绩待完成" : null}</> : "成绩待完成"}</p>
-      <Link href={resultHref(session.session_id)} className="student-button-secondary justify-self-start">{readOnly ? session.status === "completed" ? "查看结果" : "查看已保存记录" : session.status === "completed" ? "查看结果" : "恢复复习"}</Link>
-    </section>)}
+  return <PracticeHistoryRows className={historyStyles.history}>{history.items.map(session => <PracticeHistoryRow key={session.session_id} className={historyStyles.row}>
+      <div className={historyStyles.title}>
+        <div className="flex min-w-0 flex-wrap items-center gap-2 text-sm">
+          <h2 className="break-words font-semibold text-student-text">{rangeLabel ? rangeLabel(session) : reviewHistoryTitle(session)}</h2>
+          {badges?.(session)}
+          {showSources ? <Sources domain={session.domain} sources={session.source_types} /> : null}
+        </div>
+        <p className="mt-1 break-words text-xs text-student-muted">{Number.isNaN(Date.parse(session.started_at)) ? "时间未记录" : new Date(session.started_at).toLocaleString()}</p>
+      </div>
+      <div className={historyStyles.stats}>
+        <span className={historyStyles.progress}>{session.summary.correct}/{session.total}</span>
+        <div className={historyStyles.accuracy}>
+          <PracticeHistoryAccuracy label={session.status === "completed" ? "正确率" : "当前正确率"}
+            value={(session.status === "completed" || showPartialAccuracy) && (session.status === "completed" ? session.total : session.answered) > 0
+              ? session.summary.correct / (session.status === "completed" ? session.total : session.answered) : null} />
+        </div>
+      </div>
+      <div className={historyStyles.actions}>
+        <Link href={resultHref(session.session_id)} className="student-button-secondary min-h-8 px-3 py-1 text-sm">
+          {readOnly || session.status === "completed" ? <Eye aria-hidden="true" size={16} /> : <RotateCcw aria-hidden="true" size={16} />}
+          {readOnly ? session.status === "completed" ? "查看结果" : "查看已保存记录" : session.status === "completed" ? "查看结果" : "恢复复习"}</Link>
+      </div>
+    </PracticeHistoryRow>)}
     {!history.total ? <p className="py-6 text-center text-sm text-student-muted">还没有复习记录。</p> : null}
-  </>;
+  </PracticeHistoryRows>;
 }

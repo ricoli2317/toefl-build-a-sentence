@@ -6,6 +6,7 @@ import { BookText } from "lucide-react";
 import { useStudentDataCache } from "@/components/StudentDataCache";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { AssignmentStatusBadge } from "@/components/assignments/AssignmentPresentation";
+import { PracticeHistoryBadge } from "@/components/shared/PracticeHistoryRows";
 import { StudentNavigation } from "./StudentUI";
 import { WordbookReviewHistoryList } from "./WordbookReview";
 import { CtwVocabularyReviewResult } from "./CtwVocabularyReviewResult";
@@ -13,10 +14,11 @@ import { useVocabularyRead, useVocabularyRequest } from "./useCtwVocabulary";
 import { useCtwRetry } from "./useCtwReview";
 import { gradeReview, localReview, localReviewKey, reviewLocalState, saveLocalReview, type LocalReview } from "@/lib/lexical/wordbookReviewLocal";
 import type { ReviewHistory, ReviewRound } from "@/lib/lexical/wordbookReview";
-import { CTW_REVIEW_NAMESPACE, CTW_REVIEW_ROOT, createCtwReviewRound, ctwCacheKey, ctwLegacyRowValues, ctwMetadata, ctwRangeLabel } from "@/lib/ctw-vocabulary/review";
+import { CTW_REVIEW_NAMESPACE, CTW_REVIEW_ROOT, createCtwReviewRound, ctwCacheKey, ctwLegacyRowValues, ctwMetadata } from "@/lib/ctw-vocabulary/review";
 import type { ListSource, VocabularyListCard } from "@/lib/ctw-vocabulary/model";
 import { listLabel, readVocabularyRound, roundKey, sourceReturnHref, VOCABULARY_API as API, VOCABULARY_ROOT as ROOT } from "@/lib/ctw-vocabulary/round";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import styles from "./CtwVocabulary.module.css";
 
 export function VocabularyFailure({ error, retry }: { error?: string; retry?: () => void }) {
   return error ? <div role="alert" className="grid gap-2 text-sm text-student-error"><p>{error}</p>
@@ -33,16 +35,16 @@ function sourceOf(card: VocabularyListCard): ListSource {
 /** Both editions use exactly this card. Status Badge is the unmodified shared
  * Assignment badge; typography changes apply only to the card's other fields. */
 export function CtwVocabularyListCard({ list, onClick }: { list: VocabularyListCard; onClick: () => void }) {
-  return <button type="button" onClick={onClick} className="student-card student-card-interactive grid min-w-0 gap-4 rounded-2xl p-5 text-left hover:border-student-primary-border sm:p-6">
-    <span className="flex items-center justify-between gap-2"><span className="text-2xl font-bold leading-tight sm:text-[26px]">{listLabel(list.listNumber)}</span>
-      <AssignmentStatusBadge completedCount={list.status === "completed" ? 2 : list.status === "in_progress" ? 1 : 0} totalCount={2}
+  return <button type="button" onClick={onClick} className={`student-card-interactive ${styles.card}`}>
+    <span className={styles.heading}><span className={styles.title}>{listLabel(list.listNumber)}</span>
+      <AssignmentStatusBadge className={styles.status} completedCount={list.status === "completed" ? 2 : list.status === "in_progress" ? 1 : 0} totalCount={2}
         label={list.status === "not_started" ? "未开始" : undefined} /></span>
-    <span className="flex flex-wrap items-center gap-3 text-base font-medium text-student-text sm:text-lg">
-      {list.edition === "cefr" ? <span className="student-chip">{list.group.replace("-", "–")}</span> : null}
-      <span className="inline-flex items-center gap-2"><BookText aria-hidden="true" size={21} className="text-student-muted" />{list.count} 个词条</span>
+    <span className={styles.metadata}>
+      {list.edition === "cefr" ? <span className={styles.level}>{list.group.replace("-", "–")}</span> : null}
+      <span className={styles.count}><BookText aria-hidden="true" size={19} className="text-student-muted" /><span><strong>{list.count}</strong> 个词条</span></span>
     </span>
-    <span className="flex items-center justify-between gap-2 border-t border-student-border pt-3"><span className="text-sm font-medium text-student-text sm:text-base">历史最高正确率</span>
-      <span className={`text-xl font-bold tabular-nums sm:text-2xl ${list.bestAccuracy === 100 ? "text-emerald-700" : "text-student-text"}`}>{list.bestAccuracy === null ? "—" : `${Number(list.bestAccuracy.toFixed(2))}%`}</span></span>
+    <span className={styles.best}><span>历史最高正确率</span>
+      <strong className={list.bestAccuracy === 100 ? "text-emerald-700" : "text-student-text"}>{list.bestAccuracy === null ? "—" : `${Number(list.bestAccuracy.toFixed(2))}%`}</strong></span>
   </button>;
 }
 export function CtwVocabularyCatalog() {
@@ -73,7 +75,7 @@ export function CtwVocabularyCatalog() {
         onClick={() => { setSelected(null); setError(""); router.replace(value === "cefr" ? `${ROOT}?tab=cefr` : ROOT, { scroll: false }); }}>{label}</button>)}</div>
       <Link href={`${ROOT}/history`} className="student-button-secondary">测试历史</Link></div>
     {catalog.loading ? <p className="text-sm text-student-muted">正在加载词表…</p> : null}<VocabularyFailure error={catalog.error} retry={catalog.retry} />
-    <div role="tabpanel" aria-label={edition === "mixed" ? "乱序版词表" : "CEFR 词表"} className="grid grid-cols-1 gap-4 min-[560px]:grid-cols-2 xl:grid-cols-3">
+    <div role="tabpanel" aria-label={edition === "mixed" ? "乱序版词表" : "CEFR 词表"} className={styles.catalog}>
       {catalog.data?.lists.map(list => <CtwVocabularyListCard key={`${list.group}:${list.listNumber}`} list={list} onClick={() => setSelected(list)} />)}</div>
     <ConfirmDialog open={Boolean(selected)} title={`开始学习 ${selected?.group ? `${selected.group.replace("-", "–")} ` : ""}${listLabel(selected?.listNumber ?? 1)}？`}
       confirmText="确认" cancelText="取消" confirming={busy} error={error} onCancel={() => { if (!busy) setSelected(null); }} onConfirm={() => void start()} />
@@ -131,10 +133,20 @@ export function CtwVocabularyHistory() {
   return <div className="grid gap-5"><VocabularyNavigation label="测试历史" />
     {history.loading ? <p className="text-sm text-student-muted">正在加载测试历史…</p> : null}
     <VocabularyFailure error={history.error || (local.owner === studentId ? local.error : undefined)} retry={history.retry} />
-    {extra.length ? <section aria-label="本机待恢复记录" className="grid gap-4"><WordbookReviewHistoryList history={{ items: extra, total: extra.length, page: 1, pageSize: 10 }} showSources={false} showPartialAccuracy rangeLabel={ctwRangeLabel} resultHref={id => href(id, extra)} /></section> : null}
-    {shown ? <WordbookReviewHistoryList history={shown} showSources={false} showPartialAccuracy rangeLabel={ctwRangeLabel} resultHref={id => href(id, shown.items)} /> : null}
+    {extra.length || shown ? <WordbookReviewHistoryList history={{ ...(shown ?? { total: 0, page, pageSize: 10 }), items: [...extra, ...(shown?.items ?? [])], total: extra.length + (shown?.total ?? 0) }}
+      showSources={false} showPartialAccuracy rangeLabel={ctwHistoryTitle} badges={ctwHistoryBadges}
+      resultHref={id => href(id, [...extra, ...(shown?.items ?? [])])} /> : null}
     <div className="flex items-center justify-between gap-3 text-sm font-medium"><span>第 {page} 页</span><div className="flex gap-2">
       <button type="button" className="student-button-secondary" disabled={page <= 1 || history.loading} onClick={() => setPage(value => value - 1)}>上一页</button>
       <button type="button" className="student-button-secondary" disabled={!history.data || page * 10 >= history.data.total || history.loading} onClick={() => setPage(value => value + 1)}>下一页</button></div></div>
   </div>;
+}
+
+type CtwHistoryItem = ReviewHistory["items"][number] & { source?: ListSource };
+function ctwHistoryTitle(session: CtwHistoryItem) {
+  return session.source ? listLabel(session.source.listNumber) : "历史词测";
+}
+function ctwHistoryBadges(session: CtwHistoryItem) {
+  return <><PracticeHistoryBadge>{session.source?.kind === "cefr_list" ? session.source.group.replace("-", "–") : "乱序版"}</PracticeHistoryBadge>
+    {session.mode === "retry" ? <PracticeHistoryBadge>错词再练</PracticeHistoryBadge> : null}</>;
 }

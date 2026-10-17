@@ -13,6 +13,7 @@ import {
   type StudentCacheSession
 } from "@/components/StudentDataCache";
 import { StudentNavigation } from "@/components/student/StudentUI";
+import { PracticeHistoryRow, PracticeHistoryRows } from "@/components/shared/PracticeHistoryRows";
 import { StudentDateSelection, DATE_BUTTON_CLASS } from "@/components/student/StudentDateSelection";
 import { startOfLocalDay, addDays, localDayRange, browserTimeZone, formatDateInputValue, parseDateInputValue, boundedDateDraft, boundedCalendarMonth } from "@/lib/studentDates";
 import {
@@ -463,13 +464,11 @@ function StudentPracticeRecordList({
     );
   }
   return (
-    <TeacherCard className="overflow-hidden p-0">
-      <div className="divide-y divide-student-border px-5">
-        {records.map((record) => (
-          <StudentPracticeRecordRow key={record.recordId} record={record} returnTo={returnTo} />
-        ))}
-      </div>
-    </TeacherCard>
+    <PracticeHistoryRows>
+      {records.map((record) => (
+        <StudentPracticeRecordRow key={record.recordId} record={record} returnTo={returnTo} />
+      ))}
+    </PracticeHistoryRows>
   );
 }
 
@@ -491,7 +490,7 @@ function StudentPracticeRecordRow({
   );
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3 py-3">
+    <PracticeHistoryRow>
       <div className="min-w-0 flex-1 basis-[min(100%,280px)]">
         <p className="flex min-w-0 items-center gap-2 text-sm">
           <span className={record.domain === "reading" ? READING_CHIP_CLASS : WRITING_CHIP_CLASS}>
@@ -544,7 +543,7 @@ function StudentPracticeRecordRow({
           {retake ? <RetakeEntry retake={retake} /> : null}
         </div>
       ) : null}
-    </div>
+    </PracticeHistoryRow>
   );
 }
 

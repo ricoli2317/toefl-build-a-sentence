@@ -214,7 +214,11 @@ test('direct student review writes cannot impersonate the viewed student; target
 });
 
 const Link = ({ href, children, ...props }) => React.createElement('a', { ...props, href }, children);
+const historyRows = compile('components/shared/PracticeHistoryRows.tsx', {
+  '@/components/teacher/TeacherUI': compile('components/teacher/TeacherUI.tsx', { 'next/link': Link })
+});
 const commonMocks = {
+  '@/components/shared/PracticeHistoryRows': historyRows,
   'next/link': Link, '@/components/StudentDataCache': { useOptionalStudentDataCache:()=>null,useStudentDataCache: () => { throw new Error('Teacher must not use student cache'); } },
   '@/components/TeacherDataCache':{useOptionalTeacherDataCache:()=>null},'@/lib/cacheInvalidation':{},
   '@/lib/lexical/wordbookList': list, '@/lib/lexical/wordbookReview': review,
@@ -242,15 +246,19 @@ test('shared wordbook view shows only bound tabs, one history entry, no manageme
 test('history and result reuse student displays without resume, retry, new-round or test actions in teacher mode', () => {
   const { WordbookReviewHistoryList } = compile('components/student/WordbookReview.tsx', { ...commonMocks,
     'next/navigation': {}, './StudentUI': {}, './StudentDateSelection': {}, './WordbookReviewWorkspace': {}, './useWordbookLocalReview': {}, './StudentWordbook': {},
-    '@/lib/lexical/wordbookReviewRequest': {}, '@/lib/lexical/wordbookReviewLocal': {}, './WordbookReviewSetup.module.css': {} });
+    '@/lib/lexical/wordbookReviewRequest': {}, '@/lib/lexical/wordbookReviewLocal': {}, './WordbookReviewSetup.module.css': {}, './WordbookReviewHistory.module.css': {} });
   const f = fixture(); const session = f.tables.student_wordbook_review_sessions[0];
   const history = { items: [{ ...session, summary }, { ...session, session_id: sid(88), status: 'active', summary }], total: 2 };
   const html = renderToStaticMarkup(React.createElement(WordbookReviewHistoryList, { history, readOnly: true, resultHref: id => `/teacher/result/${id}` }));
-  assert.match(html, /查看结果/); assert.match(html, /查看已保存记录/); assert.match(html, /答对 <span class="font-bold tabular-nums">4<\/span>/);
-  assert.match(html, /<h2 class="text-2xl font-bold leading-snug">/);
-  assert.match(html, /text-sm font-medium text-student-muted/);
-  assert.match(html, /text-base font-medium leading-relaxed/);
-  assert.match(html, /text-xl font-bold tabular-nums/);
+  assert.match(html, /查看结果/); assert.match(html, /查看已保存记录/); assert.match(html, /4\/5/);
+  assert.doesNotMatch(html, /进度|答对/);
+  assert.doesNotMatch(html, /Reading|Writing/);
+  assert.match(html, /<h2 class="break-words font-semibold text-student-text">随机数量<\/h2>/);
+  assert.match(html, /divide-y divide-student-border px-5/);
+  assert.equal((html.match(/class="teacher-card overflow-hidden p-0"/g) ?? []).length, 1);
+  assert.match(html, /gap-x-4 gap-y-3 py-3/);
+  assert.match(html, /student-button-secondary min-h-8 px-3 py-1 text-sm/);
+  assert.doesNotMatch(html, /text-2xl|text-xl/);
   const studentHistory = renderToStaticMarkup(React.createElement(WordbookReviewHistoryList, { history }));
   const withoutActions = markup => markup.replace(/<a\b[^>]*>.*?<\/a>/g, '');
   assert.equal(withoutActions(html), withoutActions(studentHistory), 'teacher and student share identical history content and typography');
