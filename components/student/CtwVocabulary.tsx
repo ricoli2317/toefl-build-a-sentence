@@ -11,6 +11,8 @@ import { StudentNavigation } from "./StudentUI";
 import { WordbookReviewHistoryList } from "./WordbookReview";
 import { CtwVocabularyReviewResult } from "./CtwVocabularyReviewResult";
 import { useVocabularyRead, useVocabularyRequest } from "./useCtwVocabulary";
+import { useCtwVocabularyProgress } from "./useCtwVocabularyProgress";
+import { TeacherAccuracyBar } from "@/components/teacher/TeacherUI";
 import { useCtwRetry } from "./useCtwReview";
 import { gradeReview, localReview, localReviewKey, reviewLocalState, saveLocalReview, type LocalReview } from "@/lib/lexical/wordbookReviewLocal";
 import type { ReviewHistory, ReviewRound } from "@/lib/lexical/wordbookReview";
@@ -52,6 +54,7 @@ export function CtwVocabularyCatalog() {
   const { updateData, markStale } = useStudentDataCache();
   const edition = params.get("tab") === "cefr" ? "cefr" : "mixed", url = `${API}/lists?edition=${edition}`;
   const catalog = useVocabularyRead<{ lists: VocabularyListCard[] }>(url);
+  const progress = useCtwVocabularyProgress();
   const [selected, setSelected] = useState<VocabularyListCard | null>(null), [busy, setBusy] = useState(false), [error, setError] = useState("");
   const lock = useRef(false), pending = useRef<{ key: string; id: string }>();
   const start = async () => {
@@ -68,12 +71,21 @@ export function CtwVocabularyCatalog() {
     } catch (e) { setError(e instanceof Error ? e.message : "开始失败，请重试。"); }
     finally { lock.current = false; setBusy(false); }
   };
-  return <div className="grid gap-6"><VocabularyNavigation backHref={STUDENT_ROUTES.home} />
-    <div className="flex flex-wrap items-end justify-between gap-3"><div role="tablist" aria-label="词表版本" className="flex gap-1 border-b border-student-border">
+  return <div className={`grid gap-6 ${styles.catalogPage}`}><VocabularyNavigation backHref={STUDENT_ROUTES.home} />
+    <div className={styles.toolbar}><div role="tablist" aria-label="词表版本" className="flex shrink-0 gap-1 border-b border-student-border">
       {([['mixed','乱序版'],['cefr','CEFR']] as const).map(([value, label]) => <button type="button" key={value} role="tab" aria-selected={edition === value}
         className={`border-b-2 px-5 py-3 text-sm font-semibold ${edition === value ? "border-student-primary text-student-primary" : "border-transparent text-student-muted"}`}
         onClick={() => { setSelected(null); setError(""); router.replace(value === "cefr" ? `${ROOT}?tab=cefr` : ROOT, { scroll: false }); }}>{label}</button>)}</div>
-      <Link href={`${ROOT}/history`} className="student-button-secondary">测试历史</Link></div>
+      <div className={styles.overallProgress}>
+        {progress.data ? <div role="progressbar" aria-label="词测总进度" aria-valuemin={0} aria-valuemax={progress.data.total}
+          aria-valuenow={progress.data.mastered} aria-valuetext={`${progress.data.mastered}/${progress.data.total}`}>
+          <TeacherAccuracyBar value={progress.data.total ? progress.data.mastered / progress.data.total : 0}
+            countLabel={`${progress.data.mastered}/${progress.data.total}`} /></div>
+          : progress.error ? <div role="alert" className="flex flex-wrap items-center gap-2 text-xs text-student-error"><span>总进度读取失败</span>
+            <button type="button" className="font-semibold underline" onClick={progress.retry}>重试</button></div>
+          : <div role="status" aria-label="正在加载词测总进度" className="h-6 animate-pulse rounded-full bg-student-primary-soft" />}
+      </div>
+      <Link href={`${ROOT}/history`} className="student-button-secondary ml-auto shrink-0">测试历史</Link></div>
     {catalog.loading ? <p className="text-sm text-student-muted">正在加载词表…</p> : null}<VocabularyFailure error={catalog.error} retry={catalog.retry} />
     <div role="tabpanel" aria-label={edition === "mixed" ? "乱序版词表" : "CEFR 词表"} className={styles.catalog}>
       {catalog.data?.lists.map(list => <CtwVocabularyListCard key={`${list.group}:${list.listNumber}`} list={list} onClick={() => setSelected(list)} />)}</div>

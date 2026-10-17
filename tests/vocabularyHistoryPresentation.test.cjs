@@ -107,7 +107,8 @@ test('actual CTW history renders List-only titles, edition/retry badges and ever
     '@/components/StudentDataCache': {}, '@/components/shared/ConfirmDialog': {}, '@/components/assignments/AssignmentPresentation': {},
     './StudentUI': { StudentNavigation: () => null }, './WordbookReview': wordbook, './CtwVocabularyReviewResult': {},
     './useCtwVocabulary': { useVocabularyRequest: () => ({ studentId: 'owner' }), useVocabularyRead: () => ({ data: history(items) }) },
-    './useCtwReview': {}, '@/lib/ctw-vocabulary/review': {},
+    './useCtwReview': {}, './useCtwVocabularyProgress': {},
+    '@/components/teacher/TeacherUI': {}, '@/lib/ctw-vocabulary/review': {},
     '@/lib/ctw-vocabulary/round': require('../lib/ctw-vocabulary/round.ts'),
     '@/lib/studentNavigation': { STUDENT_ROUTES: {} }, './CtwVocabulary.module.css': {} });
   const html = render(React.createElement(CtwVocabularyHistory));

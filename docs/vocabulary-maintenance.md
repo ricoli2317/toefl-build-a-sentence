@@ -187,3 +187,15 @@ git diff --check
 ```
 
 新增测试 canonical／词条全为合成，数据库仅 PGlite 内存。CTW 旧回归使用仓库 versioned 历史 reviewed fixture、隔离数据库；不接生产、不运行真实账号验收脚本。没有浏览器验证或真实增量任务隐含在这些命令中。
+
+## 7. 填词题词测总进度
+
+- 在 `ctw_vocabulary_review_sync.sql` 已安装的环境中，先执行增量安装脚本
+  `supabase/ctw_vocabulary_overall_progress.sql`，再发布对应应用代码。脚本新增掌握索引、两个内部触发器和一个只读 RPC，不重导词表或改写历史成绩。
+- `entry_id` 是乱序版／CEFR、逐题会话／最终成绩共用的永久标识；`normalized_word` 的唯一约束保证同一词不重复。完整单词的服务器判分 `correct=true` 才计入（不是单独词形或原形部分答对）。新逐题正确答案提交成功后就累计，不必等待整轮结束；离线未同步答案不冒充已保存进度。
+- 安装时一次性回填最终成绩与未完成会话中的正确答案。后续触发器按 `(student_id, entry_id)` 幂等写入。目录 RPC 只聚合当前词表与该学生掌握索引，不扫描历史 JSON，不返回答题明细。
+- 当前词表没有逐词停用标记，有效集合与目录一致：`ctw_vocabulary_entries` 中经 RLS 可见的全部词条。RPC 每次与它取交集；新增／删除／RLS 可见性变化会改变分母与分子。删除时保留历史掌握 ID，不阻挡词表删除。若将来引入独立 `is_active` 等业务过滤，必须在目录与总进度 RPC 中同步使用同一个过滤条件。
+- `/api/student/ctw-vocabulary/progress` 使用当前认证身份（学生、教师、Admin 的学生体验入口均一致），不接受外部传入学生 ID；没有新增代查学生入口。
+- 总进度响应为 `no-store`，刻意不放入长期 layout cache：刷新或重新进入目录直接读取最新聚合，导入工具不需要依赖浏览器收到失效广播。目录可见时每 30 秒、恢复可见／焦点／pageshow 时更新；同页答题 ACK 也触发更新。切换版本不更换统计来源。
+- 隔离回归：`pnpm test:ctw-vocabulary-progress`。
+- 浏览器验收必须遵循 `AGENTS.md` 的先启动／Ready 再浏览器流程，始终保持同一 localhost origin。词表增删和答题验证使用隔离数据库，不创建账号或写入线上词测记录；一次性验收脚本、报告和截图按项目本机约定存放在 `outputs/local-only/`，不纳入功能提交。

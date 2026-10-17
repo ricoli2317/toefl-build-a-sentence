@@ -59,7 +59,7 @@ function client(db, role = 'postgres', user = U, calls = []) {
   }
   return {
     rpc: async (name, args = {}) => {
-      const definitions = {read_ctw_vocabulary_catalog_v1: [], read_ctw_vocabulary_lists_v1: ['p_edition'],
+      const definitions = {read_ctw_vocabulary_catalog_v1: [], read_ctw_vocabulary_overall_progress_v1: [], read_ctw_vocabulary_lists_v1: ['p_edition'],
         start_ctw_vocabulary_list_v1: ['p_edition','p_group','p_list'],
         create_ctw_vocabulary_review_v1: ['p_student','p_session','p_source','p_state','p_parent'],
         sync_ctw_vocabulary_review_v1: ['p_student','p_session','p_revision','p_command','p_state','p_attempt'],

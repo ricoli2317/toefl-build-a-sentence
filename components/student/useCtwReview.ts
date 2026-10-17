@@ -3,6 +3,7 @@ import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useStudentDataCache } from "@/components/StudentDataCache";
 import { useVocabularyRequest } from "./useCtwVocabulary";
+import { CTW_PROGRESS_CHANGED } from "./useCtwVocabularyProgress";
 import { useWordbookLocalReview, type LocalReviewAdapter } from "./useWordbookLocalReview";
 import { applyReviewAction, localReview, saveLocalReview } from "@/lib/lexical/wordbookReviewLocal";
 import type { ReviewRound } from "@/lib/lexical/wordbookReview";
@@ -15,6 +16,7 @@ export function useCtwReview(sessionId: string) {
   const { markStale, invalidate } = useStudentDataCache();
   const adapter = useMemo<LocalReviewAdapter>(() => ({ root: CTW_REVIEW_ROOT, namespace: CTW_REVIEW_NAMESPACE, cacheKey: ctwCacheKey,
     onSynced: (local, command) => {
+      if (command.action === "answer") window.dispatchEvent(new Event(CTW_PROGRESS_CHANGED));
       if (command.action === "answer" || command.action === "advance") markStale(ctwCacheKey(CTW_REVIEW_ROOT));
       if (local.phase === "result" && command.action === "advance" && command.itemId === local.round.cards[local.round.cards.length - 1].itemId) {
         const source = ctwMetadata(local.round).source;

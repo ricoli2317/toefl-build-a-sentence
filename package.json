@@ -11,6 +11,7 @@
     "test:wordbook-review": "node scripts/test-wordbook-review.cjs",
     "test:ctw-vocabulary": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test tests/ctwVocabulary.test.cjs",
     "test:ctw-vocabulary-ui": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test tests/ctwVocabularyPhase3.test.cjs tests/ctwVocabularyUnifiedReview.test.cjs",
+    "test:ctw-vocabulary-progress": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types --test tests/ctwVocabularyOverallProgress.test.cjs tests/ctwVocabularyOverallProgressUI.test.cjs tests/vocabularyHistoryPresentation.test.cjs",
     "ctw-vocabulary:audit-prompts": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/audit-ctw-vocabulary-prompts.ts",
     "ctw-vocabulary:audit-irregular": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types scripts/audit-ctw-irregular-spellings.ts",
     "ctw-vocabulary:cefr-lists": "python3 scripts/build-ctw-cefr-lists.py",

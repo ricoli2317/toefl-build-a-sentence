@@ -1,3 +1,27 @@
+.catalogPage {
+  container-type: inline-size;
+  min-width: 0;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+}
+
+.overallProgress {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+@container (max-width: 34rem) {
+  .overallProgress {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
 .catalog {
   display: grid;
   /* Choose columns from information width, then share all remaining space. */

@@ -141,15 +141,16 @@ export function TeacherDataError({ text }: { text: string }) {
   return <p className="teacher-error">{text}</p>;
 }
 
-export function TeacherAccuracyBar({ value }: { value: number }) {
+export function TeacherAccuracyBar({ value, countLabel }: { value: number; countLabel?: string }) {
   const percent = Math.max(0, Math.min(100, Math.round(value * 100)));
   return (
     <div className="flex min-w-[180px] items-center gap-4">
-      <span className="h-2 flex-1 overflow-hidden rounded-full bg-student-primary-soft">
+      <span className={clsx("relative flex-1 overflow-hidden rounded-full bg-student-primary-soft", countLabel ? "h-6" : "h-2")}>
         <span
           className="block h-full rounded-full bg-gradient-to-r from-[#b69aff] to-student-primary"
           style={{ width: `${percent}%` }}
         />
+        {countLabel ? <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold tabular-nums text-student-text">{countLabel}</span> : null}
       </span>
       <span className="w-11 text-right font-semibold tabular-nums text-student-text">{percent}%</span>
     </div>

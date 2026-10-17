@@ -31,6 +31,7 @@ export type GradedAnswer = SpellingAnswer & { word: string; listNumber: number; 
   baseCorrect?: boolean; irregularResults?: GradedForm[]; source?: RoundSource };
 export type VocabularyCatalog = { total: number; lists: { listNumber: number; count: number; irregularCount: number }[];
   cefr: { level: Cefr; count: number }[] };
+export type VocabularyOverallProgress = { total: number; mastered: number };
 export type AttemptSummary = { attempt_id: string; mode: SpellingMode; submitted_at: string;
   answer_count: number; correct_count: number; list_numbers: number[]; cefr_levels: Cefr[] };
 export type AttemptResult = AttemptSummary & { answers: GradedAnswer[] };

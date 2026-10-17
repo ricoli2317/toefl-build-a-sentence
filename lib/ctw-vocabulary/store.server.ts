@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { CEFR_LEVELS, gradeVocabularySpelling, vocabularyAcceptedAnswers,
   type AttemptResult, type AttemptSubmission, type AttemptSummary, type GradedAnswer,
-  type VocabularyCatalog, type VocabularyEntry } from "./model.ts";
+  type VocabularyCatalog, type VocabularyEntry, type VocabularyOverallProgress } from "./model.ts";
 import type { WordQuery } from "./input.ts";
 import type { ListSource, VocabularyListCard } from "./model.ts";
 
@@ -27,6 +27,12 @@ export async function readVocabularyCatalog(client: SupabaseClient): Promise<Voc
   databaseError(error);
   if (!data) throw new VocabularyStoreError("CTW_VOCAB_UNAVAILABLE");
   return data as VocabularyCatalog;
+}
+export async function readVocabularyOverallProgress(client: SupabaseClient): Promise<VocabularyOverallProgress> {
+  const { data, error } = await client.rpc("read_ctw_vocabulary_overall_progress_v1");
+  databaseError(error);
+  if (!data) throw new VocabularyStoreError("CTW_VOCAB_UNAVAILABLE");
+  return data as VocabularyOverallProgress;
 }
 export async function readVocabularyWords(client: SupabaseClient, query: WordQuery) {
   let read = client.from("ctw_vocabulary_entries").select(WORD_COLUMNS)
