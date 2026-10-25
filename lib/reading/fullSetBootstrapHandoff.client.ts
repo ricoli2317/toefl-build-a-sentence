@@ -7,6 +7,7 @@ import type {
 import type { ReadingFullSetPerformanceTrace } from "./fullSetPerformance.client.ts";
 
 export type ReadingFullSetBootstrapHandoff = ReadingFullSetBootstrapPayload & {
+  studentId: string;
   storedAt: number;
   trace: ReadingFullSetPerformanceTrace;
 };
@@ -24,18 +25,20 @@ export function readingFullSetBootstrapHandoffKey(
 export function storeReadingFullSetBootstrapHandoff(
   payload: ReadingFullSetBootstrapPayload,
   trace: ReadingFullSetPerformanceTrace,
+  studentId: string,
   now = Date.now()
 ) {
   pruneExpiredHandoffs(now);
   const moduleAttempt = payload.runner.attempt.module1;
   const key = readingFullSetBootstrapHandoffKey(payload.runner.attempt.attemptId, moduleAttempt);
-  handoffs.set(key, { ...payload, storedAt: now, trace });
+  handoffs.set(key, { ...payload, studentId, storedAt: now, trace });
   return key;
 }
 
 export function consumeReadingFullSetBootstrapHandoff(input: {
   attemptId: string;
   expectedFullSetId: string;
+  studentId: string;
   now?: number;
 }) {
   const now = input.now ?? Date.now();
@@ -45,7 +48,8 @@ export function consumeReadingFullSetBootstrapHandoff(input: {
     if (!key.startsWith(prefix)) continue;
     handoffs.delete(key);
     if (
-      handoff.runner.attempt.attemptId !== input.attemptId
+      handoff.studentId !== input.studentId
+      || handoff.runner.attempt.attemptId !== input.attemptId
       || handoff.runner.attempt.fullSetId !== input.expectedFullSetId
       || handoff.runner.attempt.module1.moduleAttemptId !== key.slice(prefix.length)
     ) return null;

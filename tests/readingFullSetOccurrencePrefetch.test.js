@@ -139,7 +139,7 @@ test("navigation enqueues a save without awaiting the network, then uses hit, wa
   assert.match(move, /navigation_cache_hit/);
 
   const load = runner.slice(
-    runner.indexOf("if \(!accessToken \|\| !currentOccurrence \|\| currentPayload\) return"),
+    runner.indexOf("if (!sessionBound || !currentOccurrence || currentPayload) return"),
     runner.indexOf("const handleWorkspaceReady")
   );
   assert.match(load, /navigation_cache_\$\{navigationSource\}/);
@@ -155,7 +155,7 @@ test("prefetched mutable answers never replace an existing local answer state", 
 
 test("submit, timeout, and pagehide preserve answer durability boundaries", () => {
   const submit = runner.slice(runner.indexOf("const submitModule = useCallback"), runner.indexOf("useEffect(() => {", runner.indexOf("const submitModule = useCallback")));
-  assert.match(submit, /submittingRef\.current = true[\s\S]*commitActiveQuestionTime\(\)[\s\S]*stageModuleAnswerSnapshot[\s\S]*await flushPendingSave[\s\S]*if \(!saved\) throw[\s\S]*await fetch/);
+  assert.match(submit, /submittingRef\.current = true[\s\S]*commitActiveQuestionTime\(\)[\s\S]*stageModuleAnswerSnapshot[\s\S]*await flushPendingSave[\s\S]*if \(!saved\) throw[\s\S]*await request/);
   assert.match(submit, /expectedAnswerRevision: answerRevisionRef\.current/);
   assert.doesNotMatch(submit, /if \(automatic\) \{[\s\S]*pendingSaveRef\.current = null/);
   assert.match(runner, /remaining === 0[\s\S]*void submitModule\(true\)/);
@@ -181,11 +181,12 @@ test("stale CAS responses drop superseded writes, merge disjoint changes, and ex
   assert.doesNotMatch(persist, /请刷新后继续/);
 });
 
-test("module transitions, retry, and unmount clear runner-local prefetch state while submit keeps hot data until finalization", () => {
+test("module transitions and unmount clear prefetch state; retry preserves local state", () => {
   assert.match(runner, /previousModuleKey !== nextModuleKey\) \{[\s\S]*clearOccurrenceCaches\(\)/);
   const submit = runner.slice(runner.indexOf("const submitModule = useCallback"), runner.indexOf("useEffect(() => {", runner.indexOf("const submitModule = useCallback")));
-  assert.doesNotMatch(submit.slice(0, submit.indexOf("await fetch")), /clearOccurrenceCaches\(\)/);
-  assert.match(runner, /retryOccurrence[\s\S]*clearOccurrenceCaches\(\)/);
+  assert.doesNotMatch(submit.slice(0, submit.indexOf("await request")), /clearOccurrenceCaches\(\)/);
+  const retry = runner.slice(runner.indexOf("const retryOccurrence"), runner.indexOf("const startModule2"));
+  assert.doesNotMatch(retry, /clearOccurrenceCaches\(|setAnswersByOccurrence|questionTimesRef\.current/);
   assert.match(runner, /useEffect\(\(\) => \(\) => \{[\s\S]*occurrenceCacheRef\.current\.clear\(\)/);
 });
 

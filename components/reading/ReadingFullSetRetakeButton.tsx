@@ -71,8 +71,9 @@ export function ReadingFullSetRetakeButton({
           : "暂时无法开始再次练习。";
         throw new Error(message);
       }
+      if (cache.getSession()?.studentId !== session.studentId) throw new Error("账号已切换，请返回原账号继续练习。");
       trace.attemptId = payload.runner.attempt.attemptId;
-      storeReadingFullSetBootstrapHandoff(payload, trace);
+      storeReadingFullSetBootstrapHandoff(payload, trace, session.studentId);
       cache.invalidate(STUDENT_READING_FULL_SET_CACHE_PREFIX);
       cache.invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
       cache.setData(`reading:full-sets:attempt:${fullSetId}`, { attempt: payload.runner.attempt });

@@ -243,15 +243,18 @@ test("same-route M2 transition invalidates M1 state and applies bootstrap state"
   const startModule2 = runnerUi.slice(runnerUi.indexOf("const startModule2"), runnerUi.indexOf("if (loading)"));
   assert.match(startModule2, /result\.runner[\s\S]*result\.firstOccurrence[\s\S]*applyRunner\(result\.runner, "authoritative"\)/);
   assert.doesNotMatch(startModule2, /loadRunner\(accessToken\)/);
-  assert.match(startModule2, /const currentSession = getSession\(\)/);
-  assert.match(startModule2, /readingFullSetTraceHeaders\(currentAccessToken, trace\)/);
+  assert.match(startModule2, /requestWithTimeout\(/);
+  assert.match(startModule2, /readingFullSetTraceHeaders\(null, trace\)/);
 });
 
-test("occurrence loading has loaded/error convergence and Retry refreshes server truth", () => {
+test("occurrence loading converges and Retry keeps existing answers and timing", () => {
   assert.match(runnerUi, /type OccurrenceLoadState/);
   assert.match(runnerUi, /message: "题目加载失败，请重试。", status: "error"/);
   assert.match(runnerUi, />\s*重试\s*</);
-  assert.match(runnerUi, /retryOccurrence[\s\S]*beginLoadPause\(accessToken, occurrenceId\)[\s\S]*loadRunner\(accessToken\)/);
+  const retry = runnerUi.slice(runnerUi.indexOf("const retryOccurrence"), runnerUi.indexOf("const startModule2"));
+  assert.match(retry, /handleWorkspaceReady\(\)/);
+  assert.match(retry, /setOccurrenceRetry/);
+  assert.doesNotMatch(retry, /loadRunner\(|setAnswersByOccurrence|questionTimesRef\.current/);
   assert.match(runnerUi, /requestId !== occurrenceRequestRef\.current \|\| generation !== runnerGenerationRef\.current/);
 });
 

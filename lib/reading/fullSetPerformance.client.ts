@@ -1,6 +1,7 @@
 "use client";
 
 import { logStudentPerformance } from "@/lib/studentPerformance.client";
+import { createDiagnosticId } from "../browserId.ts";
 
 export type ReadingFullSetPerformancePhase =
   | "m1_start_click"
@@ -63,7 +64,7 @@ export function createReadingFullSetPerformanceTrace(attemptId: string) {
   return {
     attemptId,
     startedAt: performance.now(),
-    traceId: crypto.randomUUID()
+    traceId: createDiagnosticId()
   } satisfies ReadingFullSetPerformanceTrace;
 }
 
@@ -106,11 +107,11 @@ export function logReadingFullSetPerformancePhase(
 }
 
 export function readingFullSetTraceHeaders(
-  token: string,
+  token: string | null,
   trace: ReadingFullSetPerformanceTrace | null
 ) {
   return {
-    Authorization: `Bearer ${token}`,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...(trace ? { "X-Reading-Full-Set-Trace-Id": trace.traceId } : {})
   };
 }
@@ -118,7 +119,8 @@ export function readingFullSetTraceHeaders(
 export async function fetchReadingFullSetWithTimeout(
   input: RequestInfo | URL,
   init: RequestInit,
-  timeoutMs: number
+  timeoutMs: number,
+  fetchImpl: typeof fetch = fetch
 ) {
   const controller = new AbortController();
   let timedOut = false;
@@ -127,7 +129,7 @@ export async function fetchReadingFullSetWithTimeout(
     controller.abort();
   }, timeoutMs);
   try {
-    return await fetch(input, { ...init, signal: controller.signal });
+    return await fetchImpl(input, { ...init, signal: controller.signal });
   } catch (error) {
     if (timedOut) {
       const timeoutError = new Error("Request timed out");

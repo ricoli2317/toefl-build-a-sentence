@@ -194,7 +194,10 @@ test("RDL component uses pointer capture, mapped highlights, resize observation,
   assert.match(source, /new ResizeObserver\(recalculateSelectionRect\)/);
   assert.match(source, /data-rdl-highlight="true"/);
   assert.match(source, /material\.selectionMapUrl/);
-  assert.doesNotMatch(source, /OCR|querySelector|setTimeout|r2\.dev|\/Users\/rico\/Desktop/);
+  const rdlSource = source.slice(source.indexOf("function RdlPracticeWorkspace"), source.indexOf("function sameRdlRect"));
+  assert.doesNotMatch(rdlSource, /OCR|r2\.dev|\/Users\/rico\/Desktop/);
+  assert.match(rdlSource, /typeof ResizeObserver === "undefined"/);
+  assert.match(rdlSource, /rdlLexicalSelectionRect/);
 });
 
 test("RDL lookup closes on outside pointer input without swallowing panel controls or new selections", () => {
@@ -207,11 +210,9 @@ test("RDL lookup closes on outside pointer input without swallowing panel contro
     source.indexOf("function sameRdlRect")
   );
 
-  assert.match(rdlSource, /lookupPanelRef/);
-  assert.match(rdlSource, /lookupPanelRef\.current\?\.contains\(target\)/);
+  assert.match(rdlSource, /target\.closest\('\[data-testid="lexical-lookup-card"\]'\)/);
   assert.match(rdlSource, /document\.addEventListener\("pointerdown", closeOnOutsidePointer, true\)/);
   assert.match(rdlSource, /document\.removeEventListener\("pointerdown", closeOnOutsidePointer, true\)/);
   assert.match(rdlSource, /setSelectionCommitted\(false\)/);
-  assert.match(rdlSource, /setLookupQuery\(rdlSelectedText\(selectionMap, range\)\)/);
-  assert.match(rdlSource, /ref=\{lookupPanelRef\}/);
+  assert.match(rdlSource, /lexical\.lookup\([\s\S]*rdlLexicalSelection\(selectionMap, range\)/);
 });

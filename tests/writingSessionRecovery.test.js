@@ -391,8 +391,8 @@ test("the shared login page returns to a safe student practice URL", () => {
   const login = read("components/LoginPanel.tsx");
   assert.match(login, /safeStudentReturnTo/);
   assert.match(login, /new URLSearchParams\(window\.location\.search\)/);
-  assert.match(login, /router\.push\(readLoginReturnTo\(\) \?\? result\.defaultRoute\)/);
-  assert.match(login, /router\.replace\(readLoginReturnTo\(\) \?\? result\.defaultRoute\)/);
+  assert.match(login, /router\.push\(readLoginReturnTo\(\) \?\? result\.account\.defaultRoute\)/);
+  assert.match(login, /router\.replace\(readLoginReturnTo\(\) \?\? result\.account\.defaultRoute\)/);
 });
 
 test("the recovery storage module never carries credentials", () => {

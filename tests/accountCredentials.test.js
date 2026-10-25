@@ -53,7 +53,8 @@ test("Auth error messages map to short user-facing text", () => {
 
 test("login error messages surface banned accounts", () => {
   assert.equal(describeLoginErrorMessage("User is banned"), "账号已停用，请联系管理员。");
-  assert.equal(describeLoginErrorMessage("Invalid login credentials"), "Invalid login credentials");
+  assert.equal(describeLoginErrorMessage("Invalid login credentials"), "账号或密码错误，请检查后重试。");
+  assert.equal(describeLoginErrorMessage("Load failed"), "网络连接失败，请检查网络后重试。");
 });
 
 test("forgot-password wait message follows the server-resolved account role", () => {

@@ -5,16 +5,9 @@ import { type WritingRequestSession } from "@/lib/writingRequestSession";
 
 export type WritingClientSession = WritingRequestSession;
 
-let browserClient: ReturnType<typeof createBrowserSupabase> | null = null;
-
-/**
- * One long-lived browser client per tab. Reusing a single client keeps
- * Supabase's own auto-refresh timer (already enabled by default) working on
- * the same session storage record instead of spawning competing refreshers.
- */
+/** Writing uses the same page-owned client as login, reading and the shell. */
 export function getWritingClient() {
-  if (!browserClient) browserClient = createBrowserSupabase();
-  return browserClient;
+  return createBrowserSupabase();
 }
 
 function toWritingClientSession(

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { createBrowserUuid } from "@/lib/browserId";
+import { fetchReadingFullSetWithSession, ReadingFullSetSessionError } from "@/lib/reading/fullSetClientSession";
 import { useRouter } from "next/navigation";
 import {
   useCallback,
@@ -204,8 +206,15 @@ export function ReadingFullSetRunner({
     sessionReady,
     setData: setCachedData
   } = useStudentDataCache();
-  const [accessToken, setAccessToken] = useState("");
+  const [sessionBound, setSessionBound] = useState(false);
   const studentIdRef = useRef("");
+  const request = useCallback<typeof fetch>((input, init) => fetchReadingFullSetWithSession(input, init, {
+    studentId: studentIdRef.current,
+    currentStudentId: () => getSession()?.studentId ?? null,
+    cachedSession: getSession
+  }), [getSession]);
+  const requestWithTimeout = useCallback((input: RequestInfo | URL, init: RequestInit, timeoutMs: number) =>
+    fetchReadingFullSetWithTimeout(input, init, timeoutMs, request), [request]);
   const [runner, setRunner] = useState<ReadingFullSetRunnerPayload | null>(null);
   const runnerRef = useRef<ReadingFullSetRunnerPayload | null>(null);
   const [position, setPosition] = useState<ReadingFullSetRunnerPosition>({
@@ -229,6 +238,7 @@ export function ReadingFullSetRunner({
   const [loading, setLoading] = useState(true);
   const [timerPausedForLoad, setTimerPausedForLoad] = useState(false);
   const [occurrenceLoad, setOccurrenceLoad] = useState<OccurrenceLoadState>({ status: "idle" });
+  const [occurrenceRetry, setOccurrenceRetry] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
   const [startingModule2, setStartingModule2] = useState(false);
@@ -459,12 +469,12 @@ export function ReadingFullSetRunner({
     }, true);
   }, [applyRunner, attemptId, expectedFullSetId, logTransitionPhase, seedOccurrenceSnapshot]);
 
-  const loadRunner = useCallback(async (token: string) => {
-    const response = await fetchReadingFullSetWithTimeout(
+  const loadRunner = useCallback(async () => {
+    const response = await requestWithTimeout(
       `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}`,
       {
         cache: "no-store",
-        headers: readingFullSetTraceHeaders(token, transitionTraceRef.current)
+        headers: readingFullSetTraceHeaders(null, transitionTraceRef.current)
       },
       20_000
     );
@@ -482,7 +492,7 @@ export function ReadingFullSetRunner({
       applyRunner(payload.runner, "authoritative");
     }
     return payload.runner;
-  }, [applyBootstrap, applyRunner, attemptId, expectedFullSetId]);
+  }, [applyBootstrap, applyRunner, attemptId, expectedFullSetId, requestWithTimeout]);
 
   const applyAttempt = useCallback((
     attempt: ReadingFullSetAttemptSummary,
@@ -502,13 +512,13 @@ export function ReadingFullSetRunner({
     return false;
   }, [applyRunner]);
 
-  const finishLoadPause = useCallback(async (token: string, loadId: string) => {
+  const finishLoadPause = useCallback(async (loadId: string) => {
     let lastError: Error | null = null;
     for (let attemptNumber = 0; attemptNumber < 2; attemptNumber += 1) {
       try {
-        const response = await fetch(
+        const response = await request(
           `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/loads/${encodeURIComponent(loadId)}`,
-          { method: "PUT", cache: "no-store", headers: { Authorization: `Bearer ${token}` } }
+          { method: "PUT", cache: "no-store" }
         );
         const payload = await response.json().catch(() => ({})) as LoadPauseResponse;
         if (!response.ok || !payload.finished || !payload.attempt) {
@@ -518,6 +528,7 @@ export function ReadingFullSetRunner({
         if (activeLoadPauseRef.current?.loadId === loadId) updateActiveLoadPause(null);
         return;
       } catch (finishError) {
+        if (finishError instanceof ReadingFullSetSessionError) throw finishError;
         lastError = finishError instanceof Error
           ? finishError
           : new Error("题目加载计时同步失败，请重试。");
@@ -525,18 +536,17 @@ export function ReadingFullSetRunner({
       }
     }
     throw lastError ?? new Error("题目加载计时同步失败，请重试。");
-  }, [applyAttempt, attemptId, updateActiveLoadPause]);
+  }, [applyAttempt, attemptId, request, updateActiveLoadPause]);
 
-  const beginLoadPause = useCallback(async (token: string, occurrenceId: string | null) => {
+  const beginLoadPause = useCallback(async (occurrenceId: string | null) => {
     setTimerPausedForLoad(true);
-    const loadId = crypto.randomUUID();
-    const response = await fetch(
+    const loadId = createBrowserUuid();
+    const response = await request(
       `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/loads`,
       {
         method: "POST",
         cache: "no-store",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ loadId, occurrenceId })
@@ -560,16 +570,16 @@ export function ReadingFullSetRunner({
     const activePause = { expiresAt: payload.expiresAt, loadId: payload.loadId };
     updateActiveLoadPause(activePause);
     return activePause;
-  }, [applyAttempt, attemptId, updateActiveLoadPause]);
+  }, [applyAttempt, attemptId, request, updateActiveLoadPause]);
 
   useEffect(() => {
-    if (!accessToken || !activeLoadPause) return;
+    if (!sessionBound || !activeLoadPause) return;
     let stopped = false;
     const renew = async () => {
       try {
-        const response = await fetch(
+        const response = await request(
           `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/loads/${encodeURIComponent(activeLoadPause.loadId)}`,
-          { method: "PATCH", cache: "no-store", headers: { Authorization: `Bearer ${accessToken}` } }
+          { method: "PATCH", cache: "no-store" }
         );
         const payload = await response.json().catch(() => ({})) as LoadPauseResponse;
         if (stopped || !response.ok || typeof payload.renewed !== "boolean" || !payload.attempt) return;
@@ -595,7 +605,7 @@ export function ReadingFullSetRunner({
       stopped = true;
       window.clearInterval(heartbeat);
     };
-  }, [accessToken, activeLoadPause, applyAttempt, attemptId, updateActiveLoadPause]);
+  }, [sessionBound, activeLoadPause, applyAttempt, attemptId, request, updateActiveLoadPause]);
 
   useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
@@ -613,30 +623,28 @@ export function ReadingFullSetRunner({
     let cancelled = false;
     void (async () => {
       let initialPause: { expiresAt: string; loadId: string } | null = null;
-      let token = "";
       try {
         const session = getSession();
         if (!session) throw new Error("请先登录后再开始套题练习。");
         if (cancelled) return;
-        token = session.accessToken;
         studentIdRef.current = session.studentId;
-        setAccessToken(token);
-        const handoff = consumeReadingFullSetBootstrapHandoff({ attemptId, expectedFullSetId });
+        setSessionBound(true);
+        const handoff = consumeReadingFullSetBootstrapHandoff({ attemptId, expectedFullSetId, studentId: session.studentId });
         if (handoff) {
           transitionTraceRef.current = handoff.trace;
           transitionLoggedPhasesRef.current = new Set();
           applyBootstrap(handoff, 1);
           return;
         }
-        initialPause = await beginLoadPause(token, null);
+        initialPause = await beginLoadPause(null);
         if (cancelled) {
-          if (initialPause) await finishLoadPause(token, initialPause.loadId);
+          if (initialPause) await finishLoadPause(initialPause.loadId);
           return;
         }
-        await loadRunner(token);
+        await loadRunner();
       } catch (loadError) {
-        if (initialPause && token) {
-          await finishLoadPause(token, initialPause.loadId).catch(() => undefined);
+        if (initialPause) {
+          await finishLoadPause(initialPause.loadId).catch(() => undefined);
         }
         updateActiveLoadPause(null);
         setTimerPausedForLoad(false);
@@ -699,11 +707,11 @@ export function ReadingFullSetRunner({
     const route = `/api/reading/full-set-attempts/${attemptId}/occurrences/${input.occurrence.occurrenceId}`;
     return occurrenceCacheRef.current.acquire(key, async (signal) => {
       const contentStartedAt = performance.now();
-      const response = await fetch(
+      const response = await request(
         `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(input.occurrence.occurrenceId)}`,
         {
           cache: "no-store",
-          headers: readingFullSetTraceHeaders(accessToken, input.trace),
+          headers: readingFullSetTraceHeaders(null, input.trace),
           signal
         }
       );
@@ -772,7 +780,7 @@ export function ReadingFullSetRunner({
       seedOccurrenceSnapshot(completePayload);
       return completePayload;
     }, { retryError: input.retryError, timeoutMs: 15_000 });
-  }, [accessToken, attemptId, seedOccurrenceSnapshot]);
+  }, [attemptId, request, seedOccurrenceSnapshot]);
 
   const applyOccurrencePayload = useCallback((completePayload: ReadingFullSetOccurrencePracticePayload) => {
     const occurrenceId = completePayload.occurrence.occurrenceId;
@@ -847,7 +855,7 @@ export function ReadingFullSetRunner({
   }, [currentOccurrence, currentPayload, runner]);
 
   useEffect(() => {
-    if (!accessToken || !currentOccurrence || currentPayload) return;
+    if (!sessionBound || !currentOccurrence || currentPayload) return;
     const requestId = occurrenceRequestRef.current + 1;
     occurrenceRequestRef.current = requestId;
     const generation = runnerGenerationRef.current;
@@ -889,7 +897,7 @@ export function ReadingFullSetRunner({
         }
         if (moduleAttempt.status === "active" && navigationSource !== "hit" && !pause) {
           setTimerPausedForLoad(true);
-          pause = await beginLoadPause(accessToken, currentOccurrence.occurrenceId);
+          pause = await beginLoadPause(currentOccurrence.occurrenceId);
         }
         if (moduleAttempt.status === "active" && navigationSource !== "hit" && !pause) {
           throw new Error("题目加载失败，请重试。");
@@ -935,8 +943,8 @@ export function ReadingFullSetRunner({
         }
         if (requestId !== occurrenceRequestRef.current || generation !== runnerGenerationRef.current) return;
         applyOccurrencePayload(completePayload);
-      } catch {
-        if (pause) await finishLoadPause(accessToken, pause.loadId).catch(() => undefined);
+      } catch (loadError) {
+        if (pause) await finishLoadPause(pause.loadId).catch(() => undefined);
         updateActiveLoadPause(null);
         if (requestId !== occurrenceRequestRef.current || generation !== runnerGenerationRef.current) return;
         const failedNavigation = navigationRef.current;
@@ -949,10 +957,10 @@ export function ReadingFullSetRunner({
         movingRef.current = false;
         setNavigating(false);
         setTimerPausedForLoad(false);
-        setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
+        setOccurrenceLoad({ message: loadError instanceof ReadingFullSetSessionError ? loadError.message : "题目加载失败，请重试。", status: "error" });
       }
     })();
-  }, [accessToken, acquireOccurrence, applyOccurrencePayload, attemptId, beginLoadPause, currentOccurrence, currentPayload, finishLoadPause, updateActiveLoadPause]);
+  }, [sessionBound, acquireOccurrence, applyOccurrencePayload, attemptId, beginLoadPause, currentOccurrence, currentPayload, finishLoadPause, occurrenceRetry, updateActiveLoadPause]);
 
   const handleWorkspaceReady = useCallback(() => {
     const activeRunner = runnerRef.current;
@@ -960,7 +968,7 @@ export function ReadingFullSetRunner({
     const moduleAttempt = activeRunner
       ? readingFullSetCurrentModuleAttempt(activeRunner.attempt)
       : null;
-    if (!accessToken || !occurrence || !moduleAttempt || moduleAttempt.status === "submitted") return;
+    if (!sessionBound || !occurrence || !moduleAttempt || moduleAttempt.status === "submitted") return;
     const readyKey = `${runnerGenerationRef.current}:${moduleAttempt.moduleAttemptId}:${occurrence.occurrenceId}`;
     if (readyActionRef.current === readyKey) return;
     readyActionRef.current = readyKey;
@@ -982,7 +990,7 @@ export function ReadingFullSetRunner({
       try {
         if (moduleAttempt.status === "active") {
           const pause = activeLoadPauseRef.current;
-          if (pause) await finishLoadPause(accessToken, pause.loadId);
+          if (pause) await finishLoadPause(pause.loadId);
         }
         if (
           moduleAttempt.status === "preparing"
@@ -1002,12 +1010,12 @@ export function ReadingFullSetRunner({
             route: `/api/reading/full-set-attempts/${attemptId}/modules/${moduleAttempt.moduleNumber}/activate`
           }, true);
           const activationStartedAt = performance.now();
-          const response = await fetchReadingFullSetWithTimeout(
+          const response = await requestWithTimeout(
             `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${moduleAttempt.moduleNumber}/activate`,
             {
               method: "POST",
               cache: "no-store",
-              headers: readingFullSetTraceHeaders(accessToken, transitionTraceRef.current)
+              headers: readingFullSetTraceHeaders(null, transitionTraceRef.current)
             },
             12_000
           );
@@ -1086,11 +1094,11 @@ export function ReadingFullSetRunner({
         setNavigating(false);
       }
     })();
-  }, [accessToken, applyAttempt, attemptId, finishLoadPause, logTransitionPhase, position.occurrenceIndex, updateActiveLoadPause]);
+  }, [sessionBound, applyAttempt, attemptId, finishLoadPause, logTransitionPhase, position.occurrenceIndex, requestWithTimeout, updateActiveLoadPause]);
 
   useEffect(() => {
     if (
-      !accessToken
+      !sessionBound
       || !runner
       || !currentOccurrence
       || !currentPayload
@@ -1134,7 +1142,7 @@ export function ReadingFullSetRunner({
         taskType: nextOccurrence.taskType
       });
     });
-  }, [accessToken, acquireOccurrence, attemptId, currentOccurrence, currentPayload, interactiveOccurrenceId, position.occurrenceIndex, runner]);
+  }, [sessionBound, acquireOccurrence, attemptId, currentOccurrence, currentPayload, interactiveOccurrenceId, position.occurrenceIndex, runner]);
 
   const commitActiveQuestionTime = useCallback(() => {
     const active = activeTimingRef.current;
@@ -1202,7 +1210,7 @@ export function ReadingFullSetRunner({
 
   const persistSave = useCallback(async (snapshot: ReadingFullSetSaveSnapshot<BackgroundSave>) => {
     const activeRunner = runnerRef.current;
-    if (!accessToken || !activeRunner) {
+    if (!sessionBound || !activeRunner) {
       throw new ReadingFullSetSaveError("答案保存尚未准备好。");
     }
     if (readingFullSetRunnerModuleKey(activeRunner.attempt) !== snapshot.moduleAttemptId) {
@@ -1212,14 +1220,14 @@ export function ReadingFullSetRunner({
     for (let reconciliationAttempt = 0; reconciliationAttempt < 3; reconciliationAttempt += 1) {
       let response: Response;
       try {
-        response = await fetch(
+        response = await request(
           `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/occurrences/${encodeURIComponent(snapshot.occurrenceId)}`,
           {
             method: "PUT",
             cache: "no-store",
             keepalive: true,
             headers: {
-              ...readingFullSetTraceHeaders(accessToken, snapshot.value.trace),
+              ...readingFullSetTraceHeaders(null, snapshot.value.trace),
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -1232,9 +1240,9 @@ export function ReadingFullSetRunner({
           }
         );
       } catch (error) {
-        throw new ReadingFullSetSaveError("答案保存失败，请检查网络后重试。", {
+        throw new ReadingFullSetSaveError(error instanceof ReadingFullSetSessionError ? error.message : "答案保存失败，请检查网络后重试。", {
           cause: error,
-          retryable: true
+          retryable: !(error instanceof ReadingFullSetSessionError)
         });
       }
       const result = await response.json().catch(() => ({})) as SaveResponse;
@@ -1316,7 +1324,7 @@ export function ReadingFullSetRunner({
       });
     }
     throw new ReadingFullSetSaveError("答案同步仍在变化，请重试。", { retryable: true });
-  }, [accessToken, applyAttempt, applyMergedOccurrenceAnswers, attemptId]);
+  }, [sessionBound, applyAttempt, applyMergedOccurrenceAnswers, attemptId, request]);
 
   saveTransportRef.current = persistSave;
   saveEventRef.current = (event) => {
@@ -1363,17 +1371,16 @@ export function ReadingFullSetRunner({
 
   const persistCursor = useCallback(async (snapshot: ReadingFullSetCursorSnapshot) => {
     const activeRunner = runnerRef.current;
-    if (!accessToken || !activeRunner) throw new Error("题位保存尚未准备好。");
+    if (!sessionBound || !activeRunner) throw new Error("题位保存尚未准备好。");
     const moduleAttempt = readingFullSetActiveModuleAttempt(activeRunner.attempt);
     if (!moduleAttempt || moduleAttempt.moduleAttemptId !== snapshot.moduleAttemptId) return;
-    const response = await fetch(
+    const response = await request(
       `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${snapshot.moduleNumber}/cursor`,
       {
         method: "PUT",
         cache: "no-store",
         keepalive: true,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -1388,7 +1395,7 @@ export function ReadingFullSetRunner({
       throw new Error(result.error ?? "套题题位保存失败。");
     }
     cursorQueueRef.current?.prime(snapshot.moduleAttemptId, Number(result.cursorRevision));
-  }, [accessToken, attemptId]);
+  }, [sessionBound, attemptId, request]);
 
   cursorTransportRef.current = persistCursor;
 
@@ -1577,20 +1584,19 @@ export function ReadingFullSetRunner({
       : null;
     const timer = timerRef.current;
     if (
-      !accessToken
+      !sessionBound
       || !moduleAttempt
       || !timer
       || timer.moduleAttemptId !== moduleAttempt.moduleAttemptId
     ) return true;
 
-    const response = await fetch(
+    const response = await request(
       `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${moduleAttempt.moduleNumber}/pause`,
       {
         method: "POST",
         cache: "no-store",
         keepalive: true,
         headers: {
-          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
@@ -1609,7 +1615,7 @@ export function ReadingFullSetRunner({
       throw new Error(result.error ?? "Module 计时暂停失败，请重试。");
     }
     return true;
-  }, [accessToken, applyAttempt, attemptId, remainingSeconds, timerPausedForLoad]);
+  }, [sessionBound, applyAttempt, attemptId, remainingSeconds, request, timerPausedForLoad]);
 
   useEffect(() => {
     const saveBeforeLeaving = () => {
@@ -1799,13 +1805,13 @@ export function ReadingFullSetRunner({
           route: `/api/reading/full-set-attempts/${attemptId}/modules/1/submit`
         });
       }
-      const response = await fetch(
+      const response = await request(
         `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/${moduleNumber}/submit`,
         {
           method: "POST",
           cache: "no-store",
           headers: {
-            ...readingFullSetTraceHeaders(accessToken, transitionTraceRef.current),
+            ...readingFullSetTraceHeaders(null, transitionTraceRef.current),
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
@@ -1901,7 +1907,7 @@ export function ReadingFullSetRunner({
       submittingRef.current = false;
       setSubmitting(false);
     }
-  }, [accessToken, applyAttempt, applyRunner, attemptId, beginTransitionTrace, commitActiveQuestionTime, flushPendingSave, getEntry, logTransitionPhase, setCachedData, stageModuleAnswerSnapshot]);
+  }, [applyAttempt, applyRunner, attemptId, beginTransitionTrace, commitActiveQuestionTime, flushPendingSave, getEntry, logTransitionPhase, request, setCachedData, stageModuleAnswerSnapshot]);
 
   useEffect(() => {
     if (!runner) return;
@@ -1925,33 +1931,18 @@ export function ReadingFullSetRunner({
     return () => window.clearInterval(timer);
   }, [runner, submitModule, timerPausedForLoad]);
 
-  const retryOccurrence = useCallback(async () => {
-    if (!accessToken) return;
-    const occurrenceId = currentOccurrence?.occurrenceId ?? null;
-    setTimerPausedForLoad(true);
-    let pause: { expiresAt: string; loadId: string } | null = null;
-    try {
-      pause = await beginLoadPause(accessToken, occurrenceId);
-      clearOccurrenceCaches();
-      runnerGenerationRef.current += 1;
-      occurrenceRequestRef.current += 1;
-      setOccurrencePayloads({});
-      setAnswersByOccurrence({});
-      answersRef.current = {};
-      questionTimesRef.current = {};
-      activeTimingRef.current = null;
-      await loadRunner(accessToken);
-      setOccurrenceLoad({ status: "idle" });
-    } catch {
-      if (pause) await finishLoadPause(accessToken, pause.loadId).catch(() => undefined);
-      updateActiveLoadPause(null);
-      setTimerPausedForLoad(false);
-      setOccurrenceLoad({ message: "题目加载失败，请重试。", status: "error" });
-    }
-  }, [accessToken, beginLoadPause, clearOccurrenceCaches, currentOccurrence, finishLoadPause, loadRunner, updateActiveLoadPause]);
+  const retryOccurrence = useCallback(() => {
+    if (!sessionBound || !currentOccurrence) return;
+    setError("");
+    setOccurrenceLoad({ status: "idle" });
+    // Retry only the failed content/activation, never reload the runner or
+    // clear answers, timing, cursor or already loaded occurrences.
+    if (currentPayload) handleWorkspaceReady();
+    else setOccurrenceRetry((value) => value + 1);
+  }, [sessionBound, currentOccurrence, currentPayload, handleWorkspaceReady]);
 
   const startModule2 = async () => {
-    if (!accessToken || !runner || startingModule2) return;
+    if (!sessionBound || !runner || startingModule2) return;
     const trace = transitionTraceRef.current ?? beginTransitionTrace();
     logReadingFullSetPerformancePhase(trace, "m2_start_click", { moduleNumber: 2 });
     setStartingModule2(true);
@@ -1960,18 +1951,12 @@ export function ReadingFullSetRunner({
     const bootstrapStartedAt = performance.now();
     logTransitionPhase("m2_bootstrap_request_start", { moduleNumber: 2, route });
     try {
-      const currentSession = getSession();
-      if (!currentSession || currentSession.studentId !== studentIdRef.current) {
-        throw new Error("请先登录后再开始套题练习。");
-      }
-      const currentAccessToken = currentSession.accessToken;
-      if (currentAccessToken !== accessToken) setAccessToken(currentAccessToken);
-      const response = await fetchReadingFullSetWithTimeout(
+      const response = await requestWithTimeout(
         `/api/reading/full-set-attempts/${encodeURIComponent(attemptId)}/modules/2/start`,
         {
           method: "POST",
           cache: "no-store",
-          headers: readingFullSetTraceHeaders(currentAccessToken, trace)
+          headers: readingFullSetTraceHeaders(null, trace)
         },
         20_000
       );

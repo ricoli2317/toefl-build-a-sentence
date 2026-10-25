@@ -2143,6 +2143,7 @@ function RdlPracticeWorkspace({
 }) {
   const lexical = useLexicalLookup();
   const [assetStatus, setAssetStatus] = useState<"loading" | "ready" | "error">("loading");
+  const [imageAttempt, setImageAttempt] = useState(0);
   const [selectionMap, setSelectionMap] = useState<RdlSelectionMap | null>(null);
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
   const [selectionRect, setSelectionRect] = useState<RdlContainRect | null>(null);
@@ -2178,7 +2179,7 @@ function RdlPracticeWorkspace({
     if (image?.complete && image.naturalWidth && image.naturalHeight) {
       void finishImageLoad(image);
     }
-  }, [finishImageLoad, material.imageUrl]);
+  }, [finishImageLoad, imageAttempt, material.imageUrl]);
 
   useEffect(() => {
     setSelectionMap(null);
@@ -2251,12 +2252,12 @@ function RdlPracticeWorkspace({
     const stage = imageStageRef.current;
     const image = imageRef.current;
     if (!stage || !image) return;
-    const observer = new ResizeObserver(recalculateSelectionRect);
-    observer.observe(stage);
-    observer.observe(image);
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(recalculateSelectionRect);
+    observer?.observe(stage);
+    observer?.observe(image);
     window.addEventListener("resize", recalculateSelectionRect);
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
       window.removeEventListener("resize", recalculateSelectionRect);
     };
   }, [recalculateSelectionRect]);
@@ -2368,11 +2369,21 @@ function RdlPracticeWorkspace({
             </p>
           ) : null}
           {assetStatus === "error" ? (
-            <p className="max-w-sm text-center text-sm font-semibold leading-6 text-student-muted" role="alert">
-              阅读材料暂时无法显示，请稍后重试。
-            </p>
+            <div className="grid max-w-sm justify-items-center gap-3 text-center">
+              <p className="text-sm font-semibold leading-6 text-student-muted" role="alert">
+                阅读材料图片加载失败，题目和作答已保留，请重试。
+              </p>
+              <button className="student-button-secondary" onClick={() => {
+                setAssetStatus("loading");
+                setImageDimensions({ width: 0, height: 0 });
+                setImageAttempt((value) => value + 1);
+              }} type="button">重新加载图片</button>
+            </div>
           ) : (
+            // Keep canonical pixel dimensions and native load/decode/error handling.
+            // eslint-disable-next-line @next/next/no-img-element
             <img
+              key={`${material.imageUrl}:${imageAttempt}`}
               alt={material.title}
               className={`${naturalFlow ? "h-auto" : "h-full"} w-full object-contain ${assetStatus === "ready" ? "opacity-100" : "opacity-0"}`}
               onError={() => setAssetStatus("error")}

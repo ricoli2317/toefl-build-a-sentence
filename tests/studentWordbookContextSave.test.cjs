@@ -16,7 +16,7 @@ function fixture({ saved = true, teacherReadonly = false } = {}) {
   let stateIndex = 0, refIndex = 0;
   const react = { ...React, useEffect() {}, useLayoutEffect() {}, useCallback: fn => fn,
     useState: initial => [stateIndex++ === 0 ? state : initial, () => {}],
-    useRef: initial => ({ current: refIndex++ === 6 ? selection : initial }) };
+    useRef: initial => ({ current: refIndex++ === 7 ? selection : initial }) };
   const exports = {};
   const code = ts.transpileModule(fs.readFileSync('components/lexical/LexicalLookup.tsx', 'utf8'), {
     compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX }
@@ -29,13 +29,16 @@ function fixture({ saved = true, teacherReadonly = false } = {}) {
     require(name) {
       if (name === 'react') return react;
       if (name === '@/lib/supabase/client') return { createBrowserSupabase: () => ({ auth: {
-        getSession: async () => ({ data: { session: { access_token: 'offline-test-only' } } })
+        getSession: async () => ({ data: { session: { access_token: 'offline-test-only', user: { id: 'offline-user' } } } })
       } }) };
+      if (name === '@/lib/cacheInvalidation') return { publishCacheInvalidation() {} };
+      if (name === '@/lib/lexical/lookupCapabilities') return require('../lib/lexical/lookupCapabilities.ts');
+      if (name === '@/lib/lexical/wordbookContextForm') return require('../lib/lexical/wordbookContextForm.ts');
       if (name.startsWith('@/lib/lexical/')) return {};
       return require(name);
     }
   });
-  const tree = exports.LexicalLookupProvider({ access: selection.access, sourceType: 'rap', teacherReadonly, children: null });
+  const tree = exports.LexicalLookupProvider({ access: selection.access, sourceType: 'rap', pageMode: 'readonly', teacherReadonly, children: null });
   function find(node) {
     if (!node || typeof node !== 'object') return null;
     if (node.type === exports.LexicalLookupCard) return node;

@@ -200,6 +200,6 @@ test("restored occurrence drives existing one-ahead prefetch and keeps load leas
   );
   assert.match(prefetch, /runner\.occurrences\[position\.occurrenceIndex \+ 1\]/);
   assert.match(prefetch, /acquireOccurrence\([\s\S]*prefetch: true/);
-  assert.match(runner, /initialPause = await beginLoadPause\(token, null\)[\s\S]*await loadRunner\(token\)/);
-  assert.match(runner, /moduleAttempt\.status === "active"[\s\S]*finishLoadPause\(accessToken, pause\.loadId\)/);
+  assert.match(runner, /initialPause = await beginLoadPause\(null\)[\s\S]*await loadRunner\(\)/);
+  assert.match(runner, /moduleAttempt\.status === "active"[\s\S]*finishLoadPause\(pause\.loadId\)/);
 });

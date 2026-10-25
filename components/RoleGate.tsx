@@ -5,45 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { canSwitchArea, roleCanAccess } from "@/lib/accountPermissions";
+import { accountDiagnosticCode, accountFailure, describeAccountFailure, reportAccountFailure, type AccountFailure } from "@/lib/accountCredentials";
+import { classifyAccountVerificationError, fetchVerifiedAccount } from "@/lib/accountVerification";
 import type { AppArea, UserRole } from "@/lib/types";
 
 type AccountContextValue = { displayName: string; role: UserRole; userId: string };
 const AccountContext = createContext<AccountContextValue | null>(null);
 
 const ACCOUNT_CACHE_PREFIX = "tps:account:";
-const ACCOUNT_CACHE_TTL_MS = 5 * 60 * 1000;
-
-/**
- * Account verification is not allowed to gate the first paint on every hard
- * load: a recent verified account (same tab session, five minutes) renders the
- * shell immediately while the server check still runs and can still redirect
- * an account that lost access. Every teacher API re-verifies the token on the
- * server, so the cached value is a rendering hint, never an authorization.
- */
-function readCachedAccount(area: AppArea): AccountContextValue | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.sessionStorage.getItem(`${ACCOUNT_CACHE_PREFIX}${area}`);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as { account?: AccountContextValue; cachedAt?: number };
-    if (!parsed.account?.userId || !parsed.account.role || !parsed.cachedAt) return null;
-    if (Date.now() - parsed.cachedAt > ACCOUNT_CACHE_TTL_MS) return null;
-    return parsed.account;
-  } catch {
-    return null;
-  }
-}
-
-function writeCachedAccount(area: AppArea, account: AccountContextValue) {
-  try {
-    window.sessionStorage.setItem(
-      `${ACCOUNT_CACHE_PREFIX}${area}`,
-      JSON.stringify({ account, cachedAt: Date.now() })
-    );
-  } catch {
-    // Session storage is an optimization only.
-  }
-}
 
 function clearCachedAccount(area: AppArea) {
   try {
@@ -55,102 +24,119 @@ function clearCachedAccount(area: AppArea) {
 
 export function RoleGate({ area, children }: { area: AppArea; children: React.ReactNode }) {
   const router = useRouter();
-  const [account, setAccount] = useState<AccountContextValue | null>(null);
-  const [configurationError, setConfigurationError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+  const [state, setState] = useState<{
+    area: AppArea;
+    attempt: number;
+    account: AccountContextValue | null;
+    failure: AccountFailure | null;
+  } | null>(null);
 
-  // Restore the last verified account right after mount (never during the
-  // hydration render, which would mismatch the server HTML), but only while it
-  // still belongs to the signed-in session user. The server check below always
-  // runs and can redirect an account that lost access.
+  // No cached identity authorizes rendering. Each mount/area/retry must pass
+  // this verification; a transient failure never exposes protected children.
   useEffect(() => {
     let cancelled = false;
-    void createBrowserSupabase().auth.getSession().then(({ data }) => {
+    let sessionUserId: string | null | undefined;
+    let unsubscribe: (() => void) | undefined;
+    function identityChanged() {
+      // Revoke this rendering immediately, then verify the new identity. A
+      // same-user refresh does neither, preserving active answers and drafts.
+      cancelled = true;
+      clearCachedAccount(area);
+      setState(null);
+      setAttempt((value) => value + 1);
+    }
+    function fail(failure: AccountFailure) {
       if (cancelled) return;
-      const sessionUserId = data.session?.user?.id ?? null;
-      const cached = readCachedAccount(area);
-      if (cached && sessionUserId === cached.userId) {
-        setAccount((current) => current ?? cached);
-      } else if (!sessionUserId || (cached && cached.userId !== sessionUserId)) {
-        clearCachedAccount(area);
-      }
-    });
-    return () => { cancelled = true; };
-  }, [area]);
-
-  useEffect(() => {
-    let cancelled = false;
+      clearCachedAccount(area);
+      reportAccountFailure(failure);
+      setState({ area, attempt, account: null, failure });
+    }
     async function verify() {
-      const supabase = createBrowserSupabase();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        clearCachedAccount(area);
-        router.replace("/login");
-        return;
-      }
-      let response: Response;
+      let stage: "session_lookup" | "account_verification" = "session_lookup";
       try {
-        response = await fetch("/api/account/me", {
-          headers: { Authorization: `Bearer ${session.access_token}` },
-          cache: "no-store"
+        const supabase = createBrowserSupabase();
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (cancelled) return;
+          const nextUserId = session?.user.id ?? null;
+          if (sessionUserId !== undefined && nextUserId !== sessionUserId) {
+            identityChanged();
+          }
+          sessionUserId = nextUserId;
         });
-      } catch {
-        if (!cancelled && !readCachedAccount(area)) setConfigurationError(true);
-        return;
-      }
-      const payload = await response.json().catch(() => ({})) as {
-        code?: string;
-        defaultRoute?: string;
-        displayName?: string;
-        role?: UserRole;
-        userId?: string;
-      };
-      if (cancelled) return;
-      if (!response.ok || !payload.role || !payload.userId) {
-        clearCachedAccount(area);
-        // A deactivated account cannot keep using its existing session: send it
-        // back to the login page, where the disabled state is explained.
-        if (payload.code === "ACCOUNT_DISABLED") {
+        unsubscribe = () => subscription.unsubscribe();
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (cancelled) return;
+        if (sessionError) {
+          fail(classifyAccountVerificationError(sessionError, stage));
+          return;
+        }
+        const nextUserId = session?.user.id ?? null;
+        if (sessionUserId !== undefined && nextUserId !== sessionUserId) {
+          identityChanged();
+          return;
+        }
+        sessionUserId = nextUserId;
+        if (!session) {
+          fail(accountFailure("ACCOUNT_UNAUTHENTICATED", stage));
           router.replace("/login");
           return;
         }
-        if (response.status === 403) {
-          setConfigurationError(true);
+        stage = "account_verification";
+        const result = await fetchVerifiedAccount(session.access_token, session.user.id);
+        if (cancelled) return;
+        if (!result.ok) {
+          fail(result.failure);
+          if (result.failure.code === "ACCOUNT_UNAUTHENTICATED") router.replace("/login");
           return;
         }
-        if (response.status === 401) {
-          router.replace("/login");
+        const payload = result.account;
+        if (!roleCanAccess(payload.role, area)) {
+          fail(accountFailure("ACCOUNT_ACCESS_DENIED", stage));
+          router.replace(payload.defaultRoute);
           return;
         }
-        setConfigurationError(true);
-        return;
+        const nextAccount = {
+          displayName: payload.displayName || payload.userId,
+          role: payload.role,
+          userId: payload.userId
+        };
+        setState({ area, attempt, account: nextAccount, failure: null });
+      } catch (error) {
+        fail(classifyAccountVerificationError(error, stage));
       }
-      const allowed = roleCanAccess(payload.role, area);
-      if (!allowed) {
-        clearCachedAccount(area);
-        router.replace(payload.defaultRoute ?? "/login");
-        return;
-      }
-      const displayName = payload.displayName?.trim() || payload.userId;
-      const nextAccount = { displayName, role: payload.role, userId: payload.userId };
-      writeCachedAccount(area, nextAccount);
-      setAccount(nextAccount);
     }
     void verify();
-    return () => { cancelled = true; };
-  }, [area, router]);
+    return () => {
+      cancelled = true;
+      unsubscribe?.();
+    };
+  }, [area, attempt, router]);
 
-  if (configurationError) {
+  // A previous area's/attempt's success cannot flash during a new check.
+  const current = state?.area === area && state.attempt === attempt ? state : null;
+  if (current?.failure) {
+    const failure = current.failure;
+    const temporary = failure.code === "ACCOUNT_VERIFICATION_UNAVAILABLE"
+      || failure.code === "ACCOUNT_VERIFICATION_FAILED";
     return (
       <main className="flex min-h-screen items-center justify-center bg-student-bg px-5">
         <div className="teacher-card max-w-md p-8 text-center">
-          <h1 className="text-xl font-bold text-student-text">账号配置异常</h1>
-          <p className="mt-3 text-sm text-student-muted">当前账号没有有效身份，请联系管理员处理。</p>
+          <h1 className="text-xl font-bold text-student-text">{temporary ? "暂时无法验证账号" : "无法访问"}</h1>
+          <p className="mt-3 text-sm text-student-muted" role="alert">{describeAccountFailure(failure.code)}</p>
+          <p className="mt-2 break-all text-xs text-student-muted" data-testid="account-diagnostic">
+            反馈管理员时请附诊断代码：<code className="select-text">{accountDiagnosticCode(failure)}</code>
+          </p>
+          <div className="mt-5 flex justify-center gap-3">
+            <button className="student-button-primary" onClick={() => setAttempt((value) => value + 1)} type="button">重新验证</button>
+            <Link className="student-button-secondary" href="/login">返回登录</Link>
+          </div>
         </div>
       </main>
     );
   }
-  if (!account) return <main className="min-h-screen bg-white" aria-busy="true" />;
-  return <AccountContext.Provider value={account}>{children}</AccountContext.Provider>;
+  if (!current?.account) return <main className="min-h-screen bg-white" aria-busy="true" />;
+  return <AccountContext.Provider key={current.account.userId} value={current.account}>{children}</AccountContext.Provider>;
 }
 
 export function useCurrentAccount() {

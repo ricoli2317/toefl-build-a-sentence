@@ -86,12 +86,14 @@ export function ReadingFullSetDetail({
       let attempt = attemptState.data?.attempt ?? null;
       if (isM1Entry) {
         const bootstrap = await startReadingFullSetAttempt(fullSetId, session.accessToken, trace);
+        if (cache.getSession()?.studentId !== session.studentId) throw new Error("账号已切换，请返回原账号继续练习。");
         attempt = bootstrap.runner.attempt;
         trace.attemptId = attempt.attemptId;
-        storeReadingFullSetBootstrapHandoff(bootstrap, trace);
+        storeReadingFullSetBootstrapHandoff(bootstrap, trace, session.studentId);
       } else if (action.action === "start_module_2" && attempt) {
         attempt = await startReadingFullSetModule2(attempt.attemptId, session.accessToken);
       }
+      if (cache.getSession()?.studentId !== session.studentId) throw new Error("账号已切换，请返回原账号继续练习。");
       if (!attempt) throw new Error("套题练习状态暂时不可用。");
       cache.setData<ReadingFullSetAttemptPayload>(attemptCacheKey, { attempt });
       cache.invalidate(`${STUDENT_READING_FULL_SET_CACHE_PREFIX}:catalog`);

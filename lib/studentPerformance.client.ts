@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { createDiagnosticId } from "./browserId.ts";
 
 type PageTrace = {
   actualRoute: string;
@@ -47,7 +48,7 @@ function createPageTrace(expectedRoute: string): PageTrace {
     startLogged: false,
     startedAt: now,
     startedAtEpochMs: Date.now(),
-    traceId: crypto.randomUUID()
+    traceId: createDiagnosticId()
   };
 }
 

@@ -1,15 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Eye, EyeOff, LockKeyhole, UserRound } from "lucide-react";
 import { ConfirmDialog, ModalShell } from "@/components/shared/ConfirmDialog";
 import {
   describeForgotPasswordError,
-  describeLoginErrorMessage,
-  passwordResetWaitingMessage
+  accountDiagnosticCode,
+  accountFailure,
+  classifyLoginError,
+  describeAccountFailure,
+  passwordResetWaitingMessage,
+  reportAccountFailure,
+  type AccountFailure
 } from "@/lib/accountCredentials";
+import { classifyAccountVerificationError, fetchVerifiedAccount } from "@/lib/accountVerification";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { resolveLoginAuthEmail } from "@/lib/accountIdentifier";
 import { safeStudentReturnTo } from "@/lib/studentNavigation";
@@ -37,7 +43,10 @@ export function LoginPanel() {
   const [account, setAccount] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [diagnosticCode, setDiagnosticCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const submittingRef = useRef(false);
+  const submissionVersion = useRef(0);
   const [showPassword, setShowPassword] = useState(false);
   const [forgotStage, setForgotStage] = useState<ForgotPasswordStage>("closed");
   const [forgotBusy, setForgotBusy] = useState(false);
@@ -48,21 +57,36 @@ export function LoginPanel() {
 
   useEffect(() => {
     let cancelled = false;
+    const version = submissionVersion.current;
+    const active = () => !cancelled && version === submissionVersion.current;
+    function showFailure(failure: AccountFailure) {
+      if (!active()) return;
+      reportAccountFailure(failure);
+      setError(describeAccountFailure(failure.code));
+      setDiagnosticCode(accountDiagnosticCode(failure));
+    }
     async function redirectExistingSession() {
-      const supabase = createBrowserSupabase();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session || cancelled) return;
-      const result = await resolveAuthenticatedRoute(session.access_token);
-      if (cancelled || !result) return;
-      if (result.defaultRoute) {
-        router.replace(readLoginReturnTo() ?? result.defaultRoute);
-        return;
+      let stage: "session_lookup" | "account_verification" = "session_lookup";
+      try {
+        const supabase = createBrowserSupabase();
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (!active()) return;
+        if (sessionError) {
+          showFailure(classifyAccountVerificationError(sessionError, "session_lookup"));
+          return;
+        }
+        if (!session) return;
+        stage = "account_verification";
+        const result = await resolveAuthenticatedRoute(session.access_token, session.user.id);
+        if (!active()) return;
+        if (result.ok) {
+          router.replace(readLoginReturnTo() ?? result.account.defaultRoute);
+        } else {
+          showFailure(result.failure);
+        }
+      } catch (error) {
+        showFailure(classifyAccountVerificationError(error, stage));
       }
-      setError(
-        result.code === "ACCOUNT_DISABLED"
-          ? "账号已停用，请联系管理员。"
-          : "账号配置异常，请联系管理员。"
-      );
     }
     void redirectExistingSession();
     return () => { cancelled = true; };
@@ -114,36 +138,52 @@ export function LoginPanel() {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    // State/disabled does not synchronously exclude a second submit event.
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    submissionVersion.current += 1;
     setLoading(true);
     setError("");
+    setDiagnosticCode("");
 
-    const supabase = createBrowserSupabase();
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({
-      email: resolveLoginAuthEmail(account),
-      password
-    });
-
-    if (signInError || !data.user) {
-      setError(describeLoginErrorMessage(signInError?.message));
-      setLoading(false);
-      return;
+    let stage: "password_sign_in" | "account_verification" = "password_sign_in";
+    function showFailure(failure: AccountFailure) {
+      reportAccountFailure(failure);
+      setError(describeAccountFailure(failure.code));
+      setDiagnosticCode(accountDiagnosticCode(failure));
     }
-
-    const result = data.session
-      ? await resolveAuthenticatedRoute(data.session.access_token)
-      : null;
-    if (!result?.defaultRoute) {
-      await supabase.auth.signOut();
-      setError(
-        result?.code === "ACCOUNT_DISABLED"
-          ? "账号已停用，请联系管理员。"
-          : "账号配置异常，请联系管理员。"
-      );
+    try {
+      const supabase = createBrowserSupabase();
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: resolveLoginAuthEmail(account),
+        password
+      });
+      if (signInError) {
+        showFailure(classifyLoginError(signInError));
+        return;
+      }
+      if (!data.user || !data.session || data.session.user.id !== data.user.id) {
+        showFailure(accountFailure("LOGIN_SERVICE_UNAVAILABLE", stage, { name: "AuthInvalidTokenResponseError" }));
+        return;
+      }
+      stage = "account_verification";
+      const result = await resolveAuthenticatedRoute(data.session.access_token, data.user.id);
+      if (!result.ok) {
+        // Verification failure is not consent to revoke this or other devices'
+        // sessions. Access stays denied; the user can explicitly retry login.
+        showFailure(result.failure);
+        return;
+      }
+      router.push(readLoginReturnTo() ?? result.account.defaultRoute);
+      router.refresh();
+    } catch (error) {
+      showFailure(stage === "password_sign_in"
+        ? classifyLoginError(error)
+        : classifyAccountVerificationError(error, stage));
+    } finally {
+      submittingRef.current = false;
       setLoading(false);
-      return;
     }
-    router.push(readLoginReturnTo() ?? result.defaultRoute);
-    router.refresh();
   }
 
   return (
@@ -230,6 +270,11 @@ export function LoginPanel() {
           </div>
 
           {error ? <p className="mt-4 text-sm font-semibold text-student-error" role="alert">{error}</p> : null}
+          {error && diagnosticCode ? (
+            <p className="mt-2 break-all text-xs text-student-muted" data-testid="account-diagnostic">
+              反馈管理员时请附诊断代码：<code className="select-text">{diagnosticCode}</code>
+            </p>
+          ) : null}
           <button
             className="mt-5 inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-xl bg-[linear-gradient(135deg,#7357ff,#5134ef)] px-4 py-2.5 text-base font-semibold text-white shadow-[0_9px_22px_rgba(93,65,243,0.25)] transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
             disabled={loading}
@@ -264,23 +309,7 @@ export function LoginPanel() {
   );
 }
 
-async function resolveAuthenticatedRoute(accessToken: string) {
-  const response = await fetch("/api/account/me", {
-    headers: { Authorization: `Bearer ${accessToken}` },
-    cache: "no-store"
-  });
-  const payload = await response.json().catch(() => ({})) as {
-    code?: unknown;
-    defaultRoute?: unknown;
-  };
-  if (!response.ok) {
-    return {
-      defaultRoute: null,
-      code: typeof payload.code === "string" ? payload.code : null
-    };
-  }
-  return {
-    defaultRoute: typeof payload.defaultRoute === "string" ? payload.defaultRoute : null,
-    code: null
-  };
+async function resolveAuthenticatedRoute(accessToken: string, userId: string) {
+  // Shared validation of /api/account/me; never trusts an unchecked route.
+  return fetchVerifiedAccount(accessToken, userId);
 }

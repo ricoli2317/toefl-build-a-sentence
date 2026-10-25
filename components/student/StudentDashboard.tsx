@@ -19,6 +19,7 @@ import { CompleteTheWordsIcon } from "@/components/icons/CompleteTheWordsIcon";
 import {
   STUDENT_DASHBOARD_SUMMARY_CACHE_KEY,
   useStudentCachedData,
+  useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
@@ -36,6 +37,7 @@ import type {
 import type { ReadingModule } from "@/lib/reading/types";
 
 export function StudentDashboard() {
+  const cache = useStudentDataCache();
   const state = useStudentCachedData<StudentDashboardSummary>(
     STUDENT_DASHBOARD_SUMMARY_CACHE_KEY,
     loadStudentDashboardSummary
@@ -46,6 +48,15 @@ export function StudentDashboard() {
     route: STUDENT_ROUTES.home
   });
   const summary = state.data;
+
+  if (state.error || (!state.loading && !summary)) {
+    return (
+      <section className="grid justify-items-center gap-4 rounded-2xl border border-student-border bg-white p-6">
+        <p className="text-sm font-semibold text-student-error" role="alert">学生首页概览加载失败，请重试。</p>
+        <button className="student-button-secondary" onClick={() => cache.invalidate(STUDENT_DASHBOARD_SUMMARY_CACHE_KEY)} type="button">重新加载概览</button>
+      </section>
+    );
+  }
 
   return (
     <div>
@@ -107,15 +118,15 @@ export function StudentDashboard() {
 
       <DashboardSection title="学习概览">
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <OverviewCard icon={CalendarCheck} label="累计练习" tone="purple" value={String(summary?.overview.totalPracticeCount ?? 0)} />
-          <OverviewCard icon={CalendarDays} label="本月练习" tone="blue" value={String(summary?.overview.currentMonthPracticeCount ?? 0)} />
-          <OverviewCard icon={Flame} label="学习天数" tone="green" value={String(summary?.overview.learningDayCount ?? 0)} />
+          <OverviewCard icon={CalendarCheck} label="累计练习" tone="purple" value={state.loading ? "加载中…" : String(summary?.overview.totalPracticeCount ?? 0)} />
+          <OverviewCard icon={CalendarDays} label="本月练习" tone="blue" value={state.loading ? "加载中…" : String(summary?.overview.currentMonthPracticeCount ?? 0)} />
+          <OverviewCard icon={Flame} label="学习天数" tone="green" value={state.loading ? "加载中…" : String(summary?.overview.learningDayCount ?? 0)} />
           <OverviewCard
             href={STUDENT_ROUTES.writingReviews}
             icon={MessageSquareText}
             label="待查看反馈"
             tone="orange"
-            value={String(summary?.overview.pendingFeedbackCount ?? 0)}
+            value={state.loading ? "加载中…" : String(summary?.overview.pendingFeedbackCount ?? 0)}
           />
         </div>
       </DashboardSection>

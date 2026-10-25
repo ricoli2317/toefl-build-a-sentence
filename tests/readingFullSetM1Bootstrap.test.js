@@ -112,7 +112,7 @@ test("M1 bootstrap resolves one directed definition and classifies server phases
 });
 
 test("Detail hands M1 bootstrap to Runner, which skips runner and occurrence GETs", () => {
-  assert.match(detail, /storeReadingFullSetBootstrapHandoff\(bootstrap, trace\)/);
+  assert.match(detail, /storeReadingFullSetBootstrapHandoff\(bootstrap, trace, session\.studentId\)/);
   assert.match(runner, /consumeReadingFullSetBootstrapHandoff/);
   const handoffBranch = runner.slice(
     runner.indexOf("const handoff = consumeReadingFullSetBootstrapHandoff"),
@@ -130,24 +130,33 @@ test("handoff is keyed by attempt and module attempt, consumed once, and expires
     readingFullSetBootstrapHandoffKey("attempt-1", payload.runner.attempt.module1),
     "attempt-1:1:module-attempt-1"
   );
-  storeReadingFullSetBootstrapHandoff(payload, trace, 1000);
+  storeReadingFullSetBootstrapHandoff(payload, trace, "mock-owner", 1000);
   assert.ok(consumeReadingFullSetBootstrapHandoff({
     attemptId: "attempt-1",
     expectedFullSetId: "20260601A",
+    studentId: "mock-owner",
     now: 1001
   }));
   assert.equal(consumeReadingFullSetBootstrapHandoff({
     attemptId: "attempt-1",
     expectedFullSetId: "20260601A",
+    studentId: "mock-owner",
     now: 1002
   }), null);
 
-  storeReadingFullSetBootstrapHandoff(payload, trace, 1000);
+  storeReadingFullSetBootstrapHandoff(payload, trace, "mock-owner", 1000);
   assert.equal(consumeReadingFullSetBootstrapHandoff({
     attemptId: "attempt-1",
     expectedFullSetId: "20260601A",
+    studentId: "mock-owner",
     now: 62_000
   }), null);
+});
+
+test("handoff from another account is never consumed even for the same attempt route", () => {
+  clearReadingFullSetBootstrapHandoffs();
+  storeReadingFullSetBootstrapHandoff(bootstrap(), { attemptId: "attempt-1", startedAt: 10, traceId: "trace-1" }, "mock-original", 1000);
+  assert.equal(consumeReadingFullSetBootstrapHandoff({ attemptId: "attempt-1", expectedFullSetId: "20260601A", studentId: "mock-other", now: 1001 }), null);
 });
 
 test("refresh fallback is one directed runner/content bootstrap and preserves active deadline", () => {
@@ -156,7 +165,7 @@ test("refresh fallback is one directed runner/content bootstrap and preserves ac
   assert.match(fallbackRoute, /loadReadingFullSetOccurrencePracticePayload/);
   assert.match(runner, /if \(moduleAttempt && payload\.firstOccurrence\)[\s\S]*applyBootstrap\(payload, moduleAttempt\.moduleNumber\)/);
   assert.match(runner, /if \(!activeLoadPauseRef\.current\) setTimerPausedForLoad\(false\)/);
-  assert.match(runner, /moduleAttempt\.status === "active"[\s\S]*finishLoadPause\(accessToken, pause\.loadId\)/);
+  assert.match(runner, /moduleAttempt\.status === "active"[\s\S]*finishLoadPause\(pause\.loadId\)/);
   assert.doesNotMatch(fallbackRoute, /activate_reading_full_set_module|deadlineAt\s*=/);
 });
 
@@ -167,7 +176,7 @@ test("M1 first-interactive activates before countdown and still enables rolling 
   assert.match(ready, /modules\/\$\{moduleAttempt\.moduleNumber\}\/activate/);
   assert.match(ready, /`\$\{prefix\}_activation_end`/);
   assert.match(ready, /`\$\{prefix\}_countdown_active`/);
-  assert.ok(ready.indexOf("`${prefix}_first_interactive`") < ready.indexOf("fetchReadingFullSetWithTimeout"));
+  assert.ok(ready.indexOf("`${prefix}_first_interactive`") < ready.indexOf("requestWithTimeout"));
 
   const prefetch = runner.slice(
     runner.indexOf("interactiveOccurrenceId !== currentOccurrence.occurrenceId"),

@@ -45,10 +45,10 @@ test("bootstrap never activates and retry reuses the database's one M2 module at
 test("normal M2 start is one bootstrap request plus one ready activation request", () => {
   const start = runner.slice(runner.indexOf("const startModule2"), runner.indexOf("if (loading)"));
   const ready = runner.slice(runner.indexOf("const handleWorkspaceReady"), runner.indexOf("const commitActiveQuestionTime"));
-  assert.equal((start.match(/fetchReadingFullSetWithTimeout\(/g) ?? []).length, 1);
+  assert.equal((start.match(/requestWithTimeout\(/g) ?? []).length, 1);
   assert.doesNotMatch(start, /loadRunner\(|occurrences\/\$\{/);
   assert.match(start, /result\.firstOccurrence/);
-  assert.equal((ready.match(/fetchReadingFullSetWithTimeout\(/g) ?? []).length, 1);
+  assert.equal((ready.match(/requestWithTimeout\(/g) ?? []).length, 1);
   assert.match(ready, /\/activate/);
 });
 

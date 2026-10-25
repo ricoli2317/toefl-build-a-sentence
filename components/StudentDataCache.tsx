@@ -555,6 +555,9 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
 
     return () => {
       mounted = false;
+      // Detached readers/keepalive queues must not treat an old provider's
+      // session as current after the account boundary has unmounted it.
+      sessionRef.current = null;
       subscription.unsubscribe();
     };
   }, [notify]);

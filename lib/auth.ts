@@ -3,6 +3,8 @@ import { getCachedSupabaseJwks } from "@/lib/supabase/jwks.server";
 import type { StudentPerformanceTrace } from "@/lib/studentPerformance.server";
 import type { AppArea, UserRole } from "@/lib/types";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
+import { accountFailure, type AccountFailure } from "./accountCredentials.ts";
+import { classifyAccountVerificationError } from "./accountVerification.ts";
 import {
   defaultRouteForRole,
   isUserRole,
@@ -16,7 +18,7 @@ export {
   roleCanAccess
 } from "@/lib/accountPermissions";
 
-export type AuthenticatedAccountErrorCode = "ACCOUNT_DISABLED" | null;
+export type AuthenticatedAccountErrorCode = AccountFailure["code"] | null;
 
 export type AuthenticatedAccount = {
   error: string | null;
@@ -24,6 +26,7 @@ export type AuthenticatedAccount = {
   userId: string | null;
   role: UserRole | null;
   displayName: string | null;
+  failure?: AccountFailure;
 };
 
 type AccountAuthorization =
@@ -36,6 +39,7 @@ type AccountAuthorization =
       ok: false;
       error: string;
       errorCode: AuthenticatedAccountErrorCode;
+      failure: AccountFailure;
     };
 
 /**
@@ -50,26 +54,46 @@ export async function verifyAuthenticatedIdentity(
   token: string | null,
   timing?: StudentPerformanceTrace,
   performanceNames?: { auth?: string }
-): Promise<{ error: string | null; userId: string | null }> {
+): Promise<{ error: string | null; userId: string | null; failure?: AccountFailure }> {
   if (!token) {
-    return { error: "Missing access token", userId: null };
+    return { error: "Missing access token", userId: null, failure: accountFailure("ACCOUNT_UNAUTHENTICATED", "identity_verification") };
   }
 
-  const anon = createAnonSupabase(token);
-  const jwks = await getCachedSupabaseJwks();
-  const {
-    data: claimsData,
-    error: claimsError
-  } = await measure(timing, "auth", performanceNames?.auth ?? "supabase_auth_get_claims", () =>
-    anon.auth.getClaims(token, jwks ? { jwks } : undefined)
-  );
-  const userId = typeof claimsData?.claims.sub === "string"
-    ? claimsData.claims.sub
-    : null;
-  if (claimsError || !userId) {
-    return { error: "Invalid session", userId: null };
+  try {
+    const anon = createAnonSupabase(token);
+    const jwks = await getCachedSupabaseJwks();
+    const { data: claimsData, error: claimsError } = await measure(
+      timing, "auth", performanceNames?.auth ?? "supabase_auth_get_claims", () =>
+        anon.auth.getClaims(token, jwks ? { jwks } : undefined)
+    );
+    if (claimsError) {
+      const failure = classifyAccountVerificationError(claimsError, "identity_verification");
+      return { error: verificationFailureMessage(failure), userId: null, failure };
+    }
+    const userId = typeof claimsData?.claims.sub === "string" && claimsData.claims.sub
+      ? claimsData.claims.sub : null;
+    if (!userId) {
+      return { error: "Invalid session", userId: null, failure: accountFailure("ACCOUNT_UNAUTHENTICATED", "identity_verification") };
+    }
+    return { error: null, userId };
+  } catch (error) {
+    const failure = classifyAccountVerificationError(error, "identity_verification");
+    return { error: verificationFailureMessage(failure), userId: null, failure };
   }
-  return { error: null, userId };
+}
+
+function verificationFailureMessage(failure: AccountFailure) {
+  switch (failure.code) {
+    case "ACCOUNT_DISABLED": return "Account disabled";
+    case "ACCOUNT_UNAUTHENTICATED": return "Invalid session";
+    case "ACCOUNT_CONFIGURATION_ERROR": return "Account configuration error";
+    case "ACCOUNT_VERIFICATION_UNAVAILABLE": return "Account verification unavailable";
+    default: return "Account verification failed";
+  }
+}
+
+function authorizationFailure(failure: AccountFailure): AccountAuthorization {
+  return { ok: false, error: verificationFailureMessage(failure), errorCode: failure.code, failure };
 }
 
 /**
@@ -91,36 +115,43 @@ async function loadAccountAuthorization<
   timing?: StudentPerformanceTrace;
   performanceName?: string;
 }): Promise<AccountAuthorization> {
-  const anon = createAnonSupabase(input.token);
-  const { data: profile, error: profileError } = await measure(
-    input.timing,
-    "database",
-    input.performanceName ?? "profiles_role",
-    () => anon
-      .from("profiles")
-      .select(input.select)
-      .eq("id", input.userId)
-      .single() as unknown as PromiseLike<{
-        data: TProfile | null;
-        error: { message: string } | null;
-      }>
-  );
-  if (profileError || !profile || !isUserRole(profile.role)) {
-    return { ok: false, error: "Account configuration error", errorCode: null };
+  try {
+    const anon = createAnonSupabase(input.token);
+    const { data: profile, error: profileError, status } = await measure(
+      input.timing,
+      "database",
+      input.performanceName ?? "profiles_role",
+      () => anon
+        .from("profiles")
+        .select(input.select)
+        .eq("id", input.userId)
+        .maybeSingle() as unknown as PromiseLike<{
+          data: TProfile | null;
+          error: unknown;
+          status?: number;
+        }>
+    );
+    if (profileError) {
+      return authorizationFailure(classifyAccountVerificationError(profileError, "profile_lookup", status));
+    }
+    if (!profile || !isUserRole(profile.role)) {
+      return authorizationFailure(accountFailure("ACCOUNT_CONFIGURATION_ERROR", "profile_lookup"));
+    }
+    if (profile.is_active === false) {
+      // Auth credentials can remain valid after an Admin disable; the app-level
+      // gate must still reject the account on every request.
+      return authorizationFailure(accountFailure("ACCOUNT_DISABLED", "profile_lookup"));
+    }
+    const displayName = "full_name" in profile
+      ? getPreferredUserDisplayName({
+          email: optionalProfileText(profile, "email"),
+          profileFullName: optionalProfileText(profile, "full_name")
+        })
+      : null;
+    return { ok: true, role: profile.role, displayName };
+  } catch (error) {
+    return authorizationFailure(classifyAccountVerificationError(error, "profile_lookup"));
   }
-  if (profile.is_active === false) {
-    // The account still has valid Auth credentials in some cases (for example
-    // after an Admin disable that could not sync the Auth ban); the app-level
-    // gate rejects it here on every request.
-    return { ok: false, error: "Account disabled", errorCode: "ACCOUNT_DISABLED" };
-  }
-  const displayName = "full_name" in profile
-    ? getPreferredUserDisplayName({
-        email: optionalProfileText(profile, "email"),
-        profileFullName: optionalProfileText(profile, "full_name")
-      })
-    : null;
-  return { ok: true, role: profile.role, displayName };
 }
 
 function optionalProfileText(profile: object, key: string): string | null {
@@ -135,7 +166,8 @@ export async function requireAuthenticatedAccount(
 ): Promise<AuthenticatedAccount> {
   const identity = await verifyAuthenticatedIdentity(token, timing, performanceNames);
   if (identity.error || !identity.userId || !token) {
-    return { error: identity.error ?? "Invalid session", errorCode: null, userId: null, role: null, displayName: null };
+    const failure = identity.failure ?? accountFailure("ACCOUNT_UNAUTHENTICATED", "identity_verification");
+    return { error: identity.error ?? "Invalid session", errorCode: failure.code, userId: null, role: null, displayName: null, failure };
   }
 
   const authorization = await loadAccountAuthorization({
@@ -151,7 +183,8 @@ export async function requireAuthenticatedAccount(
       errorCode: authorization.errorCode,
       userId: null,
       role: null,
-      displayName: null
+      displayName: null,
+      failure: authorization.failure
     };
   }
   return {
