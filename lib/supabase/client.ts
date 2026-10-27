@@ -23,7 +23,12 @@ export function createBrowserSupabase() {
   }
 
   const client = createClient(url, anonKey, {
-    global: { fetch: createSupabaseFetch() }
+    // Keep the project URL (and therefore the SDK storage/broadcast namespace).
+    // Only browser Auth HTTP transport changes; server and data clients do not.
+    global: { fetch: createSupabaseFetch({ authProxy: {
+      projectUrl: url,
+      mode: process.env.NEXT_PUBLIC_SUPABASE_AUTH_TRANSPORT ?? "proxy"
+    } }) }
   });
   browser.__tpsSupabaseClient = client;
   return client;
