@@ -6,6 +6,7 @@ import {
   normalizeWritingReviewModerationAttemptIds
 } from "@/lib/writingReviewModeration";
 import { moderateWritingReviewAttempts } from "@/lib/writingReviewModeration.server";
+import { WritingCorrectionError } from "@/lib/writingCorrection";
 
 export const dynamic = "force-dynamic";
 
@@ -58,6 +59,9 @@ export async function POST(request: Request) {
     });
     return json({ results });
   } catch (error) {
+    if (error instanceof WritingCorrectionError) {
+      return json({ code: error.code, message: error.message }, { status: error.status });
+    }
     console.error("Unexpected writing review moderation error", {
       error: error instanceof Error ? error.message : "Unknown error"
     });

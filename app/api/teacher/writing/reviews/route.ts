@@ -20,6 +20,9 @@ import { listClassAssignmentIds } from "@/lib/teacherClasses.server";
 export const dynamic = "force-dynamic";
 
 type AttemptRow = {
+  attempt_kind: "original" | "correction";
+  original_attempt_id: string | null;
+  correction_source_snapshot: { question?: { set_title?: string }; question_source?: "custom" | "question_bank" } | null;
   attempt_id: string;
   assignment_id: string | null;
   user_id: string;
@@ -131,12 +134,12 @@ export async function GET(request: Request) {
     const userIds = unique(attempts.map((attempt) => String(attempt.user_id)));
     const emailQuestionIds = unique(
       attempts
-        .filter((attempt) => attempt.task_type === "email")
+        .filter((attempt) => attempt.task_type === "email" && attempt.attempt_kind !== "correction")
         .map((attempt) => String(attempt.question_id))
     );
     const discussionQuestionIds = unique(
       attempts
-        .filter((attempt) => attempt.task_type === "academic_discussion")
+        .filter((attempt) => attempt.task_type === "academic_discussion" && attempt.attempt_kind !== "correction")
         .map((attempt) => String(attempt.question_id))
     );
 
@@ -197,8 +200,25 @@ export async function GET(request: Request) {
       )
     ]);
 
+    // Correction reviews use their own table, so their status is merged here
+    // instead of being misread as "pending" forever. Ordinary rows are untouched.
+    const correctionAttemptIds = attempts
+      .filter((attempt) => attempt.attempt_kind === "correction")
+      .map((attempt) => String(attempt.attempt_id));
+    const correctionReviews = correctionAttemptIds.length > 0
+      ? await readRowsByIds<ReviewRow>(correctionAttemptIds, (batch, from, to) =>
+          supabase
+            .from("writing_correction_reviews")
+            .select("attempt_id,status")
+            .in("attempt_id", batch)
+            .order("attempt_id", { ascending: true })
+            .range(from, to)
+        )
+      : { data: [] as ReviewRow[], error: null };
+
     const relatedError =
-      profiles.error ?? emailQuestions.error ?? discussionQuestions.error ?? reviews.error ?? assignments.error;
+      profiles.error ?? emailQuestions.error ?? discussionQuestions.error ?? reviews.error ??
+      assignments.error ?? correctionReviews.error;
     if (relatedError) {
       return json(
         { code: "WRITING_REVIEWS_LOAD_FAILED", message: "无法加载写作批改列表。" },
@@ -221,6 +241,9 @@ export async function GET(request: Request) {
     const reviewByAttemptId = new Map(
       (reviews.data ?? []).map((review) => [String(review.attempt_id), review])
     );
+    const correctionReviewByAttemptId = new Map(
+      (correctionReviews.data ?? []).map((review) => [String(review.attempt_id), review])
+    );
     const assignmentById = new Map(
       (assignments.data ?? []).map((assignment) => [String(assignment.assignment_id), assignment])
     );
@@ -231,13 +254,18 @@ export async function GET(request: Request) {
     };
     const resolvedDisplays: HistoricalPracticeDisplay[] = [];
     const enrichedAttempts = attempts.map((attempt) => {
+      const correction = attempt.attempt_kind === "correction";
+      const frozenTitle = correction ? attempt.correction_source_snapshot?.question?.set_title?.trim() : null;
       const taskType = attempt.task_type as WritingTaskType;
       const profile = profileById.get(String(attempt.user_id));
       const question =
         taskType === "email"
           ? emailQuestionById.get(String(attempt.question_id))
           : discussionQuestionById.get(String(attempt.question_id));
-      const review = reviewByAttemptId.get(String(attempt.attempt_id));
+      const review = correction
+        ? correctionReviewByAttemptId.get(String(attempt.attempt_id)) ??
+          reviewByAttemptId.get(String(attempt.attempt_id))
+        : reviewByAttemptId.get(String(attempt.attempt_id));
       const assignment = attempt.assignment_id
         ? assignmentById.get(String(attempt.assignment_id))
         : undefined;
@@ -258,6 +286,11 @@ export async function GET(request: Request) {
 
       return {
         attemptId: String(attempt.attempt_id),
+        attemptKind: attempt.attempt_kind,
+        originalAttemptId: attempt.original_attempt_id,
+        attempt_kind: attempt.attempt_kind,
+        original_attempt_id: attempt.original_attempt_id,
+        correctionReviewSupported: correction,
         assignmentId: attempt.assignment_id ? String(attempt.assignment_id) : null,
         studentId: String(attempt.user_id),
         studentName: getPreferredUserDisplayName({
@@ -267,14 +300,14 @@ export async function GET(request: Request) {
         taskType,
         questionId: String(attempt.question_id),
         setId: String(attempt.set_id),
-        setTitle: assignmentTitle || rawSetTitle,
-        displayName: display.displayName,
+        setTitle: correction ? frozenTitle || "订正作文" : assignmentTitle || rawSetTitle,
+        displayName: correction ? frozenTitle || "订正作文" : display.displayName,
         reviewContext: attempt.assignment_id
           ? assignment?.question_source === "custom"
             ? "assignment_custom"
             : "assignment_question_bank"
           : "free_practice",
-        logicalDisplay: display.logicalDisplayName
+        logicalDisplay: !correction && display.logicalDisplayName
           ? {
               itemId: display.itemId,
               displayNumber: display.displayNumber,
@@ -376,7 +409,7 @@ async function loadReviewableAttempts(
           let query = supabase
             .from("writing_attempts")
             .select(
-              "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
+              "attempt_id,attempt_kind,original_attempt_id,correction_source_snapshot,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
             )
             .eq("status", "submitted")
             .in("user_id", writingStudentIds)
@@ -394,7 +427,7 @@ async function loadReviewableAttempts(
             let query = supabase
               .from("writing_attempts")
               .select(
-                "attempt_id,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
+                "attempt_id,attempt_kind,original_attempt_id,correction_source_snapshot,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at"
               )
               .eq("status", "submitted");
             if (admin) query = query.not("assignment_id", "is", null);

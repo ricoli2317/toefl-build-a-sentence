@@ -174,6 +174,7 @@ async function loadWritingRange(
       db
         .from("writing_attempts")
         .select("attempt_id,task_type,submitted_at")
+        .eq("attempt_kind", "original")
         .eq("user_id", studentId)
         .eq("status", "submitted")
         .gte("submitted_at", startAt)

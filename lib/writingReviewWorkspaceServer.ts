@@ -27,6 +27,7 @@ export type WritingReviewWorkspaceErrorCode =
   | "ATTEMPT_NOT_SUBMITTED"
   | "QUESTION_NOT_FOUND"
   | "WORKSPACE_INVALID"
+  | "CORRECTION_REVIEW_NOT_SUPPORTED"
   | "DATABASE_READ_FAILED"
   | "REVIEW_SAVE_FAILED"
   | "REVIEW_PUBLISH_FAILED";
@@ -63,7 +64,8 @@ export function assertWritingReviewTeacher(auth: {
 export async function loadAuthorizedWritingReviewSource(
   supabase: SupabaseClient,
   actor: AccountActor,
-  attemptId: string
+  attemptId: string,
+  options?: { allowCorrectionSource?: boolean }
 ): Promise<WritingReviewWorkspaceSource> {
   const attemptResult = await readWritingAttemptForReview(supabase, attemptId);
   if (attemptResult.error) throw databaseReadError();
@@ -103,7 +105,15 @@ export async function loadAuthorizedWritingReviewSource(
     );
   }
 
+  if (!options?.allowCorrectionSource) assertOrdinaryReviewAttempt(attempt);
   return { attempt, assignment };
+}
+
+function assertOrdinaryReviewAttempt(attempt: { attempt_kind?: string }) {
+  if (attempt.attempt_kind === "correction") {
+    throw new WritingReviewWorkspaceServerError("CORRECTION_REVIEW_NOT_SUPPORTED",
+      "订正批改工作台尚未开放，不能使用普通批改或 AI 操作。", 409);
+  }
 }
 
 export async function loadWritingReviewWorkspace(
@@ -113,6 +123,7 @@ export async function loadWritingReviewWorkspace(
 ) {
   const source = options?.source;
   const attempt = source?.attempt ?? (await readWritingAttemptForWorkspace(supabase, attemptId));
+  assertOrdinaryReviewAttempt(attempt);
   if (attempt.status !== "submitted") {
     throw new WritingReviewWorkspaceServerError(
       "ATTEMPT_NOT_SUBMITTED",

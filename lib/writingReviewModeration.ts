@@ -182,6 +182,8 @@ export function publishWritingReviewModerationInvalidation(
     attemptId: string;
     studentId: string;
     assignmentId: string | null;
+    attemptKind?: "original" | "correction";
+    originalAttemptId?: string | null;
   }>,
   results: readonly WritingReviewModerationResult[]
 ) {
@@ -193,6 +195,12 @@ export function publishWritingReviewModerationInvalidation(
   >();
   for (const attempt of attempts) {
     if (!succeeded.has(attempt.attemptId)) continue;
+    if (attempt.attemptKind === "correction") {
+      publishCacheInvalidation({ type: "WRITING_CORRECTION_UPDATED", attemptKind: "correction",
+        studentId: attempt.studentId, attemptId: attempt.attemptId,
+        originalAttemptId: attempt.originalAttemptId });
+      continue;
+    }
     const key = `${attempt.studentId}\u0000${attempt.assignmentId ?? ""}`;
     const group = groups.get(key) ?? {
       studentId: attempt.studentId,

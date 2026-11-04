@@ -6,10 +6,15 @@ import type {
   WritingTaskType
 } from "@/lib/writing";
 import { isWritingQuestionSnapshot } from "./writingAssignments.ts";
+import { frozenWritingCorrectionSource } from "./writingCorrection.ts";
 
 export type WritingReviewSourceAttempt = Pick<
   WritingAttempt,
   | "attempt_id"
+  | "attempt_kind"
+  | "original_attempt_id"
+  | "correction_source_snapshot"
+  | "draft_version"
   | "assignment_id"
   | "user_id"
   | "task_type"
@@ -65,7 +70,7 @@ export class WritingReviewSourceLoadError extends Error {
 }
 
 const WRITING_REVIEW_ATTEMPT_FIELDS =
-  "attempt_id,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,writing_mode,elapsed_seconds,overtime_ranges,submitted_at";
+  "attempt_id,attempt_kind,original_attempt_id,correction_source_snapshot,draft_version,assignment_id,user_id,task_type,question_id,set_id,response_text,word_count,status,writing_mode,elapsed_seconds,overtime_ranges,submitted_at";
 
 const WRITING_REVIEW_ASSIGNMENT_FIELDS =
   "teacher_id,task_type,question_source,question_snapshot";
@@ -181,12 +186,15 @@ export async function loadWritingReviewComparisonSource(
     throw new Error(`Unsupported writing task_type: ${String(attempt.task_type)}`);
   }
 
-  const questionResult = await readWritingQuestionForReview(
-    supabase,
-    attempt.task_type,
-    attempt.question_id,
-    attempt.assignment_id
-  );
+  const frozen = attempt.attempt_kind === "correction" ? frozenWritingCorrectionSource(attempt) : null;
+  const questionResult = frozen
+    ? { data: frozen.question, error: null, questionSource: frozen.question_source }
+    : await readWritingQuestionForReview(
+        supabase,
+        attempt.task_type,
+        attempt.question_id,
+        attempt.assignment_id
+      );
   if (questionResult.error) {
     throw new WritingReviewSourceLoadError(
       attempt.task_type === "email"

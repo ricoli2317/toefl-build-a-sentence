@@ -60,22 +60,25 @@ async function readRowsByIds<T extends Record<string, unknown>>(
   table: string,
   fields: string,
   ids: string[],
-  column: string
+  column: string,
+  originalWritingOnly = false
 ): Promise<T[]> {
   const rows: T[] = [];
   for (const batch of chunkValues(ids)) {
     if (batch.length === 0) continue;
-    const result = await readAllSupabaseRows<T>((from, to) =>
-      db
+    const result = await readAllSupabaseRows<T>((from, to) => {
+      let query = db
         .from(table)
-        .select(fields)
+        .select(fields);
+      if (originalWritingOnly && table === "writing_attempts") query = query.eq("attempt_kind", "original");
+      return query
         .in(column, batch)
         .order(column, { ascending: true })
         .range(from, to) as unknown as PromiseLike<{
-        data: T[] | null;
-        error: { message: string } | null;
-      }>
-    );
+          data: T[] | null;
+          error: { message: string } | null;
+        }>;
+    });
     if (result.error) throw result.error;
     rows.push(...(result.data ?? []));
   }
@@ -227,7 +230,7 @@ async function loadClassCompletionCounts(
     assignment_id: string;
     user_id: string;
     submitted_at: string | null;
-  }>(db, "writing_attempts", "assignment_id,user_id,submitted_at", assignmentIds, "assignment_id");
+  }>(db, "writing_attempts", "assignment_id,user_id,submitted_at", assignmentIds, "assignment_id", true);
   const submissions = submissionRows
     .filter((row) => row.assignment_id && row.user_id && row.submitted_at)
     .map((row) => ({
@@ -708,7 +711,8 @@ export async function listClassReviewSummaries(
     "writing_attempts",
     "attempt_id,assignment_id,status",
     Array.from(assignmentToClass.keys()),
-    "assignment_id"
+    "assignment_id",
+    true
   );
   const submittedAttempts = attemptRows.filter((row) => row.status === "submitted");
   const attemptIds = submittedAttempts.map((row) => String(row.attempt_id));

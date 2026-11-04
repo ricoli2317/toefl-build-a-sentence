@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { PracticeHeader, PracticeTimer, practiceShellStyle } from "@/components/shared/PracticeHeader";
 import { useRouter } from "next/navigation";
 import {
   createContext,
@@ -140,9 +141,7 @@ export const readingTwoColumnScaleStyle = {
   width: "100%"
 } as CSSProperties;
 
-export const readingShellStyle = {
-  "--reading-header-height": "56px"
-} as CSSProperties;
+export const readingShellStyle = practiceShellStyle;
 
 const readingTitleTypographyStyle = {
   fontSize: "24em",
@@ -1217,20 +1216,8 @@ export function ReadingPracticeHeader({
   title: string;
 }) {
   return (
-    <header className="grid h-[var(--reading-header-height)] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 border-b border-student-border bg-white px-4 sm:px-7 lg:px-10">
-      {onBack ? (
-        <button className="writing-header-back justify-self-start" onClick={onBack} type="button">
-          <ArrowLeft aria-hidden="true" size={20} strokeWidth={2.2} />
-          <span className="hidden sm:inline">Back</span>
-        </button>
-      ) : <span aria-hidden="true" />}
-      <div className="min-w-0 justify-self-center text-center">
-        {productName ? <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-student-muted">{productName}</p> : null}
-        <p className={`${onReview ? "max-w-[42vw] sm:max-w-[58vw]" : "max-w-[58vw]"} truncate text-sm font-bold text-student-text sm:text-base`}>
-          {title}{progressLabel ? <> <span aria-hidden="true" className="text-student-muted">·</span> <span data-testid={progressTestId}>{progressLabel}</span></> : null}
-        </p>
-      </div>
-      <div className="flex items-center justify-self-end gap-2 sm:gap-3">
+    <PracticeHeader title={title} onBack={onBack} productName={productName} progressLabel={progressLabel}
+      progressTestId={progressTestId} compactTitle={Boolean(onReview)} actions={<>
         {headerAction}
         {onReview ? (
           <button
@@ -1243,14 +1230,8 @@ export function ReadingPracticeHeader({
             Review
           </button>
         ) : null}
-        {showElapsed ? <div className="hidden items-baseline gap-2 whitespace-nowrap sm:flex">
-          <span className="text-sm font-medium text-student-muted">{timeLabel}</span>
-          <span className="font-mono text-base font-bold tabular-nums text-student-primary" data-testid={timeTestId}>
-            {timeValue ?? formatWritingTimer(elapsedSeconds)}
-          </span>
-        </div> : null}
-      </div>
-    </header>
+        {showElapsed ? <PracticeTimer label={timeLabel} value={timeValue ?? formatWritingTimer(elapsedSeconds)} testId={timeTestId} /> : null}
+      </>} />
   );
 }
 

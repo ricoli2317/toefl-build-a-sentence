@@ -194,10 +194,7 @@ test("student loader selects only public columns and shell keeps 7B integration 
 
 test("CTW, RDL, and RAP share one fixed-height practice viewport with side navigation", () => {
   const shellSource = fs.readFileSync(path.join(__dirname, "../components/reading/ReadingPractice.tsx"), "utf8");
-  const headerSource = shellSource.slice(
-    shellSource.indexOf("function ReadingPracticeHeader"),
-    shellSource.indexOf("function ReadingWorkspaceRouter")
-  );
+  const headerSource = fs.readFileSync(path.join(__dirname, "../components/shared/PracticeHeader.tsx"), "utf8");
   const sharedShellSource = shellSource.slice(
     shellSource.indexOf("function ReadingTwoColumnPracticeShell"),
     shellSource.indexOf("function RdlPracticeWorkspace")
@@ -208,9 +205,10 @@ test("CTW, RDL, and RAP share one fixed-height practice viewport with side navig
   );
 
   assert.match(headerSource, /productName \? <p/);
-  assert.match(shellSource, /"--reading-header-height": "56px"/);
+  assert.match(headerSource, /"--reading-header-height": "56px"/);
+  assert.match(shellSource, /export const readingShellStyle = practiceShellStyle/);
   assert.match(headerSource, /h-\[var\(--reading-header-height\)\]/);
-  assert.match(headerSource, /\{timeLabel\}/);
+  assert.match(headerSource, /\{label\}/);
   assert.match(headerSource, /data-testid=\{progressTestId\}/);
   assert.doesNotMatch(headerSource, /min-h-\[54px\].*rounded-xl.*bg-student-primary-soft/);
   const activeShellSource = shellSource.slice(
@@ -304,7 +302,7 @@ test("single-practice timer uses the shared lightweight Reading header without a
     source.indexOf("export function ReadingWorkspaceRouter")
   );
 
-  assert.match(headerSource, /\{timeLabel\}[\s\S]*timeValue \?\? formatWritingTimer\(elapsedSeconds\)/);
+  assert.match(headerSource, /<PracticeTimer label=\{timeLabel\} value=\{timeValue \?\? formatWritingTimer\(elapsedSeconds\)\}/);
   assert.doesNotMatch(headerSource, /onExit|Exit Practice|DoorOpen|writing-exit-button/);
 });
 

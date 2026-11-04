@@ -220,7 +220,8 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
   useEffect(
     () =>
       subscribeToCacheInvalidation((event) => {
-        if (cacheDomainsForEvent(event).some(d => ["teacherStats", "teacherReadingStatistics", "teacherWritingReviews"].includes(d))) {
+        const correction = event.attemptKind === "correction" || event.type === "WRITING_CORRECTION_UPDATED";
+        if (!correction && cacheDomainsForEvent(event).some(d => ["teacherStats", "teacherReadingStatistics", "teacherWritingReviews"].includes(d))) {
           invalidate(event.studentId ? `teacher:practice-dates:${event.studentId}` : "teacher:practice-dates");
         }
         if (event.type === "TEACHER_BINDING_UPDATED") {
@@ -264,8 +265,13 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               break;
             case "teacherWritingReviews":
               invalidate(TEACHER_WRITING_REVIEWS_CACHE_KEY);
-              invalidate(TEACHER_STUDENT_PRACTICE_CACHE_PREFIX);
-              invalidate(TEACHER_STUDENT_PRACTICE_RANGE_CACHE_PREFIX);
+              // Correction submissions also appear in the existing class list,
+              // but never change its ordinary-assignment summary counts.
+              if (correction) invalidate(TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX);
+              if (!correction) {
+                invalidate(TEACHER_STUDENT_PRACTICE_CACHE_PREFIX);
+                invalidate(TEACHER_STUDENT_PRACTICE_RANGE_CACHE_PREFIX);
+              }
               break;
             case "teacherWritingReviewWorkspace":
               // A review mutation only affects its own attempt workspace.

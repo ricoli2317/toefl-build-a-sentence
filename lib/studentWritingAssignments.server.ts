@@ -146,6 +146,7 @@ export async function loadStudentAssignmentDetails(input: {
               writing_reviews(status,published_at)
             `)
             .eq("user_id", input.userId)
+            .eq("attempt_kind", "original")
             .in("assignment_id", assignmentIds)
             .order("updated_at", { ascending: false })
             .limit(5000)

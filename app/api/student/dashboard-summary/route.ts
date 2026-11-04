@@ -50,6 +50,7 @@ export async function GET(request: Request) {
               "attempt_id,assignment_id,task_type,question_id,word_count,status,saved_at,submitted_at,created_at,updated_at"
             )
             .eq("user_id", auth.userId!)
+            .eq("attempt_kind", "original")
             .order("updated_at", { ascending: false })
             .order("attempt_id", { ascending: false })
             .range(from, to)

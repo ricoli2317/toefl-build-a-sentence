@@ -106,6 +106,7 @@ export async function GET(
             auth.supabase!
               .from("writing_attempts")
               .select("assignment_id,attempt_id,user_id,status,submitted_at")
+              .eq("attempt_kind", "original")
               .in("assignment_id", reviewAssignmentIds)
               .order("submitted_at", { ascending: true, nullsFirst: false })
               .order("attempt_id", { ascending: true })
@@ -539,6 +540,7 @@ async function readSubmittedAttemptAssignmentIds(
     const { data, error } = await supabase
       .from("writing_attempts")
       .select("assignment_id")
+      .eq("attempt_kind", "original")
       .in("assignment_id", batch)
       .eq("status", "submitted");
     if (error) throw error;

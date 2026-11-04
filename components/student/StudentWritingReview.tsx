@@ -22,6 +22,9 @@ import { CollapsibleText } from "@/components/writing/CollapsibleText";
 import { WritingQuestionReview } from "@/components/writing/WritingQuestionPrompt";
 import { WritingRevisionMarkedText } from "@/components/writing/WritingRevisionMarkedText";
 import { WritingOvertimeText } from "@/components/writing/WritingOvertimeText";
+import { WritingCorrectionEntry } from "@/components/writing/WritingCorrectionEntry";
+import { WritingCorrectionHistory } from "@/components/writing/WritingCorrectionHistory";
+import { WRITING_CORRECTION_ENTRY_ENABLED } from "@/lib/writingCorrectionUi";
 import {
   loadAcademicDiscussionAvatars,
   type AcademicDiscussionAvatarMap,
@@ -225,9 +228,12 @@ export function StudentWritingReviewResult({
               </p>
             </div>
           </div>
-          <p className="text-xs text-student-muted">
-            批改完成于 {formatDateTime(review.published_at)}
-          </p>
+          <div className="flex items-center gap-3">
+            {WRITING_CORRECTION_ENTRY_ENABLED ? <WritingCorrectionEntry originalAttemptId={attemptId} /> : null}
+            <p className="text-xs text-student-muted">
+              批改完成于 {formatDateTime(review.published_at)}
+            </p>
+          </div>
         </div>
         <nav aria-label="批改结果视图" className="mx-auto flex h-10 w-full max-w-[1920px] items-end gap-6 px-4 sm:px-6">
           <ReviewViewTab active={view === "marked"} onClick={() => setView("marked")}>批改稿</ReviewViewTab>
@@ -315,6 +321,7 @@ export function StudentWritingReviewResult({
             <p className="mt-1.5 whitespace-pre-wrap text-xs leading-5 text-student-text">
               {review.overall_evaluation || "暂无总体评价。"}
             </p>
+            {WRITING_CORRECTION_ENTRY_ENABLED ? <WritingCorrectionHistory originalAttemptId={attemptId} /> : null}
           </section>
         </aside>
       </div>
@@ -376,7 +383,7 @@ export function StudentWritingReviewList() {
   );
 }
 
-function PublishedReviewDetail({ item }: { item: PublishedReviewItem }) {
+export function PublishedReviewDetail({ item }: { item: PublishedReviewItem }) {
   if (item.kind === "language_edit") {
     const edit = item.edit;
     return (
@@ -402,7 +409,7 @@ function PublishedReviewDetail({ item }: { item: PublishedReviewItem }) {
   );
 }
 
-function ReviewMarkerLegend() {
+export function ReviewMarkerLegend() {
   const severities = ["major", "moderate", "minor"] as const;
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] leading-4 text-student-muted" aria-label="批改标记说明">
@@ -488,18 +495,26 @@ function PublishedScorePanel({
   );
 }
 
-function ReviewViewTab({
+export function ReviewViewTab({
   active,
   children,
-  onClick
+  onClick,
+  tabId,
+  panelId
 }: {
   active: boolean;
   children: React.ReactNode;
   onClick: () => void;
+  tabId?: string;
+  panelId?: string;
 }) {
   return (
     <button
-      aria-current={active ? "page" : undefined}
+      aria-current={!tabId && active ? "page" : undefined}
+      aria-selected={tabId ? active : undefined}
+      aria-controls={panelId}
+      id={tabId}
+      role={tabId ? "tab" : undefined}
       className={clsx(
         "h-10 border-b-2 px-1 text-sm font-bold transition",
         active
@@ -514,7 +529,7 @@ function ReviewViewTab({
   );
 }
 
-function ReviewTabButton({
+export function ReviewTabButton({
   active,
   children,
   onClick

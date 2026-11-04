@@ -46,6 +46,10 @@ export async function POST(request: Request) {
       taskType?: unknown;
       writingMode?: unknown;
     };
+    if (!body || typeof body !== "object" || Array.isArray(body)
+      || Object.keys(body).some((key) => !["forceNew", "assignmentId", "questionId", "taskType", "writingMode"].includes(key))) {
+      return respond({ error: "Invalid writing attempt fields" }, { status: 400 });
+    }
     const taskType = parseWritingTaskType(body.taskType);
     const questionId = typeof body.questionId === "string" ? body.questionId : "";
     const assignmentId = typeof body.assignmentId === "string"
@@ -173,6 +177,7 @@ function createWritingDraftRepository(
       let query = supabase
         .from("writing_attempts")
         .select("*")
+        .eq("attempt_kind", "original")
         .eq("user_id", userId)
         .eq("task_type", taskType)
         .eq("question_id", questionId)
@@ -195,6 +200,7 @@ function createWritingDraftRepository(
       const { data, error } = await supabase
         .from("writing_attempts")
         .insert({
+          attempt_kind: "original",
           assignment_id: assignmentId ?? null,
           user_id: userId,
           task_type: taskType,

@@ -814,15 +814,17 @@ test("score bases and official reference use compact editable final fields", () 
     source.indexOf("function ScorePanel"),
     source.indexOf("function FeedbackPanel")
   );
-  assert.match(scorePanel, /<span>依据<\/span>/);
+  const presentation = fs.readFileSync(path.join(process.cwd(), "components/teacher/WritingReviewPresentation.tsx"), "utf8");
+  assert.match(scorePanel, /<ReviewScoreTable headings=\{\["评分维度", "AI", "教师", "依据"\]\}/);
   assert.match(scorePanel, /value=\{dimension\.ai_basis\}/);
   assert.match(scorePanel, /updateDimensionScoreBasis/);
-  assert.match(scorePanel, />\s*参考\s*<textarea/);
+  assert.match(scorePanel, /<ReviewOfficialScoreCard[\s\S]*rationale=\{<ReviewScoreRationale/);
+  assert.match(presentation, /rationaleLabel = "参考"/);
   assert.match(scorePanel, /value=\{scores\.official_score\.rationale\}/);
   assert.match(scorePanel, /updateOfficialScoreRationale/);
   assert.doesNotMatch(scorePanel, /AI 依据|AI 参考|AI 整体评分依据/);
   assert.match(scorePanel, /h-14[\s\S]*resize-none/);
-  assert.match(scorePanel, /h-16[\s\S]*resize-none/);
+  assert.match(presentation, /h-16[\s\S]*resize-none/);
 });
 
 test("official score restores read-only AI total beside editable teacher total", () => {
@@ -836,9 +838,11 @@ test("official score restores read-only AI total beside editable teacher total",
   );
   assert.match(
     scorePanel,
-    /AI：\{hasAiReview \? scores\.official_score\.ai_score : "—"\}/
+    /aiScore=\{hasAiReview \? scores\.official_score\.ai_score : "—"\}/
   );
-  assert.match(scorePanel, /教师最终[\s\S]*<ScoreSelect/);
+  const presentation = fs.readFileSync(path.join(process.cwd(), "components/teacher/WritingReviewPresentation.tsx"), "utf8");
+  assert.match(presentation, /教师最终\{teacherControl\}/);
+  assert.match(scorePanel, /teacherControl=\{<ScoreSelect/);
   assert.match(scorePanel, /value=\{scores\.official_score\.teacher_score\}/);
 });
 
@@ -872,7 +876,7 @@ test("AI generation asks only when current or dirty teacher content exists", () 
   assert.match(source, /setFilter\("all"\)/);
 });
 
-test("review list only opens the workspace and the workspace owns initial AI generation", () => {
+test("ordinary review list opens the workspace, correction opens read-only detail; workspace owns initial AI", () => {
   const list = fs.readFileSync(
     path.join(process.cwd(), "components/teacher/TeacherWritingReviewList.tsx"),
     "utf8"
@@ -887,7 +891,7 @@ test("review list only opens the workspace and the workspace owns initial AI gen
   );
   assert.match(page, /action=\{[\s\S]*AI 调用日志/);
   assert.doesNotMatch(list, /generate-ai|generateAI|AI 初批失败/);
-  assert.match(list, /href=\{teacherWritingReviewWorkspaceHref\([\s\S]*attempt\.attemptId,[\s\S]*"\/teacher\/writing\/reviews"/);
+  assert.match(list, /href=\{attempt\.attemptKind === "correction"\s*\? teacherWritingCorrectionHref\(attempt\.attemptId, returnTo\)\s*: teacherWritingReviewWorkspaceHref\(\s*attempt\.attemptId,[\s\S]*"\/teacher\/writing\/reviews"/);
   assert.match(list, />\s*查看\s*</);
   assert.match(workspace, /data\.review\.has_ai_review[\s\S]*重新生成 AI 初批[\s\S]*AI 初批/);
   assert.match(workspace, /generateInitialReview[\s\S]*\/generate-ai/);
@@ -903,9 +907,13 @@ test("workspace mutations use a synchronous click lock and confirm unknown outco
   // The synchronous click lock covers an in-flight review operation and
   // sample-essay generation alike: Regenerate / Publish lock on either, Save
   // additionally requires unsaved changes.
-  assert.match(source, /disabled=\{operation !== null \|\| sampleGenerating\}[\s\S]*onClick=\{onRegenerate\}[\s\S]*type="button"/);
-  assert.match(source, /disabled=\{!dirty \|\| operation !== null \|\| sampleGenerating\}[\s\S]*void onPersist\(false\)/);
-  assert.match(source, /disabled=\{operation !== null \|\| sampleGenerating\}[\s\S]*void onPersist\(true\)/);
+  assert.match(source, /generateDisabled=\{operation !== null \|\| sampleGenerating\}[\s\S]*onGenerate=\{onRegenerate\}/);
+  assert.match(source, /saveDisabled=\{!dirty \|\| operation !== null \|\| sampleGenerating\}[\s\S]*void onPersist\(false\)/);
+  assert.match(source, /publishDisabled=\{operation !== null \|\| sampleGenerating\}[\s\S]*void onPersist\(true\)/);
+  const presentation = fs.readFileSync(path.join(process.cwd(), "components/teacher/WritingReviewPresentation.tsx"), "utf8");
+  assert.match(presentation, /disabled=\{generateDisabled\} onClick=\{onGenerate\}/);
+  assert.match(presentation, /disabled=\{saveDisabled\} onClick=\{onSave\}/);
+  assert.match(presentation, /disabled=\{publishDisabled\} onClick=\{onPublish\}/);
   assert.match(source, /confirmUnknownWritingReviewOutcome\([\s\S]*"generate"/);
   assert.match(source, /publish \? "publish" : "save"/);
   assert.match(source, /WritingReviewNetworkOutcomeUnknownError/);

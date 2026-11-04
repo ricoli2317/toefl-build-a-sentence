@@ -93,6 +93,7 @@ function createRepository(
             .from("writing_attempts")
             .select("attempt_id,submitted_at,word_count,writing_mode,elapsed_seconds")
             .eq("user_id", userId)
+            .eq("attempt_kind", "original")
             .eq("task_type", taskType)
             .eq("question_id", questionId)
             .eq("status", "submitted")

@@ -26,6 +26,10 @@ export function teacherWritingReviewWorkspaceHref(
   )}`;
 }
 
+export function teacherWritingCorrectionHref(attemptId: string, returnTo?: unknown) {
+  return `/teacher/writing/reviews/${encodeURIComponent(attemptId)}/correction?returnTo=${encodeURIComponent(safeWritingReviewReturnTo(returnTo))}`;
+}
+
 /**
  * Reliable URL of the review list state. The 学生 tab is the default and omits
  * `tab`; the 班级 tab always writes it, and only the active tab's own filter

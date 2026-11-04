@@ -38,6 +38,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   TEACHER_WRITING_REVIEWS_HREF,
   teacherWritingReviewWorkspaceHref,
+  teacherWritingCorrectionHref,
   teacherWritingReviewsListHref
 } from "@/lib/teacherWritingReviewNavigation";
 import {
@@ -58,7 +59,9 @@ import { classSubjectsLabel, type TeacherClassReviewSummary } from "@/lib/teache
 import type { WritingAssignmentRecipient } from "@/lib/writingAssignments";
 import type { WritingTaskType } from "@/lib/writing";
 
-type WritingReviewListItem = {
+export type WritingReviewListItem = {
+  attemptKind?: "original" | "correction";
+  originalAttemptId?: string | null;
   attemptId: string;
   assignmentId: string | null;
   studentId: string;
@@ -464,6 +467,10 @@ function useWritingReviewModeration(options: {
     async (action: WritingReviewModerationAction, attemptIds: string[]) => {
       const ids = Array.from(new Set(attemptIds)).filter(Boolean);
       if (ids.length === 0 || busyRef.current) return;
+      if (action === "ignore" && itemsRef.current.some((item) => ids.includes(item.attemptId) && item.attemptKind === "correction")) {
+        setError("订正稿不支持忽略，请取消选择订正稿后再操作。");
+        return;
+      }
       busyRef.current = true;
       setBusy(true);
       setNotice("");
@@ -556,12 +563,14 @@ function useWritingReviewModeration(options: {
 
 function WritingReviewBulkActions({
   busy,
+  ignoreDisabled = false,
   count,
   onCancel,
   onIgnore,
   onReturn
 }: {
   busy: boolean;
+  ignoreDisabled?: boolean;
   count: number;
   onCancel: () => void;
   onIgnore: () => void;
@@ -580,7 +589,7 @@ function WritingReviewBulkActions({
       </button>
       <button
         className="teacher-button-secondary !min-h-10 !px-4 !py-1.5 text-sm"
-        disabled={busy}
+        disabled={busy || ignoreDisabled}
         onClick={onIgnore}
         type="button"
       >
@@ -682,6 +691,7 @@ function StudentReviewSection({
             <WritingReviewBulkActions
               busy={moderation.busy}
               count={selectedCount}
+              ignoreDisabled={filtered.some((item) => selection.selectedIds.has(item.attemptId) && item.attemptKind === "correction")}
               onCancel={() => selection.clear()}
               onIgnore={() => moderation.requestIgnore(Array.from(selection.selectedIds))}
               onReturn={() => moderation.requestReturn(Array.from(selection.selectedIds))}
@@ -927,6 +937,7 @@ function ClassReviewList({
             <WritingReviewBulkActions
               busy={moderation.busy}
               count={selectedCount}
+              ignoreDisabled={filtered.some((item) => selection.selectedIds.has(item.attemptId) && item.attemptKind === "correction")}
               onCancel={() => selection.clear()}
               onIgnore={() => moderation.requestIgnore(Array.from(selection.selectedIds))}
               onReturn={() => moderation.requestReturn(Array.from(selection.selectedIds))}
@@ -981,7 +992,7 @@ function ClassReviewList({
   );
 }
 
-function ReviewTable({
+export function ReviewTable({
   actions,
   attempts,
   emptyTexts,
@@ -1168,9 +1179,11 @@ function ReviewTable({
                     </td>
                     <td className="border-t border-student-border px-4 py-4 text-student-text">
                       {taskTypeLabel(attempt.taskType)}
+                      {attempt.attemptKind === "correction" ? <span className="ml-2 student-chip">订正稿</span> : null}
                     </td>
                     <td className="border-t border-student-border px-4 py-4 text-student-text">
                       <p>{attempt.displayName}</p>
+                      {attempt.attemptKind === "correction" ? <p className="mt-1 break-all text-xs text-student-muted">原稿：{attempt.originalAttemptId}<br />订正：{attempt.attemptId}</p> : null}
                       {attempt.reviewContext === "assignment_question_bank" &&
                       attempt.logicalDisplay &&
                       attempt.logicalDisplay.displayName !== attempt.displayName ? (
@@ -1192,10 +1205,12 @@ function ReviewTable({
                       <div className="flex items-center gap-1.5">
                         <Link
                           className="teacher-button-secondary !min-h-8 min-w-[52px] !px-2 !py-1 text-xs"
-                          href={teacherWritingReviewWorkspaceHref(
-                            attempt.attemptId,
-                            returnTo || "/teacher/writing/reviews"
-                          )}
+                          href={attempt.attemptKind === "correction"
+                            ? teacherWritingCorrectionHref(attempt.attemptId, returnTo)
+                            : teacherWritingReviewWorkspaceHref(
+                                attempt.attemptId,
+                                returnTo || "/teacher/writing/reviews"
+                              )}
                         >
                           查看
                         </Link>
@@ -1211,7 +1226,7 @@ function ReviewTable({
                         >
                           退回
                         </button>
-                        <button
+                        {attempt.attemptKind !== "correction" ? <button
                           className={clsx(
                             "teacher-button-secondary !min-h-8 min-w-[52px] !px-2 !py-1 text-xs disabled:cursor-not-allowed disabled:pointer-events-auto",
                             !canModerate &&
@@ -1222,7 +1237,7 @@ function ReviewTable({
                           type="button"
                         >
                           忽略
-                        </button>
+                        </button> : null}
                       </div>
                     </td>
                   </tr>

@@ -95,6 +95,10 @@ function snapshot(overrides = {}) {
 
 function attempt(id = "attempt-1", userId = "student-1", overrides = {}) {
   return {
+    attempt_kind: "original",
+    original_attempt_id: null,
+    correction_source_snapshot: null,
+    draft_version: 0,
     attempt_id: id,
     user_id: userId,
     task_type: "email",

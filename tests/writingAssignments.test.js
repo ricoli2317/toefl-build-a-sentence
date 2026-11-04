@@ -673,7 +673,10 @@ test("question search scans raw sources, deduplicates logical items, then pages 
 
 test("assignment attempts load their immutable snapshot in the existing review pipeline", () => {
   const source = fs.readFileSync(path.join(projectRoot, "lib/writingReviewSource.ts"), "utf8");
-  assert.match(source, /attempt_id,assignment_id,user_id/);
+  const fields = source.match(/const WRITING_REVIEW_ATTEMPT_FIELDS =\s*"([^"]+)"/)[1].split(",");
+  for (const field of ["attempt_id", "assignment_id", "user_id", "attempt_kind", "original_attempt_id", "correction_source_snapshot", "draft_version"]) {
+    assert.ok(fields.includes(field), `review source must load ${field}`);
+  }
   assert.match(source, /from\("writing_assignments"\)/);
   assert.match(source, /question_snapshot/);
   const workspace = fs.readFileSync(path.join(projectRoot, "lib/writingReviewWorkspaceServer.ts"), "utf8");

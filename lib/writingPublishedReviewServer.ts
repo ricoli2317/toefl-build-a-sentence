@@ -42,6 +42,7 @@ export async function loadStudentPublishedWritingReview(
   const attemptResult = await supabase
     .from("writing_attempts")
     .select(ATTEMPT_FIELDS)
+    .eq("attempt_kind", "original")
     .eq("attempt_id", attemptId)
     .eq("user_id", userId)
     .eq("status", "submitted")

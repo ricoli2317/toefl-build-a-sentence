@@ -10,6 +10,8 @@
  */
 export function createMockSupabase(tables, options = {}) {
   return {
+    // Exposed for integration assertions; insert/upsert mutate these arrays.
+    tables,
     async rpc(fn, args) {
       if (typeof options.rpc !== "function") {
         return { data: null, error: { message: `rpc ${fn} is not stubbed` } };

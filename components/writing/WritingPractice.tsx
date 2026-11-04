@@ -1,16 +1,14 @@
 "use client";
 import { LexicalLookupProvider, LexicalText } from "@/components/lexical/LexicalLookup";
+import { PracticeHeader, PracticeTimer, practiceShellStyle } from "@/components/shared/PracticeHeader";
 
 import {
   ClipboardPaste,
-  Clock3,
-  DoorOpen,
   List,
   Scissors,
   Undo2,
   Redo2,
-  RotateCcw,
-  ArrowLeft
+  RotateCcw
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
@@ -924,17 +922,16 @@ function WritingPracticeSession({
     <LexicalLookupProvider pageMode={readOnly && attempt.status === "submitted" ? "readonly" : "practice"}
       access={{ kind: "writing", attemptId: attempt.attempt_id }}
       enabled={assignmentQuestionSource !== "custom"} sourceType={taskType === "email" ? "write_email" : "academic_discussion"}>
-    <div className="writing-practice min-h-[100dvh] bg-[#fbfbfe] text-student-text lg:h-[100dvh] lg:overflow-hidden">
+    <div className="writing-practice min-h-[100dvh] bg-[#fbfbfe] text-student-text lg:h-[100dvh] lg:overflow-hidden" style={practiceShellStyle}>
       <WritingPracticeHeader
         answerMode={answerMode}
         elapsedSeconds={elapsedSeconds}
         onBack={requestExit}
-        onExit={requestExit}
         readOnly={readOnly}
         remainingSeconds={remainingSeconds}
         setTitle={displayName}
       />
-      <main className="mx-auto flex min-h-[calc(100dvh-76px)] w-full max-w-[1920px] flex-col px-4 py-3 sm:px-6 lg:h-[calc(100dvh-76px)] lg:min-h-0 lg:overflow-hidden lg:px-8">
+      <main className="mx-auto flex min-h-[calc(100dvh-var(--reading-header-height))] w-full max-w-[1920px] flex-col px-4 py-3 sm:px-6 lg:h-[calc(100dvh-var(--reading-header-height))] lg:min-h-0 lg:overflow-hidden lg:px-8">
         <div className="grid min-h-0 grid-cols-1 gap-4 lg:h-full lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:overflow-hidden">
           {taskType === "email" ? (
             <EmailPrompt question={question as EmailQuestion} />
@@ -1008,7 +1005,6 @@ function WritingPracticeHeader({
   answerMode,
   elapsedSeconds,
   onBack,
-  onExit,
   readOnly,
   reviewHref,
   remainingSeconds,
@@ -1017,44 +1013,27 @@ function WritingPracticeHeader({
   answerMode: WritingMode;
   elapsedSeconds: number;
   onBack: () => void;
-  onExit: () => void;
   readOnly: boolean;
   reviewHref?: string;
   remainingSeconds: number;
   setTitle: string;
 }) {
   return (
-    <header className="grid h-[76px] grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-student-border bg-white px-3 sm:gap-4 sm:px-7 lg:px-10">
-      <button className="writing-header-back justify-self-start" onClick={onBack} type="button">
-        <ArrowLeft aria-hidden="true" size={20} strokeWidth={2.2} />
-        <span className="hidden sm:inline">Back</span>
-      </button>
-      <span className="inline-flex min-h-11 min-w-0 max-w-full items-center justify-self-center truncate rounded-xl border border-student-primary-border bg-student-primary-soft px-3 text-sm font-bold text-student-primary sm:px-4">
-        {setTitle}
-      </span>
-      <div className="flex items-center justify-self-end gap-3">
-        {readOnly ? (
-          <span className="inline-flex min-h-9 items-center whitespace-nowrap rounded-xl border border-student-primary-border bg-white px-3 text-xs font-bold text-student-primary">
-            已提交 · 只读
-          </span>
-        ) : null}
-        <div className="hidden min-h-[54px] items-center gap-3 rounded-xl border border-student-primary-border bg-student-primary-soft px-4 text-student-primary sm:flex">
-          <Clock3 aria-hidden="true" size={20} />
-          <div className="text-center">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.08em]">
-              {answerMode === "practice" ? "Elapsed" : "Time Left"}
-            </p>
-            <p className="font-mono text-lg font-bold leading-5 tabular-nums text-student-text">
-              {formatWritingTimer(answerMode === "practice" ? elapsedSeconds : remainingSeconds)}
-            </p>
-          </div>
-        </div>
-        <button className="writing-exit-button" onClick={onExit} type="button">
-          <DoorOpen aria-hidden="true" size={19} />
-          <span className="hidden sm:inline">Exit Practice</span>
-        </button>
-      </div>
-    </header>
+    <WritingPageHeader title={setTitle} onBack={onBack} readOnly={readOnly}>
+      <PracticeTimer label={answerMode === "practice" ? "Elapsed" : "Time Left"} value={formatWritingTimer(answerMode === "practice" ? elapsedSeconds : remainingSeconds)} testId="writing-practice-time" />
+    </WritingPageHeader>
+  );
+}
+
+/** Reading's presentation, with Writing-owned callbacks and optional clock.
+ * Back and the former Exit shared requestExit; keep just the Back action. */
+export function WritingPageHeader({ title, onBack, readOnly = false, disabled = false, children }: {
+  title: string; onBack: () => void; readOnly?: boolean; disabled?: boolean; children?: ReactNode;
+}) {
+  return (
+    <div className="reading-theme font-sans">
+      <PracticeHeader title={title} onBack={onBack} backDisabled={disabled} productName={readOnly ? "已提交 · 只读" : undefined} actions={children} />
+    </div>
   );
 }
 
@@ -1089,11 +1068,7 @@ function EmailResponsePanel({
 }) {
   return (
     <div className="flex h-full min-h-0 flex-col gap-2 overflow-hidden">
-      <div className="shrink-0 rounded-2xl border border-student-border bg-white px-5 py-3 shadow-[0_1px_2px_rgba(23,32,51,0.025)]">
-        <h2 className="font-bold text-student-primary">Your Response:</h2>
-        <p className="mt-3 text-[15px] leading-[1.45]"><strong className="mr-3">To:</strong>{question.recipient}</p>
-        <p className="mt-2 text-[15px] leading-[1.45]"><strong className="mr-3">Subject:</strong><LexicalText blockId="subject" text={question.subject} /></p>
-      </div>
+      <EmailResponseHeader question={question} />
       <WritingEditor
         actions={actions}
         compact
@@ -1151,29 +1126,7 @@ function AcademicResponsePanel({
 }) {
   return (
     <div className="flex h-full min-h-0 flex-col gap-2 overflow-hidden">
-      <div className="max-h-[55%] min-h-0 shrink-0 overflow-y-auto rounded-2xl border border-student-border bg-white px-6">
-        <AcademicStudentPost
-          lexicalBlockId="student-response:1"
-          avatarMap={avatarMap}
-          avatarMapReady={avatarMapReady}
-          avatarPathOverride={customAvatars
-            ? resolveCustomAcademicDiscussionAvatar(question.student_1_avatar_type, "student")
-            : undefined}
-          name={question.student_1_name}
-          response={question.student_1_response}
-        />
-        <div className="h-px bg-student-border" />
-        <AcademicStudentPost
-          lexicalBlockId="student-response:2"
-          avatarMap={avatarMap}
-          avatarMapReady={avatarMapReady}
-          avatarPathOverride={customAvatars
-            ? resolveCustomAcademicDiscussionAvatar(question.student_2_avatar_type, "student")
-            : undefined}
-          name={question.student_2_name}
-          response={question.student_2_response}
-        />
-      </div>
+      <AcademicStudentResponses avatarMap={avatarMap} avatarMapReady={avatarMapReady} customAvatars={customAvatars} question={question} />
       <WritingEditor
         actions={actions}
         compact
@@ -1196,12 +1149,53 @@ function AcademicResponsePanel({
   );
 }
 
-function WritingEditor({
+export function EmailResponseHeader({ question }: { question: EmailQuestion }) {
+  return <div className="shrink-0 rounded-2xl border border-student-border bg-white px-5 py-3 shadow-[0_1px_2px_rgba(23,32,51,0.025)]">
+    <h2 className="font-bold text-student-primary">Your Response:</h2>
+    <p className="mt-3 text-[15px] leading-[1.45]"><strong className="mr-3">To:</strong>{question.recipient}</p>
+    <p className="mt-2 text-[15px] leading-[1.45]"><strong className="mr-3">Subject:</strong><LexicalText blockId="subject" text={question.subject} /></p>
+  </div>;
+}
+
+export function AcademicStudentResponses({ avatarMap, avatarMapReady, customAvatars, question }: {
+  avatarMap: AcademicDiscussionAvatarMap;
+  avatarMapReady: boolean;
+  customAvatars: boolean;
+  question: AcademicDiscussionQuestion;
+}) {
+  return <div className="max-h-[55%] min-h-0 shrink-0 overflow-y-auto rounded-2xl border border-student-border bg-white px-6">
+        <AcademicStudentPost
+          lexicalBlockId="student-response:1"
+          avatarMap={avatarMap}
+          avatarMapReady={avatarMapReady}
+          avatarPathOverride={customAvatars
+            ? resolveCustomAcademicDiscussionAvatar(question.student_1_avatar_type, "student")
+            : undefined}
+          name={question.student_1_name}
+          response={question.student_1_response}
+        />
+        <div className="h-px bg-student-border" />
+        <AcademicStudentPost
+          lexicalBlockId="student-response:2"
+          avatarMap={avatarMap}
+          avatarMapReady={avatarMapReady}
+          avatarPathOverride={customAvatars
+            ? resolveCustomAcademicDiscussionAvatar(question.student_2_avatar_type, "student")
+            : undefined}
+          name={question.student_2_name}
+          response={question.student_2_response}
+        />
+      </div>;
+}
+
+export function WritingEditor({
   actions,
   compact = false,
   disabled,
   readOnly = false,
   recovery,
+  mirrorContent,
+  hideToolbar = false,
   wordCount
 }: {
   actions: EditorActions;
@@ -1209,6 +1203,9 @@ function WritingEditor({
   disabled: boolean;
   readOnly?: boolean;
   recovery?: ReactNode;
+  /** Display only: the textarea remains the sole input/selection authority. */
+  mirrorContent?: ReactNode;
+  hideToolbar?: boolean;
   wordCount?: number;
 }) {
   return (
@@ -1217,12 +1214,12 @@ function WritingEditor({
         compact ? "min-h-0 flex-1" : "h-full min-h-[360px]"
       }`}
     >
-      <WritingEditorToolbar
+      {!hideToolbar ? <WritingEditorToolbar
         actions={actions}
         compact={compact}
         disabled={disabled || readOnly}
         wordCount={wordCount}
-      />
+      /> : null}
       {recovery ? (
         <div
           className="shrink-0 border-b border-student-error-border bg-student-error-soft px-4 py-2.5 text-sm leading-6 text-student-error"
@@ -1239,7 +1236,7 @@ function WritingEditor({
           }`}
           ref={actions.mirrorRef}
         >
-          <WritingOvertimeText ranges={actions.overtimeRanges} text={actions.text} />
+          {mirrorContent ?? <WritingOvertimeText ranges={actions.overtimeRanges} text={actions.text} />}
           {actions.text.endsWith("\n") ? "\u200b" : null}
         </div>
         <textarea
@@ -1251,6 +1248,8 @@ function WritingEditor({
           }`}
           disabled={disabled}
           onBeforeInput={readOnly ? undefined : actions.onBeforeInput}
+          onCompositionStart={readOnly ? undefined : actions.onCompositionStart}
+          onCompositionEnd={readOnly ? undefined : actions.onCompositionEnd}
           onCut={readOnly ? preventReadonlyClipboardEvent : actions.onCut}
           onDrop={readOnly ? undefined : actions.onDrop}
           onInput={readOnly ? undefined : actions.onChange}
@@ -1334,6 +1333,7 @@ function EditorButton({
           : "min-h-10 gap-2 px-3 text-sm"
       }`}
       disabled={disabled}
+      aria-label={label}
       onClick={onClick}
       onMouseDown={(event) => event.preventDefault()}
       type="button"
@@ -1397,7 +1397,7 @@ type EditorSnapshot = {
   text: string;
 };
 
-function useWritingEditor(
+export function useWritingEditor(
   initialText: string,
   initialRanges: WritingOvertimeRange[],
   onTextChange: (text: string, ranges: WritingOvertimeRange[]) => void,
@@ -1406,6 +1406,7 @@ function useWritingEditor(
 ) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mirrorRef = useRef<HTMLDivElement>(null);
+  const composingRef = useRef(false);
   const [history, setHistory] = useState<{ current: EditorSnapshot; future: EditorSnapshot[]; past: EditorSnapshot[] }>(() => ({
     current: {
       overtimeRanges: initialRanges,
@@ -1448,6 +1449,8 @@ function useWritingEditor(
 
   const focusSelection = useCallback((start: number, end = start) => {
     window.requestAnimationFrame(() => {
+      // A frame queued before compositionstart must not interrupt the IME either.
+      if (composingRef.current) { syncMirror(); return; }
       textareaRef.current?.focus();
       textareaRef.current?.setSelectionRange(start, end);
       setSelection({ start, end });
@@ -1488,7 +1491,9 @@ function useWritingEditor(
         past: [...value.past, value.current].slice(-250)
       }));
       onTextChange(snapshot.text, snapshot.overtimeRanges);
-      focusSelection(snapshot.selectionStart, snapshot.selectionEnd);
+      // Do not restore selection during a native IME composition: moving it
+      // terminates the candidate session on some browsers. The input owns it.
+      if (!composingRef.current) focusSelection(snapshot.selectionStart, snapshot.selectionEnd);
     },
     [focusSelection, onTextChange]
   );
@@ -1622,6 +1627,7 @@ function useWritingEditor(
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (composingRef.current || event.nativeEvent.isComposing) return;
     if (!(event.metaKey || event.ctrlKey)) return;
     const key = event.key.toLocaleLowerCase();
     if (key === "v") {
@@ -1648,6 +1654,8 @@ function useWritingEditor(
     internalClipboard,
     mirrorRef,
     onBeforeInput,
+    onCompositionStart: () => { composingRef.current = true; },
+    onCompositionEnd: () => { composingRef.current = false; syncMirror(); },
     onChange,
     onCut,
     onDrop,
@@ -1657,6 +1665,8 @@ function useWritingEditor(
     onSelect,
     pasteInternal,
     redo,
+    replaceText: (text: string) => commit({ text, overtimeRanges: [], selectionStart: 0, selectionEnd: 0 }),
+    syncMirror,
     textareaRef,
     text: history.current.text,
     overtimeRanges: history.current.overtimeRanges,

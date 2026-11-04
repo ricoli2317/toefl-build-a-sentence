@@ -64,6 +64,12 @@ export type AcademicDiscussionQuestion = {
 export type WritingQuestion = EmailQuestion | AcademicDiscussionQuestion;
 
 export type WritingAttempt = {
+  attempt_kind: "original" | "correction";
+  original_attempt_id: string | null;
+  correction_source_snapshot: WritingCorrectionSourceSnapshot | null;
+  draft_version: number;
+  /** Correction-only transport field, stored in its own table, not this row. */
+  revision_state?: import("./writingRevisionState.ts").WritingRevisionState | null;
   attempt_id: string;
   assignment_id?: string | null;
   user_id: string;
@@ -83,6 +89,25 @@ export type WritingAttempt = {
   submitted_at: string | null;
   created_at: string;
   updated_at: string;
+};
+
+export type WritingCorrectionSourceSnapshot = {
+  schema_version: 1;
+  original_response_text: string;
+  original_context: Pick<WritingAttempt,
+    "task_type" | "question_id" | "set_id" | "assignment_id" | "word_count" |
+    "writing_mode" | "elapsed_seconds" | "overtime_ranges" | "time_limit_seconds" |
+    "remaining_seconds" | "submitted_at">;
+  question_source: "question_bank" | "custom";
+  question: WritingQuestion;
+  published_review: {
+    review_id: string;
+    published_at: string;
+    language_edits: unknown[];
+    content_feedback: Record<string, unknown>;
+    scores: Record<string, unknown>;
+    teacher_comment: string;
+  };
 };
 
 export type WritingCatalogMonth = {

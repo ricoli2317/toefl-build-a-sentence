@@ -24,6 +24,7 @@ export async function GET(request: Request) {
         auth.supabase!
           .from("writing_attempts")
           .select("attempt_id,status,submitted_at")
+          .eq("attempt_kind", "original")
           .eq("user_id", auth.userId!)
           .eq("status", "submitted")
           .order("submitted_at", { ascending: false })

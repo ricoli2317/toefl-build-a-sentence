@@ -39,6 +39,8 @@ export const STUDENT_READING_FULL_SET_CACHE_PREFIX = "reading:full-sets";
 export const STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX = "grammar-practice";
 export const STUDENT_READING_CATEGORY_COUNTS_CACHE_KEY = "reading:category-counts";
 export const STUDENT_WRITING_CACHE_PREFIX = "writing";
+// Separate root: ordinary "writing" prefix invalidation must not consume it.
+export const STUDENT_WRITING_CORRECTION_CACHE_PREFIX = "correction-writing";
 export const STUDENT_WRITING_CATALOG_CACHE_PREFIX = "writing:catalog";
 export const STUDENT_WRITING_OVERVIEW_CACHE_KEY = "writing:overview";
 export const STUDENT_WRITING_SUBMISSION_HISTORY_CACHE_PREFIX =
@@ -584,6 +586,16 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
 
         for (const domain of cacheDomainsForEvent(event)) {
           switch (domain) {
+            case "studentWritingCorrections":
+              if (event.originalAttemptId) {
+                invalidate(`${STUDENT_WRITING_CORRECTION_CACHE_PREFIX}:history:${event.originalAttemptId}`);
+              } else {
+                invalidate(STUDENT_WRITING_CORRECTION_CACHE_PREFIX);
+              }
+              if (event.attemptId) {
+                invalidate(`${STUDENT_WRITING_CORRECTION_CACHE_PREFIX}:attempt:${event.attemptId}`);
+              }
+              break;
             case "studentPracticeCatalog":
               invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
               // A content-catalog change can add/remove items, so the static

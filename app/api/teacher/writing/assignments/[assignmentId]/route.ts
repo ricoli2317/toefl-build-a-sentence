@@ -101,6 +101,7 @@ export async function GET(
             auth.supabase!
               .from("writing_attempts")
               .select("attempt_id,user_id,status,submitted_at")
+              .eq("attempt_kind", "original")
               .eq("assignment_id", params.assignmentId)
               .order("submitted_at", { ascending: true, nullsFirst: false })
               .order("attempt_id", { ascending: true })
@@ -360,6 +361,7 @@ export async function PATCH(
     const { data: submittedAttempt, error: attemptError } = await auth.supabase
       .from("writing_attempts")
       .select("attempt_id")
+      .eq("attempt_kind", "original")
       .eq("assignment_id", params.assignmentId)
       .eq("status", "submitted")
       .limit(1)

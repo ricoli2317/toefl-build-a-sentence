@@ -228,6 +228,7 @@ export async function loadTeacherAssignmentReminders(
       db
         .from("writing_attempts")
         .select("assignment_id,user_id")
+        .eq("attempt_kind", "original")
         .eq("status", "submitted")
         .in("assignment_id", batch)
     ]);

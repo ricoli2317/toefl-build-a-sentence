@@ -444,6 +444,7 @@ export async function loadLogicalPracticeStudentAttempts(input: {
           "attempt_id,assignment_id,task_type,question_id,status,saved_at,submitted_at,created_at,updated_at"
         )
         .eq("user_id", input.studentId)
+        .eq("attempt_kind", "original")
         .eq("task_type", input.taskType)
         .is("assignment_id", null)
         .order("updated_at", { ascending: false })

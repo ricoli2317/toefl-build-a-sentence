@@ -672,6 +672,10 @@ function fakeFamilyTables(overrides = {}) {
   return {
     writing_attempts: [{
       attempt_id: "attempt-1",
+      attempt_kind: "original",
+      original_attempt_id: null,
+      correction_source_snapshot: null,
+      draft_version: 0,
       user_id: "student-1",
       task_type: "email",
       question_id: "email-1",
@@ -1095,8 +1099,8 @@ test("teacher workspace 范文 body is editable and flows through the shared Sav
   assert.match(teacher, /const \[sampleEssayDirty, setSampleEssayDirty\] = useState\(false\)/);
   assert.match(teacher, /const hasUnsavedChanges = dirty \|\| sampleEssayDirty/);
   assert.match(teacher, /dirty=\{hasUnsavedChanges\}/);
-  assert.match(teacher, /disabled=\{!dirty \|\| operation !== null \|\| sampleGenerating\}/);
-  assert.match(teacher, /disabled=\{operation !== null \|\| sampleGenerating\}/);
+  assert.match(teacher, /saveDisabled=\{!dirty \|\| operation !== null \|\| sampleGenerating\}/);
+  assert.match(teacher, /publishDisabled=\{operation !== null \|\| sampleGenerating\}/);
   assert.match(teacher, /setSampleEssayDirty\(normalized !== \(sampleServerRef\.current\?\.draft \?\? null\)\)/);
 
   // Save / Publish send the latest textarea content only when it changed, and

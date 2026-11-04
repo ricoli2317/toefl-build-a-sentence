@@ -201,6 +201,7 @@ export async function readOwnedWritingAttempt(
       supabase
         .from("writing_attempts")
         .select("*")
+        .eq("attempt_kind", "original")
         .eq("attempt_id", attemptId)
         .eq("user_id", userId)
         .maybeSingle()

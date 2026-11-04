@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import clsx from "clsx";
 import { createPortal } from "react-dom";
 
@@ -21,7 +21,9 @@ export function ModalShell({
   onClose,
   dismissible = true,
   size = "default",
-  children
+  children,
+  label,
+  containFocus = false
 }: {
   open: boolean;
   onClose: () => void;
@@ -29,7 +31,37 @@ export function ModalShell({
   /** "wide" keeps the same panel styling for forms that need two columns. */
   size?: "default" | "wide";
   children: ReactNode;
+  label?: string;
+  /** Opt-in for callers replacing a native modal dialog. */
+  containFocus?: boolean;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open || !containFocus) return;
+    const panel = panelRef.current;
+    const previous = document.activeElement;
+    const focusable = () => Array.from(panel?.querySelectorAll<HTMLElement>(
+      'button:not(:disabled), a[href], input:not(:disabled), textarea:not(:disabled), select:not(:disabled), [tabindex="0"]'
+    ) ?? []).filter((element) => element.getClientRects().length > 0);
+    focusable()[0]?.focus();
+    const trap = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const controls = focusable();
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (!first) { event.preventDefault(); panel?.focus(); return; }
+      if (!panel?.contains(document.activeElement) || (!event.shiftKey && document.activeElement === last)) {
+        event.preventDefault(); first.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault(); last.focus();
+      }
+    };
+    document.addEventListener("keydown", trap, true);
+    return () => {
+      document.removeEventListener("keydown", trap, true);
+      if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
+    };
+  }, [open, containFocus]);
   useEffect(() => {
     if (!open) return;
     function onKeyDown(event: KeyboardEvent) {
@@ -53,11 +85,14 @@ export function ModalShell({
       <div className="relative flex min-h-full items-center justify-center px-5 py-6">
         <div
           aria-modal="true"
+          aria-label={label}
           className={clsx(
             "relative max-h-[calc(100dvh-3rem)] w-full overflow-y-auto rounded-2xl border border-student-border bg-white p-6 shadow-[0_22px_70px_rgba(44,35,99,0.18)]",
             size === "wide" ? "max-w-[560px]" : "max-w-[420px]"
           )}
           role="dialog"
+          ref={panelRef}
+          tabIndex={containFocus ? -1 : undefined}
         >
           {children}
         </div>

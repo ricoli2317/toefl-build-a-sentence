@@ -134,6 +134,10 @@ export async function PATCH(
         overtimeRanges?: unknown;
       }>
     );
+    if (!body || typeof body !== "object" || Array.isArray(body)
+      || Object.keys(body).some((key) => !["action", "remainingSeconds", "responseText", "elapsedSeconds", "overtimeRanges"].includes(key))) {
+      return respond({ error: "Invalid writing attempt fields" }, { status: 400 });
+    }
     const action = body.action;
     if (action !== "sync" && action !== "save" && action !== "submit") {
       return respond({ error: "Invalid writing attempt action" }, { status: 400 });
@@ -205,6 +209,7 @@ export async function PATCH(
       auth.supabase!
         .from("writing_attempts")
         .update(update)
+        .eq("attempt_kind", "original")
         .eq("attempt_id", attempt.attempt_id)
         .eq("user_id", auth.userId!)
         .eq("status", "draft")

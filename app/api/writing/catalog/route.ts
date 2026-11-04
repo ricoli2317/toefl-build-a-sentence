@@ -72,6 +72,7 @@ export async function GET(request: Request) {
               "attempt_id,question_id,word_count,status,writing_mode,elapsed_seconds,saved_at,submitted_at,updated_at"
             )
             .eq("user_id", auth.userId!)
+            .eq("attempt_kind", "original")
             .eq("task_type", taskType)
             .is("assignment_id", null)
             .order("updated_at", { ascending: false })

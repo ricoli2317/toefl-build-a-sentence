@@ -552,6 +552,7 @@ export async function loadTeacherStudentWritingPractice(
           "attempt_id,assignment_id,task_type,question_id,word_count,elapsed_seconds,submitted_at"
         )
         .eq("user_id", studentId)
+        .eq("attempt_kind", "original")
         .eq("status", "submitted")
         .gte("submitted_at", startAt)
         .lt("submitted_at", endAt)

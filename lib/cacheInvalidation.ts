@@ -8,6 +8,7 @@ export type CacheInvalidationMutation =
   | "BAS_ATTEMPT_SUBMITTED"
   | "WRONGBOOK_CHANGED"
   | "WRITING_DRAFT_UPDATED"
+  | "WRITING_CORRECTION_UPDATED"
   | "WRITING_ATTEMPT_SUBMITTED"
   | "WRITING_ATTEMPT_RETURNED"
   | "WRITING_REVIEW_UPDATED"
@@ -29,6 +30,7 @@ export type CacheInvalidationDomain =
   | "studentWritingOverview"
   | "studentWritingHistory"
   | "studentWritingAttempts"
+  | "studentWritingCorrections"
   | "studentPublishedReviews"
   | "studentAssignments"
   | "teacherStats"
@@ -47,6 +49,8 @@ export type CacheInvalidationEvent = {
   type: CacheInvalidationMutation;
   studentId?: string;
   attemptId?: string;
+  attemptKind?: "original" | "correction";
+  originalAttemptId?: string | null;
   assignmentId?: string | null;
   assignmentQuestionSource?: "question_bank" | "custom";
   isWrongQuestionsPractice?: boolean;
@@ -87,6 +91,11 @@ const BASE_INVALIDATION_MATRIX: Record<
   ],
   WRONGBOOK_CHANGED: ["studentWrongQuestions"],
   WRITING_DRAFT_UPDATED: ["studentWritingOverview"],
+  WRITING_CORRECTION_UPDATED: [
+    "studentWritingCorrections",
+    "teacherWritingReviews",
+    "teacherWritingReviewWorkspace"
+  ],
   WRITING_ATTEMPT_SUBMITTED: [
     "studentWritingOverview",
     "studentWritingHistory",
@@ -156,6 +165,9 @@ const BASE_INVALIDATION_MATRIX: Record<
 export function cacheDomainsForEvent(
   event: CacheInvalidationEvent
 ): readonly CacheInvalidationDomain[] {
+  if (event.attemptKind === "correction") {
+    return BASE_INVALIDATION_MATRIX.WRITING_CORRECTION_UPDATED;
+  }
   const domains = new Set(BASE_INVALIDATION_MATRIX[event.type]);
 
   if (

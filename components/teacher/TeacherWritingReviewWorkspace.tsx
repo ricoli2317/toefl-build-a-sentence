@@ -2,16 +2,12 @@
 
 import clsx from "clsx";
 import {
-  ArrowLeft,
   ChevronLeft,
   ChevronRight,
   Pencil,
   Plus,
   RotateCcw,
-  Save,
-  Send,
   Sparkles,
-  RefreshCw,
   Trash2,
   X
 } from "lucide-react";
@@ -41,6 +37,7 @@ import { CollapsibleText } from "@/components/writing/CollapsibleText";
 import { LexicalLookupProvider, LexicalText } from "@/components/lexical/LexicalLookup";
 import { WritingRevisionMarkedText } from "@/components/writing/WritingRevisionMarkedText";
 import { WritingOvertimeText } from "@/components/writing/WritingOvertimeText";
+import { REVIEW_ESSAY_TEXT_CLASS, ReviewWorkspaceFrame, ReviewWorkspaceGrid, ReviewToolbar, ReviewToolbarActions, ReviewFilterChip, ReviewFeedbackCard, ReviewFeedbackLine as FeedbackLine, ReviewBadge, ReviewScoreTable, ReviewScoreRow, ReviewOfficialScoreCard, ReviewScoreRationale, ReviewSelect } from "./WritingReviewPresentation";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import type {
   AcademicDiscussionQuestion,
@@ -159,7 +156,6 @@ type AiGenerationTeacherContentMode = "preserve" | "overwrite";
 type InspectorPosition = { left: number; top: number };
 type PositionedSourceSelection = SourceTextSelection & InspectorPosition;
 
-const SCORE_OPTIONS = [0, 1, 2, 3, 4, 5] as const;
 const FILTERS: Array<{ value: LanguageEditFilter; label: string }> = [
   { value: "all", label: "全部" },
   { value: "major", label: "严重" },
@@ -754,7 +750,7 @@ export function TeacherWritingReviewWorkspace({
   }
 
   return (
-    <div className="flex h-[calc(100dvh-24px)] min-h-0 flex-col overflow-hidden rounded-xl border border-student-border bg-white shadow-[0_2px_14px_rgba(60,47,119,0.06)]">
+    <ReviewWorkspaceFrame>
       <WorkspaceToolbar
         data={data}
         dirty={hasUnsavedChanges}
@@ -808,7 +804,7 @@ export function TeacherWritingReviewWorkspace({
           }}
         />
       ) : (
-        <div className="writing-review-grid min-h-0 flex-1 bg-[#f8f7fc] p-2">
+        <ReviewWorkspaceGrid>
           <LexicalLookupProvider teacherReadonly enabled={data.question_source === "question_bank"} pageMode="readonly"
             access={{ kind: "writing", attemptId: data.attempt.attempt_id, studentId: data.attempt.user_id }}
             sourceType={data.attempt.task_type === "email" ? "write_email" : "academic_discussion"}>
@@ -838,7 +834,7 @@ export function TeacherWritingReviewWorkspace({
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto p-5" ref={articleScrollRef}>
               <div
-                className="mx-auto min-h-full max-w-[860px] whitespace-pre-wrap text-[15px] leading-8 text-student-text"
+                className={`mx-auto min-h-full max-w-[860px] ${REVIEW_ESSAY_TEXT_CLASS}`}
                 onMouseUp={captureArticleSelection}
                 ref={articleRef}
               >
@@ -893,7 +889,7 @@ export function TeacherWritingReviewWorkspace({
               />
             </CompactSection>
           </aside>
-        </div>
+        </ReviewWorkspaceGrid>
       )}
       {pendingSelection ? (
         <div
@@ -1003,7 +999,7 @@ export function TeacherWritingReviewWorkspace({
           onPreserve={() => void regenerateAll("preserve")}
         />
       ) : null}
-    </div>
+    </ReviewWorkspaceFrame>
   );
 }
 
@@ -1039,31 +1035,13 @@ function WorkspaceToolbar({
   onRegenerate: () => void;
 }) {
   return (
-    <header className="z-10 flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-student-border bg-white px-3 py-2.5">
-      <div className="flex min-w-0 items-center gap-2 text-xs">
-        <Link
-          aria-label="返回来源页面"
-          className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-student-primary hover:bg-student-primary-soft"
-          href={returnTo}
-        >
-          <ArrowLeft aria-hidden="true" size={17} />
-        </Link>
-        <strong className="text-sm">写作批改</strong>
-        <span className="text-student-muted">/</span>
-        <span className="font-semibold text-student-primary">
-          {data.review.status === "published"
+    <ReviewToolbar title="写作批改" returnTo={returnTo} displayName={data.displayName} status={data.review.status === "published"
             ? "已发布"
             : data.review.status === "pending"
               ? "待批改"
               : data.review.status === "ignored"
                 ? "已忽略"
-                : "批改中"}
-        </span>
-        <span className="hidden truncate text-student-muted sm:inline">
-          / {data.displayName}
-        </span>
-      </div>
-      <div className="flex flex-wrap items-center justify-end gap-2">
+                 : "批改中"}>
         <Link
           className="teacher-button-secondary !min-h-8 !px-3 !py-1 text-xs"
           href={teacherReturnToHref(
@@ -1098,23 +1076,22 @@ function WorkspaceToolbar({
             {showRevisionMarks ? "隐藏修改标记" : "显示修改标记"}
           </button>
         ) : null}
-        <button
-          className="teacher-button-secondary !min-h-8 !px-3 !py-1 text-xs"
-          disabled={operation !== null || sampleGenerating}
-          onClick={onRegenerate}
-          type="button"
-        >
-          <RefreshCw aria-hidden="true" size={14} />
-          {operation === "regenerate"
+        <ReviewToolbarActions
+          generateDisabled={operation !== null || sampleGenerating}
+          saveDisabled={!dirty || operation !== null || sampleGenerating}
+          publishDisabled={operation !== null || sampleGenerating}
+          onGenerate={onRegenerate}
+          onSave={() => void onPersist(false)}
+          onPublish={() => void onPersist(true)}
+          generateLabel={operation === "regenerate"
             ? data.review.has_ai_review
               ? "正在重新生成..."
               : "正在初批..."
             : data.review.has_ai_review
               ? "重新生成 AI 初批"
-              : "AI 初批"}
-        </button>
-        <span className={clsx("text-[11px]", requestError ? "text-red-600" : "text-student-muted")}>
-          {requestError ||
+               : "AI 初批"}
+          error={Boolean(requestError)}
+          statusText={requestError ||
             (operation === "save"
               ? "保存中..."
               : operation === "publish"
@@ -1131,25 +1108,8 @@ function WorkspaceToolbar({
                       : data.review.status === "ignored"
                         ? "已忽略，保存或发布后进入批改"
                         : "已保存"))}
-        </span>
-        <button
-          className="teacher-button-secondary !min-h-8 !px-3 !py-1 text-xs"
-          disabled={!dirty || operation !== null || sampleGenerating}
-          onClick={() => void onPersist(false)}
-          type="button"
-        >
-          <Save aria-hidden="true" size={14} />保存
-        </button>
-        <button
-          className="teacher-button-primary !min-h-8 !px-3 !py-1 text-xs"
-          disabled={operation !== null || sampleGenerating}
-          onClick={() => void onPersist(true)}
-          type="button"
-        >
-          <Send aria-hidden="true" size={14} />发布
-        </button>
-      </div>
-    </header>
+        />
+    </ReviewToolbar>
   );
 }
 
@@ -1170,6 +1130,10 @@ function StudentInfoBar({ data }: { data: WorkspacePayload }) {
     ["作答情况", formatWritingAttemptSummary(data.attempt.writing_mode, data.attempt.elapsed_seconds)],
     ["AI 初批时间", formatDate(data.review.ai_generated_at)]
   ];
+  return <WritingReviewInfoBar items={items} />;
+}
+
+export function WritingReviewInfoBar({ items }: { items: string[][] }) {
   return (
     <div className="grid shrink-0 grid-cols-2 border-b border-student-border bg-[#fcfbff] sm:grid-cols-3 xl:grid-cols-7">
       {items.map(([label, value]) => (
@@ -1274,7 +1238,7 @@ function SampleEssayWorkspace({
   );
 }
 
-function QuestionColumn({
+export function QuestionColumn({
   question,
   taskType
 }: {
@@ -1888,19 +1852,13 @@ function EditFilter({
       {FILTERS.map((item) => {
         const count = filterLanguageEdits(edits, item.value).length;
         return (
-          <button
-            className={clsx(
-              "rounded-md border px-1.5 py-1 text-[10px] font-semibold",
-              filter === item.value
-                ? "border-student-primary bg-student-primary-soft text-student-primary"
-                : "border-student-border bg-white text-student-muted"
-            )}
+          <ReviewFilterChip
+            active={filter === item.value}
             key={item.value}
             onClick={() => onChange(item.value)}
-            type="button"
           >
             {item.label} {count}
-          </button>
+          </ReviewFilterChip>
         );
       })}
     </div>
@@ -1922,16 +1880,13 @@ function ScorePanel({
   return (
     <CompactSection title="评分" subtitle="依据 TOEFL 官方 Writing Rubric">
       {scores.dimension_scores ? (
-        <div className="overflow-hidden rounded-lg border border-student-border">
-          <div className="grid grid-cols-[minmax(104px,1.1fr)_44px_56px_minmax(130px,1.4fr)] bg-student-bg px-2 py-1.5 text-[9px] font-semibold text-student-muted">
-            <span>评分维度</span><span>AI</span><span>教师</span><span>依据</span>
-          </div>
+        <ReviewScoreTable headings={["评分维度", "AI", "教师", "依据"]} columns="minmax(104px,1.1fr) 44px 56px minmax(130px,1.4fr)">
           {definitions.map((definition, index) => {
             const dimension = scores.dimension_scores?.[definition.key as keyof typeof scores.dimension_scores];
             if (!dimension) return null;
             return (
-              <div
-                className="grid grid-cols-[minmax(104px,1.1fr)_44px_56px_minmax(130px,1.4fr)] items-start gap-1 border-t border-student-border px-2 py-2 text-[10px] leading-4"
+              <ReviewScoreRow
+                columns="minmax(104px,1.1fr) 44px 56px minmax(130px,1.4fr)"
                 key={definition.key}
               >
                 <div><strong>{index + 1}. {definition.zh}</strong><p className="text-[9px] text-student-muted">{definition.en}</p></div>
@@ -1959,44 +1914,30 @@ function ScorePanel({
                   placeholder="选填"
                   value={dimension.ai_basis}
                 />
-              </div>
+              </ReviewScoreRow>
             );
           })}
-        </div>
+        </ReviewScoreTable>
       ) : (
         <p className="rounded-lg border border-amber-200 bg-amber-50 p-2 text-[11px] text-amber-800">
           旧版批改数据：没有可用的四项诊断评分。
         </p>
       )}
-      <div className="mt-2 rounded-lg border border-student-primary-border bg-student-primary-soft/30 p-2.5">
-        <div className="flex items-center justify-between gap-2">
-          <div>
-            <p className="text-xs font-bold">官方整体评分</p>
-            <p className="mt-1 text-[10px] font-semibold text-student-primary">
-              AI：{hasAiReview ? scores.official_score.ai_score : "—"}
-            </p>
-          </div>
-          <label className="flex items-center gap-1 text-[10px] font-semibold">
-            教师最终
-            <ScoreSelect
+      <ReviewOfficialScoreCard
+        aiScore={hasAiReview ? scores.official_score.ai_score : "—"}
+        teacherControl={<ScoreSelect
               onChange={(value) => onChange(updateOfficialTeacherScore(scores, value))}
               value={scores.official_score.teacher_score}
-            />
-          </label>
-        </div>
-        <label className="mt-2 block text-[10px] font-semibold text-student-muted">
-          参考
-          <textarea
+            />}
+        rationale={<ReviewScoreRationale
             aria-label="官方整体评分参考"
-            className="mt-1 h-16 w-full resize-none rounded-md border border-student-border bg-white px-2 py-1.5 text-[10px] font-normal leading-4 text-student-text focus:border-student-primary"
             onChange={(event) =>
               onChange(updateOfficialScoreRationale(scores, event.target.value))
             }
             placeholder="选填"
             value={scores.official_score.rationale}
-          />
-        </label>
-      </div>
+          />}
+      />
     </CompactSection>
   );
 }
@@ -2167,12 +2108,9 @@ function FeedbackCard({
     }
   }
   return (
-    <article
-      className={clsx(
-        "rounded-lg border p-2.5 text-[11px] leading-[1.55] transition",
-        item.included ? "bg-white" : "bg-student-bg opacity-55",
-        selected ? "border-student-primary ring-2 ring-violet-200" : "border-student-border"
-      )}
+    <ReviewFeedbackCard
+      selected={selected}
+      muted={!item.included}
       onClick={() => located && onLocate(item.feedback_id)}
       ref={setRef}
     >
@@ -2332,11 +2270,11 @@ function FeedbackCard({
           </div>
         </div>
       ) : null}
-    </article>
+    </ReviewFeedbackCard>
   );
 }
 
-function CompactSection({
+export function CompactSection({
   children,
   subtitle,
   title
@@ -2388,21 +2326,29 @@ function AiGenerationTeacherContentDialog({
   );
 }
 
-function ScoreSelect({
+export function ScoreSelect<T extends RubricScore | null>({
   onChange,
-  value
+  value,
+  disabled = false,
+  inheritLabel,
+  ariaLabel
 }: {
-  onChange: (value: RubricScore) => void;
-  value: RubricScore;
+  onChange: (value: T) => void;
+  value: T;
+  disabled?: boolean;
+  inheritLabel?: string;
+  ariaLabel?: string;
 }) {
   return (
-    <select
-      className="h-7 rounded-md border border-student-border bg-white px-1 text-xs font-bold text-student-primary"
-      onChange={(event) => onChange(Number(event.target.value) as RubricScore)}
-      value={value}
+    <ReviewSelect
+      disabled={disabled}
+      aria-label={ariaLabel}
+      onChange={(event) => onChange((event.target.value === "" ? null : Number(event.target.value)) as T)}
+      value={value ?? ""}
     >
-      {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
-    </select>
+      {inheritLabel ? <option value="">{inheritLabel}</option> : null}
+      {[0, 1, 2, 3, 4, 5].map((score) => <option key={score} value={score}>{score}</option>)}
+    </ReviewSelect>
   );
 }
 
@@ -2426,7 +2372,7 @@ function ModeButton({
   );
 }
 
-function MiniButton({
+export function MiniButton({
   children,
   disabled = false,
   onClick,
@@ -2463,16 +2409,8 @@ function Detail({ label, value }: { label: string; value: string }) {
   );
 }
 
-function FeedbackLine({ label, value }: { label: string; value: string }) {
-  return <p className="mt-1.5"><strong>{label}：</strong>{value}</p>;
-}
-
 function SourceBadge({ source }: { source: "ai" | "teacher" }) {
-  return (
-    <span className="rounded bg-student-bg px-1.5 py-0.5 text-[9px] font-semibold text-student-muted">
-      {source === "teacher" ? "教师" : "AI"}
-    </span>
-  );
+  return <ReviewBadge>{source === "teacher" ? "教师" : "AI"}</ReviewBadge>;
 }
 
 function WorkspaceSkeleton({ error }: { error: string }) {

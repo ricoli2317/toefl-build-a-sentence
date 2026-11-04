@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { correctionDatabaseError, WritingCorrectionError } from "./writingCorrection.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import { loadTeacherScope } from "./teacherScope.server.ts";
 import type { UserRole } from "./types.ts";
@@ -14,6 +15,7 @@ export type WritingReviewModerationActor = {
 };
 
 type ModerationAttemptRow = {
+  attempt_kind: "original" | "correction";
   attempt_id: string;
   assignment_id: string | null;
   user_id: string;
@@ -57,7 +59,7 @@ export async function moderateWritingReviewAttempts(
     (from, to) =>
       supabase
         .from("writing_attempts")
-        .select("attempt_id,assignment_id,user_id,status")
+        .select("attempt_id,attempt_kind,assignment_id,user_id,status")
         .in("attempt_id", input.attemptIds)
         .order("attempt_id", { ascending: true })
         .range(from, to)
@@ -142,6 +144,9 @@ export async function moderateWritingReviewAttempts(
       deny(attemptId);
       continue;
     }
+    if (attempt.attempt_kind === "correction" && input.action === "ignore") {
+      throw new WritingCorrectionError("CORRECTION_REVIEW_NOT_SUPPORTED", "订正批改操作尚未开放。", 409);
+    }
     authorizedIds.push(attemptId);
   }
 
@@ -154,6 +159,7 @@ export async function moderateWritingReviewAttempts(
       }
     );
     if (error) {
+      if (error.message === "WRITING_CORRECTION_NOT_ENABLED") throw correctionDatabaseError(error);
       throw new Error(`Writing review moderation failed: ${error.message}`);
     }
     const rows = Array.isArray(data) ? data : [];

@@ -125,7 +125,7 @@ function activityQuery(db: SupabaseClient, source: ActivitySource, columns: stri
   const query = db.from(source.table).select(columns);
   switch (source.table) {
     case "writing_attempts":
-      return query.eq("status", "submitted");
+      return query.eq("attempt_kind", "original").eq("status", "submitted");
     case "reading_attempts":
       return query.eq("status", "submitted");
     default:

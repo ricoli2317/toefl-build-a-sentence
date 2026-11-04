@@ -7,13 +7,17 @@ export function WritingPracticeActions({
   disabled,
   onSave,
   onSubmit,
-  submitLabel = "Submit"
+  submitLabel = "Submit",
+  saveLabel = "Save Draft",
+  saveDisabled = false
 }: {
   compact?: boolean;
   disabled: boolean;
   onSave?: () => void;
   onSubmit: () => void;
   submitLabel?: string;
+  saveLabel?: string;
+  saveDisabled?: boolean;
 }) {
   return (
     <div
@@ -22,9 +26,9 @@ export function WritingPracticeActions({
       }`}
     >
       {onSave ? (
-        <button className="writing-action-secondary" disabled={disabled} onClick={onSave} type="button">
+        <button className="writing-action-secondary" disabled={disabled || saveDisabled} onClick={onSave} type="button">
           <Save aria-hidden="true" size={19} />
-          Save Draft
+          {saveLabel}
         </button>
       ) : null}
       <button className="writing-action-primary" disabled={disabled} onClick={onSubmit} type="button">

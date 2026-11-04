@@ -44,6 +44,7 @@ export async function GET(request: Request) {
           supabase
             .from("writing_attempts")
             .select("attempt_id,assignment_id,task_type,question_id,set_id,submitted_at")
+            .eq("attempt_kind", "original")
             .eq("user_id", auth.userId!)
             .eq("status", "submitted")
             .order("submitted_at", { ascending: false })
