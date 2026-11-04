@@ -138,6 +138,13 @@ export async function moderateWritingReviewAttempts(
   }
 
   const authorizedIds: string[] = [];
+  const correctionIgnoreIds: string[] = [];
+  const correctionReturnIds = input.action === "return" ? input.attemptIds.filter(id => attemptById.get(id)?.attempt_kind === "correction") : [];
+  const correctionReviews = correctionReturnIds.length ? await readAllSupabaseRows<{ attempt_id: string }>((from, to) =>
+    supabase.from("writing_correction_reviews").select("attempt_id").in("attempt_id", correctionReturnIds).range(from, to))
+    : { data: [], error: null };
+  if (correctionReviews.error) throw new Error(correctionReviews.error.message);
+  const reviewedCorrections = new Set((correctionReviews.data ?? []).map(row => row.attempt_id));
   for (const attemptId of input.attemptIds) {
     const attempt = attemptById.get(attemptId);
     if (!attempt || !authorized(attempt)) {
@@ -145,9 +152,23 @@ export async function moderateWritingReviewAttempts(
       continue;
     }
     if (attempt.attempt_kind === "correction" && input.action === "ignore") {
-      throw new WritingCorrectionError("CORRECTION_REVIEW_NOT_SUPPORTED", "订正批改操作尚未开放。", 409);
+      correctionIgnoreIds.push(attemptId);
+      continue;
+    }
+    if (reviewedCorrections.has(attemptId)) {
+      resultsById.set(attemptId, { attemptId, outcome: "skipped", reason: "already_reviewed" });
+      continue;
     }
     authorizedIds.push(attemptId);
+  }
+
+  if (correctionIgnoreIds.length) {
+    const { data, error } = await supabase.rpc("ignore_teacher_writing_corrections", { p_attempt_ids: correctionIgnoreIds });
+    if (error) throw new Error(`Correction moderation failed: ${error.message}`);
+    for (const row of Array.isArray(data) ? data : []) {
+      const result = parseRpcResult(row);
+      if (result && correctionIgnoreIds.includes(result.attemptId)) resultsById.set(result.attemptId, result);
+    }
   }
 
   if (authorizedIds.length > 0) {

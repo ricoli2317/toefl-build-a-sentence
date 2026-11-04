@@ -252,7 +252,7 @@ test("new issues never change the completion denominator", () => {
   assert.equal(state.completion.total_weight, 5);
   assert.equal(state.completion.rate, 1);
   assert.equal(state.new_issues.length, 1);
-  assert.equal(state.new_issues[0].review_status, "pending");
+  assert.equal(state.new_issues[0].review_status, "accepted");
 });
 
 test("teacher overrides are validated strictly", () => {
@@ -277,7 +277,7 @@ test("teacher overrides are validated strictly", () => {
   );
   assert.deepEqual(ok.issue_statuses, { "le-1": "partially_resolved" });
   assert.equal(ok.correction_score, 4);
-  assert.equal(ok.score_rationale, null);
+  assert.equal(ok.score_rationale, "");
   assert.deepEqual(ok.new_issue_reviews["0"], { status: "dismissed", note: "n" });
 });
 

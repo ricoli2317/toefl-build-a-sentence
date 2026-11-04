@@ -25,14 +25,13 @@ export function WritingCorrectionHistoryItems({ items, onOpen }: {
    return <ol className="mt-2 max-h-48 divide-y divide-student-border overflow-y-auto text-xs">
     {items.map((item) => <li className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0" key={item.attempt_id}>
       <div className="min-w-0">
-      <div className="flex flex-wrap items-center gap-2"><p className="font-bold">{item.task_type === "email" ? "WE" : "AD"} · 订正</p><span className="student-chip !py-0.5 text-[11px]">{item.status === "draft" ? "草稿" : "已提交"}</span></div>
-      <p className="mt-1 text-student-muted">{item.submitted_at ? new Date(item.submitted_at).toLocaleString("zh-CN") : item.saved_at ? `保存于 ${new Date(item.saved_at).toLocaleString("zh-CN")}` : "尚未提交"}</p>
-      {item.status === "submitted" ? <p>{item.reviewStatus === "pending" ? "正在等待教师批改" : item.reviewStatus === "reviewing" ? "教师批改中" : item.reviewStatus === "published" ? "教师已发布批改" : item.reviewStatus === "ignored" ? "已忽略" : "批改状态暂不可用"}</p> : null}
+      <div className="flex flex-wrap items-center gap-2"><p className="font-bold">{item.submitted_at ? new Date(item.submitted_at).toLocaleString("zh-CN") : item.saved_at ? `保存于 ${new Date(item.saved_at).toLocaleString("zh-CN")}` : "尚未提交"}</p><span className="student-chip !py-0.5 text-[11px]">{item.status === "draft" ? "草稿" : "已提交"}</span></div>
+      {item.status === "submitted" ? <p className="mt-1 text-student-muted">{item.reviewStatus === "published" ? "批改已发布" : "等待批改中"}</p> : null}
       </div>
-      <a className="inline-flex shrink-0 items-center gap-1 font-bold text-student-primary hover:underline" href={`/student/writing-corrections/${encodeURIComponent(item.attempt_id)}`}
+      <a className="inline-flex shrink-0 items-center gap-1 font-bold text-student-primary hover:underline" href={`/student/writing-corrections/${encodeURIComponent(item.attempt_id)}${item.reviewStatus === "published" ? "/review" : ""}`}
         onClick={onOpen ? (event) => { event.preventDefault(); onOpen(item.attempt_id); } : (event) => {
           event.currentTarget.href += `?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`;
-        }}>{item.status === "draft" ? "继续订正" : "查看本次提交（只读）"}<ArrowRight aria-hidden="true" size={14} /></a>
+        }}>{item.status === "draft" ? "继续订正" : item.reviewStatus === "published" ? "查看批改" : "查看"}<ArrowRight aria-hidden="true" size={14} /></a>
     </li>)}
   </ol>;
 }

@@ -1027,12 +1027,12 @@ function WritingPracticeHeader({
 
 /** Reading's presentation, with Writing-owned callbacks and optional clock.
  * Back and the former Exit shared requestExit; keep just the Back action. */
-export function WritingPageHeader({ title, onBack, readOnly = false, disabled = false, children }: {
-  title: string; onBack: () => void; readOnly?: boolean; disabled?: boolean; children?: ReactNode;
+export function WritingPageHeader({ title, onBack, readOnly = false, disabled = false, children, correction = false }: {
+  title: string; onBack: () => void; readOnly?: boolean; disabled?: boolean; children?: ReactNode; correction?: boolean;
 }) {
   return (
-    <div className="reading-theme font-sans">
-      <PracticeHeader title={title} onBack={onBack} backDisabled={disabled} productName={readOnly ? "已提交 · 只读" : undefined} actions={children} />
+    <div className={correction ? "font-sans" : "reading-theme font-sans"}>
+      <PracticeHeader title={title} onBack={onBack} backDisabled={disabled} productName={readOnly ? correction ? "已提交" : "已提交 · 只读" : undefined} actions={children} />
     </div>
   );
 }

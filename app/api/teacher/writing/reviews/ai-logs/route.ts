@@ -25,6 +25,7 @@ export async function GET(request: Request) {
   }
 
   const url = new URL(request.url);
+  const table = url.searchParams.get("source") === "correction" ? "writing_correction_ai_logs" : "writing_review_ai_logs";
   const page = positiveInteger(url.searchParams.get("page"), 1);
   const pageSize = Math.min(
     positiveInteger(url.searchParams.get("page_size"), 25),
@@ -38,7 +39,7 @@ export async function GET(request: Request) {
   });
   if (visibleAttemptIds.length === 0) return response({ logs: [], pagination: { page, page_size: pageSize, total: 0, total_pages: 0 } });
   let query = supabase
-    .from("writing_review_ai_logs")
+    .from(table)
     .select(LOG_COLUMNS, { count: "exact" })
     .in("attempt_id", visibleAttemptIds);
   for (const field of [

@@ -775,7 +775,7 @@ test("feedback cards hide example but keep issue suggestion revision and actions
   assert.match(card, /label="问题"/);
   assert.match(card, /label="建议"/);
   assert.match(card, /label="建议改写"/);
-  assert.match(card, /不采用|恢复采用/);
+  assert.match(card, /ReviewInclusionButton included=\{item\.included\}/);
   assert.match(card, /重新生成/);
   assert.match(card, /workingReviewItemSource\(item\) === "teacher"/);
   assert.match(card, /hasApplicableContentRevision\(item\) && !teacherSource/);
@@ -841,7 +841,8 @@ test("official score restores read-only AI total beside editable teacher total",
     /aiScore=\{hasAiReview \? scores\.official_score\.ai_score : "—"\}/
   );
   const presentation = fs.readFileSync(path.join(process.cwd(), "components/teacher/WritingReviewPresentation.tsx"), "utf8");
-  assert.match(presentation, /教师最终\{teacherControl\}/);
+  assert.match(presentation, /teacherLabel = "教师最终"/);
+  assert.match(presentation, /\{teacherLabel\}\{teacherControl\}/);
   assert.match(scorePanel, /teacherControl=\{<ScoreSelect/);
   assert.match(scorePanel, /value=\{scores\.official_score\.teacher_score\}/);
 });

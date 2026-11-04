@@ -2,19 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
-import { CompactSection, MiniButton, QuestionColumn, ScoreSelect, WritingReviewInfoBar } from "./TeacherWritingReviewWorkspace";
-import { ReviewWorkspaceFrame, ReviewWorkspaceGrid, ReviewToolbar, ReviewToolbarActions, ReviewToolbarButton, ReviewFilterChip, ReviewFeedbackCard, ReviewFeedbackLine, ReviewBadge, ReviewOfficialScoreCard, ReviewScoreRationale, ReviewScoreTable, ReviewScoreRow, ReviewSelect } from "./WritingReviewPresentation";
-import { CollapsibleText } from "@/components/writing/CollapsibleText";
+import { CompactSection, ReviewInclusionButton, QuestionColumn, ScoreSelect, WritingReviewInfoBar, WorkspaceSkeleton } from "./TeacherWritingReviewWorkspace";
+import { ReviewWorkspaceFrame, ReviewWorkspaceGrid, ReviewToolbar, ReviewToolbarActions, ReviewFeedbackCard, ReviewFeedbackLine, ReviewBadge, ReviewOfficialScoreCard, ReviewScoreRationale, ReviewScoreTable, ReviewScoreRow, ReviewSelect } from "./WritingReviewPresentation";
+import Link from "next/link";
 import { CONTENT_FEEDBACK_MARKER_CLASS, languageEditSeverityLabel, languageEditSeverityMarkerClass, writingReviewCategoryLabel } from "@/lib/writingReviewWorkspaceUi";
 import type { RubricScore } from "@/lib/writingReviewSchemaV2";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { WritingCorrectionComparison } from "@/components/teacher/WritingCorrectionComparison";
-import { WRITING_CORRECTION_CHANGE_STYLE, WRITING_CORRECTION_DELETION_STYLE } from "@/lib/writingCorrectionDisplay";
-import {
-  parseWritingReviewModerationResponse,
-  publishWritingReviewModerationInvalidation,
-  writingReviewModerationNotice
-} from "@/lib/writingReviewModeration";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import {
   EMPTY_CORRECTION_TEACHER_OVERRIDES,
@@ -44,7 +38,7 @@ async function teacherRequest(path: string, init?: RequestInit) {
   });
 }
 
-type Busy = "load" | "generate" | "save" | "publish" | "return" | null;
+type Busy = "load" | "generate" | "save" | "publish" | null;
 
 /** Phase 4 workspace: AI correction review, issue audit, score, publish. */
 export function TeacherWritingCorrectionDetail({
@@ -63,11 +57,9 @@ export function TeacherWritingCorrectionDetail({
   const [busy, setBusy] = useState<Busy>("load");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
-  const [confirmReturn, setConfirmReturn] = useState(false);
-  const [confirmPublish, setConfirmPublish] = useState(false);
   const [confirmGenerate, setConfirmGenerate] = useState(false);
-  const [returned, setReturned] = useState(false);
-  const [telemetry, setTelemetry] = useState<string>("");
+  const [selectedIssueId, setSelectedIssueId] = useState<string | null>(null);
+  const [locationRequest, setLocationRequest] = useState(0);
   const busyRef = useRef<Busy>(null);
 
   const apply = (next: CorrectionWorkspace) => {
@@ -83,8 +75,6 @@ export function TeacherWritingCorrectionDetail({
     setWorkspace(null);
     setError("");
     setNotice("");
-    setReturned(false);
-    setTelemetry("");
     setBusy("load");
     void (async () => {
       const response = await send(
@@ -110,15 +100,14 @@ export function TeacherWritingCorrectionDetail({
     [workspace, draft]
   );
   const published = workspace?.review.status === "published";
-  const readonly = published || busy !== null;
+  const readonly = busy !== null;
   const dirty = workspace
     ? JSON.stringify(draft) !== JSON.stringify(workspace.review.teacher)
     : false;
   const canPublish = Boolean(state && state.effective_score !== null);
 
-  // A saved or published correction review only invalidates correction-aware
-  // caches: the teacher queue, this workspace, and the student's correction
-  // history. Ordinary writing history, calendar and published reviews stay.
+  // Correction caches also refresh the combined published list; ordinary
+  // practice history, calendar and assignment progress remain untouched.
   const invalidateCorrectionCaches = (next: CorrectionWorkspace) => {
     publishCacheInvalidation({
       type: "WRITING_CORRECTION_UPDATED",
@@ -158,27 +147,17 @@ export function TeacherWritingCorrectionDetail({
   };
 
   const generate = () => run("generate", async () => {
+    // As in ordinary Writing, never discard unsaved human edits when regenerating.
+    if (dirty) {
+      const saved = await post(`/api/teacher/writing/reviews/${encodeURIComponent(attemptId)}/correction-review`,
+        { action: "save", teacher: draft });
+      apply(saved.workspace as CorrectionWorkspace);
+    }
     const payload = await post(
       `/api/teacher/writing/reviews/${encodeURIComponent(attemptId)}/correction-review/generate-ai`,
       {}
     );
     apply(payload.workspace as CorrectionWorkspace);
-    if (payload.teacher_overrides_preserved) {
-      setNotice("AI 已重新评价。你此前修改的问题状态与评分已保留，未被覆盖。");
-    } else {
-      setNotice("AI 订正评价已生成，仍是未发布草稿。");
-    }
-    const info = payload.telemetry as {
-      model?: string | null; end_to_end_elapsed_ms?: number; hedge_triggered?: boolean;
-      requests_started?: number;
-    } | undefined;
-    if (info) {
-      setTelemetry([
-        info.model ? `模型 ${info.model}` : "",
-        typeof info.end_to_end_elapsed_ms === "number" ? `${Math.round(info.end_to_end_elapsed_ms / 100) / 10}s` : "",
-        info.hedge_triggered ? `hedge ${info.requests_started} 次请求` : ""
-      ].filter(Boolean).join(" · "));
-    }
   });
 
   const save = () => run("save", async () => {
@@ -200,43 +179,14 @@ export function TeacherWritingCorrectionDetail({
     const next = payload.workspace as CorrectionWorkspace;
     apply(next);
     invalidateCorrectionCaches(next);
-    setNotice("订正评价已发布并冻结，原稿已发布批改未被修改。");
-    setConfirmPublish(false);
+    setNotice("订正评价已发布。");
   });
 
-  const returnCorrection = () => run("return", async () => {
-    const payload = await post("/api/teacher/writing/reviews/moderate", {
-      action: "return",
-      attemptIds: [attemptId]
-    });
-    const parsed = parseWritingReviewModerationResponse(payload);
-    const result = parsed?.results.find((item) => item.attemptId === attemptId);
-    if (!parsed || !result) throw new Error("退回失败，请重试。");
-    publishWritingReviewModerationInvalidation(
-      "return",
-      [{
-        attemptId,
-        studentId: workspace?.attempt.user_id ?? "",
-        assignmentId: workspace?.attempt.assignment_id ?? null,
-        attemptKind: "correction",
-        originalAttemptId: workspace?.attempt.original_attempt_id ?? null
-      }],
-      parsed.results
-    );
-    setNotice(
-      result.reason === "draft_exists"
-        ? "无法退回：该原稿下已有另一份活动订正草稿，未覆盖任何草稿。"
-        : writingReviewModerationNotice("return", parsed.results)
-    );
-    if (result.outcome === "returned") setReturned(true);
-    setConfirmReturn(false);
-  });
 
   const setIssueStatus = (issueId: string, value: string) => {
     setDraft((current) => {
       const statuses = { ...current.issue_statuses };
-      if (value === "ai") delete statuses[issueId];
-      else statuses[issueId] = value as CorrectionResolutionStatus;
+      statuses[issueId] = value as CorrectionResolutionStatus;
       return { ...current, issue_statuses: statuses };
     });
   };
@@ -245,32 +195,30 @@ export function TeacherWritingCorrectionDetail({
     setDraft((current) => {
       const reviews = { ...current.new_issue_reviews };
       const existing = reviews[String(index)];
-      if (existing?.status === status) delete reviews[String(index)];
-      else reviews[String(index)] = { status, note: existing?.note ?? "" };
+      reviews[String(index)] = { status, note: existing?.note ?? "" };
       return { ...current, new_issue_reviews: reviews };
     });
   };
 
   const summary = state ? correctionIssueSummary(state) : null;
   const completion = state ? correctionCompletionSummary(state.completion) : null;
+  const locateIssue = (id: string) => {
+    setSelectedIssueId(id);
+    setLocationRequest(request => request + 1);
+  };
+
+  if (busy === "load") return <WorkspaceSkeleton error={error} />;
 
   return (
     <ReviewWorkspaceFrame>
-      <ReviewToolbar title="订正批改" returnTo={returnTo} displayName={workspace?.question.set_title} status={published ? "已发布" : returned ? "已退回" : "批改中"}>
-          {workspace && !published && !returned ? (
-            <ReviewToolbarButton
-              disabled={readonly}
-              onClick={() => setConfirmReturn(true)}
-            >
-              退回订正
-            </ReviewToolbarButton>
-          ) : null}
-          {workspace && state && !returned ? <ReviewToolbarActions
-            generateLabel={busy === "generate" ? "正在重新生成..." : state.ai_score === null ? "生成 AI 评价" : "重新生成 AI 评价"}
-            statusText={error || (busy === "save" ? "保存中..." : busy === "publish" ? "发布中..." : busy === "generate" ? "AI 评价中..." : dirty ? "有未发布修改" : "已保存")}
-            error={Boolean(error)} generateDisabled={readonly} saveDisabled={readonly || !dirty} publishDisabled={readonly || !canPublish}
-            onGenerate={() => (Object.keys(draft.issue_statuses).length > 0 || draft.correction_score !== null ? setConfirmGenerate(true) : void generate())}
-            onSave={() => void save()} onPublish={() => setConfirmPublish(true)}
+      <ReviewToolbar title="订正批改" returnTo={returnTo} displayName={workspace?.display_name ?? workspace?.question.set_title} status={published ? "已发布" : workspace?.review.status === "ignored" ? "已忽略" : "批改中"}>
+          <Link className="teacher-button-secondary !min-h-8 !px-3 !py-1 text-xs" href={`/teacher/writing/reviews/logs?source=correction&attempt_id=${encodeURIComponent(attemptId)}&returnTo=${encodeURIComponent(`/teacher/writing/reviews/${attemptId}/correction?returnTo=${encodeURIComponent(returnTo)}`)}`}>查看 AI 日志</Link>
+          {workspace && state ? <ReviewToolbarActions
+            generateLabel={busy === "generate" ? state.ai_score === null ? "正在评价……" : "正在重新生成……" : state.ai_score === null ? "生成 AI 评价" : "重新生成 AI 评价"}
+            statusText={error || (busy === "save" ? "保存中..." : busy === "publish" ? "发布中..." : busy === "generate" ? "AI 评价中..." : dirty ? "有未发布修改" : notice || "已保存")}
+            error={Boolean(error)} generateDisabled={readonly || published} saveDisabled={readonly || !dirty} publishDisabled={readonly || !canPublish}
+            onGenerate={() => (dirty || Object.keys(draft.issue_statuses).length > 0 || draft.correction_score !== null ? setConfirmGenerate(true) : void generate())}
+            onSave={() => void save()} onPublish={() => void publish()}
           /> : null}
       </ReviewToolbar>
       {workspace ? <WritingReviewInfoBar items={[
@@ -280,42 +228,23 @@ export function TeacherWritingCorrectionDetail({
         ["提交时间", workspace.attempt.submitted_at ? new Date(workspace.attempt.submitted_at).toLocaleString("zh-CN") : "—"],
         ["字数", String(workspace.attempt.word_count)],
         ["AI 评价时间", workspace.review.ai_generated_at ? new Date(workspace.review.ai_generated_at).toLocaleString("zh-CN") : "—"],
-        ["评价状态", published ? "已发布 · 只读" : returned ? "已退回" : state?.ai_score === null ? "待 AI 评价" : "评价草稿"]
+        ["评价状态", published ? "已发布" : state?.ai_score === null ? "待 AI 评价" : "评价草稿"]
       ]} /> : null}
 
       {error ? <p role="alert" className="shrink-0 border-b border-student-error-border bg-student-error-soft px-3 py-2 text-xs text-student-error">{error}</p> : null}
-      {notice ? <p role="status" className="shrink-0 border-b border-student-border px-3 py-2 text-xs">{notice}</p> : null}
-      {returned ? (
-        <p role="status" className="px-3 py-2 text-xs">已恢复同一份订正草稿，学生可继续编辑。</p>
-      ) : null}
-      {published ? (
-        <p role="status" className="shrink-0 border-b border-student-primary-border bg-student-primary-soft px-3 py-2 text-xs text-student-primary">
-          订正评价已发布并冻结于{" "}
-          {workspace?.review.published_at
-            ? new Date(workspace.review.published_at).toLocaleString("zh-CN")
-            : "—"}
-          。此页面只读。
-        </p>
-      ) : null}
-      {busy === "load" ? <p>正在加载订正评价…</p> : null}
 
       {workspace && state && summary && completion ? (
         <>
           <ReviewWorkspaceGrid>
             <div className="min-w-0 [&>.writing-review-column]:h-full max-[1099px]:shrink-0 max-[1099px]:[&>.writing-review-column]:min-h-0"><QuestionColumn question={workspace.question} taskType={workspace.attempt.task_type} /></div>
             <section className="writing-review-column min-w-0 bg-white max-[1099px]:!min-h-0 max-[1099px]:shrink-0">
-              <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-student-border px-3 py-2.5">
-                <h2 className="text-sm font-bold">修订正文</h2>
-                <div aria-label="修订图例" className="flex flex-wrap gap-3 text-xs text-student-muted">
-                  <span style={WRITING_CORRECTION_DELETION_STYLE}>删除</span>
-                  <span style={WRITING_CORRECTION_CHANGE_STYLE}>新增</span>
-                </div>
-              </div>
               <div className="min-h-0 flex-1 overflow-y-auto p-5">
               <WritingCorrectionComparison
                 corrected={workspace.corrected_response_text}
                 revisionState={workspace.revision_state}
                 original={workspace.source.original_response_text}
+                selectedIssue={workspace.review.state.issues.find(issue => issue.issue_id === selectedIssueId) ?? null}
+                locationRequest={locationRequest}
               />
               </div>
             </section>
@@ -326,26 +255,19 @@ export function TeacherWritingCorrectionDetail({
                 <div className="flex items-center justify-between gap-2"><p className="text-3xl font-bold leading-tight tabular-nums">{completion.label}</p><ReviewBadge>语言 {summary.language} · 内容 {summary.content}</ReviewBadge></div>
                 {state.completion.rate !== null ? <div aria-label="原始问题加权完成度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.completion.rate * 100} className="mt-3 h-1.5 overflow-hidden rounded-full bg-student-primary-soft" role="progressbar"><div className="h-full rounded-full bg-student-primary" style={{ width: `${state.completion.rate * 100}%` }} /></div> : null}
                 <dl className="mt-3 grid grid-cols-2 gap-2">
-                  {CORRECTION_STATUS_ORDER.map(status => <div className="flex items-center justify-between gap-2 rounded-md bg-student-bg px-2 py-1.5" key={status}><dt><ReviewBadge toneClass={CORRECTION_STATUS_TONE[status]}>{CORRECTION_STATUS_LABEL[status]}</ReviewBadge></dt><dd className="text-sm font-bold tabular-nums">{state.completion.counts[status]}</dd></div>)}
-                  {state.completion.counts.undetermined > 0 ? (
-                    <>
-                      <div className="col-span-2 flex items-center justify-between px-2 text-[11px]"><dt><ReviewBadge>未判定</ReviewBadge></dt><dd className="font-bold tabular-nums">{state.completion.counts.undetermined}</dd></div>
-                    </>
-                  ) : null}
+                  {CORRECTION_STATUS_ORDER.map(status => <div className={`flex min-h-20 flex-col items-center justify-center gap-1 rounded-md px-2 py-3 ${CORRECTION_STATUS_TONE[status]}`} key={status}><dt className="text-lg font-semibold">{CORRECTION_STATUS_LABEL[status]}</dt><dd className="text-3xl font-bold leading-tight tabular-nums">{state.completion.counts[status]}</dd></div>)}
                 </dl>
-                <details className="mt-2 text-[11px]"><summary className="cursor-pointer text-student-primary">计算方式</summary><p className="mt-1 leading-5">{completion.detail}。每条 LE 权重 1，每条 Content 权重 3；已解决计 1，部分解决计 0.5，未解决 / 无法确定计 0。新问题不参与计算。完成度不是评分。</p></details>
               </CompactSection>
 
               <CompactSection title="综合评分">
                 <ReviewScoreTable headings={["原稿评分", "AI 订正评分", "最终分差"]} columns="1fr 1fr 1fr">
                   <ReviewScoreRow columns="1fr 1fr 1fr"><strong>{state.original_score}/5</strong><strong className="text-student-primary">{state.ai_score === null ? "—" : `${state.ai_score}/5`}</strong><span><ReviewBadge toneClass={state.score_delta !== null && state.score_delta > 0 ? CORRECTION_STATUS_TONE.resolved : state.score_delta !== null && state.score_delta < 0 ? CORRECTION_STATUS_TONE.unresolved : undefined}>{correctionDeltaLabel(state.score_delta)}</ReviewBadge></span></ReviewScoreRow>
                 </ReviewScoreTable>
-                <ReviewOfficialScoreCard title="订正整体评分" aiScore={state.ai_score ?? "—"}
+                <ReviewOfficialScoreCard title="订正整体评分" teacherLabel="教师最终评分" aiScore={state.ai_score ?? "—"}
                   teacherControl={<ScoreSelect<RubricScore | null>
                     ariaLabel="教师订正评分"
-                    disabled={readonly}
-                    value={draft.correction_score as RubricScore | null}
-                    inheritLabel={`跟随 AI（${state.ai_score ?? "—"}）`}
+                    disabled={readonly || state.effective_score === null}
+                    value={state.effective_score as RubricScore | null}
                     onChange={(value) => setDraft((current) => ({
                       ...current,
                       correction_score: value
@@ -358,20 +280,20 @@ export function TeacherWritingCorrectionDetail({
                       ...current,
                       score_rationale: event.target.value
                     }))}
-                    placeholder={state.ai_rationale || "可留空，发布时使用 AI 解释"}
-                    value={draft.score_rationale ?? ""}
+                    value={draft.score_rationale ?? state.ai_rationale}
                   />}
                 />
-                {state.ai_rationale || state.ai_score_change_explanation ? <div className="mt-2 text-[11px] leading-[1.55]">
-                  {state.ai_rationale ? <div className="mt-1.5"><strong>AI 评价</strong><CollapsibleText className="text-[11px] leading-[1.55] text-student-text" value={state.ai_rationale} lines={3} /></div> : null}
-                  {state.ai_score_change_explanation ? <div className="mt-1.5"><strong>分差原因</strong><CollapsibleText className="text-[11px] leading-[1.55] text-student-text" value={state.ai_score_change_explanation} lines={2} /></div> : null}
-                </div> : null}
+                <label className="mt-2 block text-[10px] font-semibold text-student-muted">分差原因
+                  <ReviewScoreRationale aria-label="分差原因" disabled={readonly} value={draft.score_change_explanation ?? state.ai_score_change_explanation}
+                    onChange={event => setDraft(current => ({ ...current, score_change_explanation: event.target.value }))} />
+                </label>
               </CompactSection>
 
               <CompactSection title="原始问题逐项审核" subtitle={`${state.issues.length} 项`}>
                 <ul className="grid gap-2">
                   {state.issues.map((issue) => (
-                    <li key={issue.issue_id}><ReviewFeedbackCard>
+                    <li key={issue.issue_id}><ReviewFeedbackCard selected={selectedIssueId === issue.issue_id} onClick={() => locateIssue(issue.issue_id)}>
+                      <button type="button" className="mb-1 text-[10px] font-semibold text-student-primary hover:underline" onClick={event => { event.stopPropagation(); locateIssue(issue.issue_id); }}>定位正文</button>
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className={issue.issue_type === "content_feedback" ? CONTENT_FEEDBACK_MARKER_CLASS : "font-semibold"}>
                           {CORRECTION_ISSUE_TYPE_LABEL[issue.issue_type] ?? issue.issue_type}
@@ -414,18 +336,16 @@ export function TeacherWritingCorrectionDetail({
                       {issue.ai_explanation ? (
                         <p className="mt-1.5">{issue.ai_explanation}</p>
                       ) : null}
-                      {issue.ai_evidence ? (
-                        <ReviewFeedbackLine label="订正稿证据" value={issue.ai_evidence} />
-                      ) : null}
                       </div>
                       <label className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[10px] font-semibold">
                         教师判定
                         <ReviewSelect
                           disabled={readonly}
                           onChange={(event) => setIssueStatus(issue.issue_id, event.target.value)}
-                          value={issue.teacher_status ?? "ai"}
+                          aria-label={`教师判定 ${issue.issue_id}`}
+                          value={issue.effective_status ?? ""}
                         >
-                          <option value="ai">跟随 AI</option>
+                          {issue.effective_status === null ? <option disabled value="">请选择判定</option> : null}
                           {CORRECTION_STATUS_ORDER.map((status) => (
                             <option key={status} value={status}>{CORRECTION_STATUS_LABEL[status]}</option>
                           ))}
@@ -442,7 +362,7 @@ export function TeacherWritingCorrectionDetail({
                 ) : (
                   <ul className="grid gap-2">
                     {state.new_issues.map((issue) => (
-                      <li key={issue.index}><ReviewFeedbackCard>
+                      <li key={issue.index}><ReviewFeedbackCard muted={issue.review_status === "dismissed"}>
                         <div className="flex flex-wrap items-center gap-1.5">
                           <span className="font-semibold text-student-primary">
                             {writingReviewCategoryLabel(issue.type)}
@@ -451,58 +371,27 @@ export function TeacherWritingCorrectionDetail({
                           <ReviewBadge>评分影响：{issue.score_impact}</ReviewBadge>
                           {issue.review_status !== "pending" ? (
                             <ReviewBadge>
-                              {issue.review_status === "accepted" ? "教师已采纳" : "教师已驳回"}
+                              {issue.review_status === "dismissed" ? "未采用" : "已采用"}
                             </ReviewBadge>
                           ) : null}
                         </div>
                         <ReviewFeedbackLine label="订正稿证据" value={issue.evidence} />
                         <ReviewFeedbackLine label="AI 解释" value={issue.explanation} />
                         <div className="mt-2 flex flex-wrap gap-1.5">
-                          <MiniButton
-                            disabled={readonly}
-                            onClick={() => setNewIssueReview(issue.index, "accepted")}
-                          >
-                            {issue.review_status === "accepted" ? "取消采纳" : "采纳"}
-                          </MiniButton>
-                          <MiniButton
-                            disabled={readonly}
-                            onClick={() => setNewIssueReview(issue.index, "dismissed")}
-                          >
-                            {issue.review_status === "dismissed" ? "取消驳回" : "驳回"}
-                          </MiniButton>
+                          <ReviewInclusionButton restoreLabel="采用" included={issue.review_status !== "dismissed"} disabled={readonly}
+                            onChange={included => setNewIssueReview(issue.index, included ? "accepted" : "dismissed")} />
                         </div>
                       </ReviewFeedbackCard></li>
                     ))}
                   </ul>
                 )}
               </CompactSection>
-              {telemetry ? <details className="text-xs"><summary className="cursor-pointer text-student-primary">AI 请求信息</summary><p className="mt-1">{telemetry}</p></details> : null}
               </div>
             </aside>
           </ReviewWorkspaceGrid>
         </>
       ) : null}
 
-      <ConfirmDialog
-        open={confirmReturn}
-        title="退回订正草稿"
-        message="退回后恢复同一个订正 ID，保留冻结来源，学生可以继续修改。已有另一份活动草稿或批改记录时不会退回，也不会覆盖。"
-        confirmText="确认退回"
-        cancelText="取消"
-        confirming={busy === "return"}
-        onCancel={() => { if (!busyRef.current) setConfirmReturn(false); }}
-        onConfirm={() => void returnCorrection()}
-      />
-      <ConfirmDialog
-        open={confirmPublish}
-        title="发布订正评价"
-        message="发布后订正评价将被冻结，学生可见；原稿的已发布批改不会被修改。发布后不能再编辑。"
-        confirmText="确认发布"
-        cancelText="取消"
-        confirming={busy === "publish"}
-        onCancel={() => { if (!busyRef.current) setConfirmPublish(false); }}
-        onConfirm={() => void publish()}
-      />
       <ConfirmDialog
         open={confirmGenerate}
         title="重新生成 AI 评价"

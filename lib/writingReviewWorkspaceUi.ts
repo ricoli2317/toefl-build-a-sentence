@@ -805,3 +805,5 @@ function mergeTeacherItemsById<T extends { source?: unknown }>(
     .forEach((item) => merged.set(id(item), item));
   return Array.from(merged.values());
 }
+/** Shared selected-annotation background; revision colors retain inline priority. */
+export const WRITING_REVIEW_SELECTED_TEXT_CLASS = "bg-violet-100";

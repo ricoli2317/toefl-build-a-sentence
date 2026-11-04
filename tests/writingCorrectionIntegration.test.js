@@ -10,6 +10,7 @@ const {
 const {
   correctionCompletion
 } = require("../lib/writingCorrectionReview.ts");
+const { loadStudentCorrectionReview } = require("../lib/writingCorrectionPublished.server.ts");
 
 /**
  * Phase 4 integration: real server module against an in-memory PostgREST mock
@@ -290,6 +291,11 @@ test("AI generation saves an independent reviewing draft and preserves teacher o
   assert.equal(first.workspace.review.published, null);
   assert.equal(first.workspace.review.state.ai_score, 3);
   assert.equal(first.teacher_overrides_preserved, false);
+  assert.equal(db.tables.writing_correction_ai_logs.length, 1);
+  assert.equal(db.tables.writing_correction_ai_logs[0].status, "success");
+  assert.equal(db.tables.writing_correction_ai_logs[0].model, "mock-model");
+  assert.equal(db.tables.writing_correction_ai_logs[0].generation_id, "mock-generation");
+  assert.equal(db.tables.writing_review_ai_logs?.length ?? 0, 0);
 
   const row = db.tables.writing_correction_reviews[0];
   assert.equal(row.status, "reviewing");
@@ -371,7 +377,7 @@ test("teacher edits are saved, reloaded and never overwrite the AI payload", asy
   assert.equal(reloaded.review.state.completion.rate, 0.3);
 });
 
-test("publishing freezes the effective review and blocks every later mutation", async () => {
+test("publish, save working changes, and republish use one row and isolate the student's snapshot", async () => {
   const db = createMockSupabase(tables());
   await generateCorrectionReview(db, actor, ATTEMPT, {
     requestStructuredOutput: providerReturning(aiReview())
@@ -400,17 +406,42 @@ test("publishing freezes the effective review and blocks every later mutation", 
   assert.equal(published.review.published.score_delta, 2);
   assert.equal(published.review.published.completion.rate, 1);
   assert.equal(published.review.published.issues.length, 3);
-  assert.equal(published.review.published.new_issues[0].review_status, "dismissed");
+  assert.equal(published.review.published.new_issues.length, 0);
+  assert.equal(published.review.state.new_issues[0].review_status, "dismissed");
 
   const row = db.tables.writing_correction_reviews[0];
   assert.equal(row.status, "published");
   assert.ok(row.published_review);
   assert.equal(row.published_at, "2026-11-03T12:00:00.000Z");
 
-  await assert.rejects(
-    () => saveCorrectionReview(db, actor, ATTEMPT, { action: "save", teacher: {} }),
-    (error) => error.code === "CORRECTION_REVIEW_LOCKED" && error.status === 409
-  );
+  const frozenAttempt = structuredClone(db.tables.writing_attempts);
+  const frozenAI = structuredClone(row.ai_review);
+  const edits = { issue_statuses: { "f-1": "unresolved" }, correction_score: 4,
+    score_rationale: "教师重新编辑解释", score_change_explanation: "教师分差原因", new_issue_reviews: {} };
+  const saved = await saveCorrectionReview(db, actor, ATTEMPT, { teacher: edits });
+  assert.equal(saved.review.state.effective_score, 4);
+  assert.equal(saved.review.published.correction_score, 5);
+  const oldStudent = await loadStudentCorrectionReview(db, STUDENT, ATTEMPT);
+  assert.equal(oldStudent.review.correction_score, 5);
+  assert.equal(oldStudent.review.new_issues.length, 0);
+  assert.equal(oldStudent.review.score_rationale, "教师最终评分。");
+  const republished = await saveCorrectionReview(db, actor, ATTEMPT, { teacher: edits },
+    { publish: true, now: () => new Date("2026-11-04T12:00:00Z") });
+  assert.equal(republished.review.review_id, published.review.review_id);
+  const latest = await loadStudentCorrectionReview(db, STUDENT, ATTEMPT);
+  assert.equal(latest.review.correction_score, 4);
+  assert.equal(latest.review.score_rationale, edits.score_rationale);
+  assert.equal(latest.review.score_change_explanation, edits.score_change_explanation);
+  assert.equal(latest.review.new_issues.length, 1);
+  assert.equal(latest.review.published_at, "2026-11-04T12:00:00.000Z");
+  const retried = await saveCorrectionReview(db, actor, ATTEMPT, { teacher: edits },
+    { publish: true, now: () => new Date("2026-11-04T13:00:00Z") });
+  assert.equal(retried.review.published_at, "2026-11-04T12:00:00.000Z", "unchanged republish retries are idempotent");
+  assert.deepEqual(db.tables.writing_attempts, frozenAttempt);
+  assert.deepEqual(row.ai_review, frozenAI);
+  assert.equal("teacher_overrides" in latest.review, false);
+  assert.equal("ai_review" in latest.review, false);
+  await assert.rejects(() => loadStudentCorrectionReview(db, ADMIN, ATTEMPT), error => error.status === 404);
   let called = 0;
   await assert.rejects(
     () => generateCorrectionReview(db, actor, ATTEMPT, {
@@ -423,15 +454,10 @@ test("publishing freezes the effective review and blocks every later mutation", 
   );
   assert.equal(called, 0, "published reviews must be rejected before any AI call");
 
-  // A second publish attempt is equally rejected.
-  await assert.rejects(
-    () => saveCorrectionReview(db, actor, ATTEMPT, { action: "publish", teacher: {} }),
-    (error) => error.code === "CORRECTION_REVIEW_LOCKED"
-  );
   assert.equal(db.tables.writing_correction_reviews.length, 1);
 });
 
-test("a published review always renders the frozen snapshot, not drifted rows", async () => {
+test("teachers read working edits while students read only the published snapshot", async () => {
   const db = createMockSupabase(tables());
   await generateCorrectionReview(db, actor, ATTEMPT, {
     requestStructuredOutput: providerReturning(aiReview())
@@ -454,9 +480,12 @@ test("a published review always renders the frozen snapshot, not drifted rows", 
 
   const workspace = await loadCorrectionReviewWorkspace(db, actor, ATTEMPT);
   assert.equal(workspace.review.status, "published");
-  assert.equal(workspace.review.state.effective_score, 5);
-  assert.equal(workspace.review.state.score_delta, 2);
-  assert.equal(workspace.review.state.effective_rationale, "frozen");
+  assert.equal(workspace.review.state.effective_score, 1);
+  assert.equal(workspace.review.state.score_delta, -2);
+  assert.equal(workspace.review.state.effective_rationale, "drift");
+  const student = await loadStudentCorrectionReview(db, STUDENT, ATTEMPT);
+  assert.equal(student.review.correction_score, 5);
+  assert.equal(student.review.score_rationale, "frozen");
   // Frozen at publish time: le-1 resolved + le-2 partially resolved = 1.5 / 5.
   assert.equal(workspace.review.state.completion.rate, 0.3);
 });

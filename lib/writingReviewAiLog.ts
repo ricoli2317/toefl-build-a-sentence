@@ -127,12 +127,13 @@ export function logWritingReviewAi(entry: WritingReviewAiLogEntry) {
 
 export async function persistWritingReviewAiLogBestEffort(
   client: PersistenceClient,
-  entry: WritingReviewAiLogEntry
+  entry: WritingReviewAiLogEntry,
+  table: "writing_review_ai_logs" | "writing_correction_ai_logs" = "writing_review_ai_logs"
 ) {
   logWritingReviewAi(entry);
   try {
     const { error } = await client
-      .from("writing_review_ai_logs")
+      .from(table)
       .insert(writingReviewAiLogDatabaseRow(entry));
     if (error) throw new Error(error.message || "Unknown insert error");
   } catch (error) {

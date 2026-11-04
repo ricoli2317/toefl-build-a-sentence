@@ -1,4 +1,6 @@
 "use client";
+import { scrollTargetWithinContainer } from "@/lib/writingReviewScroll";
+export { scrollTargetWithinContainer } from "@/lib/writingReviewScroll";
 
 import clsx from "clsx";
 import {
@@ -66,7 +68,6 @@ import {
   LANGUAGE_EDIT_OVERLAP_MESSAGE,
   adjacentLanguageEditId,
   buildWorkspaceAnnotationSegments,
-  calculateContainedScrollTop,
   countTeacherEditedLanguageEdits,
   createTeacherContentFeedback,
   createTeacherLanguageEdit,
@@ -2138,23 +2139,21 @@ function FeedbackCard({
         </p>
       ) : null}
       <div className="mt-2 flex flex-wrap gap-1.5" onClick={(event) => event.stopPropagation()}>
-        <MiniButton
-          onClick={() =>
+        <ReviewInclusionButton included={item.included}
+          onChange={(included) =>
             onChange((current) => ({
               ...current,
               content_feedback: {
                 ...current.content_feedback,
                 items: current.content_feedback.items.map((currentItem) =>
                   currentItem.feedback_id === item.feedback_id
-                    ? { ...currentItem, included: !currentItem.included }
+                    ? { ...currentItem, included }
                     : currentItem
                 )
               }
             }))
           }
-        >
-          {item.included ? "不采用" : "恢复采用"}
-        </MiniButton>
+        />
         {hasApplicableContentRevision(item) && !teacherSource ? (
           <MiniButton disabled={regenerating} onClick={() => setFormOpen((open) => !open)}>
             <Sparkles size={12} />{regenerating ? "正在重新生成..." : "重新生成"}
@@ -2400,6 +2399,13 @@ export function MiniButton({
   );
 }
 
+/** Shared adoption control; each review contract owns its persistence mapping. */
+export function ReviewInclusionButton({ included, disabled = false, onChange, restoreLabel = "恢复采用" }: {
+  included: boolean; disabled?: boolean; onChange: (included: boolean) => void; restoreLabel?: string;
+}) {
+  return <MiniButton disabled={disabled} onClick={() => onChange(!included)}>{included ? "不采用" : restoreLabel}</MiniButton>;
+}
+
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div className="mt-3">
@@ -2413,7 +2419,7 @@ function SourceBadge({ source }: { source: "ai" | "teacher" }) {
   return <ReviewBadge>{source === "teacher" ? "教师" : "AI"}</ReviewBadge>;
 }
 
-function WorkspaceSkeleton({ error }: { error: string }) {
+export function WorkspaceSkeleton({ error }: { error: string }) {
   return (
     <div className="flex h-[calc(100dvh-98px)] min-h-[660px] flex-col overflow-hidden rounded-2xl border border-student-border bg-white">
       <TeacherLoadingRegion label="正在加载写作批改工作台" />
@@ -2826,25 +2832,6 @@ function resolveInspectorPosition(anchor: DOMRect): InspectorPosition {
       ? below
       : Math.max(12, anchor.top - estimatedHeight - gap);
   return { left, top };
-}
-
-export function scrollTargetWithinContainer(
-  container: HTMLElement | null,
-  target: HTMLElement | null,
-  offset = 18
-) {
-  if (!container || !target) return;
-  const containerRect = container.getBoundingClientRect();
-  const targetRect = target.getBoundingClientRect();
-  container.scrollTo({
-    top: calculateContainedScrollTop({
-      containerScrollTop: container.scrollTop,
-      containerTop: containerRect.top,
-      targetTop: targetRect.top,
-      offset
-    }),
-    behavior: "smooth"
-  });
 }
 
 function cssEscape(value: string) {

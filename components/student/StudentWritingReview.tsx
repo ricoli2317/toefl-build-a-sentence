@@ -85,6 +85,7 @@ type ReviewPayload = {
 };
 
 type ReviewSummary = {
+  attempt_kind?: "original" | "correction";
   attempt_id: string;
   task_type: WritingTaskType;
   set_id: string;
@@ -359,7 +360,7 @@ export function StudentWritingReviewList() {
           {reviews.map((review) => (
             <Link
               className="student-card student-card-interactive flex flex-wrap items-center justify-between gap-4"
-              href={writingReviewResultHref(review.attempt_id, STUDENT_ROUTES.writingReviews)}
+              href={review.attempt_kind === "correction" ? `/student/writing-corrections/${encodeURIComponent(review.attempt_id)}/review?returnTo=${encodeURIComponent(STUDENT_ROUTES.writingReviews)}` : writingReviewResultHref(review.attempt_id, STUDENT_ROUTES.writingReviews)}
               key={review.attempt_id}
             >
               <div className="flex min-w-0 items-center gap-3">
@@ -368,7 +369,7 @@ export function StudentWritingReviewList() {
                 </span>
                 <div className="min-w-0">
                   <p className="text-xs font-bold text-student-primary">{WRITING_TASK_CONFIG[review.task_type].label}</p>
-                  <h2 className="mt-1 truncate font-bold text-student-text">{review.display_name}</h2>
+                  <div className="mt-1 flex flex-wrap items-center gap-2"><h2 className="font-bold text-student-text">{review.display_name}</h2>{review.attempt_kind === "correction" ? <span className="student-chip">订正稿</span> : null}</div>
                   <p className="mt-1 text-xs text-student-muted">发布于 {formatDateTime(review.published_at)}</p>
                 </div>
               </div>
@@ -437,11 +438,11 @@ function DetailRow({ label, value }: { label: string; value: unknown }) {
   );
 }
 
-function PublishedScorePanel({
+export function PublishedScorePanel({
   review,
   taskType
 }: {
-  review: StudentPublishedWritingReview;
+  review: Pick<StudentPublishedWritingReview, "scores">;
   taskType: WritingTaskType;
 }) {
   const definitions = writingDimensionDefinitions(taskType);

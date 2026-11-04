@@ -71,7 +71,7 @@ const EMPTY_FILTERS = {
   prompt_version: ""
 };
 
-export function TeacherWritingAiLogs({ initialAttemptId }: { initialAttemptId: string }) {
+export function TeacherWritingAiLogs({ initialAttemptId, source = "original" }: { initialAttemptId: string; source?: "original" | "correction" }) {
   const [filters, setFilters] = useState({ ...EMPTY_FILTERS, attempt_id: initialAttemptId });
   const [applied, setApplied] = useState(filters);
   const [page, setPage] = useState(1);
@@ -85,6 +85,7 @@ export function TeacherWritingAiLogs({ initialAttemptId }: { initialAttemptId: s
     setLoading(true);
     setError("");
     const search = new URLSearchParams({ page: String(page), page_size: "25" });
+    if (source === "correction") search.set("source", "correction");
     Object.entries(applied).forEach(([key, value]) => {
       if (value.trim()) search.set(key, value.trim());
     });
@@ -103,7 +104,7 @@ export function TeacherWritingAiLogs({ initialAttemptId }: { initialAttemptId: s
     return () => {
       active = false;
     };
-  }, [applied, page]);
+  }, [applied, page, source]);
 
   function apply(event: FormEvent) {
     event.preventDefault();
@@ -203,7 +204,7 @@ export function TeacherWritingAiLogs({ initialAttemptId }: { initialAttemptId: s
         </TeacherCard>
       ) : null}
 
-      {selected ? <LogDetail log={selected} onClose={() => setSelected(null)} /> : null}
+      {selected ? <LogDetail log={selected} source={source} onClose={() => setSelected(null)} /> : null}
     </div>
   );
 
@@ -235,7 +236,7 @@ export function TeacherWritingAiLogs({ initialAttemptId }: { initialAttemptId: s
   async function loadDetail(fallback: AiLog) {
     setSelected(fallback);
     try {
-      const response = await teacherFetch(`/api/teacher/writing/reviews/ai-logs/${encodeURIComponent(fallback.id)}`);
+      const response = await teacherFetch(`/api/teacher/writing/reviews/ai-logs/${encodeURIComponent(fallback.id)}?source=${source}`);
       const result = (await response.json()) as { log?: AiLog };
       if (response.ok && result.log) setSelected({ ...fallback, ...result.log });
     } catch {
@@ -244,7 +245,7 @@ export function TeacherWritingAiLogs({ initialAttemptId }: { initialAttemptId: s
   }
 }
 
-function LogDetail({ log, onClose }: { log: AiLog; onClose(): void }) {
+function LogDetail({ log, source = "original", onClose }: { log: AiLog; source?: "original" | "correction"; onClose(): void }) {
   const overlap = asRecord(log.diagnostics?.language_edit_overlap);
   const groups = Array.isArray(overlap?.groups) ? overlap.groups : [];
   const knownKeys = new Set(["language_edit_overlap"]);
@@ -298,7 +299,7 @@ function LogDetail({ log, onClose }: { log: AiLog; onClose(): void }) {
         </section>
         {overlap ? <OverlapDiagnostic groups={groups} summary={overlap} /> : null}
         {Object.keys(unknownDiagnostics).length ? <details className="rounded-lg border border-student-border p-4"><summary className="cursor-pointer font-semibold">查看原始诊断 JSON</summary><pre className="mt-3 overflow-auto whitespace-pre-wrap text-xs">{JSON.stringify(unknownDiagnostics, null, 2)}</pre></details> : null}
-        <Link className="teacher-button-secondary mt-6 inline-flex" href={teacherWritingReviewWorkspaceHref(log.attempt_id, TEACHER_REVIEW_LOGS_HREF)}>打开当前批改</Link>
+        <Link className="teacher-button-secondary mt-6 inline-flex" href={source === "correction" ? `/teacher/writing/reviews/${encodeURIComponent(log.attempt_id)}/correction?returnTo=${encodeURIComponent(`${TEACHER_REVIEW_LOGS_HREF}?source=correction`)}` : teacherWritingReviewWorkspaceHref(log.attempt_id, TEACHER_REVIEW_LOGS_HREF)}>打开当前批改</Link>
       </section>
     </div>
   );

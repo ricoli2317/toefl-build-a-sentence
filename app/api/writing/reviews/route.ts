@@ -12,6 +12,8 @@ import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
 export const dynamic = "force-dynamic";
 
 type AttemptRow = {
+  attempt_kind: "original" | "correction";
+  correction_source_snapshot?: { question: { set_title: string; year_month: string }; question_source: "custom" | "question_bank" } | null;
   attempt_id: string;
   assignment_id: string | null;
   task_type: WritingTaskType;
@@ -43,8 +45,7 @@ export async function GET(request: Request) {
         readAllSupabaseRows<AttemptRow>((from, to) =>
           supabase
             .from("writing_attempts")
-            .select("attempt_id,assignment_id,task_type,question_id,set_id,submitted_at")
-            .eq("attempt_kind", "original")
+            .select("attempt_id,attempt_kind,correction_source_snapshot,assignment_id,task_type,question_id,set_id,submitted_at")
             .eq("user_id", auth.userId!)
             .eq("status", "submitted")
             .order("submitted_at", { ascending: false })
@@ -59,23 +60,29 @@ export async function GET(request: Request) {
     const attempts = attemptResult.data ?? [];
     if (attempts.length === 0) return respond({ reviews: [] });
 
-    const reviewResult = await timing.measure("database", "writing_reviews_published_list", () =>
+    const originalIds = attempts.filter(attempt => attempt.attempt_kind !== "correction").map(attempt => attempt.attempt_id);
+    const correctionIds = attempts.filter(attempt => attempt.attempt_kind === "correction").map(attempt => attempt.attempt_id);
+    const reviewResult = originalIds.length ? await timing.measure("database", "writing_reviews_published_list", () =>
       readAllSupabaseRows<ReviewRow>((from, to) =>
         supabase
           .from("writing_reviews")
           .select("attempt_id,published_at")
           .eq("status", "published")
-          .in("attempt_id", attempts.map((attempt) => attempt.attempt_id))
+          .in("attempt_id", originalIds)
           .not("published_at", "is", null)
           .order("published_at", { ascending: false })
           .range(from, to)
       )
-    );
-    if (reviewResult.error) {
+    ) : { data: [] as ReviewRow[], error: null };
+    const correctionResult = correctionIds.length ? await readAllSupabaseRows<ReviewRow>((from, to) => supabase
+      .from("writing_correction_reviews").select("attempt_id,published_at").in("attempt_id", correctionIds)
+      .not("published_at", "is", null).order("published_at", { ascending: false }).range(from, to))
+      : { data: [] as ReviewRow[], error: null };
+    if (reviewResult.error || correctionResult.error) {
       return respond({ error: "暂时无法加载批改记录。" }, { status: 500 });
     }
     const publishedByAttempt = new Map(
-      (reviewResult.data ?? []).map((review) => [review.attempt_id, review.published_at])
+      [...(reviewResult.data ?? []), ...(correctionResult.data ?? [])].map((review) => [review.attempt_id, review.published_at])
     );
     const publishedAttempts = attempts.filter((attempt) =>
       publishedByAttempt.has(attempt.attempt_id)
@@ -135,9 +142,10 @@ export async function GET(request: Request) {
     const reviews = publishedAttempts
       .map((attempt) => {
         const question = questionByType.get(attempt.task_type)?.get(attempt.question_id);
-        const snapshot = attempt.assignment_id
+        const correction = attempt.attempt_kind === "correction" ? attempt.correction_source_snapshot : null;
+        const snapshot = correction?.question ?? (attempt.assignment_id
           ? assignmentById.get(attempt.assignment_id)?.question_snapshot
-          : null;
+          : null);
         const setTitle = typeof snapshot?.set_title === "string"
           ? snapshot.set_title
           : question?.set_title;
@@ -152,13 +160,14 @@ export async function GET(request: Request) {
           assignmentId: attempt.assignment_id,
           assignmentDisplayName: setTitle,
           fallbackDisplayName: setTitle || attempt.set_id || attempt.question_id,
-          questionSource: assignment?.question_source ?? null,
+          questionSource: correction?.question_source ?? assignment?.question_source ?? null,
           rawQuestionId: attempt.question_id,
           taskType: attempt.task_type
         });
         resolvedDisplays.push(display);
         return {
           attempt_id: attempt.attempt_id,
+          attempt_kind: attempt.attempt_kind,
           task_type: attempt.task_type,
           set_id: attempt.set_id,
           set_title: setTitle,

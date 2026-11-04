@@ -10,7 +10,7 @@ import {
 export default function TeacherWritingAiLogsPage({
   searchParams
 }: {
-  searchParams: { attempt_id?: string; returnTo?: string | string[] };
+  searchParams: { attempt_id?: string; source?: string; returnTo?: string | string[] };
 }) {
   // Opened from the review workspace (keeps its context) or from the review
   // list (falls back to it).
@@ -30,7 +30,7 @@ export default function TeacherWritingAiLogsPage({
       subtitle="查看 Writing AI 调用、失败阶段与结构化诊断"
       title="AI 调用日志"
     >
-      <TeacherWritingAiLogs initialAttemptId={searchParams.attempt_id ?? ""} />
+      <TeacherWritingAiLogs initialAttemptId={searchParams.attempt_id ?? ""} source={searchParams.source === "correction" ? "correction" : "original"} />
     </TeacherAppShell>
     </TeacherOnly>
   );

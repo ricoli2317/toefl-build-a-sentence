@@ -64,6 +64,8 @@ export type AcademicDiscussionQuestion = {
 export type WritingQuestion = EmailQuestion | AcademicDiscussionQuestion;
 
 export type WritingAttempt = {
+  /** Resolved presentation title, supplied by correction/practice APIs. */
+  display_name?: string;
   attempt_kind: "original" | "correction";
   original_attempt_id: string | null;
   correction_source_snapshot: WritingCorrectionSourceSnapshot | null;

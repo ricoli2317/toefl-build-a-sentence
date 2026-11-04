@@ -467,10 +467,6 @@ function useWritingReviewModeration(options: {
     async (action: WritingReviewModerationAction, attemptIds: string[]) => {
       const ids = Array.from(new Set(attemptIds)).filter(Boolean);
       if (ids.length === 0 || busyRef.current) return;
-      if (action === "ignore" && itemsRef.current.some((item) => ids.includes(item.attemptId) && item.attemptKind === "correction")) {
-        setError("订正稿不支持忽略，请取消选择订正稿后再操作。");
-        return;
-      }
       busyRef.current = true;
       setBusy(true);
       setNotice("");
@@ -691,7 +687,6 @@ function StudentReviewSection({
             <WritingReviewBulkActions
               busy={moderation.busy}
               count={selectedCount}
-              ignoreDisabled={filtered.some((item) => selection.selectedIds.has(item.attemptId) && item.attemptKind === "correction")}
               onCancel={() => selection.clear()}
               onIgnore={() => moderation.requestIgnore(Array.from(selection.selectedIds))}
               onReturn={() => moderation.requestReturn(Array.from(selection.selectedIds))}
@@ -937,7 +932,6 @@ function ClassReviewList({
             <WritingReviewBulkActions
               busy={moderation.busy}
               count={selectedCount}
-              ignoreDisabled={filtered.some((item) => selection.selectedIds.has(item.attemptId) && item.attemptKind === "correction")}
               onCancel={() => selection.clear()}
               onIgnore={() => moderation.requestIgnore(Array.from(selection.selectedIds))}
               onReturn={() => moderation.requestReturn(Array.from(selection.selectedIds))}
@@ -1183,7 +1177,6 @@ export function ReviewTable({
                     </td>
                     <td className="border-t border-student-border px-4 py-4 text-student-text">
                       <p>{attempt.displayName}</p>
-                      {attempt.attemptKind === "correction" ? <p className="mt-1 break-all text-xs text-student-muted">原稿：{attempt.originalAttemptId}<br />订正：{attempt.attemptId}</p> : null}
                       {attempt.reviewContext === "assignment_question_bank" &&
                       attempt.logicalDisplay &&
                       attempt.logicalDisplay.displayName !== attempt.displayName ? (
@@ -1226,7 +1219,7 @@ export function ReviewTable({
                         >
                           退回
                         </button>
-                        {attempt.attemptKind !== "correction" ? <button
+                        <button
                           className={clsx(
                             "teacher-button-secondary !min-h-8 min-w-[52px] !px-2 !py-1 text-xs disabled:cursor-not-allowed disabled:pointer-events-auto",
                             !canModerate &&
@@ -1237,7 +1230,7 @@ export function ReviewTable({
                           type="button"
                         >
                           忽略
-                        </button> : null}
+                        </button>
                       </div>
                     </td>
                   </tr>

@@ -38,6 +38,33 @@ const attempts = () => [
     word_count: 150, elapsed_seconds: 0 }
 ];
 
+test("student published list merges independent sources once, preserving full titles and latest publish times", async () => {
+  const original = { ...attempts()[0], set_id: "set", assignment_id: null };
+  const correction = { ...attempts()[1], set_id: "set", assignment_id: null,
+    correction_source_snapshot: { question_source: "question_bank", question: { set_title: "Frozen question", year_month: "202611" } } };
+  const db = createMockSupabase({
+    writing_attempts: [original, correction],
+    writing_reviews: [{ attempt_id: "original", status: "published", published_at: "2026-11-01T00:00:00Z" },
+      { attempt_id: "correction", status: "published", published_at: "1990-01-01T00:00:00Z" }],
+    writing_correction_reviews: [{ attempt_id: "correction", status: "published", published_at: "2026-11-04T00:00:00Z" }],
+    email_questions: [{ question_id: "q", set_title: "Title", year_month: "202611" }]
+  });
+  const resolver = { resolveWritingAttempt: () => ({ displayName: "题目089 Full title", logicalDisplayName: "题目089 Full title" }) };
+  const route = loadTs("app/api/writing/reviews/route.ts", {
+    "@/lib/supabase/server": { createServiceSupabase: () => db },
+    "@/lib/writingServer": { requireWritingStudent: async () => ({ userId: "s" }), writingJson: json },
+    "@/lib/studentPerformance.server": { createStudentPerformanceTrace: () => timing },
+    "@/lib/historicalPracticeDisplay": { loadHistoricalPracticeDisplayResolver: async () => resolver, logHistoricalPracticeDisplayWarnings() {} }
+  });
+  const result = await route.GET(new Request("https://unit.invalid/api/writing/reviews"));
+  assert.equal(result.status, 200);
+  assert.equal(result.data.reviews.length, 2);
+  assert.equal(result.data.reviews[0].attempt_id, "correction");
+  assert.equal(result.data.reviews[0].published_at, "2026-11-04T00:00:00Z");
+  assert.equal(result.data.reviews[0].display_name, "题目089 Full title");
+  assert.equal(result.data.reviews[0].attempt_kind, "correction");
+});
+
 test("actual correction HTTP wrapper authenticates first and returns stable 409/503 codes", async () => {
   let allowed = false; let serviceCalls = 0; let failure = "WRITING_CORRECTION_VERSION_CONFLICT";
   const db = { rpc: async (_name, args) => {
@@ -68,10 +95,10 @@ test("actual correction HTTP wrapper authenticates first and returns stable 409/
 test("Phase 3 actual history loader uses owner + parent filters and real review statuses (filtering Mock)", async () => {
   const draft = writingCorrectionFixture("email", false);
   const rows = [
-    { ...draft, status: "submitted", writing_reviews: [] },
-    { ...draft, attempt_id: "reviewing", status: "submitted", writing_reviews: [{ status: "reviewing" }] },
-    { ...draft, attempt_id: "published", status: "submitted", writing_reviews: { status: "published" } },
-    { ...draft, attempt_id: "draft", writing_reviews: [] },
+    { ...draft, status: "submitted", writing_correction_reviews: [] },
+    { ...draft, attempt_id: "reviewing", status: "submitted", writing_correction_reviews: [{ status: "reviewing" }] },
+    { ...draft, attempt_id: "published", status: "submitted", writing_correction_reviews: { status: "published", published_at: "2026-11-04T00:00:00Z" } },
+    { ...draft, attempt_id: "draft", writing_correction_reviews: [] },
     { ...draft, attempt_id: "other-student", user_id: "other" },
     { ...draft, attempt_id: "other-original", original_attempt_id: "other" },
     { ...draft, attempt_id: FIXTURE_ORIGINAL_ID, attempt_kind: "original", original_attempt_id: null }
@@ -81,7 +108,7 @@ test("Phase 3 actual history loader uses owner + parent filters and real review 
   assert.equal(result.attempts.length, 4);
   assert.deepEqual(result.attempts.map((row) => row.reviewStatus).sort(), [null, "pending", "published", "reviewing"].sort());
   assert.ok(result.attempts.every((row) => row.original_attempt_id === FIXTURE_ORIGINAL_ID));
-  assert.ok(result.attempts.every((row) => !("writing_reviews" in row)));
+  assert.ok(result.attempts.every((row) => !("writing_correction_reviews" in row)));
   await assert.rejects(loadWritingCorrectionHistory(db, "other", FIXTURE_ORIGINAL_ID), (error) => error.status === 404);
 });
 

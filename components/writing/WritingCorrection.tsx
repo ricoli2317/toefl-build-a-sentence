@@ -49,7 +49,7 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
   const [savedText, setSavedText] = useState(initialAttempt.response_text);
   const initialRevision = useMemo(() => initializeWritingRevision(source.original_response_text, initialAttempt.response_text, initialAttempt.revision_state), [initialAttempt, source]);
   const [revision, setRevision] = useState(initialRevision);
-  const [savedRevisionKey, setSavedRevisionKey] = useState(initialAttempt.revision_state ? revisionStateKey(initialRevision) : null);
+  const [savedRevisionKey, setSavedRevisionKey] = useState(revisionStateKey(initialRevision));
   const editorHandle = useRef<RevisionEditorHandle | null>(null);
   const [editorGeneration, setEditorGeneration] = useState(0);
   const [busy, setBusy] = useState(false);
@@ -57,7 +57,6 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
   const [error, setError] = useState("");
   const [conflict, setConflict] = useState(false);
   const [reloadOpen, setReloadOpen] = useState(false);
-  const [submitOpen, setSubmitOpen] = useState(false);
   // Retain the exact submitted version on ambiguous network failures. Retry
   // the same RPC, never create another attempt or allow edits in between.
   const [pendingSubmitVersion, setPendingSubmitVersion] = useState<number | null>(null);
@@ -65,8 +64,8 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
   const [previousLocalText, setPreviousLocalText] = useState<string | null>(null);
   const editor = { text: revision.ledger.text };
   const currentRevisionKey = useMemo(() => revisionStateKey(revision), [revision]);
-  const dirty = editor.text !== savedText || currentRevisionKey !== savedRevisionKey;
   const submitted = attempt.status === "submitted";
+  const dirty = !submitted && (editor.text !== savedText || currentRevisionKey !== savedRevisionKey);
   const locked = submitted || pendingSubmitVersion !== null;
 
   function requestExit(href = backHref) {
@@ -76,7 +75,7 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
   }
 
   useEffect(() => {
-    if (!dirty && !busy) return;
+    if (!dirty) return;
     const currentUrl = window.location.href;
     const currentState = window.history.state;
     const beforeUnload = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
@@ -128,7 +127,7 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
     try {
       let latest = attempt;
       const submittingState = editorHandle.current?.snapshot() ?? revision;
-      if (pendingSubmitVersion === null && dirty) {
+      if (pendingSubmitVersion === null && (dirty || !attempt.revision_state)) {
         const state = submittingState;
         latest = await client.save(attempt.attempt_id, state.ledger.text, attempt.draft_version, state);
         setAttempt(latest); setSavedText(state.ledger.text); setSavedRevisionKey(revisionStateKey(state));
@@ -145,7 +144,7 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
         throw new CorrectionRequestError(409, "WRITING_CORRECTION_VERSION_CONFLICT", "服务器已提交的修订版本与本地不同。已保留本地正文及修订，请确认后读取最新记录。");
       }
       setAttempt(result); setSavedText(result.response_text);
-      setPendingSubmitVersion(null); setSubmitOpen(false);
+      setSavedRevisionKey(revisionStateKey(submittingState)); setPendingSubmitVersion(null);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "提交结果未确认，请重试同一条订正。");
       if (!submitting || (reason instanceof CorrectionRequestError &&
@@ -154,7 +153,6 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
         setPendingSubmitVersion(null);
       }
       if (reason instanceof CorrectionRequestError && reason.status === 409) setConflict(true);
-      setSubmitOpen(false);
     } finally { busyRef.current = false; setBusy(false); }
   }
 
@@ -169,7 +167,7 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
       }
       setPreviousLocalText(editor.text);
       const next = initializeWritingRevision(source.original_response_text, latest.response_text, latest.revision_state);
-      setRevision(next); setSavedRevisionKey(latest.revision_state ? revisionStateKey(next) : null); setEditorGeneration(value => value + 1);
+      setRevision(next); setSavedRevisionKey(revisionStateKey(next)); setEditorGeneration(value => value + 1);
       setAttempt(latest); setSavedText(latest.response_text); setConflict(false); setReloadOpen(false); setPendingSubmitVersion(null);
     } catch (reason) { setError(reason instanceof Error ? reason.message : "重新读取失败，当前正文仍保留。"); }
     finally { busyRef.current = false; setBusy(false); }
@@ -177,14 +175,13 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
 
   return <div className="writing-practice flex min-h-[100dvh] flex-col bg-[#fbfbfe] text-student-text lg:h-[100dvh] lg:overflow-hidden">
     <div className="shrink-0 border-b border-student-border bg-white">
-      <WritingPageHeader title={`${source.question.set_title} · 订正`} disabled={busy} onBack={() => requestExit()} readOnly={submitted} />
+      <WritingPageHeader correction title={`${attempt.display_name ?? initialAttempt.display_name ?? source.question.set_title} · 订正`} disabled={busy} onBack={() => requestExit()} readOnly={submitted} />
       <div aria-label="订正视图" className="mx-auto flex max-w-[1920px] items-center gap-6 px-4 sm:px-6 lg:px-8" role="tablist">
-        {([ ["edit", submitted ? "订正正文（只读）" : "编辑订正"], ["annotations", "查看批注"] ] as const).map(([value, label]) => <ReviewViewTab
+        {([ ["edit", submitted ? "订正正文" : "编辑订正"], ["annotations", "查看批注"] ] as const).map(([value, label]) => <ReviewViewTab
           active={tab === value} panelId={`correction-${value}`} tabId={`correction-tab-${value}`} key={value} onClick={() => setTab(value)}>{label}</ReviewViewTab>)}
-        <span aria-live="polite" className="ml-auto text-right text-xs text-student-muted">{busy ? "正在处理…" : submitted ? "已提交 · 只读" : dirty ? "有未保存修改" : "已保存"} · 版本 {attempt.draft_version}</span>
+        {!submitted ? <span aria-live="polite" className="ml-auto text-right text-xs text-student-muted">{busy ? "正在处理…" : dirty ? "有未保存修改" : "已保存"}</span> : null}
       </div>
     </div>
-    {submitted ? <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-student-primary-border bg-student-primary-soft px-4 py-2 text-xs sm:px-6" role="status">订正提交成功 · 本次正文只读 · {attempt.submitted_at ? new Date(attempt.submitted_at).toLocaleString("zh-CN") : "—"}<a className="font-semibold text-student-primary" href={backHref}>返回原稿查看订正历史</a></div> : null}
     {pendingSubmitVersion !== null && !busy ? <p className="shrink-0 p-3 text-sm" role="status">提交结果尚未确认，正文暂时锁定。请重试提交以确认同一条记录，不会创建重复记录。</p> : null}
     {error ? <div className="shrink-0 border-b border-student-error-border bg-student-error-soft p-3 text-sm text-student-error" role="alert">
       {error} {conflict ? <><span>未覆盖本地修改。请先复制正文，再确认读取最新草稿。</span><button className="student-button-secondary ml-3" disabled={busy} onClick={() => setReloadOpen(true)} type="button">重新读取最新草稿</button></> : null}
@@ -197,7 +194,7 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
         <div className="flex min-h-[650px] min-w-0 flex-col gap-2 overflow-hidden lg:min-h-0">
           {attempt.task_type === "email" ? <EmailResponseHeader question={source.question as EmailQuestion} /> : <AcademicStudentResponses avatarMap={{}} avatarMapReady={false} customAvatars={source.question_source === "custom"} question={source.question as AcademicDiscussionQuestion} />}
           <WritingRevisionEditor key={editorGeneration} initialState={revision} onChange={setRevision} onReady={handle => { editorHandle.current = handle; }} disabled={busy} readOnly={locked} />
-          {!submitted ? <WritingPracticeActions compact disabled={busy || conflict} onSave={!locked ? () => void save() : undefined} saveDisabled={!dirty} onSubmit={() => setSubmitOpen(true)} submitLabel={pendingSubmitVersion !== null ? "重试提交" : "提交订正"} /> : null}
+          {!submitted ? <WritingPracticeActions compact disabled={busy || conflict} onSave={!locked ? () => void save() : undefined} saveDisabled={!dirty} onSubmit={() => void submit()} submitLabel={busy ? "提交中…" : pendingSubmitVersion !== null ? "重试提交" : "提交订正"} /> : null}
           {previousLocalText !== null ? <details className="text-xs text-student-muted"><summary>读取前的本地正文（仅本页临时保留，可复制）</summary><p className="max-h-32 overflow-y-auto whitespace-pre-wrap select-text">{previousLocalText}</p></details> : null}
         </div>
       </div>
@@ -205,10 +202,6 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
     <section aria-labelledby="correction-tab-annotations" className="min-h-0 flex-1 overflow-y-auto" hidden={tab !== "annotations"} id="correction-annotations" role="tabpanel">
       <FrozenCorrectionAnnotations attempt={initialAttempt} />
     </section>
-    {submitOpen ? <CorrectionDialog title="确认提交订正">
-      <p className="text-sm leading-6">未保存修改会先保存，保存成功后再提交。提交后本次订正将锁定，不能继续编辑；之后可从原始作文新建另一份订正。</p>
-      <div className="mt-4 flex justify-end gap-2"><button className="student-button-secondary" disabled={busy} onClick={() => setSubmitOpen(false)} type="button">取消</button><button className="student-button-primary" disabled={busy || conflict} onClick={() => void submit()} type="button">确认提交</button></div>
-    </CorrectionDialog> : null}
     {reloadOpen ? <CorrectionDialog title="读取最新草稿前请保留当前正文">
       <p className="text-sm leading-6">确认后，编辑器会使用服务器最近保存的正文和版本。当前本地修改不会上传；请先复制下方正文。取消不会改变任何内容。</p>
       <textarea aria-label="读取前的本地正文" className="mt-3 h-40 w-full rounded-lg border p-3 text-sm" readOnly value={editor.text} />

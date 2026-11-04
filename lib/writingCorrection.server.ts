@@ -96,14 +96,14 @@ export async function loadWritingCorrectionHistory(db: SupabaseClient, userId: s
   if (parent.error) throw correctionDatabaseError(parent.error);
   if (!parent.data) throw new WritingCorrectionError("WRITING_CORRECTION_NOT_FOUND", "未找到这条原稿。", 404);
   const result = await readAllSupabaseRows((from, to) => db.from("writing_attempts")
-    .select("attempt_id,attempt_kind,original_attempt_id,task_type,status,word_count,draft_version,saved_at,submitted_at,created_at,writing_reviews(status)")
+    .select("attempt_id,attempt_kind,original_attempt_id,task_type,status,word_count,draft_version,saved_at,submitted_at,created_at,writing_correction_reviews(status,published_at)")
     .eq("attempt_kind", "correction").eq("user_id", userId).eq("original_attempt_id", parentId)
     .order("created_at", { ascending: false }).order("attempt_id", { ascending: false }).range(from, to));
   if (result.error) throw correctionDatabaseError(result.error);
   return { originalAttemptId: parentId, attempts: (result.data ?? []).map((row) => {
-    const reviews = row.writing_reviews as { status: string }[] | { status: string } | null;
+    const reviews = row.writing_correction_reviews as { status: string; published_at: string | null }[] | { status: string; published_at: string | null } | null;
     const review = Array.isArray(reviews) ? reviews[0] : reviews;
-    const { writing_reviews: _reviews, ...item } = row;
-    return { ...item, reviewStatus: row.status === "draft" ? null : review?.status ?? "pending" };
+    const { writing_correction_reviews: _reviews, ...item } = row;
+    return { ...item, reviewStatus: row.status === "draft" ? null : review?.published_at ? "published" : review?.status ?? "pending" };
   }) };
 }

@@ -1,5 +1,6 @@
 import { requireWritingStudent, writingJson } from "./writingServer";
 import { createServiceSupabase } from "./supabase/server";
+import { correctionDisplayName } from "./writingCorrectionTitle.server.ts";
 import { WritingCorrectionError } from "./writingCorrection.ts";
 import { createOrResumeWritingCorrection, loadOwnedWritingCorrection,
   loadWritingCorrectionHistory, mutateWritingCorrection } from "./writingCorrection.server.ts";
@@ -14,6 +15,7 @@ export async function writingCorrectionRequest(request: Request, attemptId?: str
       const result = attemptId
         ? await loadOwnedWritingCorrection(db, auth.userId, attemptId)
         : await loadWritingCorrectionHistory(db, auth.userId, new URL(request.url).searchParams.get("originalAttemptId") ?? "");
+      if ("attempt" in result) result.attempt.display_name = await correctionDisplayName(db, result.attempt);
       return writingJson(result);
     }
     let body: unknown;
@@ -23,6 +25,7 @@ export async function writingCorrectionRequest(request: Request, attemptId?: str
     const result = attemptId
       ? await mutateWritingCorrection(db, auth.userId, attemptId, body)
       : await createOrResumeWritingCorrection(db, auth.userId, body);
+    result.attempt.display_name = await correctionDisplayName(db, result.attempt);
     return writingJson(result, { status: !attemptId && !result.resumed ? 201 : 200 });
   } catch (error) {
     if (error instanceof WritingCorrectionError) {

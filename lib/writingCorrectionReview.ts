@@ -44,6 +44,8 @@ export type CorrectionSourceIssue = {
   issue: string | null;
   suggestion: string | null;
   weight: number;
+  source_start?: number;
+  source_end?: number;
 };
 
 export type CorrectionNewIssueReview = {
@@ -55,6 +57,7 @@ export type CorrectionTeacherOverrides = {
   issue_statuses: Record<string, CorrectionResolutionStatus>;
   correction_score: number | null;
   score_rationale: string | null;
+  score_change_explanation?: string | null;
   new_issue_reviews: Record<string, CorrectionNewIssueReview>;
 };
 
@@ -94,6 +97,7 @@ export type CorrectionReviewState = {
   teacher_rationale: string;
   effective_rationale: string;
   ai_score_change_explanation: string;
+  effective_score_change_explanation?: string;
   ai_resolution_summary: string;
 };
 
@@ -124,6 +128,7 @@ export function correctionSourceIssues(
     if (typeof edit?.edit_id !== "string") continue;
     issues.push({
       issue_id: edit.edit_id,
+      ...(typeof edit.start === "number" && typeof edit.end === "number" ? { source_start: edit.start, source_end: edit.end } : {}),
       issue_type: "language_edit",
       category: typeof edit.category === "string" ? edit.category : "other",
       severity: typeof edit.severity === "string" ? edit.severity : null,
@@ -142,6 +147,7 @@ export function correctionSourceIssues(
     if (typeof item?.feedback_id !== "string") continue;
     issues.push({
       issue_id: item.feedback_id,
+      ...(typeof item.start === "number" && typeof item.end === "number" ? { source_start: item.start, source_end: item.end } : {}),
       issue_type: "content_feedback",
       category: typeof item.category === "string" ? item.category : "other",
       severity: null,
@@ -266,7 +272,15 @@ export function parseCorrectionTeacherOverrides(
       throw new CorrectionReviewValidationError("评分解释格式无效。");
     }
     const trimmed = record.score_rationale.trim();
-    rationale = trimmed.length > 0 ? trimmed : null;
+    rationale = trimmed;
+  }
+
+  let scoreChangeExplanation: string | null = null;
+  if (record.score_change_explanation !== undefined && record.score_change_explanation !== null) {
+    if (typeof record.score_change_explanation !== "string" || record.score_change_explanation.length > 4000) {
+      throw new CorrectionReviewValidationError("分差原因格式无效。");
+    }
+    scoreChangeExplanation = record.score_change_explanation.trim();
   }
 
   const newIssueReviews: Record<string, CorrectionNewIssueReview> = {};
@@ -300,6 +314,7 @@ export function parseCorrectionTeacherOverrides(
     issue_statuses: statuses,
     correction_score: correctionScore,
     score_rationale: rationale,
+    ...(record.score_change_explanation !== undefined ? { score_change_explanation: scoreChangeExplanation } : {}),
     new_issue_reviews: newIssueReviews
   };
 }
@@ -334,7 +349,7 @@ export function correctionReviewState(input: {
       return {
         ...item,
         index,
-        review_status: review?.status ?? "pending",
+        review_status: review?.status ?? "accepted",
         review_note: review?.note ?? ""
       };
     }
@@ -362,6 +377,7 @@ export function correctionReviewState(input: {
     effective_rationale:
       teacher.score_rationale ?? input.ai?.score_rationale ?? "",
     ai_score_change_explanation: input.ai?.score_change_explanation ?? "",
+    effective_score_change_explanation: teacher.score_change_explanation ?? input.ai?.score_change_explanation ?? "",
     ai_resolution_summary: input.ai?.resolution_summary ?? ""
   };
 }
@@ -378,6 +394,7 @@ export type CorrectionWorkspace = {
     submitted_at: string | null;
   };
   question: WritingQuestion;
+  display_name?: string;
   question_source: "question_bank" | "custom";
   source: {
     original_response_text: string;
@@ -390,7 +407,8 @@ export type CorrectionWorkspace = {
   revision_state?: import("./writingRevisionState.ts").WritingRevisionState | null;
   review: {
     review_id: string | null;
-    status: "reviewing" | "published";
+    status: "reviewing" | "published" | "ignored";
+    updated_at?: string | null;
     prompt_version: string;
     schema_version: string;
     ai_model: string | null;
@@ -424,7 +442,7 @@ export function recomputeCorrectionState(
     const review = teacher.new_issue_reviews[String(issue.index)] ?? null;
     return {
       ...issue,
-      review_status: review?.status ?? ("pending" as const),
+      review_status: review?.status ?? ("accepted" as const),
       review_note: review?.note ?? ""
     };
   });
@@ -443,7 +461,8 @@ export function recomputeCorrectionState(
     score_delta:
       effectiveScore === null ? null : effectiveScore - state.original_score,
     teacher_rationale: teacher.score_rationale ?? "",
-    effective_rationale: teacher.score_rationale ?? state.ai_rationale
+    effective_rationale: teacher.score_rationale ?? state.ai_rationale,
+    effective_score_change_explanation: teacher.score_change_explanation ?? state.ai_score_change_explanation
   };
 }
 
@@ -523,6 +542,7 @@ export function correctionStateFromPublishedSnapshot(
     teacher_rationale: teacherScore === null ? "" : snapshot.score_rationale,
     effective_rationale: snapshot.score_rationale,
     ai_score_change_explanation: snapshot.score_change_explanation,
+    effective_score_change_explanation: snapshot.score_change_explanation,
     ai_resolution_summary: snapshot.resolution_summary
   };
 }
@@ -547,11 +567,11 @@ export function buildCorrectionPublishedSnapshot(input: {
     correction_score: state.effective_score,
     score_delta: state.effective_score - state.original_score,
     score_rationale: state.effective_rationale,
-    score_change_explanation: state.ai_score_change_explanation,
+    score_change_explanation: state.effective_score_change_explanation ?? state.ai_score_change_explanation,
     resolution_summary: state.ai_resolution_summary,
     completion: state.completion,
     issues: state.issues,
-    new_issues: state.new_issues
+    new_issues: state.new_issues.filter(issue => issue.review_status !== "dismissed")
   };
 }
 

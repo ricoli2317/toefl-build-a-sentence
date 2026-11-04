@@ -38,6 +38,10 @@ export function createMockSupabase(tables, options = {}) {
           const table = tables[tableName] ?? (tables[tableName] = []);
           const inserted = operation.rows.map((row) => {
             const next = { ...row };
+            if (tableName === "writing_correction_reviews") {
+              next.review_id ??= `mock-correction-review-${table.length + 1}`;
+              next.teacher_overrides ??= {};
+            }
             if (tableName === "teacher_student_bindings") {
               next.binding_id = next.binding_id ?? `mock-binding-${table.length + 1}`;
               next.created_at = next.created_at ?? new Date().toISOString();
@@ -57,8 +61,13 @@ export function createMockSupabase(tables, options = {}) {
               Object.assign(existing, row);
               return { ...existing };
             }
-            table.push({ ...row });
-            return { ...row };
+            const next = { ...row };
+            if (tableName === "writing_correction_reviews") {
+              next.review_id ??= `mock-correction-review-${table.length + 1}`;
+              next.teacher_overrides ??= {};
+            }
+            table.push(next);
+            return { ...next };
           });
           return { data: selectRequested ? upserted : null, error: null };
         }

@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { isDeepStrictEqual } from "node:util";
 import { countEnglishWords, type WritingQuestion, type WritingTaskType } from "./writing.ts";
 import type { WritingCorrectionSourceSnapshot } from "./writing.ts";
 import { frozenWritingCorrectionSource, WritingCorrectionError } from "./writingCorrection.ts";
@@ -35,7 +36,6 @@ import {
   assertPublishedSnapshot,
   buildCorrectionPublishedSnapshot,
   correctionOriginalScore,
-  correctionStateFromPublishedSnapshot,
   correctionReviewState,
   correctionSourceIssues,
   parseCorrectionTeacherOverrides,
@@ -48,6 +48,9 @@ import {
 import { getPreferredUserDisplayName } from "./userDisplayName.ts";
 import type { AccountActor } from "./accountAccess.ts";
 import { attachWritingCorrectionRevision } from "./writingCorrection.server.ts";
+import { correctionDisplayName } from "./writingCorrectionTitle.server.ts";
+import { persistWritingReviewAiLogBestEffort, classifyWritingReviewAiFailure } from "./writingReviewAiLog.ts";
+import type { OpenRouterWritingReviewResponse } from "./openrouterWritingReview.ts";
 
 const REVIEW_FIELDS =
   "review_id,attempt_id,task_type,status,prompt_version,schema_version,ai_model,ai_generated_at,ai_review,teacher_overrides,published_review,published_at,created_at,updated_at";
@@ -203,6 +206,7 @@ export async function loadCorrectionReviewWorkspace(
       submitted_at: attempt.submitted_at
     },
     question,
+    display_name: await correctionDisplayName(supabase, attempt),
     question_source: snapshot.question_source,
     source: {
       original_response_text: snapshot.original_response_text,
@@ -215,7 +219,8 @@ export async function loadCorrectionReviewWorkspace(
     revision_state: revisionAttempt.revision_state,
     review: {
       review_id: row?.review_id ?? null,
-      status: row?.status === "published" ? "published" : "reviewing",
+      status: row?.status === "published" ? "published" : row?.status === "ignored" ? "ignored" : "reviewing",
+      updated_at: row?.updated_at ?? null,
       prompt_version: row?.prompt_version ?? WRITING_CORRECTION_PROMPT_VERSION,
       schema_version: row?.schema_version ?? WRITING_CORRECTION_SCHEMA_VERSION,
       ai_model: row?.ai_model ?? null,
@@ -223,11 +228,8 @@ export async function loadCorrectionReviewWorkspace(
       published_at: row?.published_at ?? null,
       teacher,
       ai,
-      // A published review renders the frozen snapshot. Unpublished rows render
-      // the live AI + teacher draft.
-      state: published
-        ? correctionStateFromPublishedSnapshot(published, ai)
-        : correctionReviewState({ issues, originalScore, ai, teacher }),
+      // Teachers always edit the working draft. Students use ONLY published_review.
+      state: correctionReviewState({ issues, originalScore, ai, teacher }),
       published
     }
   };
@@ -241,13 +243,6 @@ export async function saveCorrectionReview(
   options?: { publish?: boolean; now?: () => Date }
 ): Promise<CorrectionWorkspace> {
   const workspace = await loadCorrectionReviewWorkspace(supabase, actor, attemptId);
-  if (workspace.review.status === "published") {
-    throw new CorrectionReviewServerError(
-      "CORRECTION_REVIEW_LOCKED",
-      "订正评价已发布，不能再修改。",
-      409
-    );
-  }
   const payload = isRecord(body) ? body : {};
   const issues = correctionSourceIssues(
     frozenWritingCorrectionSource(
@@ -271,29 +266,35 @@ export async function saveCorrectionReview(
   const mutation: Record<string, unknown> = {
     attempt_id: attemptId,
     task_type: workspace.attempt.task_type,
-    status: publish ? "published" : "reviewing",
+    status: publish || workspace.review.status === "published" ? "published" : "reviewing",
     prompt_version: WRITING_CORRECTION_PROMPT_VERSION,
     schema_version: WRITING_CORRECTION_SCHEMA_VERSION,
     teacher_overrides: teacher
   };
   if (publish) {
-    mutation.published_review = buildCorrectionPublishedSnapshot({
+    const snapshot = buildCorrectionPublishedSnapshot({
       state,
       aiModel: workspace.review.ai_model,
       aiGeneratedAt: workspace.review.ai_generated_at,
       publishedAt: now
     });
+    if (workspace.review.published && isDeepStrictEqual(
+      { ...snapshot, published_at: workspace.review.published.published_at }, workspace.review.published
+    ) && isDeepStrictEqual(teacher, workspace.review.teacher)) return workspace;
+    mutation.published_review = snapshot;
     mutation.published_at = now;
   }
 
-  const { error } = await supabase
-    .from("writing_correction_reviews")
-    .upsert(mutation, { onConflict: "attempt_id" });
-  if (error) {
+  let query = workspace.review.review_id
+    ? supabase.from("writing_correction_reviews").update(mutation).eq("review_id", workspace.review.review_id)
+    : supabase.from("writing_correction_reviews").insert(mutation);
+  if (workspace.review.review_id && workspace.review.updated_at) query = query.eq("updated_at", workspace.review.updated_at);
+  const { data, error } = await query.select("review_id").maybeSingle();
+  if (error || !data) {
     throw new CorrectionReviewServerError(
       publish ? "CORRECTION_REVIEW_PUBLISH_FAILED" : "CORRECTION_REVIEW_SAVE_FAILED",
-      publish ? "发布失败，请稍后重试。" : "保存失败，请稍后重试。",
-      500,
+      !error ? "评价已被另一窗口更新，请重新读取后再修改。" : publish ? "发布失败，请稍后重试。" : "保存失败，请稍后重试。",
+      !error ? 409 : 500,
       error
     );
   }
@@ -328,7 +329,19 @@ export async function generateCorrectionReview(
   const issues = correctionSourceIssues(snapshot);
   const promptInput = correctionPromptInput(source, snapshot);
   const messages = buildWritingCorrectionMessages(promptInput);
-  const config = getWritingReviewProviderConfig(options?.env);
+  const requestId = crypto.randomUUID();
+  let config: ReturnType<typeof getWritingReviewProviderConfig>;
+  try {
+    config = getWritingReviewProviderConfig(options?.env);
+  } catch (error) {
+    await persistWritingReviewAiLogBestEffort(supabase, {
+      ...classifyWritingReviewAiFailure(error), request_id: requestId,
+      operation: workspace.review.ai ? "full_regenerate" : "generate_ai", attempt_id: attemptId,
+      task_type: source.task_type, model: "not_configured", prompt_version: WRITING_CORRECTION_PROMPT_VERSION,
+      schema_version: WRITING_CORRECTION_SCHEMA_VERSION, elapsed_ms: 0
+    }, "writing_correction_ai_logs");
+    throw error;
+  }
   const requestStructuredOutput =
     options?.requestStructuredOutput ?? requestWritingReviewStructuredOutput;
 
@@ -380,8 +393,28 @@ export async function generateCorrectionReview(
     });
 
   const winner = run.winner_outcome;
+  const log = async (status: "success" | "failed", stage: "review_persistence" | "schema_validation" | "response_parsing" | "provider_request", error?: unknown) => {
+    const response = (winner ?? run.final_outcome)?.response;
+    const failure = error ? classifyWritingReviewAiFailure(error) : null;
+    await persistWritingReviewAiLogBestEffort(supabase, {
+      request_id: requestId, operation: workspace.review.ai ? "full_regenerate" : "generate_ai",
+      attempt_id: attemptId, task_type: source.task_type, model: response?.model ?? config.model,
+      prompt_version: WRITING_CORRECTION_PROMPT_VERSION, schema_version: WRITING_CORRECTION_SCHEMA_VERSION,
+      ...failure, status, pipeline_stage: stage,
+      ...(status === "failed" && !error ? { error_type: run.final_outcome?.result ?? "timeout", error_code: "CORRECTION_AI_FAILED", error_message: "订正 AI 调用未产生有效评价。" } : {}),
+      elapsed_ms: run.end_to_end_elapsed_ms, end_to_end_elapsed_ms: run.end_to_end_elapsed_ms,
+      generation_id: response?.generationId ?? null, ...response?.usage,
+      hedge_triggered: run.hedge_triggered, requests_started: run.requests_started, winner: run.winner,
+      primary_result: run.primary.result, primary_elapsed_ms: run.primary.elapsed_ms,
+      hedge_result: run.hedge?.result ?? null, hedge_elapsed_ms: run.hedge?.elapsed_ms ?? null,
+      loser_status: run.loser_status,
+      diagnostics: { cost_observability: response?.costObservability ?? null, correction: true }
+    }, "writing_correction_ai_logs");
+  };
   if (!winner || winner.result !== "success" || !winner.review || !winner.response) {
-    const failure = winner?.failure;
+    const failure = run.final_outcome?.failure;
+    const result = run.final_outcome?.result;
+    await log("failed", run.timed_out || result === "provider_error" || result === "timeout" ? "provider_request" : result === "invalid_json" ? "response_parsing" : "schema_validation", failure);
     if (run.timed_out) {
       throw new CorrectionReviewServerError(
         "CORRECTION_AI_TIMEOUT",
@@ -425,6 +458,7 @@ export async function generateCorrectionReview(
       { onConflict: "attempt_id" }
     );
   if (error) {
+    await log("failed", "review_persistence", error);
     throw new CorrectionReviewServerError(
       "CORRECTION_REVIEW_SAVE_FAILED",
       "AI 结果已生成，但保存失败，请重试。",
@@ -432,6 +466,8 @@ export async function generateCorrectionReview(
       error
     );
   }
+
+  await log("success", "review_persistence");
 
   return {
     workspace: await loadCorrectionReviewWorkspace(supabase, actor, attemptId),
@@ -443,7 +479,7 @@ export async function generateCorrectionReview(
 type CorrectionOutcome = {
   result: string;
   review: WritingCorrectionReview | null;
-  response: { model: string; generationId: string | null } | null;
+  response: OpenRouterWritingReviewResponse | null;
   failure: unknown;
 };
 

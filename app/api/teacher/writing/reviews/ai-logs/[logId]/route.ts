@@ -21,8 +21,9 @@ export async function GET(
     );
   }
   const supabase = createServiceSupabase();
+  const table = new URL(request.url).searchParams.get("source") === "correction" ? "writing_correction_ai_logs" : "writing_review_ai_logs";
   const { data, error } = await supabase
-    .from("writing_review_ai_logs")
+    .from(table)
     .select(WRITING_REVIEW_AI_LOG_SAFE_COLUMNS.join(","))
     .eq("id", params.logId)
     .maybeSingle();

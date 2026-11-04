@@ -134,12 +134,12 @@ export async function GET(request: Request) {
     const userIds = unique(attempts.map((attempt) => String(attempt.user_id)));
     const emailQuestionIds = unique(
       attempts
-        .filter((attempt) => attempt.task_type === "email" && attempt.attempt_kind !== "correction")
+        .filter((attempt) => attempt.task_type === "email")
         .map((attempt) => String(attempt.question_id))
     );
     const discussionQuestionIds = unique(
       attempts
-        .filter((attempt) => attempt.task_type === "academic_discussion" && attempt.attempt_kind !== "correction")
+        .filter((attempt) => attempt.task_type === "academic_discussion")
         .map((attempt) => String(attempt.question_id))
     );
 
@@ -263,8 +263,7 @@ export async function GET(request: Request) {
           ? emailQuestionById.get(String(attempt.question_id))
           : discussionQuestionById.get(String(attempt.question_id));
       const review = correction
-        ? correctionReviewByAttemptId.get(String(attempt.attempt_id)) ??
-          reviewByAttemptId.get(String(attempt.attempt_id))
+        ? correctionReviewByAttemptId.get(String(attempt.attempt_id))
         : reviewByAttemptId.get(String(attempt.attempt_id));
       const assignment = attempt.assignment_id
         ? assignmentById.get(String(attempt.assignment_id))
@@ -276,9 +275,9 @@ export async function GET(request: Request) {
       const rawSetTitle = question?.set_title?.trim() || String(attempt.set_id);
       const display = historicalDisplayResolver.resolveWritingAttempt({
         assignmentId: attempt.assignment_id,
-        assignmentDisplayName: assignmentTitle,
-        fallbackDisplayName: assignmentTitle || rawSetTitle || String(attempt.question_id),
-        questionSource: assignment?.question_source ?? null,
+        assignmentDisplayName: correction ? frozenTitle || assignmentTitle : assignmentTitle,
+        fallbackDisplayName: frozenTitle || assignmentTitle || rawSetTitle || String(attempt.question_id),
+        questionSource: correction ? attempt.correction_source_snapshot?.question_source ?? null : assignment?.question_source ?? null,
         rawQuestionId: String(attempt.question_id),
         taskType
       });
@@ -301,13 +300,13 @@ export async function GET(request: Request) {
         questionId: String(attempt.question_id),
         setId: String(attempt.set_id),
         setTitle: correction ? frozenTitle || "订正作文" : assignmentTitle || rawSetTitle,
-        displayName: correction ? frozenTitle || "订正作文" : display.displayName,
+        displayName: display.displayName,
         reviewContext: attempt.assignment_id
           ? assignment?.question_source === "custom"
             ? "assignment_custom"
             : "assignment_question_bank"
           : "free_practice",
-        logicalDisplay: !correction && display.logicalDisplayName
+        logicalDisplay: display.logicalDisplayName
           ? {
               itemId: display.itemId,
               displayNumber: display.displayNumber,

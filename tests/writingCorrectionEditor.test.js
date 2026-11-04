@@ -87,6 +87,53 @@ const text = (tree) => typeof tree === "string" || typeof tree === "number" ? St
 const button = (tree, label) => { const result = all(tree, (el) => el.type === "button" && text(el) === label)[0]; assert.ok(result, `button ${label}`); return result; };
 const tick = () => new Promise(setImmediate);
 
+test("teacher AI defaults are editable; direct publication and later edits keep draft/snapshot separate", async () => {
+  const { correctionReviewWorkspaceFixture, applyFixtureTeacher } = require("./fixtures/writingCorrectionReviewFixture.ts");
+  let workspace = correctionReviewWorkspaceFixture({ adjusted: true });
+  workspace.review.teacher = { issue_statuses: {}, correction_score: null, score_rationale: null, new_issue_reviews: {} };
+  const { correctionReviewState } = require("../lib/writingCorrectionReview.ts");
+  workspace.review.state = correctionReviewState({ issues: workspace.review.state.issues, originalScore: 3, ai: workspace.review.ai, teacher: workspace.review.teacher });
+  const requests = [];
+  const send = async (_path, init) => {
+    if (init?.method === "POST") {
+      const body = JSON.parse(init.body); requests.push(body);
+      workspace = applyFixtureTeacher(workspace, body.teacher, body.action === "publish");
+    }
+    return Response.json({ workspace });
+  };
+  const h = harness();
+  const run = () => h.teacher.TeacherWritingCorrectionDetail({ attemptId: workspace.attempt.attempt_id, returnTo: "/teacher/writing/reviews", send });
+  h.render(run); await tick(); let tree = h.render(run);
+  let score = all(tree, el => el.type === "select" && el.props["aria-label"] === "教师订正评分")[0];
+  assert.equal(score.props.value, workspace.review.ai.correction_score);
+  assert.equal(all(score, el => el.type === "option").length, 6);
+  const rationale = all(tree, el => el.type === "textarea" && el.props["aria-label"] === "教师评分解释")[0];
+  assert.equal(rationale.props.value, workspace.review.ai.score_rationale);
+  const delta = all(tree, el => el.type === "textarea" && el.props["aria-label"] === "分差原因")[0];
+  assert.equal(delta.props.value, workspace.review.ai.score_change_explanation);
+  const judgment = all(tree, el => el.type === "select" && String(el.props["aria-label"]).startsWith("教师判定"))[0];
+  assert.equal(judgment.props.value, workspace.review.state.issues[0].ai_status);
+  assert.doesNotMatch(text(tree), /跟随 AI|计算方式|未判定|驳回|AI 请求信息/);
+  score.props.onChange({ target: { value: "5" } });
+  rationale.props.onChange({ target: { value: "Teacher version" } });
+  delta.props.onChange({ target: { value: "Teacher delta" } });
+  tree = h.render(run);
+  const publish = button(tree, "发布"); publish.props.onClick(); publish.props.onClick();
+  await tick(); tree = h.render(run);
+  assert.equal(requests.length, 1);
+  assert.equal(workspace.review.published.correction_score, 5);
+  assert.equal(workspace.review.published.score_change_explanation, "Teacher delta");
+  score = all(tree, el => el.type === "select" && el.props["aria-label"] === "教师订正评分")[0];
+  assert.equal(score.props.disabled, false);
+  score.props.onChange({ target: { value: "4" } }); tree = h.render(run);
+  button(tree, "保存").props.onClick(); await tick(); tree = h.render(run);
+  assert.equal(workspace.review.teacher.correction_score, 4);
+  assert.equal(workspace.review.published.correction_score, 5);
+  button(tree, "发布").props.onClick(); await tick(); h.render(run);
+  assert.equal(workspace.review.published.correction_score, 4);
+  assert.notEqual(workspace.review.ai.score_rationale, "Teacher version");
+});
+
 // Session-controller seam only. The real Tiptap editor, history, mapping and
 // clipboard are independently exercised by PM tests and actual Chrome tests.
 function correctionEditor(tree) {
@@ -238,7 +285,7 @@ test("actual correction session: tab switching retains editor history and unsave
   let tree = h.render(run);
   const getEditor = () => correctionEditor(tree).props.actions;
   const edit = (value) => { getEditor().onChange({ currentTarget: { value, selectionStart: value.length, selectionEnd: value.length } }); tree = h.render(run); };
-  assert.match(text(tree), /有未保存修改 · 版本 0/); // legacy state needs first durable adoption
+  assert.match(text(tree), /已保存/); // unchanged legacy drafts do not warn on Back
   edit(attempt.response_text + "\nMy changes.");
   assert.match(text(tree), /有未保存修改/);
   assert.ok(getEditor().canUndo);
@@ -250,7 +297,7 @@ test("actual correction session: tab switching retains editor history and unsave
   button(tree, "Save Draft").props.onClick(); tree = h.render(run);
   assert.equal(button(tree, "Save Draft").props.disabled, true);
   await tick(); tree = h.render(run);
-  assert.match(text(tree), /已保存 · 版本 1/);
+  assert.match(text(tree), /已保存/);
   assert.equal((await fixture.client.load(attempt.attempt_id)).response_text, getEditor().text);
 });
 
@@ -276,7 +323,7 @@ test("actual session: 409 keeps local text; latest draft is only loaded after ex
   button(tree, "确认读取并替换").props.onClick(); await tick(); tree = h.render(run);
   assert.equal(loads, 1);
   assert.match(getEditor().text, /Saved in another tab/);
-  assert.match(text(tree), /已保存 · 版本 1/);
+  assert.match(text(tree), /已保存/);
   assert.match(text(tree), /Local unsaved text/); // recoverable, page-local copy
 });
 
@@ -352,10 +399,10 @@ for (const failure of [null, "network", "conflict", "lost-submit"]) {
     const getEditor = () => correctionEditor(tree);
     getEditor().props.actions.onChange({ currentTarget: { value: "Last edited body", selectionStart: 16, selectionEnd: 16 } }); tree = h.render(run);
     if (failure) fixture.failNext(failure);
-    button(tree, "提交订正").props.onClick(); tree = h.render(run);
-    assert.match(text(tree), /提交后本次订正将锁定/);
-    const confirm = button(tree, "确认提交");
-    confirm.props.onClick(); confirm.props.onClick(); await tick(); tree = h.render(run);
+    const submit = button(tree, "提交订正");
+    submit.props.onClick(); submit.props.onClick(); tree = h.render(run);
+    assert.doesNotMatch(text(tree), /确认提交/);
+    await tick(); tree = h.render(run);
     assert.equal(calls.filter((call) => call[0] === "save").length, 1);
     if (failure === "network" || failure === "conflict") {
       assert.equal(calls.filter((call) => call[0] === "submit").length, 0);
@@ -366,14 +413,16 @@ for (const failure of [null, "network", "conflict", "lost-submit"]) {
       assert.equal(calls[1][2], 1, "submit must use save's fresh version");
       if (failure === "lost-submit") {
         assert.equal(getEditor().props.readOnly, true);
-        button(tree, "重试提交").props.onClick(); tree = h.render(run);
-        button(tree, "确认提交").props.onClick(); await tick(); tree = h.render(run);
+        button(tree, "重试提交").props.onClick(); await tick(); tree = h.render(run);
         assert.deepEqual(calls.map((call) => call[0]), ["save", "submit", "submit"]);
         assert.equal(calls[2][2], 1);
       }
       assert.equal(getEditor().props.readOnly, true);
       assert.equal(getEditor().props.actions.text, "Last edited body");
-      assert.match(text(tree), /订正提交成功/);
+      assert.match(text(tree), /已提交/);
+      assert.doesNotMatch(text(tree), /订正提交成功|只读/);
+      button(tree, "Back").props.onClick();
+      assert.deepEqual(h.pushes.at(-1), ["router", "/original"]);
       assert.equal(all(tree, (el) => el.type === "button" && ["Save Draft", "提交订正", "编辑订正"].includes(text(el))).length, 0);
       assert.equal((await fixture.client.history(FIXTURE_ORIGINAL_ID)).length, 1);
     }
@@ -396,8 +445,7 @@ test("Phase 3 actual session submits saved body without a redundant save and loa
   const h = harness();
   const run = () => h.correction.Session({ initialAttempt: attempt, backHref: "/original", client });
   let tree = h.render(run);
-  button(tree, "提交订正").props.onClick(); tree = h.render(run);
-  button(tree, "确认提交").props.onClick(); await tick(); tree = h.render(run);
+  button(tree, "提交订正").props.onClick(); await tick(); tree = h.render(run);
   assert.equal(saves, 0);
   const submitted = await client.load(attempt.attempt_id);
   const loaded = harness();
@@ -406,7 +454,7 @@ test("Phase 3 actual session submits saved body without a redundant save and loa
   assert.doesNotMatch(text(loadedTree), /Save Draft|编辑订正|提交订正/);
 });
 
-for (const hasDraft of [false, true]) test(`Phase 3 actual teacher detail reads frozen body, returns safely, draft conflict=${hasDraft} (Mock)`, async () => {
+for (const hasDraft of [false, true]) test(`teacher detail reuses review controls and logs, without return/publish confirmation, draft=${hasDraft}`, async () => {
   const store = new Map();
   const fixture = createCorrectionFixtureTransport({ getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) }, "email", false);
   const attempt = await fixture.client.create(FIXTURE_ORIGINAL_ID);
@@ -420,18 +468,17 @@ for (const hasDraft of [false, true]) test(`Phase 3 actual teacher detail reads 
   // covered by tests/writingCorrectionComparison.test.js and the browser pass.
   // Here we assert the Phase 4 workspace shell replaced the read-only receiver.
   assert.match(text(tree), /订正批改/);
-  assert.match(text(tree), /修订正文/);
+  assert.ok(all(tree, el => Boolean(el.props?.corrected)).length);
   assert.match(text(tree), /完成度/);
   assert.doesNotMatch(text(tree), /HIDDEN SCORE|HIDDEN TEACHER|HIDDEN OVERALL/);
   assert.doesNotMatch(text(tree), /只读接收/);
-  button(tree, "退回订正").props.onClick(); tree = h.render(run);
-  const dialog = all(tree, (el) => el.props?.title === "退回订正草稿")[0];
-  dialog.props.onConfirm(); dialog.props.onConfirm(); await tick(); tree = h.render(run);
-  assert.match(text(tree), hasDraft ? /未覆盖任何草稿/ : /已恢复同一份订正草稿/);
-  assert.equal((await fixture.client.load(attempt.attempt_id)).status, hasDraft ? "submitted" : "draft");
+  assert.doesNotMatch(text(tree), /退回订正|已发布并冻结|计算方式|跟随 AI/);
+  assert.match(text(tree), /查看 AI 日志/);
+  assert.equal(all(tree, el => el.props?.title === "发布订正评价").length, 0);
+  assert.equal((await fixture.client.load(attempt.attempt_id)).status, "submitted");
 });
 
-test("Phase 3 actual teacher queue distinguishes corrections, links detail, hides correction ignore; ordinary row unchanged", () => {
+test("teacher queue uses the same ignore control for corrections and originals", () => {
   const h = harness();
   const original = { attemptId: "original", studentName: "Student", taskType: "email", displayName: "Title", reviewStatus: "pending", reviewContext: "free_practice" };
   const correction = { ...original, attemptId: "correction", attemptKind: "correction", originalAttemptId: "original" };
@@ -440,11 +487,12 @@ test("Phase 3 actual teacher queue distinguishes corrections, links detail, hide
   const rows = all(tree, (el) => el.type === "tr" && el.props["data-writing-review-row"]);
   assert.equal(rows.length, 2);
   assert.equal(all(rows[0], (el) => el.type === "button" && text(el) === "忽略").length, 1);
-  assert.equal(all(rows[1], (el) => el.type === "button" && text(el) === "忽略").length, 0);
+  assert.equal(all(rows[1], (el) => el.type === "button" && text(el) === "忽略").length, 1);
+  assert.doesNotMatch(text(rows[1]), /原稿：|订正：/);
   assert.equal(button(rows[1], "退回").props.disabled, false);
   assert.match(all(rows[1], (el) => el.props?.href)[0].props.href, /\/correction\?returnTo=/);
-  const bulk = h.render(() => h.list.WritingReviewBulkActions({ busy: false, ignoreDisabled: true, count: 2 }));
-  assert.equal(button(bulk, "忽略").props.disabled, true);
+  const bulk = h.render(() => h.list.WritingReviewBulkActions({ busy: false, count: 2 }));
+  assert.equal(Boolean(button(bulk, "忽略").props.disabled), false);
 });
 
 test("Phase 3 history presentation separates resumable drafts from read-only submitted records and uses DB review status", () => {
@@ -455,13 +503,12 @@ test("Phase 3 history presentation separates resumable drafts from read-only sub
     { attempt_id: "reviewing", task_type: "email", status: "submitted", submitted_at: "2026-11-03T00:00:00Z", reviewStatus: "reviewing" }
   ] }));
   const historyRows = all(tree, (el) => el.type === "li");
-  assert.match(text(historyRows[0]), /WE · 订正草稿尚未提交继续订正/);
-  assert.match(text(historyRows[1]), /AD · 订正已提交.*正在等待教师批改查看本次提交（只读）/);
-  assert.match(text(tree), /正在等待教师批改/);
-  assert.match(text(tree), /教师批改中/);
+  assert.match(text(historyRows[0]), /尚未提交草稿继续订正/);
+  assert.match(text(historyRows[1]), /已提交等待批改中查看/);
+  assert.doesNotMatch(text(tree), /WE · 订正|AD · 订正|只读/);
   const links = all(tree, (el) => el.type === "a");
   assert.equal(text(links[0]), "继续订正");
-  assert.equal(text(links[1]), "查看本次提交（只读）");
+  assert.equal(text(links[1]), "查看");
   assert.match(links[0].props.href, /\/writing-corrections\/draft/);
   assert.doesNotMatch(text(tree), /评分|完成度|AI/);
 });
@@ -478,8 +525,7 @@ for (const status of [409, 502]) test(`Phase 3 submit failure after successful s
   let tree = h.render(run);
   const getEditor = () => correctionEditor(tree);
   getEditor().props.actions.onChange({ currentTarget: { value: "Final saved body", selectionStart: 16, selectionEnd: 16 } }); tree = h.render(run);
-  button(tree, "提交订正").props.onClick(); tree = h.render(run);
-  button(tree, "确认提交").props.onClick(); await tick(); tree = h.render(run);
+  button(tree, "提交订正").props.onClick(); await tick(); tree = h.render(run);
   assert.equal(submits, 1);
   assert.equal(getEditor().props.actions.text, "Final saved body");
   const saved = await fixture.client.load(attempt.attempt_id);
@@ -497,7 +543,7 @@ test('a different version submitted by another tab is a conflict, never shown as
     revision_state:require('../lib/writingRevisionState.ts').initializeWritingRevision(attempt.response_text,'Other submitted body')})};
   const h=harness();const run=()=>h.correction.Session({initialAttempt:attempt,backHref:'/original',client});let tree=h.render(run);
   correctionEditor(tree).props.actions.onChange({currentTarget:{value:'My local body'}});tree=h.render(run);
-  button(tree,'提交订正').props.onClick();tree=h.render(run);button(tree,'确认提交').props.onClick();await tick();tree=h.render(run);
+  button(tree,'提交订正').props.onClick();await tick();tree=h.render(run);
   assert.equal(correctionEditor(tree).props.actions.text,'My local body');assert.doesNotMatch(text(tree),/订正提交成功/);
   assert.equal(button(tree,'提交订正').props.disabled,true);assert.match(text(tree),/修订版本与本地不同/);
 });

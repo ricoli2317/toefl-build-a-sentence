@@ -587,6 +587,7 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
         for (const domain of cacheDomainsForEvent(event)) {
           switch (domain) {
             case "studentWritingCorrections":
+              invalidate(STUDENT_WRITING_PUBLISHED_REVIEWS_CACHE_KEY);
               if (event.originalAttemptId) {
                 invalidate(`${STUDENT_WRITING_CORRECTION_CACHE_PREFIX}:history:${event.originalAttemptId}`);
               } else {

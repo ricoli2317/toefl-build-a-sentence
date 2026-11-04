@@ -12,6 +12,10 @@ import { exportDocument, textDocument } from "@/lib/writingRevisionDocument";
 import { countEnglishWords } from "@/lib/writing";
 import { parseWritingRevisionState, type WritingRevisionState } from "@/lib/writingRevisionState";
 import styles from "./WritingRevisionEditor.module.css";
+import { RevisionVisibilitySwitch } from "./RevisionVisibilitySwitch";
+import { correctionHighlightExtension, correctionHighlightKey } from "@/lib/writingCorrectionHighlight";
+import type { CorrectionLocation } from "@/lib/writingCorrectionLocation";
+import { scrollTargetWithinContainer } from "@/lib/writingReviewScroll";
 
 export type RevisionEditorHandle = { snapshot: () => WritingRevisionState };
 
@@ -19,11 +23,12 @@ export type RevisionEditorHandle = { snapshot: () => WritingRevisionState };
  * typography is supplied by className; only the student gets editing controls.
  * Remounts are reserved for explicit confirmed draft reloads, never visibility. */
 export function WritingRevisionEditor({ initialState, onChange, onReady, readOnly = false, disabled = false,
-  className = "px-4 py-3 text-[15px] leading-[1.45]", teacher = false }: {
+  className = "px-4 py-3 text-[15px] leading-[1.45]", teacher = false, heading, location }: {
   initialState: WritingRevisionState;
   onChange?: (state: WritingRevisionState) => void;
   onReady?: (handle: RevisionEditorHandle | null) => void;
-  readOnly?: boolean; disabled?: boolean; className?: string; teacher?: boolean;
+  readOnly?: boolean; disabled?: boolean; className?: string; teacher?: boolean; heading?: React.ReactNode;
+  location?: CorrectionLocation | null;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const scroll = useRef<HTMLDivElement>(null);
@@ -53,6 +58,7 @@ export function WritingRevisionEditor({ initialState, onChange, onReady, readOnl
         Node.create({ name: 'text', group: 'inline' }),
         Extension.create({ name: 'correctionPlainTextHistory', addProseMirrorPlugins: () => [history(), keymap({ 'Mod-z': undo, 'Mod-Shift-z': redo, 'Mod-y': redo, Enter: splitBlock }), keymap(baseKeymap)] }),
         transactionRevisionExtension(seed.ledger.original, [], seed.ledger, { popoverClassName: styles.popover }),
+        correctionHighlightExtension,
       ],
       content: textDocument(seed.ledger.text), enableInputRules: false, enablePasteRules: false,
       editorProps: {
@@ -94,6 +100,19 @@ export function WritingRevisionEditor({ initialState, onChange, onReady, readOnl
     editorRef.current?.view.dom.setAttribute('aria-readonly', String(readOnly || disabled));
   }, [readOnly, disabled]);
 
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor || !teacher) return;
+    editor.view.dispatch(editor.state.tr.setMeta(correctionHighlightKey, { location: location ?? null, text: initial.current.ledger.text }).setMeta('addToHistory', false));
+    host.current?.querySelectorAll('.revision-deleted').forEach(element => {
+      element.classList.toggle('ring-2', Boolean(location?.deletions.some(item => item.id === (element as HTMLElement).dataset.deletionId)));
+      element.classList.toggle('ring-violet-300', Boolean(location?.deletions.some(item => item.id === (element as HTMLElement).dataset.deletionId)));
+    });
+    const target = host.current?.querySelector<HTMLElement>('[data-correction-highlight]') ?? null;
+    const container = host.current?.closest<HTMLElement>('.overflow-y-auto') ?? null;
+    scrollTargetWithinContainer(container, target, Math.round((container?.clientHeight ?? 0) * 0.25));
+  }, [location, visible, teacher]);
+
   function toggle(value: boolean) {
     const editor = editorRef.current; if (!editor) return;
     const top = scroll.current?.scrollTop ?? 0;
@@ -119,9 +138,10 @@ export function WritingRevisionEditor({ initialState, onChange, onReady, readOnl
       {([{ name: 'Cut', action: 'cut', icon: Scissors, disabled: !current.ledger.text }, { name: 'Paste', action: 'paste', icon: ClipboardPaste, disabled: !clipboard }, { name: 'Undo', action: 'undo', icon: Undo2, disabled: !depth.undo }, { name: 'Redo', action: 'redo', icon: Redo2, disabled: !depth.redo }] as const).map(({ name, action, icon: Icon, disabled: unavailable }) => <button aria-label={name} className="inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] font-semibold hover:bg-white disabled:pointer-events-none disabled:opacity-35" disabled={disabled || unavailable} key={action} onMouseDown={event => event.preventDefault()} onClick={() => command(action)} type="button"><Icon size={16} /><span className="hidden sm:inline">{name}</span></button>)}
       <span className="ml-auto whitespace-nowrap px-2 text-[13px] font-semibold">Word Count <span className="tabular-nums text-student-text">{countEnglishWords(current.ledger.text)}</span></span>
     </div> : null}
-    <label className="flex shrink-0 items-center gap-2 border-b border-student-border px-4 py-2 text-xs">
-      <input aria-label="显示修订痕迹" checked={visible} onPointerDown={() => { refocus.current = editorRef.current?.view.hasFocus() ?? false; }} onChange={event => toggle(event.target.checked)} type="checkbox" />显示修订痕迹
-    </label>
+    <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-student-border px-4 py-2">
+      {heading}
+      <RevisionVisibilitySwitch checked={visible} onPointerDown={() => { refocus.current = editorRef.current?.view.hasFocus() ?? false; }} onChange={toggle} />
+    </div>
     <div className={`${teacher ? '' : 'min-h-[280px] flex-1 overflow-y-auto'} ${className}`} ref={scroll}><div className={styles.host} ref={host} /></div>
   </div>;
 }

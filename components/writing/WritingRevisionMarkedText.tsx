@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { Fragment } from "react";
 import {
   CONTENT_FEEDBACK_MARKER_CLASS,
+  WRITING_REVIEW_SELECTED_TEXT_CLASS,
   languageEditDisplayRange,
   languageEditSeverityMarkerClass,
   type WorkspaceAnnotationSegment
@@ -133,7 +134,7 @@ function FeedbackRangeText({
     <span
       className={clsx(
         "border-b border-dashed border-student-primary/45",
-        selected && "bg-violet-100"
+        selected && WRITING_REVIEW_SELECTED_TEXT_CLASS
       )}
       data-feedback-range={feedbackIds.join(" ")}
     >

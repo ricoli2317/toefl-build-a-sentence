@@ -145,8 +145,8 @@ test("only confirmed mutation metadata publishes correction-specific invalidatio
   assert.doesNotMatch(read("lib/writingCorrectionClient.ts"), /WRITING_DRAFT_UPDATED|WRITING_ATTEMPT_SUBMITTED/);
 });
 
-test("production entry stays explicitly closed; no development fixture routes or components ship", () => {
-  assert.equal(WRITING_CORRECTION_ENTRY_ENABLED, false);
+test("production entry retains its deployed setting; no development fixture routes or components ship", () => {
+  assert.equal(WRITING_CORRECTION_ENTRY_ENABLED, true);
   assert.match(read("components/student/StudentWritingReview.tsx"), /WRITING_CORRECTION_ENTRY_ENABLED \? <WritingCorrectionEntry/);
   for (const file of [
     "app/dev/writing-correction/page.tsx",
@@ -170,7 +170,7 @@ test("two tab panels stay mounted; editing never renders teacher markers and fro
   assert.match(source, /<FrozenCorrectionAnnotations attempt=\{initialAttempt\}/);
   assert.doesNotMatch(source, /Time Left|setInterval|requestUpdate|elapsedSeconds|remainingSeconds|sample_essay|PublishedScorePanel/);
   assert.match(editPanel, /<WritingPracticeActions/);
-  assert.match(editPanel, /onSubmit=\{\(\) => setSubmitOpen\(true\)\}/, "the shared action opens correction confirmation, not ordinary timed submission");
+  assert.match(editPanel, /onSubmit=\{\(\) => void submit\(\)\}/, "correction submits directly with the existing save/retry guard");
 });
 
 test("conflict refresh requires confirmation, retains local text, and failed saves cannot claim saved", () => {

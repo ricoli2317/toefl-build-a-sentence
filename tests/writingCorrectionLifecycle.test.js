@@ -43,6 +43,9 @@ function fixture(task = "email", assignment = false) {
     db.calls.push([name, clone(args)]);
     const work = serial.then(() => {
       if (!db.active) return fail("WRITING_CORRECTION_ACCOUNT_FORBIDDEN");
+      if (name === "ignore_teacher_writing_corrections") return { data: args.p_attempt_ids.map(id => ({
+        attempt_id: id, outcome: db.reviewed.has(id) ? "skipped" : "ignored", reason: db.reviewed.has(id) ? "already_reviewed" : null
+      })), error: null };
       if (name === "moderate_teacher_writing_attempts") {
         const data = args.p_attempt_ids.map((id) => {
           const row = db.rows.writing_attempts.find((r) => r.attempt_id === id);
@@ -215,8 +218,10 @@ test("teacher scope is preserved; reviewed corrections cannot return; ordinary w
   const source = await loadAuthorizedWritingReviewSource(db, { userId: "teacher", role: "teacher" },
     attempt.attempt_id, { allowCorrectionSource: true });
   assert.equal(frozenWritingCorrectionSource(source.attempt).question.set_title, "Frozen title");
-  await rejects(() => moderateWritingReviewAttempts(db, { actor: { userId: "teacher", role: "teacher" },
-    action: "ignore", attemptIds: [attempt.attempt_id] }), "CORRECTION_REVIEW_NOT_SUPPORTED", 409);
+  const ignored = await moderateWritingReviewAttempts(db, { actor: { userId: "teacher", role: "teacher" },
+    action: "ignore", attemptIds: [attempt.attempt_id] });
+  assert.equal(ignored[0].reason, "already_reviewed");
+  assert.equal(db.calls.at(-1)[0], "ignore_teacher_writing_corrections");
 });
 
 test("correction cache events never invalidate ordinary state/history/assignments/published review", () => {
