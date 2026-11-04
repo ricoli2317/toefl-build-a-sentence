@@ -5,7 +5,7 @@ import { parseWritingRevisionState, revisionStateKey, type WritingRevisionState 
 
 // Deliberately closed, not an environment-variable override of the DB gate.
 // Opening the production entry requires a separately approved release.
-export const WRITING_CORRECTION_ENTRY_ENABLED = false;
+export const WRITING_CORRECTION_ENTRY_ENABLED = true;
 
 export function correctionAnnotations(attempt: WritingAttempt) {
   const source = frozenWritingCorrectionSource(attempt);
