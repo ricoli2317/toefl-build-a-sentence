@@ -22,8 +22,9 @@ function harness() {
   const add = (kind, fn) => listeners.set(kind, fn);
   const remove = (kind, fn) => { if (listeners.get(kind) === fn) listeners.delete(kind); };
   const window = { requestAnimationFrame: (fn) => raf.push(fn), location: { href: "http://localhost:3000/student/writing-corrections/id" },
+    getSelection: () => ({ toString: () => "" }),
     addEventListener: add, removeEventListener: remove, history: { state: { app: true }, pushState: (...args) => pushes.push(["history", ...args]) } };
-  const document = { visibilityState: "visible", addEventListener: add, removeEventListener: remove };
+  const document = { documentElement: { clientWidth: 1440 }, visibilityState: "visible", addEventListener: add, removeEventListener: remove };
   const same = (a, b) => a && b && a.length === b.length && a.every((v, i) => Object.is(v, b[i]));
   const hooks = {
     ...React,
@@ -50,6 +51,7 @@ function harness() {
       if (request === "@/components/student/StudentWritingReview") return published;
       if (request === "./TeacherWritingReviewWorkspace") return sharedTeacher;
       if (request === "./WritingReviewPresentation") return presentation;
+      if (request === "@/components/StudentDataCache") return { useStudentCachedData: () => ({ data: null, loading: false }) };
       if (request.startsWith("@/components/") || request.startsWith("./Writing")) return new Proxy({}, { get: () => () => null });
       if (request === "@/lib/writingClientSession") return {};
       if (request === "@/lib/supabase/client") return {};
@@ -86,6 +88,27 @@ const sharedPresentation = (tree) => typeof tree?.type === "function" && ["Pract
 const text = (tree) => typeof tree === "string" || typeof tree === "number" ? String(tree) : Array.isArray(tree) ? tree.map(text).join("") : tree?.props ? text(sharedPresentation(tree) ? tree.type(tree.props) : tree.props.children) : "";
 const button = (tree, label) => { const result = all(tree, (el) => el.type === "button" && text(el) === label)[0]; assert.ok(result, `button ${label}`); return result; };
 const tick = () => new Promise(setImmediate);
+
+test("correction review blank-click cancels selection, but controls preserve it; delta remains inside score card", async () => {
+  const { correctionReviewWorkspaceFixture } = require("./fixtures/writingCorrectionReviewFixture.ts");
+  const workspace = correctionReviewWorkspaceFixture({ adjusted: true });
+  const send = async () => Response.json({ workspace });
+  const h = harness();
+  const run = () => h.teacher.TeacherWritingCorrectionDetail({ attemptId: workspace.attempt.attempt_id, returnTo: "/teacher/writing/reviews", send });
+  h.render(run); await tick(); let tree = h.render(run);
+  const card = all(tree, el => Boolean(el.props?.["data-correction-review-item"]))[0];
+  card.props.onClick({ target: { closest: () => null } }); tree = h.render(run);
+  const comparison = () => all(tree, el => Boolean(el.props?.corrected))[0];
+  assert.ok(comparison().props.selectedIssue);
+  const controls = { clientX: 100, target: { closest: () => ({}) } };
+  h.listeners.get("click")(controls); tree = h.render(run);
+  assert.ok(comparison().props.selectedIssue);
+  h.listeners.get("click")({ clientX: 100, target: { closest: () => null } }); tree = h.render(run);
+  assert.equal(comparison().props.selectedIssue, null);
+  assert.doesNotMatch(text(tree), /定位正文/);
+  const scoreCard = all(tree, el => el.type?.name === "ReviewOfficialScoreCard")[0];
+  assert.equal(all(scoreCard, el => el.props?.["aria-label"] === "分差原因").filter(el => el.type === "textarea").length, 1);
+});
 
 test("teacher AI defaults are editable; direct publication and later edits keep draft/snapshot separate", async () => {
   const { correctionReviewWorkspaceFixture, applyFixtureTeacher } = require("./fixtures/writingCorrectionReviewFixture.ts");

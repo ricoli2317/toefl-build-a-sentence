@@ -949,7 +949,9 @@ test("feedback tabs explicitly scroll the right column and synchronize selection
   );
   assert.match(source, /scrollTargetWithinContainer\(rightColumnRef\.current/);
   assert.match(source, /onSelectFeedbackId\(first\.feedback_id\)/);
-  assert.match(source, /calculateContainedScrollTop/);
+  assert.match(source, /import \{ scrollTargetWithinContainer \} from "@\/lib\/writingReviewScroll"/);
+  const sharedScroll = fs.readFileSync(path.join(process.cwd(), "lib/writingReviewScroll.ts"), "utf8");
+  assert.match(sharedScroll, /calculateContainedScrollTop/);
 });
 
 test("immersive shell uses fixed hover overlays without reserving layout space", () => {

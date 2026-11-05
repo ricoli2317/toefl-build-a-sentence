@@ -62,6 +62,21 @@ export function TeacherWritingCorrectionDetail({
   const [locationRequest, setLocationRequest] = useState(0);
   const busyRef = useRef<Busy>(null);
 
+  useEffect(() => {
+    if (!selectedIssueId) return;
+    const clearOnBlank = (event: globalThis.MouseEvent) => {
+      const target = event.target as Element | null;
+      if (!target?.closest || target.closest('[data-correction-review-item], .tiptap p, .revision-deleted, [data-correction-highlight], button, a, input, select, textarea, label, [role="button"], [contenteditable="true"], summary, [role="dialog"]')) return;
+      // Keep native scrollbar interactions out of blank-page deselection.
+      if (event.clientX >= document.documentElement.clientWidth) return;
+      const scroller = target.closest<HTMLElement>('[data-revision-scroll], .writing-review-column.overflow-y-auto');
+      if (scroller && event.clientX >= scroller.getBoundingClientRect().left + scroller.clientLeft + scroller.clientWidth) return;
+      setSelectedIssueId(null);
+    };
+    document.addEventListener("click", clearOnBlank);
+    return () => document.removeEventListener("click", clearOnBlank);
+  }, [selectedIssueId]);
+
   const apply = (next: CorrectionWorkspace) => {
     setWorkspace(next);
     setDraft({
@@ -238,15 +253,14 @@ export function TeacherWritingCorrectionDetail({
           <ReviewWorkspaceGrid>
             <div className="min-w-0 [&>.writing-review-column]:h-full max-[1099px]:shrink-0 max-[1099px]:[&>.writing-review-column]:min-h-0"><QuestionColumn question={workspace.question} taskType={workspace.attempt.task_type} /></div>
             <section className="writing-review-column min-w-0 bg-white max-[1099px]:!min-h-0 max-[1099px]:shrink-0">
-              <div className="min-h-0 flex-1 overflow-y-auto p-5">
               <WritingCorrectionComparison
+                workspace
                 corrected={workspace.corrected_response_text}
                 revisionState={workspace.revision_state}
                 original={workspace.source.original_response_text}
                 selectedIssue={workspace.review.state.issues.find(issue => issue.issue_id === selectedIssueId) ?? null}
                 locationRequest={locationRequest}
               />
-              </div>
             </section>
 
             <aside className="writing-review-column min-w-0 overflow-y-auto bg-white p-2.5 max-[1099px]:!min-h-0 max-[1099px]:shrink-0 max-[1099px]:!overflow-visible">
@@ -255,7 +269,7 @@ export function TeacherWritingCorrectionDetail({
                 <div className="flex items-center justify-between gap-2"><p className="text-3xl font-bold leading-tight tabular-nums">{completion.label}</p><ReviewBadge>语言 {summary.language} · 内容 {summary.content}</ReviewBadge></div>
                 {state.completion.rate !== null ? <div aria-label="原始问题加权完成度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.completion.rate * 100} className="mt-3 h-1.5 overflow-hidden rounded-full bg-student-primary-soft" role="progressbar"><div className="h-full rounded-full bg-student-primary" style={{ width: `${state.completion.rate * 100}%` }} /></div> : null}
                 <dl className="mt-3 grid grid-cols-2 gap-2">
-                  {CORRECTION_STATUS_ORDER.map(status => <div className={`flex min-h-20 flex-col items-center justify-center gap-1 rounded-md px-2 py-3 ${CORRECTION_STATUS_TONE[status]}`} key={status}><dt className="text-lg font-semibold">{CORRECTION_STATUS_LABEL[status]}</dt><dd className="text-3xl font-bold leading-tight tabular-nums">{state.completion.counts[status]}</dd></div>)}
+                  {CORRECTION_STATUS_ORDER.map(status => <div data-completion-stat className={`flex h-8 items-center justify-between gap-2 rounded-md px-2 py-1.5 ${CORRECTION_STATUS_TONE[status]}`} key={status}><dt className="whitespace-nowrap text-sm font-semibold leading-5">{CORRECTION_STATUS_LABEL[status]}</dt><dd className="text-xl font-bold leading-5 tabular-nums">{state.completion.counts[status]}</dd></div>)}
                 </dl>
               </CompactSection>
 
@@ -282,18 +296,20 @@ export function TeacherWritingCorrectionDetail({
                     }))}
                     value={draft.score_rationale ?? state.ai_rationale}
                   />}
-                />
+                >
                 <label className="mt-2 block text-[10px] font-semibold text-student-muted">分差原因
                   <ReviewScoreRationale aria-label="分差原因" disabled={readonly} value={draft.score_change_explanation ?? state.ai_score_change_explanation}
                     onChange={event => setDraft(current => ({ ...current, score_change_explanation: event.target.value }))} />
                 </label>
+                </ReviewOfficialScoreCard>
               </CompactSection>
 
               <CompactSection title="原始问题逐项审核" subtitle={`${state.issues.length} 项`}>
                 <ul className="grid gap-2">
                   {state.issues.map((issue) => (
-                    <li key={issue.issue_id}><ReviewFeedbackCard selected={selectedIssueId === issue.issue_id} onClick={() => locateIssue(issue.issue_id)}>
-                      <button type="button" className="mb-1 text-[10px] font-semibold text-student-primary hover:underline" onClick={event => { event.stopPropagation(); locateIssue(issue.issue_id); }}>定位正文</button>
+                    <li key={issue.issue_id}><ReviewFeedbackCard data-correction-review-item={issue.issue_id} selected={selectedIssueId === issue.issue_id} onClick={event => {
+                      if (!(event.target as Element).closest('button, a, input, select, textarea, label')) locateIssue(issue.issue_id);
+                    }}>
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className={issue.issue_type === "content_feedback" ? CONTENT_FEEDBACK_MARKER_CLASS : "font-semibold"}>
                           {CORRECTION_ISSUE_TYPE_LABEL[issue.issue_type] ?? issue.issue_type}

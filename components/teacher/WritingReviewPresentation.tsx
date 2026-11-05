@@ -87,8 +87,8 @@ export function ReviewSelect(props: SelectHTMLAttributes<HTMLSelectElement>) {
   return <select {...props} className="h-7 rounded-md border border-student-border bg-white px-1 text-xs font-bold text-student-primary" />;
 }
 
-export function ReviewOfficialScoreCard({ title = "官方整体评分", aiScore, teacherControl, teacherLabel = "教师最终", rationaleLabel = "参考", rationale }: {
-  title?: string; aiScore: ReactNode; teacherControl: ReactNode; teacherLabel?: string; rationaleLabel?: string; rationale: ReactNode;
+export function ReviewOfficialScoreCard({ title = "官方整体评分", aiScore, teacherControl, teacherLabel = "教师最终", rationaleLabel = "参考", rationale, children }: {
+  title?: string; aiScore: ReactNode; teacherControl: ReactNode; teacherLabel?: string; rationaleLabel?: string; rationale: ReactNode; children?: ReactNode;
 }) {
   return <div className="mt-2 rounded-lg border border-student-primary-border bg-student-primary-soft/30 p-2.5">
     <div className="flex items-center justify-between gap-2">
@@ -96,5 +96,6 @@ export function ReviewOfficialScoreCard({ title = "官方整体评分", aiScore,
       <label className="flex items-center gap-1 text-[10px] font-semibold">{teacherLabel}{teacherControl}</label>
     </div>
     <label className="mt-2 block text-[10px] font-semibold text-student-muted">{rationaleLabel}{rationale}</label>
+    {children}
   </div>;
 }

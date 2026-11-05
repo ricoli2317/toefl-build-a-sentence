@@ -23,12 +23,13 @@ export type RevisionEditorHandle = { snapshot: () => WritingRevisionState };
  * typography is supplied by className; only the student gets editing controls.
  * Remounts are reserved for explicit confirmed draft reloads, never visibility. */
 export function WritingRevisionEditor({ initialState, onChange, onReady, readOnly = false, disabled = false,
-  className = "px-4 py-3 text-[15px] leading-[1.45]", teacher = false, heading, location }: {
+  className = "px-4 py-3 text-[15px] leading-[1.45]", teacher = false, heading, location, workspace = false, legend }: {
   initialState: WritingRevisionState;
   onChange?: (state: WritingRevisionState) => void;
   onReady?: (handle: RevisionEditorHandle | null) => void;
   readOnly?: boolean; disabled?: boolean; className?: string; teacher?: boolean; heading?: React.ReactNode;
   location?: CorrectionLocation | null;
+  workspace?: boolean; legend?: React.ReactNode;
 }) {
   const host = useRef<HTMLDivElement>(null);
   const scroll = useRef<HTMLDivElement>(null);
@@ -103,10 +104,22 @@ export function WritingRevisionEditor({ initialState, onChange, onReady, readOnl
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor || !teacher) return;
-    editor.view.dispatch(editor.state.tr.setMeta(correctionHighlightKey, { location: location ?? null, text: initial.current.ledger.text }).setMeta('addToHistory', false));
+    editor.view.dispatch(editor.state.tr.setMeta(correctionHighlightKey, { location: location ?? null, text: initial.current.ledger.text, visible }).setMeta('addToHistory', false));
     host.current?.querySelectorAll('.revision-deleted').forEach(element => {
-      element.classList.toggle('ring-2', Boolean(location?.deletions.some(item => item.id === (element as HTMLElement).dataset.deletionId)));
-      element.classList.toggle('ring-violet-300', Boolean(location?.deletions.some(item => item.id === (element as HTMLElement).dataset.deletionId)));
+      const id = (element as HTMLElement).dataset.deletionId;
+      const record = initial.current.ledger.deletions.find(item => item.id === id);
+      if (!record) return;
+      const ranges = location?.deletions.find(item => item.id === id)?.ranges ?? [];
+      const fragment = document.createDocumentFragment();
+      let at = 0;
+      for (const range of ranges) {
+        fragment.append(document.createTextNode(record.text.slice(at, range.from)));
+        const mark = document.createElement('span');
+        mark.className = 'correction-location-highlight'; mark.dataset.correctionHighlight = 'true';
+        mark.textContent = record.text.slice(range.from, range.to); fragment.append(mark); at = range.to;
+      }
+      fragment.append(document.createTextNode(record.text.slice(at)));
+      element.replaceChildren(fragment);
     });
     const target = host.current?.querySelector<HTMLElement>('[data-correction-highlight]') ?? null;
     const container = host.current?.closest<HTMLElement>('.overflow-y-auto') ?? null;
@@ -133,15 +146,21 @@ export function WritingRevisionEditor({ initialState, onChange, onReady, readOnl
     }
     editor.view.focus();
   }
-  return <div className={`${styles.root} ${teacher ? 'min-w-0' : 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-student-primary-border bg-white focus-within:border-student-primary focus-within:shadow-[0_0_0_3px_rgba(107,92,246,0.1)]'}`} data-revision-view={teacher ? 'teacher' : 'student'}>
-    {!teacher && !readOnly ? <div className="flex h-10 min-h-10 flex-nowrap items-center border-b border-student-primary-border bg-student-primary-soft/45 px-2 text-student-primary">
+  const visibilitySwitch = <RevisionVisibilitySwitch compact checked={visible} className={!teacher ? styles.toolbarSwitch : undefined} onPointerDown={() => { refocus.current = editorRef.current?.view.hasFocus() ?? false; }} onChange={toggle} />;
+  return <div className={`${styles.root} ${teacher ? workspace ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' : 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-student-primary-border bg-white focus-within:border-student-primary focus-within:shadow-[0_0_0_3px_rgba(107,92,246,0.1)]'}`} data-revision-view={teacher ? 'teacher' : 'student'}>
+    {!teacher ? <div data-revision-toolbar className="flex h-10 min-h-10 shrink-0 flex-nowrap items-center border-b border-student-primary-border bg-student-primary-soft/45 px-2 text-student-primary">
+      {!readOnly ? <>
       {([{ name: 'Cut', action: 'cut', icon: Scissors, disabled: !current.ledger.text }, { name: 'Paste', action: 'paste', icon: ClipboardPaste, disabled: !clipboard }, { name: 'Undo', action: 'undo', icon: Undo2, disabled: !depth.undo }, { name: 'Redo', action: 'redo', icon: Redo2, disabled: !depth.redo }] as const).map(({ name, action, icon: Icon, disabled: unavailable }) => <button aria-label={name} className="inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] font-semibold hover:bg-white disabled:pointer-events-none disabled:opacity-35" disabled={disabled || unavailable} key={action} onMouseDown={event => event.preventDefault()} onClick={() => command(action)} type="button"><Icon size={16} /><span className="hidden sm:inline">{name}</span></button>)}
-      <span className="ml-auto whitespace-nowrap px-2 text-[13px] font-semibold">Word Count <span className="tabular-nums text-student-text">{countEnglishWords(current.ledger.text)}</span></span>
+      </> : null}
+      <span className="ml-auto inline-flex items-center">{visibilitySwitch}</span>
+      {!readOnly ? <span className="whitespace-nowrap px-2 text-[13px] font-semibold">Word Count <span className="tabular-nums text-student-text">{countEnglishWords(current.ledger.text)}</span></span> : null}
     </div> : null}
-    <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-student-border px-4 py-2">
+    {teacher ? <div data-revision-header className={`flex shrink-0 items-center justify-between gap-2 border-b border-student-border ${workspace ? "px-3 py-2.5" : "px-4 py-2"}`}>
       {heading}
-      <RevisionVisibilitySwitch checked={visible} onPointerDown={() => { refocus.current = editorRef.current?.view.hasFocus() ?? false; }} onChange={toggle} />
+      <div className="flex items-center gap-3">{visible ? legend : null}{visibilitySwitch}</div>
+    </div> : null}
+    <div data-revision-scroll className={workspace ? 'min-h-0 flex-1 overflow-y-auto p-5' : `${teacher ? '' : 'min-h-0 flex-1 overflow-y-auto'} ${className}`} ref={scroll}>
+      {workspace ? <div className={`mx-auto max-w-[860px] ${className}`}><div className={styles.host} ref={host} /></div> : <div className={styles.host} ref={host} />}
     </div>
-    <div className={`${teacher ? '' : 'min-h-[280px] flex-1 overflow-y-auto'} ${className}`} ref={scroll}><div className={styles.host} ref={host} /></div>
   </div>;
 }

@@ -11,7 +11,8 @@ import { ModalShell } from "@/components/shared/ConfirmDialog";
 import { WritingRevisionMarkedText } from "./WritingRevisionMarkedText";
 import { PublishedReviewDetail, ReviewMarkerLegend, ReviewViewTab, ReviewTabButton } from "@/components/student/StudentWritingReview";
 import { type WritingAttempt, type EmailQuestion, type AcademicDiscussionQuestion } from "@/lib/writing";
-import { resolveCustomAcademicDiscussionAvatar } from "@/lib/academicDiscussionAvatars";
+import { loadAcademicDiscussionAvatars, resolveCustomAcademicDiscussionAvatar, type AcademicDiscussionAvatarsPayload } from "@/lib/academicDiscussionAvatars";
+import { STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY, useStudentCachedData } from "@/components/StudentDataCache";
 import { StudentErrorState, StudentLoadingState } from "@/components/student/StudentUI";
 import { frozenWritingCorrectionSource } from "@/lib/writingCorrection";
 import { CorrectionRequestError, correctionAnnotations, type WritingCorrectionClient } from "@/lib/writingCorrectionUi";
@@ -44,6 +45,11 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
   const router = useRouter();
   // Never replace this source on tab changes, saves or conflict refreshes.
   const source = useMemo(() => frozenWritingCorrectionSource(initialAttempt), [initialAttempt]);
+  const avatarState = useStudentCachedData<AcademicDiscussionAvatarsPayload>(
+    STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY,
+    loadAcademicDiscussionAvatars,
+    { enabled: initialAttempt.task_type === "academic_discussion" }
+  );
   const [attempt, setAttempt] = useState(initialAttempt);
   const [tab, setTab] = useState<"edit" | "annotations">("edit");
   const [savedText, setSavedText] = useState(initialAttempt.response_text);
@@ -189,10 +195,10 @@ function WritingCorrectionSession({ initialAttempt, backHref, client }: {
     <section aria-labelledby="correction-tab-edit" className="min-h-0 flex-1 lg:overflow-hidden" hidden={tab !== "edit"} id="correction-edit" role="tabpanel">
       <div className="mx-auto grid h-full max-w-[1920px] gap-4 px-4 py-3 sm:px-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:px-8">
         <div className="min-h-0 overflow-y-auto">
-          {attempt.task_type === "email" ? <EmailPrompt question={source.question as EmailQuestion} /> : <AcademicPrompt avatarMap={{}} avatarMapReady={false} avatarPathOverride={source.question_source === "custom" ? resolveCustomAcademicDiscussionAvatar((source.question as AcademicDiscussionQuestion).professor_avatar_type, "professor") : undefined} question={source.question as AcademicDiscussionQuestion} />}
+          {attempt.task_type === "email" ? <EmailPrompt question={source.question as EmailQuestion} /> : <AcademicPrompt avatarMap={avatarState.data?.avatars ?? {}} avatarMapReady={Boolean(avatarState.data)} avatarPathOverride={source.question_source === "custom" ? resolveCustomAcademicDiscussionAvatar((source.question as AcademicDiscussionQuestion).professor_avatar_type, "professor") : undefined} question={source.question as AcademicDiscussionQuestion} />}
         </div>
         <div className="flex min-h-[650px] min-w-0 flex-col gap-2 overflow-hidden lg:min-h-0">
-          {attempt.task_type === "email" ? <EmailResponseHeader question={source.question as EmailQuestion} /> : <AcademicStudentResponses avatarMap={{}} avatarMapReady={false} customAvatars={source.question_source === "custom"} question={source.question as AcademicDiscussionQuestion} />}
+          {attempt.task_type === "email" ? <EmailResponseHeader question={source.question as EmailQuestion} /> : <AcademicStudentResponses avatarMap={avatarState.data?.avatars ?? {}} avatarMapReady={Boolean(avatarState.data)} customAvatars={source.question_source === "custom"} question={source.question as AcademicDiscussionQuestion} />}
           <WritingRevisionEditor key={editorGeneration} initialState={revision} onChange={setRevision} onReady={handle => { editorHandle.current = handle; }} disabled={busy} readOnly={locked} />
           {!submitted ? <WritingPracticeActions compact disabled={busy || conflict} onSave={!locked ? () => void save() : undefined} saveDisabled={!dirty} onSubmit={() => void submit()} submitLabel={busy ? "提交中…" : pendingSubmitVersion !== null ? "重试提交" : "提交订正"} /> : null}
           {previousLocalText !== null ? <details className="text-xs text-student-muted"><summary>读取前的本地正文（仅本页临时保留，可复制）</summary><p className="max-h-32 overflow-y-auto whitespace-pre-wrap select-text">{previousLocalText}</p></details> : null}
