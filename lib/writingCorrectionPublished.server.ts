@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { loadOwnedWritingCorrection } from "./writingCorrection.server.ts";
-import { assertPublishedSnapshot } from "./writingCorrectionReview.ts";
+import { assertPublishedSnapshot, correctionSourceIssues } from "./writingCorrectionReview.ts";
 import { correctionDisplayName } from "./writingCorrectionTitle.server.ts";
 import { WritingCorrectionError, frozenWritingCorrectionSource } from "./writingCorrection.ts";
 
@@ -14,6 +14,7 @@ export async function loadStudentCorrectionReview(db: SupabaseClient, userId: st
   if (!data?.published_review) throw new WritingCorrectionError("WRITING_CORRECTION_NOT_FOUND", "批改尚未发布。", 404);
   const snapshot = assertPublishedSnapshot(data.published_review);
   const source = frozenWritingCorrectionSource(attempt);
+  const sourceIssues = new Map(correctionSourceIssues(source).map(issue => [issue.issue_id, issue]));
   return {
     attempt: { attempt_id: attempt.attempt_id, task_type: attempt.task_type, response_text: attempt.response_text,
       word_count: attempt.word_count, submitted_at: attempt.submitted_at, revision_state: attempt.revision_state },
@@ -28,6 +29,8 @@ export async function loadStudentCorrectionReview(db: SupabaseClient, userId: st
       issues: snapshot.issues.map(issue => ({ issue_id: issue.issue_id, issue_type: issue.issue_type,
         category: issue.category, original_text: issue.original_text, replacement_text: issue.replacement_text,
         original_sentence: issue.original_sentence, issue: issue.issue, suggestion: issue.suggestion,
+        severity: issue.severity, source_start: issue.source_start ?? sourceIssues.get(issue.issue_id)?.source_start,
+        source_end: issue.source_end ?? sourceIssues.get(issue.issue_id)?.source_end,
         status: issue.effective_status, explanation: issue.ai_explanation })),
       new_issues: snapshot.new_issues.filter(issue => issue.review_status !== "dismissed").map(issue => ({
         index: issue.index, type: issue.type, severity: issue.severity, evidence: issue.evidence, explanation: issue.explanation

@@ -441,6 +441,13 @@ test("publish, save working changes, and republish use one row and isolate the s
   assert.deepEqual(row.ai_review, frozenAI);
   assert.equal("teacher_overrides" in latest.review, false);
   assert.equal("ai_review" in latest.review, false);
+  for (const issue of latest.review.issues) {
+    assert.equal("ai_status" in issue, false);
+    assert.equal("ai_evidence" in issue, false);
+    assert.equal("ai_explanation" in issue, false);
+    assert.equal("teacher_status" in issue, false);
+    assert.equal("weight" in issue, false);
+  }
   await assert.rejects(() => loadStudentCorrectionReview(db, ADMIN, ATTEMPT), error => error.status === 404);
   let called = 0;
   await assert.rejects(

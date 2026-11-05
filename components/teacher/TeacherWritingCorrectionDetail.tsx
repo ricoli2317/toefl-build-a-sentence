@@ -5,7 +5,8 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import { CompactSection, ReviewInclusionButton, QuestionColumn, ScoreSelect, WritingReviewInfoBar, WorkspaceSkeleton } from "./TeacherWritingReviewWorkspace";
 import { ReviewWorkspaceFrame, ReviewWorkspaceGrid, ReviewToolbar, ReviewToolbarActions, ReviewFeedbackCard, ReviewFeedbackLine, ReviewBadge, ReviewOfficialScoreCard, ReviewScoreRationale, ReviewScoreTable, ReviewScoreRow, ReviewSelect } from "./WritingReviewPresentation";
 import Link from "next/link";
-import { CONTENT_FEEDBACK_MARKER_CLASS, languageEditSeverityLabel, languageEditSeverityMarkerClass, writingReviewCategoryLabel } from "@/lib/writingReviewWorkspaceUi";
+import { languageEditSeverityLabel, languageEditSeverityMarkerClass, writingReviewCategoryLabel } from "@/lib/writingReviewWorkspaceUi";
+import { CorrectionCompletionPanel, CorrectionIssueCard, useCorrectionBlankDeselection } from "@/components/writing/WritingCorrectionReviewPresentation";
 import type { RubricScore } from "@/lib/writingReviewSchemaV2";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { WritingCorrectionComparison } from "@/components/teacher/WritingCorrectionComparison";
@@ -18,7 +19,6 @@ import {
 } from "@/lib/writingCorrectionReview";
 import type { CorrectionResolutionStatus } from "@/lib/writingCorrectionReviewSchema";
 import {
-  CORRECTION_ISSUE_TYPE_LABEL,
   CORRECTION_STATUS_LABEL,
   CORRECTION_STATUS_ORDER,
   CORRECTION_STATUS_TONE,
@@ -62,20 +62,7 @@ export function TeacherWritingCorrectionDetail({
   const [locationRequest, setLocationRequest] = useState(0);
   const busyRef = useRef<Busy>(null);
 
-  useEffect(() => {
-    if (!selectedIssueId) return;
-    const clearOnBlank = (event: globalThis.MouseEvent) => {
-      const target = event.target as Element | null;
-      if (!target?.closest || target.closest('[data-correction-review-item], .tiptap p, .revision-deleted, [data-correction-highlight], button, a, input, select, textarea, label, [role="button"], [contenteditable="true"], summary, [role="dialog"]')) return;
-      // Keep native scrollbar interactions out of blank-page deselection.
-      if (event.clientX >= document.documentElement.clientWidth) return;
-      const scroller = target.closest<HTMLElement>('[data-revision-scroll], .writing-review-column.overflow-y-auto');
-      if (scroller && event.clientX >= scroller.getBoundingClientRect().left + scroller.clientLeft + scroller.clientWidth) return;
-      setSelectedIssueId(null);
-    };
-    document.addEventListener("click", clearOnBlank);
-    return () => document.removeEventListener("click", clearOnBlank);
-  }, [selectedIssueId]);
+  useCorrectionBlankDeselection(selectedIssueId, () => setSelectedIssueId(null));
 
   const apply = (next: CorrectionWorkspace) => {
     setWorkspace(next);
@@ -263,14 +250,10 @@ export function TeacherWritingCorrectionDetail({
               />
             </section>
 
-            <aside className="writing-review-column min-w-0 overflow-y-auto bg-white p-2.5 max-[1099px]:!min-h-0 max-[1099px]:shrink-0 max-[1099px]:!overflow-visible">
-              <div className="shrink-0">
+            <aside className="writing-review-column min-w-0 bg-white max-[1099px]:!min-h-0 max-[1099px]:shrink-0 max-[1099px]:!overflow-visible">
+              <div data-correction-review-scroll className="min-h-0 flex-1 overflow-y-auto p-2.5 max-[1099px]:flex-none max-[1099px]:overflow-visible">
               <CompactSection title="订正完成度">
-                <div className="flex items-center justify-between gap-2"><p className="text-3xl font-bold leading-tight tabular-nums">{completion.label}</p><ReviewBadge>语言 {summary.language} · 内容 {summary.content}</ReviewBadge></div>
-                {state.completion.rate !== null ? <div aria-label="原始问题加权完成度" aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.completion.rate * 100} className="mt-3 h-1.5 overflow-hidden rounded-full bg-student-primary-soft" role="progressbar"><div className="h-full rounded-full bg-student-primary" style={{ width: `${state.completion.rate * 100}%` }} /></div> : null}
-                <dl className="mt-3 grid grid-cols-2 gap-2">
-                  {CORRECTION_STATUS_ORDER.map(status => <div data-completion-stat className={`flex h-8 items-center justify-between gap-2 rounded-md px-2 py-1.5 ${CORRECTION_STATUS_TONE[status]}`} key={status}><dt className="whitespace-nowrap text-sm font-semibold leading-5">{CORRECTION_STATUS_LABEL[status]}</dt><dd className="text-xl font-bold leading-5 tabular-nums">{state.completion.counts[status]}</dd></div>)}
-                </dl>
+                <CorrectionCompletionPanel completion={state.completion} summary={<ReviewBadge>语言 {summary.language} · 内容 {summary.content}</ReviewBadge>} />
               </CompactSection>
 
               <CompactSection title="综合评分">
@@ -307,32 +290,7 @@ export function TeacherWritingCorrectionDetail({
               <CompactSection title="原始问题逐项审核" subtitle={`${state.issues.length} 项`}>
                 <ul className="grid gap-2">
                   {state.issues.map((issue) => (
-                    <li key={issue.issue_id}><ReviewFeedbackCard data-correction-review-item={issue.issue_id} selected={selectedIssueId === issue.issue_id} onClick={event => {
-                      if (!(event.target as Element).closest('button, a, input, select, textarea, label')) locateIssue(issue.issue_id);
-                    }}>
-                      <div className="flex flex-wrap items-center gap-1.5">
-                        <span className={issue.issue_type === "content_feedback" ? CONTENT_FEEDBACK_MARKER_CLASS : "font-semibold"}>
-                          {CORRECTION_ISSUE_TYPE_LABEL[issue.issue_type] ?? issue.issue_type}
-                        </span>
-                        <span className="font-semibold text-student-primary">{writingReviewCategoryLabel(issue.category)}</span>
-                        {issue.severity === "major" || issue.severity === "moderate" || issue.severity === "minor" ? <span className={languageEditSeverityMarkerClass(issue.severity)}>{languageEditSeverityLabel(issue.severity)}</span> : null}
-                        {issue.teacher_status ? (
-                           <ReviewBadge>教师已修改</ReviewBadge>
-                        ) : null}
-                      </div>
-                      {issue.issue_type === "language_edit" ? (
-                        <ReviewFeedbackLine label="原文 / 建议" value={<>
-                          <span className="line-through">{issue.original_text}</span>
-                          {" → "}
-                          <span className="font-medium">{issue.replacement_text}</span>
-                        </>} />
-                      ) : (
-                        <ReviewFeedbackLine label="对应原句" value={issue.original_sentence} />
-                      )}
-                      {issue.issue ? (
-                        <ReviewFeedbackLine label="问题" value={issue.issue} />
-                      ) : null}
-                      {issue.suggestion ? <ReviewFeedbackLine label="建议" value={issue.suggestion} /> : null}
+                    <li key={issue.issue_id}><CorrectionIssueCard issue={issue} selected={selectedIssueId === issue.issue_id} onLocate={() => locateIssue(issue.issue_id)} badge={issue.teacher_status ? <ReviewBadge>教师已修改</ReviewBadge> : null}>
                       <div className="mt-2 rounded-md bg-student-bg p-2">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <strong>AI 判断</strong>
@@ -359,15 +317,15 @@ export function TeacherWritingCorrectionDetail({
                           disabled={readonly}
                           onChange={(event) => setIssueStatus(issue.issue_id, event.target.value)}
                           aria-label={`教师判定 ${issue.issue_id}`}
-                          value={issue.effective_status ?? ""}
+                          value={issue.effective_status === "uncertain" ? "" : issue.effective_status ?? ""}
                         >
-                          {issue.effective_status === null ? <option disabled value="">请选择判定</option> : null}
-                          {CORRECTION_STATUS_ORDER.map((status) => (
+                          {issue.effective_status === null || issue.effective_status === "uncertain" ? <option disabled value="">请选择判定</option> : null}
+                          {CORRECTION_STATUS_ORDER.filter(status => status !== "uncertain").map((status) => (
                             <option key={status} value={status}>{CORRECTION_STATUS_LABEL[status]}</option>
                           ))}
                         </ReviewSelect>
                       </label>
-                    </ReviewFeedbackCard></li>
+                    </CorrectionIssueCard></li>
                   ))}
                 </ul>
               </CompactSection>

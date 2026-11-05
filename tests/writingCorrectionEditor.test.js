@@ -51,6 +51,8 @@ function harness() {
       if (request === "@/components/student/StudentWritingReview") return published;
       if (request === "./TeacherWritingReviewWorkspace") return sharedTeacher;
       if (request === "./WritingReviewPresentation") return presentation;
+      if (request === "@/components/teacher/WritingReviewPresentation") return presentation;
+      if (request === "@/components/writing/WritingCorrectionReviewPresentation") return correctionPresentation;
       if (request === "@/components/StudentDataCache") return { useStudentCachedData: () => ({ data: null, loading: false }) };
       if (request.startsWith("@/components/") || request.startsWith("./Writing")) return new Proxy({}, { get: () => () => null });
       if (request === "@/lib/writingClientSession") return {};
@@ -67,6 +69,7 @@ function harness() {
   const published = compile("components/student/StudentWritingReview.tsx");
   const presentation = compile("components/teacher/WritingReviewPresentation.tsx");
   const sharedTeacher = compile("components/teacher/TeacherWritingReviewWorkspace.tsx");
+  const correctionPresentation = compile("components/writing/WritingCorrectionReviewPresentation.tsx");
   const correction = compile("components/writing/WritingCorrection.tsx", "\nexport { WritingCorrectionSession as Session, FrozenCorrectionAnnotations as Annotations };\n");
   const teacher = compile("components/teacher/TeacherWritingCorrectionDetail.tsx");
   const list = compile("components/teacher/TeacherWritingReviewList.tsx", "\nexport { ReviewTable, WritingReviewBulkActions };\n");
@@ -96,8 +99,8 @@ test("correction review blank-click cancels selection, but controls preserve it;
   const h = harness();
   const run = () => h.teacher.TeacherWritingCorrectionDetail({ attemptId: workspace.attempt.attempt_id, returnTo: "/teacher/writing/reviews", send });
   h.render(run); await tick(); let tree = h.render(run);
-  const card = all(tree, el => Boolean(el.props?.["data-correction-review-item"]))[0];
-  card.props.onClick({ target: { closest: () => null } }); tree = h.render(run);
+  const card = all(tree, el => el.type?.name === "CorrectionIssueCard")[0];
+  card.props.onLocate(); tree = h.render(run);
   const comparison = () => all(tree, el => Boolean(el.props?.corrected))[0];
   assert.ok(comparison().props.selectedIssue);
   const controls = { clientX: 100, target: { closest: () => ({}) } };
@@ -136,6 +139,7 @@ test("teacher AI defaults are editable; direct publication and later edits keep 
   assert.equal(delta.props.value, workspace.review.ai.score_change_explanation);
   const judgment = all(tree, el => el.type === "select" && String(el.props["aria-label"]).startsWith("教师判定"))[0];
   assert.equal(judgment.props.value, workspace.review.state.issues[0].ai_status);
+  assert.deepEqual(all(judgment, el => el.type === "option").map(el => el.props.value), ["resolved", "partially_resolved", "unresolved"]);
   assert.doesNotMatch(text(tree), /跟随 AI|计算方式|未判定|驳回|AI 请求信息/);
   score.props.onChange({ target: { value: "5" } });
   rationale.props.onChange({ target: { value: "Teacher version" } });
@@ -155,6 +159,20 @@ test("teacher AI defaults are editable; direct publication and later edits keep 
   button(tree, "发布").props.onClick(); await tick(); h.render(run);
   assert.equal(workspace.review.published.correction_score, 4);
   assert.notEqual(workspace.review.ai.score_rationale, "Teacher version");
+});
+
+test("historical uncertain judgment stays in data but cannot be newly selected", async () => {
+  const { correctionReviewWorkspaceFixture } = require("./fixtures/writingCorrectionReviewFixture.ts");
+  const workspace = correctionReviewWorkspaceFixture({ adjusted: true });
+  workspace.review.teacher.issue_statuses = {};
+  Object.assign(workspace.review.state.issues[0], { ai_status: "uncertain", teacher_status: null, effective_status: "uncertain" });
+  const h = harness();
+  const run = () => h.teacher.TeacherWritingCorrectionDetail({ attemptId: workspace.attempt.attempt_id, returnTo: "/teacher/writing/reviews", send: async () => Response.json({ workspace }) });
+  h.render(run); await tick(); const tree = h.render(run);
+  const judgment = all(tree, el => el.type === "select" && String(el.props["aria-label"]).startsWith("教师判定"))[0];
+  assert.equal(judgment.props.value, "");
+  assert.deepEqual(all(judgment, el => el.type === "option" && !el.props.disabled).map(el => el.props.value), ["resolved", "partially_resolved", "unresolved"]);
+  assert.equal(workspace.review.state.issues[0].effective_status, "uncertain");
 });
 
 // Session-controller seam only. The real Tiptap editor, history, mapping and

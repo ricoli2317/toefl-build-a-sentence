@@ -6,7 +6,7 @@ export type CorrectionLocation = { ranges: Range[]; deletions: Array<{ id: strin
 
 /** Presentation-only provenance projection. Never modifies/reconstructs a ledger. */
 export function correctionIssueLocation(ledger: Ledger, issue: {
-  original_text: string | null; original_sentence: string | null; source_start?: number; source_end?: number;
+  original_text: string | null; original_sentence: string | null; source_start?: number; source_end?: number; replacement_text?: string | null;
 }): CorrectionLocation | null {
   const text = issue.original_text || issue.original_sentence || "";
   let from = issue.source_start;
@@ -31,6 +31,7 @@ export function correctionIssueLocation(ledger: Ledger, issue: {
   // Insertions carry transaction identities, not baseline offsets. Project each
   // contiguous inserted run through its surviving baseline neighbours AND the
   // actual deletion anchor. Never search the final essay for a similar phrase.
+  const boundaries: Range[] = [];
   for (let index = 0; index < ledger.sources.length;) {
     if (typeof ledger.sources[index] === "number") { index++; continue; }
     const start = index;
@@ -40,6 +41,25 @@ export function correctionIssueLocation(ledger: Ledger, issue: {
     const replacesTarget = left < to && right > from && deletions.some(deletion => deletion.position >= start && deletion.position <= index);
     const insertedInsideTarget = left === right && left > from && left < to;
     if (replacesTarget || insertedInsideTarget) for (let at = start; at < index; at++) selected.add(at);
+    else if (left === right && (left === from || left === to)) boundaries.push({ from: start, to: index });
+  }
+  // A Diff can retain letters inside a replacement (also -> equally), leaving
+  // a pure insertion exactly at the quote boundary. Admit that run only when
+  // the provenance-anchored span is EXACTLY the published replacement; never
+  // scan the final document for matching text or include a neighbouring edit.
+  if (issue.replacement_text && selected.size && boundaries.length) {
+    const indices = Array.from(selected);
+    const start = indices.reduce((min, index) => Math.min(min, index), ledger.text.length);
+    const end = indices.reduce((max, index) => Math.max(max, index + 1), 0);
+    const leading = boundaries.find(range => range.to === start);
+    const trailing = boundaries.find(range => range.from === end);
+    const candidates = [
+      { from: leading?.from ?? start, to: trailing?.to ?? end },
+      { from: leading?.from ?? start, to: end },
+      { from: start, to: trailing?.to ?? end }
+    ];
+    const exact = candidates.find(range => ledger.text.slice(range.from, range.to) === issue.replacement_text);
+    if (exact) for (let at = exact.from; at < exact.to; at++) selected.add(at);
   }
   return { ranges: contiguousRanges(Array.from(selected).sort((a, b) => a - b)), deletions };
 }
