@@ -33,6 +33,36 @@ function load(file) {
 }
 const shared = load("components/writing/WritingCorrectionReviewPresentation.tsx");
 const student = load("components/student/StudentWritingCorrectionReview.tsx");
+const article = load("components/student/StudentWritingReviewArticle.tsx");
+
+test("ordinary published article shell keeps the original DOM and visual classes", () => {
+  const { createElement: el } = React;
+  const before = el("section", { className: "flex min-w-0 flex-col overflow-hidden rounded-xl border border-student-border bg-white shadow-[0_2px_12px_rgba(60,47,119,0.05)]" },
+    el("div", { className: "flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-student-border px-4 py-2.5" }, el("div", null, el("h2", { className: "font-bold text-student-text" }, "批改稿"), el("p", { className: "mt-0.5 text-[11px] text-student-muted" }, "点击修改标记查看对应详情"))),
+    el("article", { className: "min-h-[360px] flex-1 overflow-y-auto px-5 py-3.5 text-[15px] leading-7 text-student-text lg:min-h-0 sm:text-base" }, "Existing article"));
+  const after = el(article.StudentWritingReviewArticleCard, null, el(article.StudentWritingReviewArticleHeader, { title: "批改稿", caption: "点击修改标记查看对应详情" }), el(article.StudentWritingReviewArticleBody, null, "Existing article"));
+  const normalize = node => renderToStaticMarkup(node).replace(/ data-student-review-article-(?:header|body)="true"/g, "").replace(/class="([^"]*)"/g, (_, classes) => `class="${classes.split(" ").sort().join(" ")}"`);
+  assert.equal(normalize(after), normalize(before));
+});
+
+test("correction reuses the same header and responsive body typography, with one controls row", () => {
+  const html = renderToStaticMarkup(React.createElement(article.StudentWritingReviewArticleHeader, { title: "修订正文", reserveCaption: true, singleRow: true, actions: "Toggle" }));
+  assert.match(html, /flex-nowrap/);
+  assert.match(html, /px-4 py-2.5/);
+  assert.match(html, /flex min-h-\[42\.5px\] items-center/);
+  assert.doesNotMatch(html, /<p/);
+  assert.match(html, /font-bold text-student-text/);
+  const body = renderToStaticMarkup(React.createElement(article.StudentWritingReviewArticleBody, null, "Ledger host"));
+  assert.match(body, /px-5 py-3.5/);
+  assert.match(body, /leading-7.*sm:text-base/);
+  assert.doesNotMatch(body, /sm:leading-7/);
+  const editor = fs.readFileSync(path.join(root, "components/writing/WritingRevisionEditor.tsx"), "utf8");
+  assert.match(editor, /StudentWritingReviewArticleBody ref=\{scroll\}/);
+  assert.match(editor, /closest<HTMLElement>\('\.overflow-y-auto'\)/);
+  const result = fs.readFileSync(path.join(root, "components/student/StudentWritingCorrectionReview.tsx"), "utf8");
+  assert.match(result, /WritingCorrectionComparison studentReview/);
+  assert.match(result, /selectedIssue=\{selected \?\? null\} locationRequest=\{locationRequest\}/);
+});
 
 for (const taskType of ["email", "academic_discussion"]) test(`published ${taskType} result uses shared read-only review, includes both explanations and no internal labels`, () => {
   const workspace = correctionReviewWorkspaceFixture({ adjusted: true, taskType });

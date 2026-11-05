@@ -13,8 +13,8 @@ export function ReviewWorkspaceFrame({ children }: { children: ReactNode }) {
   return <div className="teacher-shell flex h-[calc(100dvh-24px)] min-h-0 flex-col overflow-hidden rounded-xl border border-student-border bg-white shadow-[0_2px_14px_rgba(60,47,119,0.06)]">{children}</div>;
 }
 
-export function ReviewWorkspaceGrid({ children }: { children: ReactNode }) {
-  return <div className="writing-review-grid min-h-0 flex-1 bg-[#f8f7fc] p-2">{children}</div>;
+export function ReviewWorkspaceGrid({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={clsx("writing-review-grid min-h-0 flex-1 bg-[#f8f7fc] p-2", className)}>{children}</div>;
 }
 
 export function ReviewToolbar({ title, status, displayName, returnTo, children }: {

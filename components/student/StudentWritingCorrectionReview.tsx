@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useStudentCachedData, STUDENT_WRITING_CORRECTION_CACHE_PREFIX, STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY } from "@/components/StudentDataCache";
 import { StudentErrorState, StudentLoadingState } from "./StudentUI";
 import { ReviewViewTab } from "./StudentWritingReview";
+import { StudentWritingReviewArticleCard } from "./StudentWritingReviewArticle";
 import { WritingCorrectionComparison } from "@/components/teacher/WritingCorrectionComparison";
 import { WritingQuestionReview } from "@/components/writing/WritingQuestionPrompt";
 import { correctionDeltaLabel } from "@/lib/writingCorrectionReviewUi";
@@ -51,8 +52,8 @@ export function StudentWritingCorrectionReviewResult({ data, backHref }: { data:
       <nav className="mx-auto flex h-10 max-w-[1920px] gap-6 px-4 sm:px-6"><ReviewViewTab active={view === "response"} onClick={() => setView("response")}>订正正文</ReviewViewTab><ReviewViewTab active={view === "question"} onClick={() => setView("question")}>题目</ReviewViewTab></nav>
     </header>
     <div className="mx-auto grid w-full max-w-[1920px] min-w-0 flex-1 gap-2.5 p-2.5 lg:min-h-0 lg:grid-cols-[minmax(0,2fr)_minmax(340px,1fr)] lg:overflow-hidden">
-      <main className={`${card} min-h-[360px] overflow-y-auto p-5 lg:min-h-0`}>
-        {view === "response" ? <WritingCorrectionComparison original={data.original_response_text} corrected={attempt.response_text} revisionState={attempt.revision_state} selectedIssue={selected ?? null} locationRequest={locationRequest} /> : <WritingQuestionReview question={question} taskType={attempt.task_type} academicDiscussionAvatarSource={data.question_source} avatarMap={avatarState.data?.avatars ?? {}} avatarMapReady={Boolean(avatarState.data)} />}
+      <main className={view === "response" ? "flex min-h-0 min-w-0 flex-col" : `${card} min-h-[360px] overflow-y-auto p-5 lg:min-h-0`}>
+        {view === "response" ? <StudentWritingReviewArticleCard className="min-h-0 flex-1"><WritingCorrectionComparison studentReview original={data.original_response_text} corrected={attempt.response_text} revisionState={attempt.revision_state} selectedIssue={selected ?? null} locationRequest={locationRequest} /></StudentWritingReviewArticleCard> : <WritingQuestionReview question={question} taskType={attempt.task_type} academicDiscussionAvatarSource={data.question_source} avatarMap={avatarState.data?.avatars ?? {}} avatarMapReady={Boolean(avatarState.data)} />}
       </main>
       <aside data-correction-review-scroll className="flex min-h-0 flex-col gap-2.5 overflow-y-auto">
         <section className={`${card} shrink-0 p-2.5`}><h2 className="mb-2 text-sm font-bold">订正完成度</h2><CorrectionCompletionPanel completion={review.completion} summary={<ReviewBadge>语言 {review.issues.filter(issue => issue.issue_type === "language_edit").length} · 内容 {review.issues.filter(issue => issue.issue_type === "content_feedback").length}</ReviewBadge>} /></section>

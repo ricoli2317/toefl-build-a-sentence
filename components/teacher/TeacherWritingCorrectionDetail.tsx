@@ -237,8 +237,8 @@ export function TeacherWritingCorrectionDetail({
 
       {workspace && state && summary && completion ? (
         <>
-          <ReviewWorkspaceGrid>
-            <div className="min-w-0 [&>.writing-review-column]:h-full max-[1099px]:shrink-0 max-[1099px]:[&>.writing-review-column]:min-h-0"><QuestionColumn question={workspace.question} taskType={workspace.attempt.task_type} /></div>
+          <ReviewWorkspaceGrid className="grid-rows-[minmax(0,1fr)]">
+            <div className="min-h-0 min-w-0 [&>.writing-review-column]:h-full max-[1099px]:shrink-0 max-[1099px]:[&>.writing-review-column]:min-h-0"><QuestionColumn question={workspace.question} taskType={workspace.attempt.task_type} /></div>
             <section className="writing-review-column min-w-0 bg-white max-[1099px]:!min-h-0 max-[1099px]:shrink-0">
               <WritingCorrectionComparison
                 workspace

@@ -4,6 +4,7 @@ import { LexicalLookupProvider } from "@/components/lexical/LexicalLookup";
 import clsx from "clsx";
 import { ArrowLeft, ArrowRight, FileCheck2 } from "lucide-react";
 import Link from "next/link";
+import { StudentWritingReviewArticleCard, StudentWritingReviewArticleHeader, StudentWritingReviewArticleBody } from "./StudentWritingReviewArticle";
 import { useEffect, useMemo, useState } from "react";
 import {
   STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY,
@@ -249,19 +250,13 @@ export function StudentWritingReviewResult({
 
       <div className="mx-auto grid w-full max-w-[1920px] min-w-0 flex-1 gap-2.5 p-2.5 lg:min-h-0 lg:grid-cols-[minmax(0,2fr)_minmax(340px,1fr)] lg:overflow-hidden">
         <main className="grid min-w-0 gap-2.5 lg:min-h-0 lg:grid-rows-[minmax(0,1fr)_auto]">
-          <section className="flex min-w-0 flex-col overflow-hidden rounded-xl border border-student-border bg-white shadow-[0_2px_12px_rgba(60,47,119,0.05)]">
-            <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-student-border px-4 py-2.5">
-              <div>
-                <h2 className="font-bold text-student-text">
-                  {view === "marked" ? "批改稿" : view === "revised" ? "修改稿" : view === "original" ? "原文" : view === "sample" ? "范文" : "题目"}
-                </h2>
-                {view === "marked" ? (
-                  <p className="mt-0.5 text-[11px] text-student-muted">点击修改标记查看对应详情</p>
-                ) : null}
-              </div>
-              {view === "marked" ? <ReviewMarkerLegend /> : null}
-            </div>
-            <article className="min-h-[360px] flex-1 overflow-y-auto px-5 py-3.5 text-[15px] leading-7 text-student-text lg:min-h-0 sm:text-base">
+          <StudentWritingReviewArticleCard>
+            <StudentWritingReviewArticleHeader
+              title={view === "marked" ? "批改稿" : view === "revised" ? "修改稿" : view === "original" ? "原文" : view === "sample" ? "范文" : "题目"}
+              caption={view === "marked" ? "点击修改标记查看对应详情" : undefined}
+              actions={view === "marked" ? <ReviewMarkerLegend /> : null}
+            />
+            <StudentWritingReviewArticleBody>
               {view === "marked" ? (
                 <WritingRevisionMarkedText
                   composition={composition}
@@ -295,8 +290,8 @@ export function StudentWritingReviewResult({
                 />
                 </LexicalLookupProvider>
               )}
-            </article>
-          </section>
+            </StudentWritingReviewArticleBody>
+          </StudentWritingReviewArticleCard>
 
           <section className="flex flex-col overflow-hidden rounded-xl border border-student-border bg-white shadow-[0_2px_12px_rgba(60,47,119,0.05)] lg:max-h-[38dvh]" id="current-review-detail">
             <div className="flex shrink-0 gap-5 overflow-x-auto border-b border-student-border px-3">

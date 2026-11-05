@@ -51,6 +51,7 @@ function harness() {
       if (request === "@/components/student/StudentWritingReview") return published;
       if (request === "./TeacherWritingReviewWorkspace") return sharedTeacher;
       if (request === "./WritingReviewPresentation") return presentation;
+      if (request === "./StudentWritingReviewArticle" || request === "@/components/student/StudentWritingReviewArticle") return articleShell;
       if (request === "@/components/teacher/WritingReviewPresentation") return presentation;
       if (request === "@/components/writing/WritingCorrectionReviewPresentation") return correctionPresentation;
       if (request === "@/components/StudentDataCache") return { useStudentCachedData: () => ({ data: null, loading: false }) };
@@ -66,6 +67,7 @@ function harness() {
   const header = compile("components/shared/PracticeHeader.tsx");
   const practice = compile("components/writing/WritingPractice.tsx");
   const actions = compile("components/writing/WritingPracticeActions.tsx");
+  const articleShell = compile("components/student/StudentWritingReviewArticle.tsx");
   const published = compile("components/student/StudentWritingReview.tsx");
   const presentation = compile("components/teacher/WritingReviewPresentation.tsx");
   const sharedTeacher = compile("components/teacher/TeacherWritingReviewWorkspace.tsx");
@@ -91,6 +93,25 @@ const sharedPresentation = (tree) => typeof tree?.type === "function" && ["Pract
 const text = (tree) => typeof tree === "string" || typeof tree === "number" ? String(tree) : Array.isArray(tree) ? tree.map(text).join("") : tree?.props ? text(sharedPresentation(tree) ? tree.type(tree.props) : tree.props.children) : "";
 const button = (tree, label) => { const result = all(tree, (el) => el.type === "button" && text(el) === label)[0]; assert.ok(result, `button ${label}`); return result; };
 const tick = () => new Promise(setImmediate);
+
+test("correction grid constrains its row and nested question item instead of letting long prompts grow all three columns", async () => {
+  const { correctionReviewWorkspaceFixture } = require("./fixtures/writingCorrectionReviewFixture.ts");
+  const workspace = correctionReviewWorkspaceFixture({ adjusted: true, taskType: "academic_discussion" });
+  workspace.question.professor_prompt = "Long academic discussion prompt. ".repeat(100);
+  const send = async () => Response.json({ workspace });
+  const h = harness();
+  const run = () => h.teacher.TeacherWritingCorrectionDetail({ attemptId: workspace.attempt.attempt_id, returnTo: "/teacher/writing/reviews", send });
+  h.render(run); await tick(); const tree = h.render(run);
+  const grid = all(tree, el => el.type?.name === "ReviewWorkspaceGrid")[0];
+  assert.equal(grid.props.className, "grid-rows-[minmax(0,1fr)]");
+  assert.match(h.presentation.ReviewWorkspaceGrid(grid.props).props.className, /grid-rows-\[minmax\(0,1fr\)\]/);
+  const questionWrapper = all(tree, el => el.props?.children?.type?.name === "QuestionColumn")[0];
+  assert.match(questionWrapper.props.className, /(?:^|\s)min-h-0(?:\s|$)/);
+  assert.match(questionWrapper.props.className, /\[&>\.writing-review-column\]:h-full/);
+  const rightScroll = all(tree, el => el.props?.["data-correction-review-scroll"] !== undefined)[0];
+  assert.match(rightScroll.props.className, /min-h-0 flex-1 overflow-y-auto/);
+  assert.equal(h.presentation.ReviewWorkspaceGrid({ children: null }).props.className, "writing-review-grid min-h-0 flex-1 bg-[#f8f7fc] p-2", "ordinary workspace keeps its existing layout classes");
+});
 
 test("correction review blank-click cancels selection, but controls preserve it; delta remains inside score card", async () => {
   const { correctionReviewWorkspaceFixture } = require("./fixtures/writingCorrectionReviewFixture.ts");

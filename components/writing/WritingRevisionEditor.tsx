@@ -13,6 +13,7 @@ import { countEnglishWords } from "@/lib/writing";
 import { parseWritingRevisionState, type WritingRevisionState } from "@/lib/writingRevisionState";
 import styles from "./WritingRevisionEditor.module.css";
 import { RevisionVisibilitySwitch } from "./RevisionVisibilitySwitch";
+import { StudentWritingReviewArticleHeader, StudentWritingReviewArticleBody } from "@/components/student/StudentWritingReviewArticle";
 import { correctionHighlightExtension, correctionHighlightKey } from "@/lib/writingCorrectionHighlight";
 import type { CorrectionLocation } from "@/lib/writingCorrectionLocation";
 import { scrollTargetWithinContainer } from "@/lib/writingReviewScroll";
@@ -23,16 +24,17 @@ export type RevisionEditorHandle = { snapshot: () => WritingRevisionState };
  * typography is supplied by className; only the student gets editing controls.
  * Remounts are reserved for explicit confirmed draft reloads, never visibility. */
 export function WritingRevisionEditor({ initialState, onChange, onReady, readOnly = false, disabled = false,
-  className = "px-4 py-3 text-[15px] leading-[1.45]", teacher = false, heading, location, workspace = false, legend }: {
+  className = "px-4 py-3 text-[15px] leading-[1.45]", teacher = false, heading, location, workspace = false, legend, studentReview = false }: {
   initialState: WritingRevisionState;
   onChange?: (state: WritingRevisionState) => void;
   onReady?: (handle: RevisionEditorHandle | null) => void;
   readOnly?: boolean; disabled?: boolean; className?: string; teacher?: boolean; heading?: React.ReactNode;
   location?: CorrectionLocation | null;
   workspace?: boolean; legend?: React.ReactNode;
+  studentReview?: boolean;
 }) {
   const host = useRef<HTMLDivElement>(null);
-  const scroll = useRef<HTMLDivElement>(null);
+  const scroll = useRef<HTMLElement | null>(null);
   const editorRef = useRef<Editor | null>(null);
   const callbacks = useRef({ onChange, onReady }); callbacks.current = { onChange, onReady };
   const initial = useRef(initialState);
@@ -147,7 +149,7 @@ export function WritingRevisionEditor({ initialState, onChange, onReady, readOnl
     editor.view.focus();
   }
   const visibilitySwitch = <RevisionVisibilitySwitch compact checked={visible} className={!teacher ? styles.toolbarSwitch : undefined} onPointerDown={() => { refocus.current = editorRef.current?.view.hasFocus() ?? false; }} onChange={toggle} />;
-  return <div className={`${styles.root} ${teacher ? workspace ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' : 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-student-primary-border bg-white focus-within:border-student-primary focus-within:shadow-[0_0_0_3px_rgba(107,92,246,0.1)]'}`} data-revision-view={teacher ? 'teacher' : 'student'}>
+  return <div className={`${styles.root} ${teacher ? workspace || studentReview ? 'flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden' : 'min-w-0' : 'flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-student-primary-border bg-white focus-within:border-student-primary focus-within:shadow-[0_0_0_3px_rgba(107,92,246,0.1)]'}`} data-revision-view={teacher ? 'teacher' : 'student'}>
     {!teacher ? <div data-revision-toolbar className="flex h-10 min-h-10 shrink-0 flex-nowrap items-center border-b border-student-primary-border bg-student-primary-soft/45 px-2 text-student-primary">
       {!readOnly ? <>
       {([{ name: 'Cut', action: 'cut', icon: Scissors, disabled: !current.ledger.text }, { name: 'Paste', action: 'paste', icon: ClipboardPaste, disabled: !clipboard }, { name: 'Undo', action: 'undo', icon: Undo2, disabled: !depth.undo }, { name: 'Redo', action: 'redo', icon: Redo2, disabled: !depth.redo }] as const).map(({ name, action, icon: Icon, disabled: unavailable }) => <button aria-label={name} className="inline-flex min-h-8 items-center gap-1.5 rounded-lg px-2 text-[13px] font-semibold hover:bg-white disabled:pointer-events-none disabled:opacity-35" disabled={disabled || unavailable} key={action} onMouseDown={event => event.preventDefault()} onClick={() => command(action)} type="button"><Icon size={16} /><span className="hidden sm:inline">{name}</span></button>)}
@@ -155,12 +157,12 @@ export function WritingRevisionEditor({ initialState, onChange, onReady, readOnl
       <span className="ml-auto inline-flex items-center">{visibilitySwitch}</span>
       {!readOnly ? <span className="whitespace-nowrap px-2 text-[13px] font-semibold">Word Count <span className="tabular-nums text-student-text">{countEnglishWords(current.ledger.text)}</span></span> : null}
     </div> : null}
-    {teacher ? <div data-revision-header className={`flex shrink-0 items-center justify-between gap-2 border-b border-student-border ${workspace ? "px-3 py-2.5" : "px-4 py-2"}`}>
+    {studentReview ? <StudentWritingReviewArticleHeader title="修订正文" singleRow reserveCaption actions={<div className="flex shrink-0 items-center gap-3">{visible ? legend : null}{visibilitySwitch}</div>} /> : teacher ? <div data-revision-header className={`flex shrink-0 items-center justify-between gap-2 border-b border-student-border ${workspace ? "px-3 py-2.5" : "px-4 py-2"}`}>
       {heading}
       <div className="flex items-center gap-3">{visible ? legend : null}{visibilitySwitch}</div>
     </div> : null}
-    <div data-revision-scroll className={workspace ? 'min-h-0 flex-1 overflow-y-auto p-5' : `${teacher ? '' : 'min-h-0 flex-1 overflow-y-auto'} ${className}`} ref={scroll}>
+    {studentReview ? <StudentWritingReviewArticleBody ref={scroll}><div className={styles.host} ref={host} /></StudentWritingReviewArticleBody> : <div data-revision-scroll className={workspace ? 'min-h-0 flex-1 overflow-y-auto p-5' : `${teacher ? '' : 'min-h-0 flex-1 overflow-y-auto'} ${className}`} ref={element => { scroll.current = element; }}>
       {workspace ? <div className={`mx-auto max-w-[860px] ${className}`}><div className={styles.host} ref={host} /></div> : <div className={styles.host} ref={host} />}
-    </div>
+    </div>}
   </div>;
 }
