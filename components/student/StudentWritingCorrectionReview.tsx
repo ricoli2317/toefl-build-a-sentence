@@ -50,6 +50,7 @@ export function StudentWritingCorrectionReviewResult({ data, backHref }: { data:
   const currentNewIssue = review.new_issues[newIndex];
   const currentIndex = detailTab === "original" ? originalIndex : newIndex;
   const currentCount = detailTab === "original" ? review.issues.length : review.new_issues.length;
+  const detailCaption = <h2 className="order-first basis-full text-sm font-bold text-student-text">当前审核详情<span className="ml-2 text-xs font-normal text-student-muted">（{currentIndex + 1}/{currentCount}）</span></h2>;
   function locate(issueId: string) {
     setView("response");
     setSelectedIssueId(issueId);
@@ -93,19 +94,18 @@ export function StudentWritingCorrectionReviewResult({ data, backHref }: { data:
             </div>
           </div>
           <div data-correction-detail-scroll ref={detailScroll} className="min-h-0 flex-1 overflow-y-auto px-3 py-2">
-            <h2 className="text-sm font-bold text-student-text">当前审核详情{currentCount ? <span className="ml-2 text-xs font-normal text-student-muted">{currentIndex + 1} / {currentCount}</span> : null}</h2>
-            <div className="mt-2">
-              {detailTab === "original" ? currentIssue ? <CorrectionIssueCard issue={currentIssue} selected={selectedIssueId === currentIssue.issue_id} status={currentIssue.status} explanation={currentIssue.explanation} onLocate={() => locate(currentIssue.issue_id)} /> : <p className="text-xs text-student-muted">暂无原始问题审核。</p>
-                : currentNewIssue ? <div data-correction-new-issue={currentNewIssue.index} className="rounded-lg border border-student-border p-2.5 text-xs leading-5"><div className="flex flex-wrap items-center gap-2"><strong>{writingReviewCategoryLabel(currentNewIssue.type)}</strong><span className={languageEditSeverityMarkerClass(currentNewIssue.severity)}>{languageEditSeverityLabel(currentNewIssue.severity)}</span></div><p className="mt-1 whitespace-pre-wrap">{currentNewIssue.evidence}</p><p className="mt-1 whitespace-pre-wrap">{currentNewIssue.explanation}</p></div> : <p className="text-xs text-student-muted">暂无已发布的新问题。</p>}
-            </div>
+              {detailTab === "original" ? currentIssue ? <CorrectionIssueCard issue={currentIssue} badge={detailCaption} selected={selectedIssueId === currentIssue.issue_id} status={currentIssue.status} explanation={currentIssue.explanation} onLocate={() => locate(currentIssue.issue_id)} /> : <p className="text-xs text-student-muted">暂无原始问题审核。</p>
+                : currentNewIssue ? <div data-correction-new-issue={currentNewIssue.index} className="rounded-lg border border-student-border p-2.5 text-xs leading-5"><div className="flex flex-wrap items-center gap-2"><strong>{writingReviewCategoryLabel(currentNewIssue.type)}</strong><span className={languageEditSeverityMarkerClass(currentNewIssue.severity)}>{languageEditSeverityLabel(currentNewIssue.severity)}</span>{detailCaption}</div><p className="mt-1 whitespace-pre-wrap">{currentNewIssue.evidence}</p><p className="mt-1 whitespace-pre-wrap">{currentNewIssue.explanation}</p></div> : <p className="text-xs text-student-muted">暂无已发布的新问题。</p>}
           </div>
         </section>
       </main>
       <aside data-correction-review-scroll className="flex min-h-0 flex-col gap-2.5 overflow-y-auto">
         <section className={`${card} shrink-0 p-2.5`}><h2 className="mb-2 text-sm font-bold">订正完成度</h2><CorrectionCompletionPanel completion={review.completion} summary={<ReviewBadge>语言 {review.issues.filter(issue => issue.issue_type === "language_edit").length} · 内容 {review.issues.filter(issue => issue.issue_type === "content_feedback").length}</ReviewBadge>} /></section>
-        <section className={`${card} shrink-0 p-2.5`}><h2 className="mb-2 text-sm font-bold">综合评分</h2>
+        <section data-correction-score-card className={`${card} shrink-0 p-2.5 lg:min-h-0 lg:flex-1 lg:shrink`}><h2 className="mb-2 shrink-0 text-sm font-bold">综合评分</h2>
+          <div data-correction-score-scroll className="lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
           <ReviewScoreTable headings={["原稿评分", "订正评分", "最终分差"]} columns="1fr 1fr 1fr"><ReviewScoreRow columns="1fr 1fr 1fr"><strong>{review.original_score}/5</strong><strong className="text-student-primary">{review.correction_score}/5</strong><ReviewBadge>{correctionDeltaLabel(review.score_delta)}</ReviewBadge></ReviewScoreRow></ReviewScoreTable>
           <ReviewOfficialScoreCard student title="订正整体评分" teacherLabel="最终评分" teacherControl={<strong>{review.correction_score}/5</strong>} rationaleLabel="教师评分解释" rationale={<p className="mt-1 whitespace-pre-wrap text-[11px] font-normal leading-5 text-student-text">{review.score_rationale || "—"}</p>}><div className="mt-2 text-[10px] font-semibold text-student-muted">分差原因<p className="mt-1 whitespace-pre-wrap text-[11px] font-normal leading-5 text-student-text">{review.score_change_explanation || "—"}</p></div></ReviewOfficialScoreCard>
+          </div>
         </section>
       </aside>
     </div>

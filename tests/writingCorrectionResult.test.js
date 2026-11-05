@@ -205,3 +205,21 @@ test("review details stay below the article; the right column contains only comp
   const server = fs.readFileSync(path.join(root, "lib/writingCorrectionPublished.server.ts"), "utf8");
   assert.match(server, /new_issues\.filter\(issue => issue\.review_status !== "dismissed"\)/);
 });
+
+test("detail caption lives inside the issue card and scoring fills the remaining column with internal scrolling", () => {
+  const h = resultHarness(); let tree = h.render();
+  assert.equal(nodeText(currentCard(tree).props.badge), "当前审核详情（1/6）");
+  const detail = nodes(tree, node => node.props?.["data-correction-detail-scroll"] !== undefined)[0];
+  assert.equal(currentCard(tree).props.badge.type, "h2");
+  assert.match(currentCard(tree).props.badge.props.className, /order-first basis-full text-sm font-bold/);
+  assert.equal(nodes(detail, node => node.type === "h2").length, 1, "title appears once, inside the issue card");
+  const score = nodes(tree, node => node.props?.["data-correction-score-card"] !== undefined)[0];
+  assert.match(score.props.className, /lg:min-h-0 lg:flex-1 lg:shrink/);
+  const scoreScroll = nodes(score, node => node.props?.["data-correction-score-scroll"] !== undefined)[0];
+  assert.match(scoreScroll.props.className, /lg:min-h-0 lg:flex-1 lg:overflow-y-auto/);
+  navigation(tree, "下一条").props.onClick(); tree = h.render();
+  assert.equal(nodeText(currentCard(tree).props.badge), "当前审核详情（2/6）");
+  tabButton(tree, "订正产生的新问题").props.onClick(); tree = h.render();
+  const newCard = nodes(tree, node => node.props?.["data-correction-new-issue"] === 0)[0];
+  assert.match(nodeText(newCard), /当前审核详情（1\/2）/);
+});
