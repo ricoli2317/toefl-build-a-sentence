@@ -9,11 +9,59 @@ import { inspectNotificationImage, isNotificationImageKey, notificationImageExpi
 
 const fields = "id,object_key,uploaded_at,expires_at,content_type,size_bytes";
 const json = (message: string, status: number) => Response.json({ message }, { status, headers: { "Cache-Control": "private, no-store" } });
+
+class NotificationUploadFailure extends Error {
+  code: string;
+  status: number;
+  constructor(code: string, message: string, status = 503) {
+    super(message);
+    this.code = code;
+    this.status = status;
+  }
+}
+
 function r2() {
-  const { CLOUDFLARE_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME } = process.env;
-  if (!CLOUDFLARE_ACCOUNT_ID || !R2_ACCESS_KEY_ID || !R2_SECRET_ACCESS_KEY || !R2_BUCKET_NAME) throw Error("通知图片 R2 配置未就绪。");
-  return { bucket: R2_BUCKET_NAME, client: new S3Client({ region: "auto", endpoint: `https://${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-    credentials: { accessKeyId: R2_ACCESS_KEY_ID, secretAccessKey: R2_SECRET_ACCESS_KEY } }) };
+  const required = ["CLOUDFLARE_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_NAME"] as const;
+  const missing = required.filter(name => !process.env[name]?.trim());
+  if (missing.length) throw new NotificationUploadFailure("NOTIFICATION_R2_ENV_MISSING",
+    `当前部署缺少 R2 环境变量：${missing.join("、")}。请为该部署环境补齐配置并重新部署；生命周期确认开关不能替代 R2 连接配置。`);
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID!.trim();
+  const bucket = process.env.R2_BUCKET_NAME!.trim();
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID!.trim();
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY!.trim();
+  const invalid: string[] = [];
+  if (!/^[a-f0-9]{32}$/i.test(accountId)) invalid.push("CLOUDFLARE_ACCOUNT_ID");
+  if (!/^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$/.test(bucket)) invalid.push("R2_BUCKET_NAME");
+  if (/[\s'"]/.test(accessKeyId)) invalid.push("R2_ACCESS_KEY_ID");
+  if (/[\s'"]/.test(secretAccessKey)) invalid.push("R2_SECRET_ACCESS_KEY");
+  if (invalid.length) throw new NotificationUploadFailure("NOTIFICATION_R2_ENV_INVALID",
+    `R2 环境变量格式不正确：${invalid.join("、")}。账号 ID 不应填写完整网址，桶名不应包含路径，密钥值不应包含引号或空格。`);
+  return { bucket, client: new S3Client({ region: "auto", endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    credentials: { accessKeyId, secretAccessKey } }) };
+}
+
+function uploadFailure(error: unknown, stage: string) {
+  const candidate = error as { name?: unknown; code?: unknown; $metadata?: { httpStatusCode?: number; requestId?: unknown } } | null;
+  const errorName = typeof candidate?.name === "string" && /^[A-Za-z0-9_.-]{1,80}$/.test(candidate.name) ? candidate.name : "UnknownError";
+  const upstreamStatus = candidate?.$metadata?.httpStatusCode;
+  let failure: NotificationUploadFailure;
+  if (error instanceof NotificationUploadFailure) failure = error;
+  else if (stage === "multipart_parse") failure = new NotificationUploadFailure("NOTIFICATION_UPLOAD_BODY_INVALID", "上传请求格式不正确，请重新选择图片重试。", 400);
+  else if (stage === "body_read") failure = new NotificationUploadFailure("NOTIFICATION_UPLOAD_BODY_READ_FAILED", "图片上传请求未完整接收，请检查网络并重试。", 400);
+  else if (stage === "r2_put" && ["InvalidAccessKeyId", "SignatureDoesNotMatch", "ExpiredToken", "InvalidToken"].includes(errorName)) {
+    failure = new NotificationUploadFailure("NOTIFICATION_R2_AUTH_FAILED", "R2 认证失败，请核对当前部署中的 R2 密钥与 Cloudflare 账号是否匹配，并在更新后重新部署。");
+  } else if (stage === "r2_put" && (upstreamStatus === 401 || upstreamStatus === 403)) {
+    failure = new NotificationUploadFailure("NOTIFICATION_R2_ACCESS_DENIED", "R2 拒绝写入通知图片。请确认当前 R2 API 密钥拥有目标桶的对象读写权限；无需修改生命周期规则。");
+  } else if (stage === "r2_put" && (errorName === "NoSuchBucket" || upstreamStatus === 404)) {
+    failure = new NotificationUploadFailure("NOTIFICATION_R2_BUCKET_NOT_FOUND", "R2 目标桶不存在或不可访问，请核对 R2_BUCKET_NAME 与 CLOUDFLARE_ACCOUNT_ID。");
+  } else failure = new NotificationUploadFailure("NOTIFICATION_IMAGE_UPLOAD_FAILED", "图片上传暂时失败，请稍后重试或将诊断代码反馈给管理员。");
+  const diagnosticId = randomUUID();
+  // NEVER log raw errors, stack traces, request headers, credentials, signed
+  // URLs or uploaded bytes. AWS error messages can contain signing material.
+  console.error("[notification-image-upload]", { diagnosticId, stage, code: failure.code, errorName, upstreamStatus: upstreamStatus ?? null });
+  return Response.json({ message: `${failure.message}（诊断代码：${failure.code}）`, code: failure.code, diagnosticId }, {
+    status: failure.status, headers: { "Cache-Control": "private, no-store" }
+  });
 }
 
 export async function assertNotificationImagesPublishable(document: unknown, db: ReturnType<typeof createAnonSupabase>) {
@@ -38,6 +86,7 @@ export async function uploadNotificationImage(request: Request) {
   if (auth.error || !auth.userId) return json("仅管理员可以上传通知图片。", 403);
   const maxBody = NOTIFICATION_IMAGE_MAX_BYTES + 64 * 1024;
   if (Number(request.headers.get("content-length")) > maxBody) return json("图片不得超过 3 MB。", 413);
+  let stage = "body_read";
   try {
     // Bound the actual multipart body too; Content-Length is not trusted.
     const reader = request.body?.getReader();
@@ -54,6 +103,7 @@ export async function uploadNotificationImage(request: Request) {
     const body = new Uint8Array(size);
     let offset = 0;
     for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.byteLength; }
+    stage = "multipart_parse";
     const form = await new Response(body, { headers: { "content-type": request.headers.get("content-type") ?? "" } }).formData();
     const file = form.get("image");
     if (!file || typeof file === "string" || file.size > NOTIFICATION_IMAGE_MAX_BYTES) return json("请选择不超过 3 MB 的 PNG、JPEG 或 WebP 图片。", 400);
@@ -61,19 +111,22 @@ export async function uploadNotificationImage(request: Request) {
     const checked = inspectNotificationImage(bytes, file.type);
     if (!checked) return json("图片类型或文件内容无效，仅支持 PNG、JPEG、WebP，不接受 SVG、HTML 或 base64。", 400);
     if (process.env.NOTIFICATION_IMAGES_LIFECYCLE_CONFIRMED !== "true") return json("请先在 Cloudflare 配置仅针对 notifications/ 的 30 天自动删除规则，并确认通知图片生命周期配置。", 503);
+    stage = "r2_config";
     const store = r2();
     const id = randomUUID();
     const objectKey = `notifications/${id}.${checked.extension}`;
+    stage = "metadata_insert";
     const { data, error } = await createAnonSupabase(token).from("notification_image_assets").insert({
       id, object_key: objectKey, uploaded_by: auth.userId, content_type: checked.type, size_bytes: bytes.byteLength
     }).select(fields).single();
-    if (error || !data) return json("图片元数据保存失败，请先确认通知增量迁移已安装。", 503);
+    if (error || !data) throw new NotificationUploadFailure("NOTIFICATION_IMAGE_METADATA_FAILED", "图片元数据保存失败，请检查通知图片表的迁移和访问权限。");
     // Only this new notification key may be written. Never touch RDL keys,
     // bucket CORS, lifecycle rules, or any other existing bucket objects.
+    stage = "r2_put";
     await store.client.send(new PutObjectCommand({ Bucket: store.bucket, Key: objectKey, Body: bytes,
       ContentType: checked.type, ContentLength: bytes.byteLength, CacheControl: "private, no-store", IfNoneMatch: "*" }));
     return Response.json({ image: data }, { status: 201, headers: { "Cache-Control": "private, no-store" } });
-  } catch { return json("图片上传失败，请检查 R2 写入权限或重试。", 503); }
+  } catch (error) { return uploadFailure(error, stage); }
 }
 
 export async function serveNotificationImage(request: Request, imageId: string, notificationId?: string) {
