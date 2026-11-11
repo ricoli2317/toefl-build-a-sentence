@@ -81,3 +81,11 @@ Existing May/June DOCX tooling and Batch 1B-R2 publisher/manifests are retained 
 - Preserve the dual-worktree workflow and shared `node_modules` layout. Use `pnpm --config.verify-deps-before-run=false` for project commands; do not rebuild or reinstall shared dependencies merely for cleanup.
 - If runtime code has not changed, retain previously verified Build, TypeScript, ESLint and test evidence instead of rerunning everything. Run targeted checks for changed code, configuration or tests and explain which results are reused.
 - Keep `WRITING_CORRECTION_ENTRY_ENABLED` false and do not alter or bypass the production Gate. Cleanup never authorizes SQL execution, production environment changes, staging, commit, push or deployment.
+
+## Shared Client Refresh Contract
+
+- Window focus/blur, browser tab visibility changes, and same-user Supabase `SIGNED_IN`/`TOKEN_REFRESHED` events are not business-data invalidations. Do not attach unconditional API reloads, `router.refresh()`, `location.reload()`, component keys or editor remounts to them.
+- Load on an authorized resource entry; refresh explicitly on user request or after a confirmed mutation, invalidating only affected resource keys. Keep authentication revocation and real account changes immediate.
+- If a feature needs bounded polling, use `lib/clientRefreshPolicy.ts` visible-only scheduling. Poll lightweight state without clearing displayed lists/details, replacing drafts, moving selection, or remounting workspaces. Visibility restoration itself does not trigger catch-up polling. Practice timer/save/recovery rules are separate and must not be changed for UI refresh work.
+- Coalesce in-flight reads, scope caches to the real account/resource, and use generation/revision guards for success, error and finally paths. An old request must not overwrite a newer load or confirmed mutation.
+- Verify refresh fixes with document navigation counts, resource request counts and DOM/component identity; do not equate an API request or local loading flash with a full page reload.

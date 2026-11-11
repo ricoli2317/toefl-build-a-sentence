@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@aws-sdk/client-s3':
+        specifier: ^3.1119.0
+        version: 3.1119.0
       '@supabase/supabase-js':
         specifier: ^2.45.4
         version: 2.110.0
@@ -36,9 +39,6 @@ importers:
         specifier: ^18.3.1
         version: 18.3.1(react@18.3.1)
     devDependencies:
-      '@aws-sdk/client-s3':
-        specifier: ^3.1119.0
-        version: 3.1119.0
       '@electric-sql/pglite':
         specifier: 0.5.8
         version: 0.5.8

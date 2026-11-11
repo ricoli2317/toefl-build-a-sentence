@@ -1,5 +1,3 @@
-import type { NotificationItem } from "./notifications.ts";
-
 // Independent, in-memory, account-scoped cache. Never stores tokens or business
 // data. Server confirmations are authoritative; localStorage is not an authority.
 export class NotificationCache {
@@ -47,7 +45,7 @@ export class NotificationCache {
     if (wasUnread && this.unreadCount !== null) this.unreadCount = Math.max(0, this.unreadCount - 1);
   }
 
-  overlay(items: NotificationItem[]): NotificationItem[] {
+  overlay<T extends { id: string; read_at: string | null }>(items: T[]): T[] {
     return items.map(item => ({ ...item, read_at: this.receipts.get(item.id) ?? item.read_at }));
   }
 
