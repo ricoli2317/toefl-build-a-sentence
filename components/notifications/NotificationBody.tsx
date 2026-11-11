@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useCurrentAccount } from "@/components/RoleGate";
 import { loadNotificationImage, NotificationRequestError } from "@/lib/notifications.client";
 import { normalizeNotificationDocument, type NotificationNode } from "@/lib/notificationDocument";
+import { NotificationModal } from "./NotificationModal";
 
 export function NotificationBody({ content, document, notificationId, admin = false }: {
   content: string; document?: unknown; notificationId?: string; admin?: boolean;
@@ -24,21 +25,23 @@ export function NotificationBody({ content, document, notificationId, admin = fa
       case "image": return <NotificationImage key={key} imageId={node.attrs!.imageId!} alt={node.attrs?.alt ?? "通知图片"} notificationId={notificationId} admin={admin} />;
     }
   }
-  return <div className="grid gap-3 text-sm leading-7">{safeDocument.content.map(render)}</div>;
+  return <div className="grid min-w-0 grid-cols-1 gap-3 text-sm leading-7">{safeDocument.content.map(render)}</div>;
 }
 
 function NotificationImage({ imageId, alt, notificationId, admin }: { imageId: string; alt: string; notificationId?: string; admin: boolean }) {
   const { userId } = useCurrentAccount();
   const [state, setState] = useState<{ url?: string; message?: string }>({});
+  const [preview, setPreview] = useState(false);
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     const controller = new AbortController();
     let live = true, objectUrl: string | undefined;
     let timer: ReturnType<typeof setTimeout>;
     setState({});
+    setPreview(false);
     const expire = (expiresAt: string) => {
       const remaining = Date.parse(expiresAt) - Date.now();
-      if (remaining <= 0) { if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = undefined; setState({ message: "图片已过期" }); }
+      if (remaining <= 0) { setPreview(false); if (objectUrl) URL.revokeObjectURL(objectUrl); objectUrl = undefined; setState({ message: "图片已过期" }); }
       else timer = setTimeout(() => expire(expiresAt), Math.min(remaining, 2147483647));
     };
     void loadNotificationImage(admin ? `/api/admin/notifications/images/${imageId}` : `/api/notifications/${notificationId}/images/${imageId}`, userId, controller.signal)
@@ -56,6 +59,18 @@ function NotificationImage({ imageId, alt, notificationId, admin }: { imageId: s
   </div>;
   // Blob URLs contain authenticated, bounded image responses only; no public
   // bucket URL, bearer token or expiring external signed URL is persisted.
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={state.url} alt={alt} className="h-auto max-w-full rounded-lg" onError={() => setState({ message: "图片暂不可用" })} />;
+  const unavailable = () => { setPreview(false); setState({ message: "图片暂不可用" }); };
+  return <>
+    <button type="button" aria-label="放大通知图片" className="block min-w-0 max-w-full cursor-zoom-in justify-self-start" onClick={() => setPreview(true)}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={state.url} alt={alt} className="h-auto max-w-full rounded-lg" onError={unavailable} />
+    </button>
+    <NotificationModal open={preview} title="图片预览" label="通知图片预览" image onClose={() => setPreview(false)}
+      footer={<button type="button" className="student-button-secondary" onClick={() => setPreview(false)}>关闭图片预览</button>}>
+      <button type="button" aria-label="点击图片关闭预览" className="grid w-full min-w-0 cursor-zoom-out justify-items-center" onClick={() => setPreview(false)}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={state.url} alt={alt} className="h-auto max-w-full" onError={unavailable} />
+      </button>
+    </NotificationModal>
+  </>;
 }

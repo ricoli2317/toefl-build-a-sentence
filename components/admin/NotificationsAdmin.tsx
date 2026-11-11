@@ -2,12 +2,13 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useCurrentAccount } from "@/components/RoleGate";
-import { ModalShell, ConfirmDialog } from "@/components/shared/ConfirmDialog";
+import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { TeacherCard, TeacherEmptyState } from "@/components/teacher/TeacherUI";
 import { notificationRequest } from "@/lib/notifications.client";
 import { createLatestRequestGate } from "@/lib/clientRefreshPolicy";
 import { NotificationEditor } from "@/components/notifications/NotificationEditor";
 import { NotificationBody } from "@/components/notifications/NotificationBody";
+import { NotificationModal } from "@/components/notifications/NotificationModal";
 import { NOTIFICATION_TARGETS, NOTIFICATION_TYPES, notificationTime,
   type AdminNotification, type NotificationDraft } from "@/lib/notifications";
 
@@ -107,9 +108,14 @@ export function NotificationsAdmin() {
         <button type="button" className="teacher-button-secondary" disabled={!hasMore || loading || saving} onClick={() => setPage(value => value + 1)}>下一页</button>
       </div>
     </TeacherCard>
-    <ModalShell open={!!editor} label={editor?.row ? "编辑通知草稿" : "创建通知"} size="wide" containFocus dismissible={!saving && !uploading} onClose={() => { if (!saving && !uploading) setEditor(null); }}>
-      {editor ? <form onSubmit={event => { void save("draft", event); }} className="grid gap-4">
-        <h2 className="text-lg font-bold">{editor.row ? "编辑通知草稿" : "创建通知"}</h2>
+    <NotificationModal open={!!editor} label={editor?.row ? "编辑通知草稿" : "创建通知"} title={editor?.row ? "编辑通知草稿" : "创建通知"}
+      dismissible={!saving && !uploading} onClose={() => { if (!saving && !uploading) setEditor(null); }} onSubmit={event => { void save("draft", event); }}
+      footer={<>
+        <button type="button" className="teacher-button-secondary" disabled={saving || uploading} onClick={() => setEditor(null)}>取消</button>
+        <button type="submit" className="teacher-button-secondary" disabled={saving || uploading}>{saving ? "正在保存…" : "保存草稿"}</button>
+        {!editor?.row ? <button type="button" className="teacher-button-primary" disabled={saving || uploading} onClick={() => { void save("publish"); }}>发布</button> : null}
+      </>}>
+      {editor ? <div className="grid min-w-0 gap-4 [&_input]:min-w-0 [&_select]:min-w-0">
         <label className="grid gap-2 text-sm font-semibold">标题（最多 160 字）
           <input className="rounded-xl border border-student-border p-3" required maxLength={160} value={editor.draft.title} disabled={saving}
             onChange={event => setEditor({ ...editor, draft: { ...editor.draft, title: event.target.value } })} />
@@ -131,19 +137,15 @@ export function NotificationsAdmin() {
             onBusyChange={setUploading} onChange={(content, document) => setEditor(previous => previous ? { ...previous, draft: { ...previous.draft, content, content_document: document } } : null)} />
         </div>
         {formError ? <p role="alert" className="teacher-error">{formError}</p> : null}
-        <div className="flex justify-end gap-3">
-          <button type="button" className="teacher-button-secondary" disabled={saving || uploading} onClick={() => setEditor(null)}>取消</button>
-          <button type="submit" className="teacher-button-secondary" disabled={saving || uploading}>{saving ? "正在保存…" : "保存草稿"}</button>
-          {!editor.row ? <button type="button" className="teacher-button-primary" disabled={saving || uploading} onClick={() => { void save("publish"); }}>发布</button> : null}
-        </div>
-      </form> : null}
-    </ModalShell>
-    <ModalShell open={!!preview} label="通知详情" size="wide" containFocus onClose={() => setPreview(null)}>
-      {preview ? <><h2 className="break-words text-xl font-bold">{preview.title}</h2>
+      </div> : null}
+    </NotificationModal>
+    <NotificationModal open={!!preview} label="通知详情" title={preview?.title ?? "通知详情"} onClose={() => setPreview(null)}
+      footer={<button type="button" className="teacher-button-secondary" onClick={() => setPreview(null)}>关闭</button>}>
+      {preview ? <>
         <p className="mt-2 text-sm text-student-muted">{statuses[preview.status]} · {NOTIFICATION_TARGETS[preview.target_role]}</p>
         <div className="mt-4"><NotificationBody content={preview.content} document={preview.content_document} admin /></div>
-        <button type="button" className="teacher-button-secondary mt-5" onClick={() => setPreview(null)}>关闭</button></> : null}
-    </ModalShell>
+      </> : null}
+    </NotificationModal>
     <ConfirmDialog open={!!operation} title={operation?.action === "publish" ? "确认发布通知？" : operation?.action === "delete" ? "确认删除通知？" : "确认撤回通知？"}
       message={operation ? <><p className="break-words font-semibold">{operation.row.title}</p>
         <p className="mt-2">接收对象：{NOTIFICATION_TARGETS[operation.row.target_role]}</p>

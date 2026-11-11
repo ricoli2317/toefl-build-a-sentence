@@ -4,6 +4,10 @@ import { useEffect, useRef, type ReactNode } from "react";
 import clsx from "clsx";
 import { createPortal } from "react-dom";
 
+// A portaled child (notification image preview) must own Escape/Tab while it is
+// open. Closing it must not also dismiss the notification underneath it.
+const modalStack: symbol[] = [];
+
 /**
  * Shared modal shell + yes/no confirm dialog. The project keeps its existing
  * purple card visual language: no new design system, just the same border,
@@ -29,13 +33,20 @@ export function ModalShell({
   onClose: () => void;
   dismissible?: boolean;
   /** "wide" keeps the same panel styling for forms that need two columns. */
-  size?: "default" | "wide";
+  size?: "default" | "wide" | "notification" | "image";
   children: ReactNode;
   label?: string;
   /** Opt-in for callers replacing a native modal dialog. */
   containFocus?: boolean;
 }) {
   const panelRef = useRef<HTMLDivElement>(null);
+  const layer = useRef(Symbol("modal"));
+  useEffect(() => {
+    if (!open) return;
+    const id = layer.current;
+    modalStack.push(id);
+    return () => { const index = modalStack.indexOf(id); if (index >= 0) modalStack.splice(index, 1); };
+  }, [open]);
   useEffect(() => {
     if (!open || !containFocus) return;
     const panel = panelRef.current;
@@ -45,7 +56,7 @@ export function ModalShell({
     ) ?? []).filter((element) => element.getClientRects().length > 0);
     focusable()[0]?.focus();
     const trap = (event: KeyboardEvent) => {
-      if (event.key !== "Tab") return;
+      if (event.key !== "Tab" || event.defaultPrevented || modalStack[modalStack.length - 1] !== layer.current) return;
       const controls = focusable();
       const first = controls[0];
       const last = controls[controls.length - 1];
@@ -65,7 +76,11 @@ export function ModalShell({
   useEffect(() => {
     if (!open) return;
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape" && dismissible) onClose();
+      if (event.key === "Escape" && !event.defaultPrevented && dismissible && modalStack[modalStack.length - 1] === layer.current) {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+      }
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -87,8 +102,10 @@ export function ModalShell({
           aria-modal="true"
           aria-label={label}
           className={clsx(
-            "relative max-h-[calc(100dvh-3rem)] w-full overflow-y-auto rounded-2xl border border-student-border bg-white p-6 shadow-[0_22px_70px_rgba(44,35,99,0.18)]",
-            size === "wide" ? "max-w-[560px]" : "max-w-[420px]"
+            "relative rounded-2xl border border-student-border bg-white shadow-[0_22px_70px_rgba(44,35,99,0.18)]",
+            size === "notification" || size === "image"
+              ? `flex max-h-[90dvh] min-w-0 max-w-none flex-col overflow-hidden ${size === "image" ? "w-[96vw]" : "w-[80vw]"}`
+              : `max-h-[calc(100dvh-3rem)] w-full overflow-y-auto p-6 ${size === "wide" ? "max-w-[560px]" : "max-w-[420px]"}`
           )}
           role="dialog"
           ref={panelRef}

@@ -1,6 +1,7 @@
 // Opt-in localhost browser test. Normal Admin UI authentication; every
 // notification/image mutation is intercepted. NO production notification/R2 writes.
 const fs=require('node:fs'),assert=require('node:assert/strict');
+const {geometry}=require('./helpers/notificationBrowserLayout.cjs');
 const origin=process.env.TPS_NOTIFICATION_BROWSER_ORIGIN;
 if(!origin||new URL(origin).hostname!=='localhost'||!process.env.TPS_PLAYWRIGHT_RUNTIME||!process.env.TPS_TEST_ACCOUNTS_FILE)throw Error('Explicit Ready localhost, existing Playwright and private account file required');
 const {chromium}=require(process.env.TPS_PLAYWRIGHT_RUNTIME);
@@ -9,7 +10,7 @@ const imageId='40000000-0000-4000-8000-000000000001',version='2026-11-11T00:00:0
 let browser;
 (async()=>{
  browser=await chromium.launch({headless:true,channel:'chrome'});const context=await browser.newContext({viewport:{width:1440,height:1100}}),page=await context.newPage();
- const calls=[],checks=[],errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const calls=[],checks=[],errors=[],layout=[];page.on('pageerror',e=>errors.push(e.message));
  const rows=['draft','published','withdrawn'].map((status,i)=>({id:`20000000-0000-4000-8000-00000000000${i+1}`,title:`Admin ${status}`,content:'Original content',content_document:null,type:'announcement',target_role:'all',status,created_at:version,updated_at:version,published_at:status==='draft'?null:version}));
  await context.route(origin+'/api/**',async route=>{
   const r=route.request(),u=new URL(r.url());
@@ -28,6 +29,9 @@ let browser;
  await page.goto(origin+'/login');await page.locator('#account').fill(a.ADMIN_EMAIL);await page.locator('#password').fill(a.ADMIN_PASSWORD);await page.getByRole('button',{name:'登录',exact:true}).click();await page.waitForURL(origin+'/teacher/dashboard',{timeout:60000});
  await page.goto(origin+'/admin/notifications');await page.getByRole('button',{name:'创建通知',exact:true}).waitFor({timeout:60000});
  await page.getByRole('button',{name:'创建通知',exact:true}).click();let dialog=page.getByRole('dialog',{name:'创建通知',exact:true});
+ layout.push(await geometry(page,dialog,'Admin desktop create'));
+ for(const width of [390,320]){await page.setViewportSize({width,height:844});layout.push(await geometry(page,dialog,'Admin mobile create'));}
+ await page.setViewportSize({width:1440,height:1100});
  for(const name of ['取消','保存草稿','发布'])assert.equal(await dialog.getByRole('button',{name,exact:true}).count(),1);
  await dialog.locator('input[maxlength="160"]').fill('Direct rich publish');
  const text=dialog.getByRole('textbox',{name:'通知正文',exact:true});await text.fill('通知第一段');await text.press('Enter');await text.press('Shift+Enter');await text.pressSequentially('通知第二段');
@@ -39,10 +43,18 @@ let browser;
  const creates=calls.filter(c=>c.method==='POST'&&c.path==='/api/admin/notifications');assert.equal(creates.length,1);assert.equal(creates[0].body.action,'publish');
  const body=creates[0].body;assert.ok(body.content_document);assert.ok(JSON.stringify(body.content_document).includes(imageId));assert.ok(JSON.stringify(body.content_document).includes('bold'));assert.equal(JSON.stringify(body).includes('base64'),false);assert.equal(calls.some(c=>c.method==='PATCH'),false);
  checks.push('create dialog exposes Cancel/Save draft/Publish; mixed Tiptap text, paragraphs, bold and uploaded image; one direct publish POST');
+ await page.getByRole('button',{name:'Direct rich publish',exact:true}).click();dialog=page.getByRole('dialog',{name:'通知详情',exact:true});layout.push(await geometry(page,dialog,'Admin desktop preview'));await dialog.getByRole('button',{name:'关闭',exact:true}).click();
+ const draftRow=page.locator('li').filter({has:page.getByRole('button',{name:'Admin draft',exact:true})});await draftRow.getByRole('button',{name:'编辑草稿',exact:true}).click();dialog=page.getByRole('dialog',{name:'编辑通知草稿',exact:true});layout.push(await geometry(page,dialog,'Admin desktop edit'));
+ await page.setViewportSize({width:390,height:844});layout.push(await geometry(page,dialog,'Admin mobile edit'));
+ await dialog.getByRole('textbox',{name:'通知正文',exact:true}).fill('长草稿内容\n'.repeat(100));
+ assert.equal(await dialog.locator('[data-notification-scroll]').evaluate(e=>e.scrollHeight>e.clientHeight),true);
+ const footerBefore=await dialog.locator('footer').boundingBox();await dialog.locator('[data-notification-scroll]').evaluate(e=>{e.scrollTop=e.scrollHeight;});assert.equal((await dialog.locator('footer').boundingBox()).y,footerBefore.y);
+ await dialog.getByRole('button',{name:'取消',exact:true}).click();await page.setViewportSize({width:1440,height:1100});checks.push('create/edit/preview share 80vw and 90vh geometry; mobile long form scrolls internally with fixed footer and no overflow');
  const item=page.locator('li').filter({has:page.getByRole('button',{name:'Admin published',exact:true})});await item.getByRole('button',{name:'删除',exact:true}).click();
  dialog=page.getByRole('dialog').filter({hasText:'确认删除通知？'});await dialog.getByRole('button',{name:'取消',exact:true}).click();assert.equal(calls.filter(c=>c.method==='DELETE').length,0);
  await item.getByRole('button',{name:'删除',exact:true}).click();dialog=page.getByRole('dialog').filter({hasText:'确认删除通知？'});await dialog.getByRole('button',{name:'确认删除',exact:true}).click();await dialog.waitFor({state:'hidden'});
  assert.equal(calls.filter(c=>c.method==='DELETE').length,1);assert.equal(calls.some(c=>c.method==='PATCH'),false);await page.getByRole('button',{name:'Admin withdrawn',exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Admin published',exact:true}).count(),0);
  checks.push('delete requires confirmation, cancel is no-op; delete does not call withdrawal API; published row disappears only from Admin list');
- assert.deepEqual(errors,[]);console.log(JSON.stringify({scope:'local real Admin React/editor; notification/image APIs intercepted only',checks,errors,mutations:calls.filter(c=>c.method!=='GET').map(c=>({method:c.method,path:c.path}))},null,2));
+ const published=page.locator('li').filter({has:page.getByRole('button',{name:'Direct rich publish',exact:true})});await published.getByRole('button',{name:'撤回',exact:true}).click();dialog=page.getByRole('dialog').filter({hasText:'确认撤回通知？'});await dialog.getByRole('button',{name:'确认撤回',exact:true}).click();await dialog.waitFor({state:'hidden'});assert.equal(calls.filter(c=>c.method==='PATCH'&&c.body.action==='withdraw').length,1);checks.push('withdraw remains a separate confirmed PATCH, not delete');
+ assert.deepEqual(errors,[]);console.log(JSON.stringify({scope:'local real Admin React/editor; notification/image APIs intercepted only',checks,layout,errors,mutations:calls.filter(c=>c.method!=='GET').map(c=>({method:c.method,path:c.path}))},null,2));
 })().catch(e=>{console.error(e.message);process.exitCode=1;}).finally(async()=>{await browser?.close();});
