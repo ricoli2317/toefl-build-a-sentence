@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   BarChart3,
+  Bell,
   BookOpenCheck,
   ClipboardPenLine,
   ClipboardList,
@@ -21,6 +22,7 @@ import { SignOutButton } from "@/components/SignOutButton";
 import { ChangePasswordLink } from "@/components/shared/ChangePassword";
 import { StudentBrand } from "@/components/student/StudentBrand";
 import { AreaSwitch, useCurrentAccount } from "@/components/RoleGate";
+import { NotificationBell } from "@/components/notifications/NotificationCenter";
 
 export type TeacherCrumb = { href?: string; label: string };
 
@@ -88,6 +90,13 @@ const navigation: Array<{
     icon: FileText,
     label: "查看所有套题",
     match: (path: string) => path.startsWith("/teacher/question-bank")
+  },
+  {
+    href: "/admin/notifications",
+    icon: Bell,
+    label: "通知管理",
+    adminOnly: true,
+    match: (path: string) => path.startsWith("/admin/notifications")
   },
   {
     href: "/admin/student-bindings",
@@ -198,6 +207,7 @@ export function TeacherAppShell({
             <Link href="/teacher/dashboard"><StudentBrand compact /></Link>
           </div>
           <div className="flex items-center gap-3">
+            <NotificationBell />
             <AreaSwitch current="teacher" />
             {displayName ? (
               <span className="hidden max-w-[180px] truncate text-sm font-medium text-student-text md:inline">

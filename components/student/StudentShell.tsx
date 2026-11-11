@@ -24,6 +24,7 @@ import { beginStudentNavigationTrace } from "@/lib/studentPerformance.client";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 import { AreaSwitch, useCurrentAccount } from "@/components/RoleGate";
 import { ChangePasswordLink } from "@/components/shared/ChangePassword";
+import { NotificationBell } from "@/components/notifications/NotificationCenter";
 
 type NavigationItem = {
   href: string;
@@ -246,6 +247,7 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
             <StudentBrand compact />
           </div>
           <div className="flex items-center gap-2">
+            <NotificationBell />
             <AreaSwitch current="student" />
             {displayName ? (
               <span className="hidden max-w-[160px] truncate text-sm font-medium text-student-muted sm:inline">

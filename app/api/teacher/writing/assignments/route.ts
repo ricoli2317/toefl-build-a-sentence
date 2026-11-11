@@ -59,7 +59,7 @@ type AssignmentRow = Omit<
 };
 type AssignmentStudentRow = { assignment_id: string; student_id: string; assigned_at: string };
 type ProfileRow = { id: string; email: string | null; full_name: string | null };
-type AssignmentAttemptRow = { assignment_id: string; attempt_id: string; user_id: string; status: string; submitted_at: string | null };
+type AssignmentAttemptRow = { assignment_id: string; attempt_id: string; user_id: string; attempt_kind: "original" | "correction" | null; status: string; submitted_at: string | null };
 type AssignmentReviewRow = { attempt_id: string; status: string; published_at: string | null };
 
 export async function GET(request: Request) {
@@ -89,7 +89,7 @@ export async function GET(request: Request) {
     // without any further request.
     const [members, attempts, reviewStatuses, displayNames, groupTitles, recipientOrders, classRefs] = await Promise.all([
       readAssignmentRows<AssignmentStudentRow>(auth.supabase, "writing_assignment_students", "assignment_id,student_id,assigned_at", assignmentIds),
-      readAssignmentRows<AssignmentAttemptRow>(auth.supabase, "writing_attempts", "assignment_id,attempt_id,user_id,status,submitted_at", assignmentIds),
+      readAssignmentRows<AssignmentAttemptRow>(auth.supabase, "writing_attempts", "assignment_id,attempt_id,user_id,attempt_kind,status,submitted_at", assignmentIds),
       readAssignmentReviewStatuses(auth.supabase, assignmentIds),
       loadWritingAssignmentDisplayNames(
         auth.supabase,
@@ -186,6 +186,9 @@ export async function GET(request: Request) {
     const assignmentsWithAttempts = new Set<string>();
     for (const attempt of attempts) {
       assignmentsWithAttempts.add(attempt.assignment_id);
+      // Corrections must not replace the original (including legacy NULL-kind)
+      // submission used for ordinary review progress and card actions.
+      if (attempt.attempt_kind === "correction") continue;
       if (attempt.status !== "submitted" || !attempt.submitted_at) continue;
       const key = `${attempt.assignment_id}:${attempt.user_id}`;
       const current = latestSubmission.get(key);
@@ -205,7 +208,7 @@ export async function GET(request: Request) {
           const key = `${assignment.assignment_id}:${studentId}`;
           if (reviewBased) {
             const latest = latestSubmission.get(key);
-            // WE / AD complete only once the review of the latest submission is
+            // WE / AD complete only once the review of the latest original is
             // published; a submitted-but-unpublished attempt never counts.
             const publishedReview = Boolean(
               latest && reviewStatuses.get(latest.attempt_id) === "published"
