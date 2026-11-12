@@ -562,6 +562,26 @@ const failureCases = [
       aiReview().issue_resolutions[2]
     ]
   })],
+  ["unknown new issue type", aiReview({
+    new_issues: [
+      { type: "typo", severity: "minor", evidence: "anther",
+        explanation: "未知类别。", score_impact: "small" }
+    ]
+  })],
+  ["non-boolean deletion_based", aiReview({
+    issue_resolutions: [
+      { ...aiReview().issue_resolutions[0], deletion_based: "false" },
+      aiReview().issue_resolutions[1],
+      aiReview().issue_resolutions[2]
+    ]
+  })],
+  ["non-boolean deletion_based null", aiReview({
+    issue_resolutions: [
+      aiReview().issue_resolutions[0],
+      { ...aiReview().issue_resolutions[1], deletion_based: null },
+      aiReview().issue_resolutions[2]
+    ]
+  })],
   ["score out of range", aiReview({ correction_score: 9 })]
 ];
 
@@ -577,6 +597,75 @@ for (const [label, payload] of failureCases) {
     assert.equal(db.tables.writing_correction_reviews.length, 0);
   });
 }
+
+test("new spelling, word-form, usage and other issues are saved, never dropped", async () => {
+  const db = createMockSupabase(tables());
+  const result = await generateCorrectionReview(db, actor, ATTEMPT, {
+    requestStructuredOutput: providerReturning(aiReview({
+      new_issues: [
+        { type: "spelling", severity: "minor", evidence: "anther",
+          explanation: "拼写错误。", score_impact: "small" },
+        { type: "word_form", severity: "minor", evidence: "disrupteded",
+          explanation: "词形错误。", score_impact: "small" },
+        { type: "usage", severity: "minor", evidence: "in the same time",
+          explanation: "固定搭配错误。", score_impact: "small" },
+        { type: "other", severity: "minor", evidence: "flight.Could",
+          explanation: "其他格式问题。", score_impact: "none" }
+      ]
+    }))
+  });
+  assert.deepEqual(
+    result.workspace.review.ai.new_issues.map((issue) => issue.type),
+    ["spelling", "word_form", "usage", "other"]
+  );
+  assert.deepEqual(
+    db.tables.writing_correction_reviews[0].ai_review.new_issues.map((issue) => issue.type),
+    ["spelling", "word_form", "usage", "other"]
+  );
+  assert.equal(db.tables.writing_correction_ai_logs[0].status, "success");
+});
+
+test("a schema failure keeps the existing teacher draft and logs the received value", async () => {
+  const db = createMockSupabase(tables());
+  await generateCorrectionReview(db, actor, ATTEMPT, {
+    requestStructuredOutput: providerReturning(aiReview())
+  });
+  await saveCorrectionReview(db, actor, ATTEMPT, {
+    action: "save",
+    teacher: {
+      issue_statuses: { "f-1": "resolved" },
+      correction_score: 4,
+      score_rationale: "教师工作稿。",
+      new_issue_reviews: { "0": { status: "accepted", note: "保留" } }
+    }
+  });
+  const before = JSON.stringify(db.tables.writing_correction_reviews[0]);
+
+  await assert.rejects(
+    () => generateCorrectionReview(db, actor, ATTEMPT, {
+      requestStructuredOutput: providerReturning(aiReview({
+        new_issues: [
+          { type: "typo", severity: "minor", evidence: "anther",
+            explanation: "未知类别。", score_impact: "small" }
+        ]
+      }))
+    }),
+    (error) => error.code === "CORRECTION_AI_FAILED"
+  );
+
+  assert.equal(JSON.stringify(db.tables.writing_correction_reviews[0]), before);
+  const failedLog = db.tables.writing_correction_ai_logs[
+    db.tables.writing_correction_ai_logs.length - 1
+  ];
+  assert.equal(failedLog.status, "failed");
+  assert.equal(failedLog.error_type, "schema_validation_error");
+  assert.equal(failedLog.error_code, "INVALID_AI_RESPONSE_SCHEMA");
+  assert.match(failedLog.error_message, /new_issues\[0\]\.type: invalid \(received string "typo"\)/);
+  assert.match(
+    failedLog.validation_issues[0].message,
+    /new_issues\[0\]\.type: invalid \(received string "typo"\)/
+  );
+});
 
 test("AI provider failure saves nothing and keeps the previous draft intact", async () => {
   const db = createMockSupabase(tables());
@@ -617,7 +706,7 @@ test("the AI request uses the locked v1 prompt and the frozen snapshot", async (
   assert.equal(messages[0].role, "system");
   assert.equal(
     createHash("sha256").update(messages[0].content).digest("hex"),
-    "3aab9d4b428f614879e08222d24203cd69cddc4288d85565ac76f0f4a80026fa"
+    "51cfd9fda67db533ade38654f41e53cc90e22adeb4e9d7bdb8b80e0d023359e8"
   );
   const payload = JSON.parse(messages[1].content);
   assert.equal(payload.original_response_text, SNAPSHOT.original_response_text);
@@ -699,6 +788,6 @@ test("AD uses the AD prompt hash and the AD task type", async () => {
   await generateCorrectionReview(db, actor, ATTEMPT, { requestStructuredOutput: provider });
   assert.equal(
     createHash("sha256").update(provider.calls[0][0].content).digest("hex"),
-    "5a970b61075320f60176ea97eb423096dce6b8803c32ac41edf14c3b69b5126a"
+    "57bae6625eef82fb8dd728c001930cc06ebae0d5039822f88ce37c48a30da6fb"
   );
 });

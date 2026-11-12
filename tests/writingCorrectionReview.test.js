@@ -14,6 +14,7 @@ const {
   recomputeCorrectionState
 } = require("../lib/writingCorrectionReview.ts");
 const {
+  CORRECTION_NEW_ISSUE_TYPES,
   validateWritingCorrectionReview
 } = require("../lib/writingCorrectionReviewSchema.ts");
 
@@ -370,6 +371,102 @@ test("semantic schema rejects an out-of-range score and an unknown status", () =
     issue_resolutions: [{ issue_id: "le-1", issue_type: "language_edit", status: "done",
       deletion_based: false, evidence: "", explanation: "x" }]
   }, ["le-1"]).ok, false);
+});
+
+/* The two rejected production payloads of 2026-11-12 both used a real new
+ * misspelling category that this schema omitted, and one of them described a
+ * deletion_based judgement with a non-boolean literal. Keep that exact shape
+ * as a regression fixture. */
+const FAILED_REVIEW_ISSUE_IDS = [
+  "c3-edit-02", "c3-edit-01", "c3-edit-03", "c3-edit-04", "c3-edit-05",
+  "c3-edit-07", "c3-edit-06", "c3-edit-08", "c3-edit-09", "c3-edit-10",
+  "c3-edit-11", "c3-feedback-01", "c3-feedback-02", "c3-feedback-03"
+];
+
+function failedAttemptReview(overrides = {}) {
+  return {
+    task_type: "email",
+    issue_resolutions: FAILED_REVIEW_ISSUE_IDS.map((issueId, index) => ({
+      issue_id: issueId,
+      issue_type: index < 11 ? "language_edit" : "content_feedback",
+      status: index === 12 ? "partially_resolved" : "resolved",
+      deletion_based: false,
+      evidence: index === 12 ? "" : "I am writing",
+      explanation: "已处理。"
+    })),
+    new_issues: [
+      { type: "punctuation", severity: "minor", evidence: "at risk. .",
+        explanation: "多了一个句点。", score_impact: "small" },
+      { type: "spelling", severity: "minor", evidence: "anther flight",
+        explanation: "拼写错误。", score_impact: "small" },
+      { type: "spelling", severity: "minor", evidence: "alternative sollution",
+        explanation: "拼写错误。", score_impact: "small" }
+    ],
+    correction_score: 3,
+    score_rationale: "订正后仍有新的拼写与标点问题。",
+    resolution_summary: "原有问题多数解决，但产生了新的拼写问题。",
+    score_change_explanation: "完成度较高，但新增错误抵消了部分改善。",
+    ...overrides
+  };
+}
+
+test("the failed correction payload now passes with its real category vocabulary", () => {
+  const result = validateWritingCorrectionReview(
+    failedAttemptReview(),
+    FAILED_REVIEW_ISSUE_IDS
+  );
+  assert.equal(result.ok, true, result.errors.join("; "));
+  assert.equal(result.missingIssueIds.length, 0);
+  assert.equal(result.unknownIssueIds.length, 0);
+  assert.equal(result.duplicateIssueIds.length, 0);
+
+  for (const type of ["spelling", "word_form", "usage", "other"]) {
+    assert.ok(CORRECTION_NEW_ISSUE_TYPES.includes(type));
+    const payload = failedAttemptReview({
+      new_issues: [{ type, severity: "minor", evidence: "quote",
+        explanation: "新增问题。", score_impact: "none" }]
+    });
+    assert.equal(
+      validateWritingCorrectionReview(payload, FAILED_REVIEW_ISSUE_IDS).ok,
+      true,
+      type
+    );
+  }
+});
+
+test("unknown new-issue categories still fail and the error names the value", () => {
+  const payload = failedAttemptReview({
+    new_issues: [
+      { type: "spelling", severity: "minor", evidence: "anther",
+        explanation: "拼写错误。", score_impact: "small" },
+      { type: "typo", severity: "minor", evidence: "sollution",
+        explanation: "未知类别。", score_impact: "small" },
+      { type: "spelling", severity: "minor", evidence: "disrupteded",
+        explanation: "拼写错误。", score_impact: "small" }
+    ]
+  });
+  const result = validateWritingCorrectionReview(payload, FAILED_REVIEW_ISSUE_IDS);
+  assert.equal(result.ok, false);
+  assert.match(
+    result.errors.join("; "),
+    /new_issues\[1\]\.type: invalid \(received string "typo"\)/
+  );
+});
+
+test("a non-boolean deletion_based still fails and names the received value", () => {
+  for (const [received, label] of [["false", 'string "false"'], [null, "null"], [0, "number 0"]]) {
+    const payload = failedAttemptReview({
+      issue_resolutions: failedAttemptReview().issue_resolutions.map((item, index) =>
+        index === 12 ? { ...item, deletion_based: received } : item
+      )
+    });
+    const result = validateWritingCorrectionReview(payload, FAILED_REVIEW_ISSUE_IDS);
+    assert.equal(result.ok, false);
+    assert.match(
+      result.errors.join("; "),
+      new RegExp(`issue_resolutions\\[12\\]\\.deletion_based: not boolean \\(received ${label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\)`)
+    );
+  }
 });
 
 test("a published review renders the frozen snapshot, not recomputed rows", () => {

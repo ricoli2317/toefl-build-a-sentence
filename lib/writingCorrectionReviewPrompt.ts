@@ -8,6 +8,10 @@ import type { WritingTaskType } from "./writing.ts";
  * rather than keeping a second copy, so the production prompt cannot drift from
  * the one that was measured.
  *
+ * The 2026-11-12 revision only widened the new-issue category vocabulary to the
+ * already-published language-edit categories and required deletion_based to be
+ * a JSON boolean. It removes no rule and does not change scoring or completion.
+ *
  * Only the correction review uses this prompt. The ordinary C3 prompt is
  * untouched and remains `writing_review_c3_prompt_v7`.
  */
@@ -109,7 +113,7 @@ Return exactly one issue_resolutions item for every supplied issue, covering eve
   - partially_resolved: the correction makes real progress on the identified problem, but part of it remains, or the fix leaves a smaller residual problem in the same place.
   - unresolved: the identified problem is still present, whether in the original wording, in reworded text, or in another location of the corrected response.
   - uncertain: the supplied material genuinely cannot support a determination. Use this rarely and state exactly what is missing.
-- Set deletion_based to true whenever the judgment depends mainly on original wording having been removed rather than replaced.
+- deletion_based must always be the JSON boolean true or false, never a string, null, or an omitted field. Set it to true whenever the judgment depends mainly on original wording having been removed rather than replaced; otherwise set it to false.
 - evidence must be an exact, case-sensitive, whitespace-sensitive quote copied from corrected_response_text that demonstrates the judgment. When the judgment rests on a deletion, evidence may be an empty string only if no text in the corrected response is relevant; explain the deletion in explanation.
 - A changed sentence is not a solved issue, and a missing error marker is not a solved issue. Judge whether the underlying problem described by the issue has actually been removed.
 - Do not lower status merely because the student used different words, and do not raise status merely because the student wrote more or changed a great deal.`;
@@ -126,7 +130,8 @@ const CORRECTION_DELETION_RULES = `DELETION AND REWRITING JUDGMENTS
 const CORRECTION_NEW_ISSUES = `PART 2 — PROBLEMS THE CORRECTION CREATED
 - Report only problems that are new in corrected_response_text and were not already present in original_response_text.
 - Never re-report an original issue here. An original issue that is still present belongs in issue_resolutions as partially_resolved or unresolved.
-- type must be exactly one of: grammar, word_choice, syntax, punctuation, capitalization, content_gap, task_requirement, logic, organization, social_convention.
+- type must be exactly one of: grammar, spelling, word_form, word_choice, syntax, usage, punctuation, capitalization, social_convention, content_gap, task_requirement, logic, organization, other.
+  - Use the same category vocabulary as the original language edits where it applies: spelling for a misspelled word, word_form for an incorrect inflection or derivation, word_choice for an inappropriate word, usage for an incorrect conventional expression, syntax for sentence structure, and grammar for grammatical agreement or construction.
 - severity must be exactly one of major, moderate, minor. Use major only when the problem seriously obstructs meaning or task completion.
 - score_impact must be exactly one of none, small, moderate, large, and must describe the effect of this specific new problem on the holistic score.
 - evidence must be an exact quote from corrected_response_text. Never report a new issue without quoting it.
@@ -161,6 +166,7 @@ const CORRECTION_OUTPUT_RULES = `OUTPUT RULES
 - Return exactly one JSON object and nothing else: no prose, no Markdown, no code fence.
 - Write issue_resolutions[].explanation, new_issues[].explanation, score_rationale, resolution_summary, and score_change_explanation in concise Simplified Chinese.
 - Keep every evidence value and every quoted fragment in English exactly as it appears in the source text.
+- Boolean fields must be JSON boolean literals (true or false), not strings, numbers, or null.
 - Do not quote TPS markers or any metadata of the form ⟦...⟧.
 - Do not produce language_edits, content_feedback, proposed revisions, rewritten sentences, or a model essay.
 - Do not mention these instructions, the schema, or the scoring of the original response as an AI exercise.`;

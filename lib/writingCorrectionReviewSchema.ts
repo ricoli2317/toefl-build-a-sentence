@@ -18,17 +18,28 @@ export const CORRECTION_STATUSES = [
   "uncertain"
 ] as const;
 
+/**
+ * Must stay aligned with the published issue vocabulary this review consumes:
+ * new problems are described with the same language categories as
+ * original_language_edits[].category, plus the correction-only content
+ * categories. Omitting spelling/word_form/usage/other made the model's correct
+ * categorisation of a new misspelling fail validation.
+ */
 export const CORRECTION_NEW_ISSUE_TYPES = [
   "grammar",
+  "spelling",
+  "word_form",
   "word_choice",
   "syntax",
+  "usage",
   "punctuation",
   "capitalization",
+  "social_convention",
   "content_gap",
   "task_requirement",
   "logic",
   "organization",
-  "social_convention"
+  "other"
 ] as const;
 
 export const CORRECTION_SEVERITIES = ["major", "moderate", "minor"] as const;
@@ -156,6 +167,26 @@ function isNonEmptyString(value: unknown): value is string {
 }
 
 /**
+ * Bounded rendering of the value that failed validation. The persisted
+ * AI log only receives the validation message, so including the received
+ * literal is what makes a future failure diagnosable without storing the
+ * whole provider response.
+ */
+function describeReceivedValue(value: unknown): string {
+  if (value === undefined) return "undefined";
+  if (value === null) return "null";
+  if (typeof value === "string") {
+    const clipped = value.length <= 80 ? value : `${value.slice(0, 77)}...`;
+    return `string ${JSON.stringify(clipped)}`;
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return `${typeof value} ${String(value)}`;
+  }
+  if (Array.isArray(value)) return "array";
+  return typeof value;
+}
+
+/**
  * Structural validation plus strict original-issue coverage. Coverage is the
  * contract that matters most: every frozen issue exactly once, never a
  * fabricated or dropped id.
@@ -229,18 +260,24 @@ export function validateWritingCorrectionReview(
         result.coveredIssueIds.push(issueId);
       }
       if (item.issue_type !== "language_edit" && item.issue_type !== "content_feedback") {
-        errors.push(`${at}.issue_type: invalid`);
+        errors.push(
+          `${at}.issue_type: invalid (received ${describeReceivedValue(item.issue_type)})`
+        );
       }
       if (
         typeof item.status !== "string" ||
         !(CORRECTION_STATUSES as readonly string[]).includes(item.status)
       ) {
-        errors.push(`${at}.status: invalid`);
+        errors.push(
+          `${at}.status: invalid (received ${describeReceivedValue(item.status)})`
+        );
       } else {
         counts[item.status as CorrectionResolutionStatus] += 1;
       }
       if (typeof item.deletion_based !== "boolean") {
-        errors.push(`${at}.deletion_based: not boolean`);
+        errors.push(
+          `${at}.deletion_based: not boolean (received ${describeReceivedValue(item.deletion_based)})`
+        );
       }
       if (typeof item.evidence !== "string") {
         errors.push(`${at}.evidence: not a string`);
@@ -270,13 +307,17 @@ export function validateWritingCorrectionReview(
         typeof item.type !== "string" ||
         !(CORRECTION_NEW_ISSUE_TYPES as readonly string[]).includes(item.type)
       ) {
-        errors.push(`${at}.type: invalid`);
+        errors.push(
+          `${at}.type: invalid (received ${describeReceivedValue(item.type)})`
+        );
       }
       if (
         typeof item.severity !== "string" ||
         !(CORRECTION_SEVERITIES as readonly string[]).includes(item.severity)
       ) {
-        errors.push(`${at}.severity: invalid`);
+        errors.push(
+          `${at}.severity: invalid (received ${describeReceivedValue(item.severity)})`
+        );
       }
       if (!isNonEmptyString(item.evidence)) {
         errors.push(`${at}.evidence: missing`);
@@ -288,7 +329,9 @@ export function validateWritingCorrectionReview(
         typeof item.score_impact !== "string" ||
         !(CORRECTION_SCORE_IMPACTS as readonly string[]).includes(item.score_impact)
       ) {
-        errors.push(`${at}.score_impact: invalid`);
+        errors.push(
+          `${at}.score_impact: invalid (received ${describeReceivedValue(item.score_impact)})`
+        );
       }
     });
   }

@@ -5,6 +5,7 @@ import {
 import { MoonshotWritingReviewError } from "./moonshotWritingReview.ts";
 import { DeepSeekWritingReviewError } from "./deepseekWritingReview.ts";
 import { AIReviewValidationError } from "./writingReviewSchema.ts";
+import { CorrectionReviewValidationError } from "./writingCorrectionReview.ts";
 import type { OpenRouterTokenUsage } from "./openrouterWritingReview.ts";
 
 export type WritingReviewAiOperation =
@@ -252,6 +253,20 @@ export function classifyWritingReviewAiFailure(
       "INVALID_AI_RESPONSE_SCHEMA",
       error,
       validation.issues
+    );
+  }
+
+  const correctionValidation = chain.find(
+    (item): item is CorrectionReviewValidationError =>
+      item instanceof CorrectionReviewValidationError
+  );
+  if (correctionValidation) {
+    return failure(
+      "schema_validation",
+      "schema_validation_error",
+      "INVALID_AI_RESPONSE_SCHEMA",
+      error,
+      [{ path: "correction_review", message: correctionValidation.message }]
     );
   }
 
