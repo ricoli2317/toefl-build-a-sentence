@@ -44,6 +44,7 @@ import {
 import {
   assignmentItemSubject,
   assignmentItemTypeLabel,
+  isCategoryAssignmentItemType,
   type AssignmentItemType
 } from "@/lib/assignmentCatalog";
 import { studentAssignmentPracticeHref, studentAssignmentResultHref } from "@/lib/studentAssignmentPractice";
@@ -70,8 +71,8 @@ import {
   studentAssignmentItemProgress,
   studentAssignmentItemStatusLabel,
   studentWritingAssignmentTitle,
-  writingAssignmentQuestionDisplayTitle,
-  writingAssignmentTaskTypeBadges
+  writingAssignmentCardTaskTypeBadges,
+  writingAssignmentQuestionDisplayTitle
 } from "@/lib/writingAssignments";
 
 export function StudentWritingAssignmentCalendar({
@@ -264,7 +265,7 @@ export function StudentWritingAssignmentCollectionDetail({
       <AssignmentDetailHeaderCard
         badges={
           <>
-            {writingAssignmentTaskTypeBadges(assignments.map((assignment) => assignment.task_type)).map((label) => (
+            {writingAssignmentCardTaskTypeBadges(assignments).map((label) => (
               <span className="text-xs font-bold text-student-primary" key={label}>{label}</span>
             ))}
             <AssignmentStatusBadge
@@ -324,7 +325,7 @@ function StudentWritingAssignmentGroupCard({
       actions={<AssignmentAction href={batchHref} icon={Play} label="查看作业" primary />}
       badges={
         <>
-          {writingAssignmentTaskTypeBadges(assignments.map((assignment) => assignment.task_type)).map((label) => (
+          {writingAssignmentCardTaskTypeBadges(assignments).map((label) => (
             <span className="text-xs font-bold text-student-primary" key={label}>{label}</span>
           ))}
           <AssignmentStatusBadge
@@ -387,14 +388,17 @@ export function StudentWritingAssignmentEntry({
   // Every read-only item enters its own existing practice route; the Assignment
   // never re-implements a practice page.
   if (!isWritingReviewItemType(assignment.task_type)) {
+    const href = studentAssignmentPracticeHref({
+      assignmentId: assignment.assignment_id,
+      itemId: assignment.question_id,
+      sourceSetId: assignment.source_set_id,
+      taskType: assignment.task_type
+    }, returnTo);
     return (
       <StudentAssignmentPracticeRedirect
-        href={studentAssignmentPracticeHref({
-          assignmentId: assignment.assignment_id,
-          itemId: assignment.question_id,
-          sourceSetId: assignment.source_set_id,
-          taskType: assignment.task_type
-        }, returnTo)}
+        href={href && forceNew && isCategoryAssignmentItemType(assignment.task_type)
+          ? withNewAssignment(href)
+          : href}
       />
     );
   }
@@ -611,7 +615,11 @@ function StudentWritingAssignmentCard({
     || assignment.task_type === "academic_discussion"
     ? WRITING_TASK_CONFIG[assignment.task_type]
     : null;
-  const TaskIcon = STUDENT_PRACTICE_ICONS[assignment.task_type] ?? FilePenLine;
+  const TaskIcon = isCategoryAssignmentItemType(assignment.task_type)
+    ? assignment.task_type === "bas_category"
+      ? STUDENT_PRACTICE_ICONS.build_sentence
+      : STUDENT_PRACTICE_ICONS.rap
+    : STUDENT_PRACTICE_ICONS[assignment.task_type] ?? FilePenLine;
   const entryBaseHref = `${STUDENT_ROUTES.assignments}/${encodeURIComponent(assignment.assignment_id)}`;
   const entryHref = withStudentReturnTo(entryBaseHref, returnTo);
   const practiceHref = studentAssignmentPracticeHref({
@@ -644,10 +652,17 @@ function StudentWritingAssignmentCard({
   const readingRetakeType = assignment.task_type === "ctw"
     || assignment.task_type === "rdl"
     || assignment.task_type === "rap";
+  const categoryRetakeType = isCategoryAssignmentItemType(assignment.task_type);
   const primaryRetake =
     completed
     && assignment.status === "active"
-    && (readingRetakeType || assignment.task_type === "full_set");
+    && (readingRetakeType || categoryRetakeType || assignment.task_type === "full_set");
+  const categoryRetakeHref = completed
+    && assignment.status === "active"
+    && categoryRetakeType
+    && practiceHref
+    ? withNewAssignment(practiceHref)
+    : null;
   const withdrawnWithoutProgress = reviewType
     ? assignment.status === "withdrawn" && !assignment.latest_submitted_attempt_id
     : assignment.status === "withdrawn" && !completed;
@@ -710,6 +725,9 @@ function StudentWritingAssignmentCard({
               {completed && assignment.status === "active" && assignment.task_type === "build_sentence" && practiceHref ? (
                 <AssignmentAction href={practiceHref} icon={RotateCcw} label="重新练习" />
               ) : null}
+              {categoryRetakeHref ? (
+                <AssignmentAction href={categoryRetakeHref} icon={RotateCcw} label="重新练习" />
+              ) : null}
               {!completed && assignment.status === "active" && practiceHref ? (
                 <AssignmentAction
                   href={practiceHref}
@@ -724,7 +742,7 @@ function StudentWritingAssignmentCard({
       }
       badges={
         <>
-          {writingAssignmentTaskTypeBadges([assignment.task_type]).map((label) => (
+          {writingAssignmentCardTaskTypeBadges([assignment]).map((label) => (
             <span className="text-xs font-bold text-student-primary" key={label}>{label}</span>
           ))}
           {questionTitleOnly ? (
@@ -852,7 +870,12 @@ type StudentWritingAssignmentEntryPayload = {
 
 /** 写作 counts 篇, 阅读 counts 题; both keep the existing card text. */
 function studentAssignmentItemUnit(taskType: AssignmentItemType | undefined) {
+  if (taskType && isCategoryAssignmentItemType(taskType)) return "份";
   return taskType && assignmentItemSubject(taskType) === "reading" ? "题" : "篇";
+}
+
+function withNewAssignment(href: string) {
+  return `${href}${href.includes("?") ? "&" : "?"}new=1`;
 }
 
 type CalendarCell = {

@@ -52,6 +52,8 @@ export type ReadingCatalogItem = {
   searchText: string;
   questionCount: number;
   scoringPointCount: number;
+  /** Permanent canonical logical-item unlock, merged by the catalog API. */
+  unlocked?: boolean;
   status: ReadingCatalogStatus;
   draftAttemptId: string | null;
   latestSubmittedAttempt: null | {
@@ -84,6 +86,8 @@ export type ReadingCatalogPayload = {
   taskType: ReadingModule;
   taskName: string;
   items: ReadingCatalogItem[];
+  enforcementEnabled?: boolean;
+  viewerRole?: "student" | "teacher" | "admin" | null;
 };
 
 export function readingCatalogTitleParts(

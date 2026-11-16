@@ -51,6 +51,23 @@ export async function GET(
         return respond({ error: "这项作业已撤回，不能继续作答。" }, { status: 409 });
       }
     }
+    if (
+      attemptResult.data.status === "draft"
+      && attemptResult.data.attempt_kind === "original"
+    ) {
+      // Best-effort historical/resume unlock; never block a valid resume when
+      // the optional phase-2 helper has not been installed yet.
+      const ensure = await auth.supabase.rpc(
+        "student_ensure_writing_practice_unlock",
+        { p_attempt_id: attemptResult.data.attempt_id }
+      );
+      if (ensure.error && ensure.error.code !== "PGRST202") {
+        console.error("[writing-attempt] unlock_ensure_failed", {
+          code: ensure.error.code ?? null,
+          message: ensure.error.message
+        });
+      }
+    }
     const questionResult = await readWritingQuestion(
       auth.supabase,
       attemptResult.data.task_type,

@@ -18,10 +18,12 @@ export type CacheInvalidationMutation =
   | "TEACHER_BINDING_UPDATED"
   | "WORDBOOK_CHANGED"
   | "WORDBOOK_REVIEW_CHANGED"
-  | "CLASS_UPDATED";
+  | "CLASS_UPDATED"
+  | "PRACTICE_ENTITLEMENT_CHANGED";
 
 export type CacheInvalidationDomain =
   | "studentPracticeCatalog"
+  | "studentPracticeEntitlements"
   | "studentPracticeState"
   | "studentPracticeHistory"
   | "studentAttemptResult"
@@ -159,7 +161,8 @@ const BASE_INVALIDATION_MATRIX: Record<
   ],
   // Class create / rename / subject change / membership change: only the class
   // surfaces and the assignment cards that show a class name are affected.
-  CLASS_UPDATED: ["teacherClasses", "teacherClassReviews", "teacherAssignments"]
+  CLASS_UPDATED: ["teacherClasses", "teacherClassReviews", "teacherAssignments"],
+  PRACTICE_ENTITLEMENT_CHANGED: ["studentPracticeEntitlements"]
 };
 
 export function cacheDomainsForEvent(

@@ -74,6 +74,16 @@ export function teacherAssignmentItemResultHref(input: {
   if (input.result.kind === "bas_set") {
     return `/teacher/students/${encodeURIComponent(input.studentId)}/details/${encodeURIComponent(input.result.id)}`;
   }
+  if (input.result.kind === "bas_category") {
+    return `/teacher/students/${encodeURIComponent(input.studentId)}/details/${encodeURIComponent(`grammar-random-${input.result.id}`)}`;
+  }
+  if (input.result.kind === "reading_category") {
+    return teacherReadingAttemptHref({
+      attemptId: input.result.id,
+      kind: "question_category",
+      studentId: input.studentId
+    });
+  }
   if (input.result.kind === "reading_full_set") {
     return teacherReadingAttemptHref({
       attemptId: input.result.id,

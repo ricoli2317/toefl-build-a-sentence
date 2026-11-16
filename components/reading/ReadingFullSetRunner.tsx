@@ -14,6 +14,7 @@ import {
 import { PracticeReview } from "@/components/shared/PracticeReview";
 import {
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
+  STUDENT_READING_CATALOG_CACHE_PREFIX,
   STUDENT_READING_FULL_SET_CACHE_PREFIX,
   studentReadingFullSetOccurrenceCacheKey,
   studentReadingFullSetResultCacheKey,
@@ -97,6 +98,7 @@ import type { ReadingFullSetReviewPayload } from "@/lib/reading/fullSetReview";
 import type { ReadingFullSetResultPayload } from "@/lib/reading/fullSetResults";
 import { STUDENT_ROUTES, safeStudentReturnTo, withStudentReturnTo } from "@/lib/studentNavigation";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
+import { STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY } from "@/lib/practiceEntitlements";
 import {
   ReadingPracticeHeader,
   ReadingQuestionViewport,
@@ -376,7 +378,9 @@ export function ReadingFullSetRunner({
     });
     if (next.attempt.status === "completed") {
       invalidate(`${STUDENT_READING_FULL_SET_CACHE_PREFIX}:catalog`);
+      invalidate(STUDENT_READING_CATALOG_CACHE_PREFIX);
       invalidate(STUDENT_PRACTICE_HISTORY_CACHE_PREFIX);
+      invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
     }
     const moduleAttempt = readingFullSetCurrentModuleAttempt(next.attempt);
     if (moduleAttempt) {

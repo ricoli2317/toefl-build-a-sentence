@@ -157,7 +157,7 @@ test("counts and draw use the exact RAP/category pool with no active or dedup fi
   const countFunction = sql.slice(sql.indexOf("create function public.reading_question_category_counts()"), sql.indexOf("create function public.save_reading_question_category_draft"));
   assert.doesNotMatch(countFunction, /is_active|options|stem|passage/);
   const route = read("app/api/reading/question-category/route.ts");
-  assert.match(route, /Object\.keys\(body\)\.some\(\(key\) => key !== "questionCategory" && key !== "amount"\)/);
+  assert.match(route, /Object\.keys\(body\)\.some\(\(key\) => key !== "questionCategory" && key !== "amount" && key !== "requestId"\)/);
 });
 test("editable submit locks owner row, uses frozen targets, and completed retry exits before writes", () => {
   const submit = editableSQL.slice(editableSQL.indexOf("create function public.submit_reading_question_category_group"));

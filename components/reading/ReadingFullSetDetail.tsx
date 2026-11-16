@@ -10,10 +10,12 @@ import {
   STUDENT_READING_FULL_SET_CACHE_PREFIX,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
+import { STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY } from "@/lib/practiceEntitlements";
 import {
   StudentErrorState,
   StudentNavigation
 } from "@/components/student/StudentUI";
+import { useStudentPracticeEntitlements } from "@/components/student/StudentPracticeEntitlements";
 import type { ReadingFullSet } from "@/lib/reading/fullSets";
 import {
   isReadingFullSetBootstrapPayload,
@@ -37,6 +39,9 @@ import { ReadingFullSetRetakeButton } from "./ReadingFullSetRetakeButton";
 
 type ReadingFullSetDetailPayload = {
   fullSet: ReadingFullSet;
+  canStartUnassigned?: boolean;
+  enforcementEnabled?: boolean;
+  viewerRole?: "student" | "teacher" | "admin" | null;
 };
 
 type ReadingFullSetAttemptPayload = {
@@ -44,9 +49,12 @@ type ReadingFullSetAttemptPayload = {
 };
 
 export function ReadingFullSetDetail({
+  assignmentId,
   fullSetId,
   returnTo
 }: {
+  /** Teacher Assignment origin; validated again by the creation RPC. */
+  assignmentId?: string | null;
   fullSetId: string;
   returnTo?: string;
 }) {
@@ -57,6 +65,7 @@ export function ReadingFullSetDetail({
   const safeReturnTo = safeStudentReturnTo(returnTo);
   const [starting, setStarting] = useState(false);
   const [actionError, setActionError] = useState("");
+  const entitlements = useStudentPracticeEntitlements();
   const detailState = useStudentCachedData<ReadingFullSetDetailPayload>(
     cacheKey,
     (session) => loadReadingFullSetDetail(fullSetId, session)
@@ -68,9 +77,22 @@ export function ReadingFullSetDetail({
   );
   const title = detailState.data?.fullSet.title ?? fullSetId;
   const action = readingFullSetPrepAction(attemptState.data?.attempt ?? null);
+  const resolvedRole = entitlements.viewerRole
+    ?? detailState.data?.viewerRole
+    ?? null;
+  const resolvedEnforcement = entitlements.data
+    ? entitlements.enforcementEnabled
+    : detailState.data?.enforcementEnabled === true;
+  const canStartUnassigned = entitlements.data
+    ? resolvedRole !== "student" || !resolvedEnforcement
+    : detailState.data?.canStartUnassigned !== false;
+  const startBlocked = action.action === "start_module_1"
+    && !attemptState.data?.attempt
+    && !assignmentId
+    && !canStartUnassigned;
 
   const enterPractice = async () => {
-    if (starting || action.action === "completed") return;
+    if (starting || action.action === "completed" || startBlocked) return;
     setStarting(true);
     setActionError("");
     const trace = createReadingFullSetPerformanceTrace(
@@ -85,7 +107,12 @@ export function ReadingFullSetDetail({
       if (!session) throw new Error("请先登录后再开始套题练习。");
       let attempt = attemptState.data?.attempt ?? null;
       if (isM1Entry) {
-        const bootstrap = await startReadingFullSetAttempt(fullSetId, session.accessToken, trace);
+        const bootstrap = await startReadingFullSetAttempt(
+          fullSetId,
+          assignmentId,
+          session.accessToken,
+          trace
+        );
         if (cache.getSession()?.studentId !== session.studentId) throw new Error("账号已切换，请返回原账号继续练习。");
         attempt = bootstrap.runner.attempt;
         trace.attemptId = attempt.attemptId;
@@ -108,7 +135,12 @@ export function ReadingFullSetDetail({
         safeReturnTo
       ));
     } catch (error) {
-      setActionError(error instanceof Error ? error.message : "暂时无法进入套题练习。");
+      const message = error instanceof Error ? error.message : "暂时无法进入套题练习。";
+      setActionError(message);
+      if (/教师作业|作业已撤回/.test(message)) {
+        cache.invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+        cache.invalidate(`${STUDENT_READING_FULL_SET_CACHE_PREFIX}:catalog`);
+      }
     } finally {
       setStarting(false);
     }
@@ -145,6 +177,7 @@ export function ReadingFullSetDetail({
       ) : null}
       {!detailState.loading && detailState.data?.fullSet ? (
         <FullSetPreparation
+          actionBlocked={startBlocked}
           actionError={attemptState.error || actionError}
           actionLabel={starting ? "正在进入..." : action.label}
           actionLoading={attemptState.loading || starting}
@@ -160,6 +193,7 @@ export function ReadingFullSetDetail({
 }
 
 function FullSetPreparation({
+  actionBlocked,
   actionError,
   actionLabel,
   actionLoading,
@@ -169,6 +203,7 @@ function FullSetPreparation({
   onAction,
   safeReturnTo
 }: {
+  actionBlocked: boolean;
   actionError: string;
   actionLabel: string;
   actionLoading: boolean;
@@ -218,6 +253,11 @@ function FullSetPreparation({
           <li className="list-disc">每个 Module 开始后独立倒计时</li>
         </ul>
         <div className="mt-5 flex flex-wrap items-center justify-end gap-3">
+          {actionBlocked ? (
+            <p className="mr-auto text-sm font-semibold text-student-muted">
+              完整阅读套题只能从有效教师作业开始；已有历史练习仍可继续。
+            </p>
+          ) : null}
           {actionError ? <p className="mr-auto text-sm font-semibold text-student-error">{actionError}</p> : null}
           {actionUnavailable && completedAttemptId ? (
             <>
@@ -232,6 +272,15 @@ function FullSetPreparation({
               </Link>
               <ReadingFullSetRetakeButton fullSetId={fullSet.fullSetId!} returnTo={safeReturnTo} />
             </>
+          ) : actionBlocked ? (
+            <button
+              className="student-button-primary min-h-10 cursor-not-allowed px-4 opacity-50"
+              disabled
+              title="完整阅读套题只能从有效教师作业开始。"
+              type="button"
+            >
+              需教师布置
+            </button>
           ) : (
             <button
               className="student-button-primary min-h-10 px-4"
@@ -316,6 +365,7 @@ async function loadReadingFullSetAttempt(fullSetId: string, session: StudentCach
 
 async function startReadingFullSetAttempt(
   fullSetId: string,
+  assignmentId: string | null | undefined,
   accessToken: string,
   trace: ReadingFullSetPerformanceTrace
 ): Promise<ReadingFullSetBootstrapPayload> {
@@ -330,7 +380,10 @@ async function startReadingFullSetAttempt(
         ...readingFullSetTraceHeaders(accessToken, trace),
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ fullSetId })
+      body: JSON.stringify({
+        assignmentId: assignmentId ?? null,
+        fullSetId
+      })
     }, 20_000);
     const payload = await response.json().catch(() => ({})) as unknown;
     for (const [phase, serverPhase] of [

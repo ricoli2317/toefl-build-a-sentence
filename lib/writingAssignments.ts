@@ -10,6 +10,7 @@ import {
   assignmentItemTypeLabel,
   assignmentSubjectLabel,
   isAssignmentItemType,
+  isCategoryAssignmentItemType,
   type AssignmentItemSnapshot,
   type AssignmentItemType,
   type AssignmentSubject
@@ -18,6 +19,10 @@ import {
   isProfessorAvatarType,
   isStudentAvatarType
 } from "./academicDiscussionAvatars.ts";
+import {
+  categoryAssignmentManifestFromSnapshot,
+  type CategoryAssignmentManifest
+} from "./categoryAssignment.ts";
 
 export type WritingAssignmentQuestionSource = "question_bank" | "custom";
 export type WritingAssignmentPracticeResolution = {
@@ -67,6 +72,9 @@ export type WritingAssignmentSummary = {
   class_id?: string | null;
   /** Current class name (display only; historical titles never rewrite). */
   class_name?: string | null;
+  /** Category Assignment summary from the frozen manifest (teacher cards/rows). */
+  category_summary?: string | null;
+  category_total_questions?: number | null;
 };
 
 export type WritingAssignmentStudentDetail = {
@@ -91,10 +99,12 @@ export type WritingAssignmentStudentDetail = {
    * student's own existing result; it never creates one.
    */
   available_result?: TeacherAssignmentItemResult | null;
+  /** Category Assignments: completed sessions, newest first, including Retakes. */
+  available_results?: TeacherAssignmentItemResult[] | null;
 };
 
 export type TeacherAssignmentItemResult = {
-  kind: "bas_set" | "reading_attempt" | "reading_full_set";
+  kind: "bas_set" | "bas_category" | "reading_attempt" | "reading_category" | "reading_full_set";
   id: string;
   completed_at: string | null;
   /**
@@ -144,6 +154,8 @@ export type StudentWritingAssignmentSummary = {
   student_status: WritingAssignmentStudentStatus;
   submitted_attempt_count: number;
   task_type: AssignmentItemType;
+  category_summary?: string | null;
+  category_total_questions?: number | null;
 };
 
 export type StudentWritingAssignmentCalendarItem = {
@@ -287,6 +299,12 @@ export function teacherWritingAssignmentCardActions(input: {
  * `Academic Discussion`, or `Complete the Words` and `Read in Daily Life`)
  * instead of one concatenated label.
  */
+export function writingAssignmentCategoryManifest(
+  snapshot: unknown
+): CategoryAssignmentManifest | null {
+  return categoryAssignmentManifestFromSnapshot(snapshot);
+}
+
 export function writingAssignmentTaskTypeBadges(
   taskTypes: ReadonlyArray<AssignmentItemType>
 ): string[] {
@@ -295,6 +313,34 @@ export function writingAssignmentTaskTypeBadges(
     const count = taskTypes.filter((value) => value === taskType).length;
     const label = assignmentItemTypeLabel(taskType);
     return [count > 1 ? `${label} ×${count}` : label];
+  });
+}
+
+/**
+ * Card badge rule for real Assignment rows. Normal types keep their historical
+ * `×篇数` suffix; a category Assignment shows the frozen manifest's total
+ * question count (`BAS Grammar Category ×15`) instead of its internal category
+ * detail, which belongs to the detail page only.
+ */
+export function writingAssignmentCardTaskTypeBadges(
+  assignments: ReadonlyArray<{
+    task_type: AssignmentItemType;
+    category_total_questions?: number | null;
+  }>
+): string[] {
+  const taskTypes = assignments.map((assignment) => assignment.task_type);
+  return (Array.from(new Set(taskTypes)) as AssignmentItemType[]).flatMap((taskType) => {
+    if (!isAssignmentItemType(taskType)) return [];
+    const items = assignments.filter((assignment) => assignment.task_type === taskType);
+    const label = assignmentItemTypeLabel(taskType);
+    if (isCategoryAssignmentItemType(taskType)) {
+      const total = items.reduce((sum, item) => {
+        const value = Number(item.category_total_questions);
+        return sum + (Number.isFinite(value) && value > 0 ? value : 0);
+      }, 0);
+      return [total > 0 ? `${label} ×${total}` : label];
+    }
+    return [items.length > 1 ? `${label} ×${items.length}` : label];
   });
 }
 

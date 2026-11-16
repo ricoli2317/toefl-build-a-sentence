@@ -664,6 +664,24 @@ test("student assignment cards dispatch new item types without touching writing 
   assert.doesNotMatch(ui, /ReadingFullSetRetakeButton[\s\S]{0,160}?\bcompact\b/);
 });
 
+test("student category Retake appears only after a real completed session", () => {
+  const ui = source("components/student/StudentWritingAssignments.tsx");
+  assert.match(
+    ui,
+    /const categoryRetakeHref = completed[\s\S]{0,120}?assignment\.status === "active"[\s\S]{0,80}?categoryRetakeType/
+  );
+  assert.match(ui, /const completed = isStudentAssignmentItemCompleted\(assignment\)/);
+  assert.match(ui, /const started = hasStudentAssignmentItemStarted\(assignment\)/);
+  assert.match(ui, /label=\{started \? "继续练习" : "开始练习"\}/);
+  // The completion signal is the student's own result, never the mere
+  // existence of a fresh Assignment row.
+  assert.match(
+    ui,
+    /const resultHref = studentAssignmentResultHref\(\{[\s\S]*?attemptId: assignment\.latest_result_attempt_id/
+  );
+});
+
+
 test("student cards and the detail header share the teacher presentation primitives", () => {
   const ui = source("components/student/StudentWritingAssignments.tsx");
   // The student list card, group card and detail header render through the same

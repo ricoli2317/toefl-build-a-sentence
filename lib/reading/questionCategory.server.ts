@@ -25,8 +25,16 @@ export class CategoryRequestError extends Error {
  * Both this draw and the counts RPC use exactly module='rap' + category.
  */
 export async function createCategorySession(
-  db: SupabaseClient, studentId: string, questionCategory: ReadingQuestionCategory, amount: 5 | 10 | 15 | 20
-): Promise<CategorySession> {
+  db: SupabaseClient,
+  studentId: string,
+  questionCategory: ReadingQuestionCategory,
+  amount: 5 | 10 | 15 | 20,
+  requestId: string
+): Promise<{
+  session: CategorySession;
+  answers: CategoryAnswer[];
+  created: boolean;
+}> {
   const pool = await readAllSupabaseRows<{
     question_id: string; logical_item_id: string; question_order: number;
   }>((from, to) => db.from("reading_questions")
@@ -41,14 +49,58 @@ export async function createCategorySession(
   const manifest = drawCategoryManifest({ questionCategory, amount, rows, titles: new Map() });
   const titles = await loadReadingWrongbookTitles(db, manifest.groups.map((group) => group.logicalItemId));
   manifest.groups = manifest.groups.map((group) => ({ ...group, title: titles.get(group.logicalItemId) || group.title }));
-  const result = await db.from(CATEGORY_SESSION_TABLE).insert({
-    student_id: studentId, question_category: questionCategory, amount, manifest
-  }).select("session_id,created_at").single();
-  if (result.error || !result.data) throw new Error(result.error?.message ?? "Category session creation failed");
+
+  // Creation, idempotency and the category spend are one database transaction.
+  // The manifest is still drawn here under service_role; the browser never
+  // supplies question ids.
+  const result = await db.rpc("start_reading_question_category_practice", {
+    p_student_id: studentId,
+    p_question_category: questionCategory,
+    p_amount: amount,
+    p_manifest: manifest,
+    p_request_id: requestId,
+    p_origin: "self_practice",
+    p_assignment_id: null
+  });
+  if (result.error) {
+    const message = result.error.message ?? "";
+    if (message.includes("PRACTICE_ENTITLEMENT_CATEGORY_EXHAUSTED")) {
+      throw new CategoryRequestError(
+        "该分类练习的自主练习额度已用完。已有练习仍可继续完成。",
+        403
+      );
+    }
+    if (message.includes("CATEGORY_PRACTICE_ORIGIN_NOT_AVAILABLE")) {
+      throw new CategoryRequestError(
+        "当前暂不支持这种分类练习来源。",
+        400
+      );
+    }
+    if (message.includes("CATEGORY_REQUEST_ID_CONFLICT")) {
+      throw new CategoryRequestError(
+        "本次练习请求与已有记录不一致，请重新开始。",
+        409
+      );
+    }
+    throw new Error(message || "Category session creation failed");
+  }
+
+  const payload = result.data as {
+    created?: boolean;
+    session?: CategorySession;
+    answers?: CategoryAnswer[];
+  } | null;
+  if (
+    !payload?.session?.sessionId ||
+    !Array.isArray(payload.answers) ||
+    typeof payload.created !== "boolean"
+  ) {
+    throw new Error("Category session creation returned an invalid payload");
+  }
   return {
-    sessionId: result.data.session_id, questionCategory, amount, groups: manifest.groups,
-    progress: {}, status: "active", elapsedSeconds: 0, totalPoints: 0, correctPoints: 0,
-    createdAt: result.data.created_at, completedAt: null
+    session: payload.session,
+    answers: payload.answers,
+    created: payload.created
   };
 }
 
@@ -65,7 +117,9 @@ export async function loadTeacherCategorySessionDetail(db: SupabaseClient, stude
   const session: CategorySession = {
     sessionId, questionCategory: row.question_category, amount: row.amount, groups: row.manifest.groups,
     progress: row.progress, status: row.status, elapsedSeconds: row.elapsed_seconds, correctPoints: row.correct_points,
-    totalPoints: row.total_points, createdAt: row.created_at, completedAt: row.completed_at
+    totalPoints: row.total_points, createdAt: row.created_at, completedAt: row.completed_at,
+    categories: row.categories ?? [], origin: row.origin ?? null,
+    assignmentId: row.assignment_id ?? null
   };
   const answerResult = await db.from(CATEGORY_ANSWER_TABLE)
     .select("answer_id,logical_item_id,question_id,answer_kind,student_answer,is_correct,question_time_seconds").eq("session_id", sessionId);
@@ -87,9 +141,9 @@ export async function loadTeacherCategorySessionDetail(db: SupabaseClient, stude
       disclosures: await loadReadingAnswerDisclosures(db, rows) } };
   }));
   return {
-    summary: { title: categorySessionTitle(session.questionCategory), correctPoints: session.correctPoints,
+    summary: { title: categorySessionTitle(session.questionCategory, session.categories), correctPoints: session.correctPoints,
       totalPoints: session.totalPoints, elapsedSeconds: session.elapsedSeconds, submittedAt: session.completedAt! },
     review: buildReadingWrongbookSessionReviewPayload({ groupReviews, shapes, sessionId, taskType: "rap",
-      title: categorySessionTitle(session.questionCategory), totalElapsedSeconds: session.elapsedSeconds, reviewHref: () => "" })
+      title: categorySessionTitle(session.questionCategory, session.categories), totalElapsedSeconds: session.elapsedSeconds, reviewHref: () => "" })
   };
 }

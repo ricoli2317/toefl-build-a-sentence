@@ -26,6 +26,8 @@ export const dynamic = "force-dynamic";
 
 const ROUTE = "/api/reading/full-set-attempts";
 const BOOTSTRAP_TIMEOUT_MS = 15_000;
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function GET(request: Request) {
   const auth = await requireReadingFullSetStudent(request);
@@ -67,15 +69,31 @@ export async function POST(request: Request) {
   if (auth.error || !auth.client) {
     return respond({ code: "AUTH_FAILED", error: "请先登录后再开始套题练习。" }, { status: 401 });
   }
-  const body = await request.json().catch(() => ({})) as { fullSetId?: unknown };
+  const body = await request.json().catch(() => ({})) as {
+    assignmentId?: unknown;
+    fullSetId?: unknown;
+  };
   const fullSetId = typeof body.fullSetId === "string" ? body.fullSetId.trim() : "";
   if (!isFullSetId(fullSetId)) {
     return respond({ code: "DEFINITION_FAILED", error: "无效的套题练习请求。" }, { status: 400 });
   }
+  if (
+    body.assignmentId !== undefined
+    && body.assignmentId !== null
+    && typeof body.assignmentId !== "string"
+  ) {
+    return respond({ code: "DEFINITION_FAILED", error: "无效的作业来源。" }, { status: 400 });
+  }
+  const assignmentId = typeof body.assignmentId === "string"
+    ? body.assignmentId.trim()
+    : "";
+  if (assignmentId && !UUID_PATTERN.test(assignmentId)) {
+    return respond({ code: "DEFINITION_FAILED", error: "无效的作业来源。" }, { status: 400 });
+  }
 
   try {
     const bootstrap = await withReadingFullSetTimeout(
-      buildM1Bootstrap(auth.client, fullSetId, timing),
+      buildM1Bootstrap(auth.client, fullSetId, assignmentId || null, timing),
       BOOTSTRAP_TIMEOUT_MS,
       "BOOTSTRAP_TIMEOUT"
     );
@@ -103,20 +121,43 @@ export async function POST(request: Request) {
 async function buildM1Bootstrap(
   client: NonNullable<Awaited<ReturnType<typeof requireReadingFullSetStudent>>["client"]>,
   fullSetId: string,
+  assignmentId: string | null,
   timing: ReturnType<typeof createStudentPerformanceTrace>
 ) {
   const db = createServiceSupabase();
   const [attempt, fullSet] = await Promise.all([
     timing.measure("database", "attempt_create_or_reuse", async () => {
-      const result = await client.rpc("get_or_create_reading_full_set_attempt", {
-        p_full_set_id: fullSetId
-      });
+      const result = await client.rpc(
+        "get_or_create_reading_full_set_attempt_with_assignment",
+        {
+          p_full_set_id: fullSetId,
+          p_assignment_id: assignmentId
+        }
+      );
       if (result.error?.message?.includes("FULL_SET_NOT_FOUND")) {
         throw new M1BootstrapFailure(
           "DEFINITION_FAILED",
           "attempt_create_or_reuse",
           "没有找到这个完整阅读套题。",
           404,
+          { cause: result.error }
+        );
+      }
+      if (result.error?.message?.includes("FULL_SET_ASSIGNMENT_REQUIRED")) {
+        throw new M1BootstrapFailure(
+          "ASSIGNMENT_REQUIRED",
+          "attempt_create_or_reuse",
+          "完整阅读套题只能从有效教师作业开始。",
+          403,
+          { cause: result.error }
+        );
+      }
+      if (result.error?.message?.includes("FULL_SET_ASSIGNMENT_NOT_AVAILABLE")) {
+        throw new M1BootstrapFailure(
+          "ASSIGNMENT_NOT_AVAILABLE",
+          "attempt_create_or_reuse",
+          "这项作业已撤回或不再可用。",
+          409,
           { cause: result.error }
         );
       }
@@ -211,7 +252,13 @@ async function buildM1Bootstrap(
 
 class M1BootstrapFailure extends Error {
   constructor(
-    readonly code: "OWNERSHIP_FAILED" | "M1_PREPARE_FAILED" | "DEFINITION_FAILED" | "CONTENT_FAILED",
+    readonly code:
+      | "ASSIGNMENT_NOT_AVAILABLE"
+      | "ASSIGNMENT_REQUIRED"
+      | "CONTENT_FAILED"
+      | "DEFINITION_FAILED"
+      | "M1_PREPARE_FAILED"
+      | "OWNERSHIP_FAILED",
     readonly phase: string,
     message: string,
     readonly status: number,

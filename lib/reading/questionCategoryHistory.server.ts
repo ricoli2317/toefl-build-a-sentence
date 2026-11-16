@@ -2,7 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "../supabasePagination.ts";
 import { CATEGORY_SESSION_TABLE, type CategoryHistoryRow } from "./questionCategory.ts";
 
-export const CATEGORY_HISTORY_COLUMNS = "session_id,question_category,amount,status,completed_at,elapsed_seconds,total_points,correct_points";
+export const CATEGORY_HISTORY_COLUMNS = "session_id,question_category,amount,status,completed_at,elapsed_seconds,total_points,correct_points,categories,origin,assignment_id";
 /** Identity/scoring only. Shared student + teacher history never reads manifests,
  * answers or passages, and uses the same completed-at date/range boundaries.
  */

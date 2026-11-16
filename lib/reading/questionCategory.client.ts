@@ -19,3 +19,15 @@ export async function categoryFetch<T>(url: string, auth: StudentCacheSession, b
 export function loadCategorySession(id: string, auth: StudentCacheSession) {
   return categoryFetch<CategorySessionPayload>(`${CATEGORY_API}/sessions/${encodeURIComponent(id)}`, auth);
 }
+
+export function startCategoryAssignmentSession(
+  assignmentId: string,
+  requestId: string,
+  auth: StudentCacheSession
+) {
+  return categoryFetch<CategorySessionPayload & { created?: boolean }>(
+    `${CATEGORY_API}/assignments/${encodeURIComponent(assignmentId)}`,
+    auth,
+    { requestId }
+  );
+}

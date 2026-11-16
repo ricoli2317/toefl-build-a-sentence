@@ -211,6 +211,7 @@ export function studentPracticeRecordResultTarget(
     };
   }
   if (record.taskType === "build_sentence") {
+    if (!attemptId) return null;
     return {
       href: withStudentReturnTo(
         `/student/results/${encodeURIComponent(attemptId)}?source=practice-history`,
@@ -251,14 +252,47 @@ export function studentPracticeRecordRetakeTarget(
   record: TeacherPracticeRecord
 ): StudentPracticeRetakeTarget {
   if (record.kind === "wrongbook") return null;
-  if (record.kind === "question_category") return record.source?.questionCategory && record.source.categoryAmount
-    ? { kind: "link", href: categoryPracticeHref(record.source.questionCategory, nextWrongQuestionHistoryAmount(record.source.categoryAmount)), label: "重新练习" }
-    : null;
+  if (record.kind === "question_category") {
+    // Teacher-assigned RAP Category sessions must Retake from their frozen
+    // Assignment Manifest. Reusing the self-practice category URL here would
+    // create a new category session and spend a Student self-practice quota.
+    if (record.source?.categoryAssignmentId) {
+      return {
+        kind: "link",
+        href: `/student/question-category-practice/assignment/${encodeURIComponent(record.source.categoryAssignmentId)}?new=1`,
+        label: "重新练习"
+      };
+    }
+    // Never fall back to a self-practice Category start for a teacher-origin
+    // record whose Assignment link is missing. That would spend a quota and
+    // would not use the frozen teacher Manifest.
+    if (record.source?.categoryOrigin === "teacher_assigned") return null;
+    return record.source?.questionCategory && record.source.categoryAmount
+      ? {
+          kind: "link",
+          href: categoryPracticeHref(
+            record.source.questionCategory,
+            nextWrongQuestionHistoryAmount(record.source.categoryAmount)
+          ),
+          label: "重新练习"
+        }
+      : null;
+  }
   if (record.taskType === "full_set") {
     const fullSetId = record.source?.fullSetId;
     return fullSetId ? { kind: "full_set", fullSetId } : null;
   }
   if (record.taskType === "build_sentence") {
+    const categoryAssignmentId = record.source?.basCategoryAssignmentId?.trim();
+    if (categoryAssignmentId) {
+      // A teacher-assigned BAS category Retake stays on the frozen Assignment
+      // Manifest and never starts a self-practice category session.
+      return {
+        kind: "link",
+        href: `/student/grammar-practice/assignment/${encodeURIComponent(categoryAssignmentId)}?new=1`,
+        label: "重新练习"
+      };
+    }
     const setId = record.source?.basSetId;
     return setId
       ? { kind: "link", href: `/student/practice/${encodeURIComponent(setId)}`, label: "重新练习" }

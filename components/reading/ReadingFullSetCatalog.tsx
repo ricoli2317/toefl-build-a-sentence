@@ -15,8 +15,10 @@ import {
 import {
   StudentEmptyState,
   StudentErrorState,
+  StudentInfoStrip,
   StudentNavigation
 } from "@/components/student/StudentUI";
+import { useStudentPracticeEntitlements } from "@/components/student/StudentPracticeEntitlements";
 import type { ReadingFullSetCatalogItem } from "@/lib/reading/fullSets";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { ReadingCatalogPagination, ReadingCatalogStatusBadge } from "./ReadingCatalog";
@@ -27,6 +29,9 @@ const PAGE_SIZE = 10;
 type ReadingFullSetCatalogPayload = {
   fullSets: ReadingFullSetCatalogItem[];
   total: number;
+  canStartUnassigned?: boolean;
+  enforcementEnabled?: boolean;
+  viewerRole?: "student" | "teacher" | "admin" | null;
 };
 
 export function ReadingFullSetCatalog() {
@@ -39,6 +44,14 @@ export function ReadingFullSetCatalog() {
     cacheKey,
     (session) => loadReadingFullSetCatalog(session)
   );
+  const entitlements = useStudentPracticeEntitlements();
+  const viewerRole = entitlements.viewerRole ?? state.data?.viewerRole ?? null;
+  const enforcementEnabled = entitlements.data
+    ? entitlements.enforcementEnabled
+    : state.data?.enforcementEnabled === true;
+  const canStartUnassigned = state.data?.canStartUnassigned === false && !entitlements.data
+    ? false
+    : viewerRole !== "student" || !enforcementEnabled;
   const totalItems = state.data?.total ?? state.data?.fullSets.length ?? 0;
   const totalPages = Math.ceil(totalItems / PAGE_SIZE);
   const visiblePage = Math.min(page, Math.max(totalPages, 1));
@@ -55,6 +68,11 @@ export function ReadingFullSetCatalog() {
           { label: "Full Set Practice" }
         ]}
       />
+      {viewerRole === "student" && enforcementEnabled ? (
+        <StudentInfoStrip>
+          完整阅读套题由教师作业布置后开始；已有历史练习仍可继续和再次练习。
+        </StudentInfoStrip>
+      ) : null}
       {state.loading ? <ReadingFullSetCatalogSkeleton /> : null}
       {!state.loading && (state.error || !state.data) ? (
         <div className="grid gap-4">
@@ -75,6 +93,7 @@ export function ReadingFullSetCatalog() {
         <PracticeSetCatalogList
           renderActions={(set) => (
             <ReadingFullSetActions
+              canStartUnassigned={canStartUnassigned}
               fullSet={items.find((item) => item.fullSetId === set.setId)!}
             />
           )}
@@ -103,7 +122,13 @@ export function ReadingFullSetCatalog() {
   );
 }
 
-function ReadingFullSetActions({ fullSet }: { fullSet: ReadingFullSetCatalogItem }) {
+function ReadingFullSetActions({
+  canStartUnassigned,
+  fullSet
+}: {
+  canStartUnassigned: boolean;
+  fullSet: ReadingFullSetCatalogItem;
+}) {
   const detailHref = `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(fullSet.fullSetId)}`;
   if (fullSet.studentState.status === "in_progress" && fullSet.studentState.activeAttemptId) {
     return (
@@ -125,6 +150,18 @@ function ReadingFullSetActions({ fullSet }: { fullSet: ReadingFullSetCatalogItem
         />
         <ReadingFullSetRetakeButton compact fullSetId={fullSet.fullSetId} label="再练一次" />
       </>
+    );
+  }
+  if (!canStartUnassigned) {
+    return (
+      <PracticeSetAction
+        disabled
+        disabledReason="完整阅读套题只能从有效教师作业开始。"
+        href={detailHref}
+        icon={Play}
+        label="需教师布置"
+        primary
+      />
     );
   }
   return <PracticeSetAction href={detailHref} icon={Play} label="开始练习" primary />;

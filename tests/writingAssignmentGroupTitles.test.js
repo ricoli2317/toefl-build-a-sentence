@@ -10,6 +10,7 @@ const {
   nextWritingAssignmentAutoTitle,
   studentWritingAssignmentTitle,
   writingAssignmentAutoTitleSequence,
+  writingAssignmentCardTaskTypeBadges,
   writingAssignmentQuestionDisplayTitle,
   writingAssignmentTaskTypeBadges
 } = require("../lib/writingAssignments.ts");
@@ -56,13 +57,39 @@ test("task type badges never invent mixed or umbrella labels", () => {
   }
 });
 
+test("card badges show the frozen category Manifest question total", () => {
+  assert.deepEqual(
+    writingAssignmentCardTaskTypeBadges([{
+      category_total_questions: 15,
+      task_type: "bas_category"
+    }]),
+    ["BAS Grammar Category ×15"]
+  );
+  assert.deepEqual(
+    writingAssignmentCardTaskTypeBadges([{
+      category_total_questions: 20,
+      task_type: "rap_category"
+    }]),
+    ["RAP Question Category ×20"]
+  );
+  assert.deepEqual(
+    writingAssignmentCardTaskTypeBadges([
+      { category_total_questions: null, task_type: "build_sentence" },
+      { category_total_questions: null, task_type: "build_sentence" },
+      { category_total_questions: 15, task_type: "bas_category" },
+      { category_total_questions: null, task_type: "email" }
+    ]),
+    ["Build a Sentence ×2", "BAS Grammar Category ×15", "Write an Email"]
+  );
+});
+
 test("teacher and student cards share the task type badge helper", () => {
   for (const relativePath of [
     "components/teacher/TeacherWritingAssignmentList.tsx",
     "components/teacher/TeacherWritingAssignmentDetailBody.tsx",
     "components/student/StudentWritingAssignments.tsx"
   ]) {
-    assert.match(source(relativePath), /writingAssignmentTaskTypeBadges/);
+    assert.match(source(relativePath), /writingAssignmentCardTaskTypeBadges/);
     assert.doesNotMatch(source(relativePath), /writingAssignmentTaskTypeLabels/);
   }
 });
@@ -74,7 +101,7 @@ test("mixed groups render one badge per task type instead of one joined badge", 
     "components/student/StudentWritingAssignments.tsx"
   ]) {
     const ui = source(relativePath);
-    assert.match(ui, /writingAssignmentTaskTypeBadges\([\s\S]{0,120}?\.map\(/);
+    assert.match(ui, /writingAssignmentCardTaskTypeBadges\([\s\S]{0,120}?\.map\(/);
     assert.doesNotMatch(ui, /writingAssignmentTaskTypeLabels/);
   }
 });
@@ -399,7 +426,7 @@ test("student day list renders one collection card for a mixed group and keeps i
   assert.match(ui, /<StudentWritingAssignmentGroupCard/);
   assert.match(ui, /questionTitleOnly/);
   assert.match(ui, /writingAssignmentQuestionDisplayTitle/);
-  assert.match(ui, /writingAssignmentTaskTypeBadges/);
+  assert.match(ui, /writingAssignmentCardTaskTypeBadges/);
   assert.doesNotMatch(ui, /writingAssignmentTaskTypeLabels/);
   const batchSection = ui.match(
     /export function StudentWritingAssignmentCollectionDetail[\s\S]*?function StudentWritingAssignmentGroupCard/

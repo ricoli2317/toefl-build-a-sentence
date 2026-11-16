@@ -28,6 +28,19 @@ export type StudentAssignmentPracticeItem = {
   sourceSetId?: string | null;
 };
 
+/**
+ * BAS and Reading practice routes are not Assignment-id routes, but their
+ * start RPC still needs the Assignment hint so the server can validate the
+ * real membership/item/status before granting a free unlock. The hint is never
+ * trusted by itself.
+ */
+function withAssignmentHint(href: string, assignmentId?: string | null) {
+  const id = assignmentId?.trim() ?? "";
+  if (!id) return href;
+  const separator = href.includes("?") ? "&" : "?";
+  return `${href}${separator}assignmentId=${encodeURIComponent(id)}`;
+}
+
 export function studentAssignmentPracticeHref(
   item: StudentAssignmentPracticeItem,
   returnTo?: string | string[] | null
@@ -47,20 +60,43 @@ export function studentAssignmentPracticeHref(
     }
     case "build_sentence": {
       const sourceSetId = item.sourceSetId?.trim() ?? "";
-      return sourceSetId
-        ? withReturnTo(`${STUDENT_ROUTES.buildASentencePractice}/${encodeURIComponent(sourceSetId)}`)
+      const href = sourceSetId
+        ? `${STUDENT_ROUTES.buildASentencePractice}/${encodeURIComponent(sourceSetId)}`
+        : "";
+      return href
+        ? withReturnTo(withAssignmentHint(href, item.assignmentId))
         : null;
     }
     case "ctw":
     case "rdl":
-    case "rap":
-      return itemId
-        ? withReturnTo(`/student/reading/practice/${encodeURIComponent(itemId)}`)
+    case "rap": {
+      const href = itemId
+        ? `/student/reading/practice/${encodeURIComponent(itemId)}`
+        : "";
+      return href
+        ? withReturnTo(withAssignmentHint(href, item.assignmentId))
         : null;
-    case "full_set":
-      return itemId
-        ? withReturnTo(`${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(itemId)}`)
+    }
+    case "full_set": {
+      const href = itemId
+        ? `${STUDENT_ROUTES.readingFullSets}/${encodeURIComponent(itemId)}`
+        : "";
+      return href
+        ? withReturnTo(withAssignmentHint(href, item.assignmentId))
         : null;
+    }
+    case "bas_category": {
+      const assignmentId = item.assignmentId?.trim() ?? "";
+      return assignmentId
+        ? withReturnTo(`/student/grammar-practice/assignment/${encodeURIComponent(assignmentId)}`)
+        : null;
+    }
+    case "rap_category": {
+      const assignmentId = item.assignmentId?.trim() ?? "";
+      return assignmentId
+        ? withReturnTo(`/student/question-category-practice/assignment/${encodeURIComponent(assignmentId)}`)
+        : null;
+    }
   }
 }
 
@@ -78,11 +114,17 @@ export function studentAssignmentResultHref(input: {
   if (!attemptId) return null;
   switch (input.taskType) {
     case "build_sentence":
+    case "bas_category":
       return withStudentReturnTo(`/student/results/${encodeURIComponent(attemptId)}`, returnTo);
     case "ctw":
     case "rdl":
     case "rap":
       return withStudentReturnTo(`/student/reading/results/${encodeURIComponent(attemptId)}`, returnTo);
+    case "rap_category":
+      return withStudentReturnTo(
+        `/student/question-category-practice/sessions/${encodeURIComponent(attemptId)}`,
+        returnTo
+      );
     case "full_set": {
       const itemId = input.itemId?.trim() ?? "";
       return itemId

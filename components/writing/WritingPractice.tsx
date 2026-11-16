@@ -25,6 +25,7 @@ import {
 } from "react";
 import {
   STUDENT_ACADEMIC_DISCUSSION_AVATARS_CACHE_KEY,
+  STUDENT_LOGICAL_CATALOG_CACHE_PREFIX,
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   STUDENT_WRITING_OVERVIEW_CACHE_KEY,
   STUDENT_WRITING_MODE_POLICY_CACHE_KEY,
@@ -73,6 +74,7 @@ import {
 import type { StudentWritingModeAvailability } from "@/lib/writingModePolicy";
 import { calculateActiveWritingTimer } from "@/lib/writingTimer";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
+import { STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY } from "@/lib/practiceEntitlements";
 import {
   logStudentPerformance,
   measureStudentRequest
@@ -145,7 +147,7 @@ export function WritingPractice({
   taskType: WritingTaskType;
 }) {
   const router = useRouter();
-  const { getEntry } = useStudentDataCache();
+  const { getEntry, invalidate } = useStudentDataCache();
   const [selectedWritingMode, setSelectedWritingMode] = useState<WritingMode | null>(null);
   const [payload, setPayload] = useState<PracticePayload | null>(null);
   const [viewer, setViewer] = useState<{ email: string | null; studentId: string } | null>(null);
@@ -300,6 +302,10 @@ export function WritingPractice({
           setRecoveryApplied(nextRecoveryApplied);
           setBlockedRecoveryText(nextBlockedRecoveryText);
           setPayload(nextPayload);
+          if (mode === "practice") {
+            invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+            invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
+          }
           if (!attemptId && result.attempt.status === "draft") {
             publishCacheInvalidation({
               type: "WRITING_DRAFT_UPDATED",
@@ -318,7 +324,12 @@ export function WritingPractice({
         }
       } catch (loadError) {
         if (ignore) return;
-        setError(loadError instanceof Error ? loadError.message : "无法进入写作练习。");
+        const message = loadError instanceof Error ? loadError.message : "无法进入写作练习。";
+        setError(message);
+        if (/额度已用完|尚未获得练习授权/.test(message)) {
+          invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+          invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
+        }
         if (attemptId) void revealUnavailableRecovery();
       }
     }
@@ -331,6 +342,7 @@ export function WritingPractice({
     attemptId,
     cachedReadonlyPayload,
     forceNew,
+    invalidate,
     mode,
     questionId,
     router,

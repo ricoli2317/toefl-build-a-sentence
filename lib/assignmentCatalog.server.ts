@@ -1,9 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
-  ASSIGNMENT_ITEM_TYPES,
+  ASSIGNMENT_CATALOG_ITEM_TYPES,
   assignmentCatalogEntryKey,
   assignmentItemSubject,
   buildAssignmentItemSnapshot,
+  isCategoryAssignmentItemType,
   isAssignmentItemType,
   type AssignmentCatalogEntry,
   type AssignmentItemSnapshot,
@@ -136,7 +137,7 @@ export function assignmentItemTypesFromValues(values: unknown[]): AssignmentItem
   return Array.from(new Set(values.filter(isAssignmentItemType)));
 }
 
-export const ASSIGNMENT_CATALOG_ITEM_TYPE_ORDER = ASSIGNMENT_ITEM_TYPES;
+export const ASSIGNMENT_CATALOG_ITEM_TYPE_ORDER = ASSIGNMENT_CATALOG_ITEM_TYPES;
 
 /**
  * The teacher Assignment detail keeps the historical stored identity
@@ -164,7 +165,7 @@ export async function resolveAssignmentCatalogItemIds(
   )));
   for (const item of items) {
     if (item.questionSource !== "question_bank" || !item.questionId) continue;
-    if (isWritingTaskType(item.itemType)) continue;
+    if (isWritingTaskType(item.itemType) || isCategoryAssignmentItemType(item.itemType)) continue;
     map.set(assignmentCatalogEntryKey({ item_id: item.questionId, item_type: item.itemType }), item.questionId);
   }
   if (rawQuestionIds.length > 0) {

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { loadCategoryHistoryRows } from "./reading/questionCategoryHistory.server.ts";
+import { loadBasCategoryHistoryRows } from "./grammarPracticeHistory.server.ts";
 import {
   compareReadingCatalogIdentityOrder,
   type ReadingCatalogItemRow,
@@ -531,7 +532,7 @@ export async function loadTeacherStudentWritingPractice(
   endAt: string,
   scope?: PracticeHistoryLoadScope
 ): Promise<TeacherStudentWritingPractice> {
-  const [basResult, writingResult] = await Promise.all([
+  const [basResult, writingResult, basCategorySessions] = await Promise.all([
     readAllSupabaseRows<TeacherBasAttemptRow>((from, to) =>
       db
         .from("attempts")
@@ -559,7 +560,8 @@ export async function loadTeacherStudentWritingPractice(
         .order("submitted_at", { ascending: false })
         .order("attempt_id", { ascending: false })
         .range(from, to)
-    )
+    ),
+    loadBasCategoryHistoryRows(db, studentId, startAt, endAt)
   ]);
   const queryError = basResult.error ?? writingResult.error;
   if (queryError) throw new Error(queryError.message);
@@ -577,6 +579,7 @@ export async function loadTeacherStudentWritingPractice(
 
   return buildTeacherStudentWritingPractice({
     basAttempts,
+    basCategorySessions,
     basTitles,
     includeVirtualBas: scope?.includeVirtualBas !== false,
     studentId,

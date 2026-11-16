@@ -15,6 +15,7 @@ import {
   cacheDomainsForEvent,
   subscribeToCacheInvalidation
 } from "@/lib/cacheInvalidation";
+import { STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY } from "@/lib/practiceEntitlements";
 import {
   mergeOfficialAttemptIntoSetsPayload,
   isLaterOfficialAttempt,
@@ -596,6 +597,9 @@ export function StudentDataCacheProvider({ children }: { children: ReactNode }) 
               if (event.attemptId) {
                 invalidate(`${STUDENT_WRITING_CORRECTION_CACHE_PREFIX}:attempt:${event.attemptId}`);
               }
+              break;
+            case "studentPracticeEntitlements":
+              invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
               break;
             case "studentPracticeCatalog":
               invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);

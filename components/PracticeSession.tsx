@@ -1,7 +1,7 @@
 "use client";
 import { LexicalLookupProvider } from "@/components/lexical/LexicalLookup";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   joinTextItems,
@@ -14,6 +14,7 @@ import {
 import { PracticeReview } from "@/components/shared/PracticeReview";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
+  STUDENT_LOGICAL_CATALOG_CACHE_PREFIX,
   STUDENT_WRONG_QUESTIONS_CACHE_PREFIX,
   STUDENT_PRACTICE_HISTORY_CACHE_PREFIX,
   studentAttemptCacheKey,
@@ -22,6 +23,7 @@ import {
   useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
+import { STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY } from "@/lib/practiceEntitlements";
 import { isVirtualPracticeSetId, withStudentReturnTo } from "@/lib/studentNavigation";
 import { broadcastStudentPracticeCompleted } from "@/lib/studentCacheEvents";
 import {
@@ -50,10 +52,28 @@ type QuestionsPayload = {
 
 const DEFAULT_TIME_SECONDS = 6 * 60 + 50;
 
+export type PracticeProgressSnapshot = {
+  answers: Record<string, string[]>;
+  questionTimes: Record<string, number>;
+  currentIndex: number;
+  elapsedSeconds: number;
+  paused?: boolean;
+};
+
+export type PracticeSessionInitialDraft = Partial<PracticeProgressSnapshot>;
+
 export function PracticeSession({
   allowEndPractice = false,
+  allowPause = false,
+  assignmentId = null,
+  grammarSessionId = null,
   hideQuestionCardNumber = false,
+  initialDraft,
+  initialElapsedSeconds = 0,
+  initialPaused = false,
   initialQuestions,
+  onProgress,
+  requiresPracticeStart = false,
   returnTo,
   setId,
   setTitle,
@@ -63,8 +83,24 @@ export function PracticeSession({
   totalSeconds = DEFAULT_TIME_SECONDS
 }: {
   allowEndPractice?: boolean;
+  /** Positive timer may be paused explicitly; only used with stopwatch. */
+  allowPause?: boolean;
+  /** Teacher Assignment origin; validated again by the start RPC. */
+  assignmentId?: string | null;
+  /** Persisted BAS Grammar random session. Never trusted without server validation. */
+  grammarSessionId?: string | null;
   hideQuestionCardNumber?: boolean;
+  /** Restored answer/progress snapshot for a persisted session. */
+  initialDraft?: PracticeSessionInitialDraft;
+  /** Elapsed seconds already saved when resuming. */
+  initialElapsedSeconds?: number;
+  /** Persisted positive-timer pause state when resuming. */
+  initialPaused?: boolean;
   initialQuestions?: PublicQuestion[];
+  /** Optional debounced progress save for a persisted session. */
+  onProgress?: (snapshot: PracticeProgressSnapshot) => void;
+  /** Ordinary BAS entry must call the explicit Start/Unlock endpoint. */
+  requiresPracticeStart?: boolean;
   /** Assignment-origin safe return path forwarded to the result page. */
   returnTo?: string | null;
   setId: string;
@@ -88,21 +124,109 @@ export function PracticeSession({
     () => initialQuestions ?? cachedQuestions ?? [],
     [cachedQuestions, initialQuestions]
   );
-  const loading = usesProvidedQuestions ? false : questionState.loading;
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const questionLoading = usesProvidedQuestions ? false : questionState.loading;
+  const restored = useMemo(
+    () => hydratePracticeDraft(questions, initialDraft),
+    [initialDraft, questions]
+  );
+  const safeInitialElapsedSeconds = Math.max(
+    0,
+    Math.round(initialElapsedSeconds || 0)
+  );
+  const initialTimedElapsedSeconds = timed
+    ? Math.min(totalSeconds, safeInitialElapsedSeconds)
+    : safeInitialElapsedSeconds;
+  const [currentIndex, setCurrentIndex] = useState(restored.currentIndex);
   const [currentAnswer, setCurrentAnswer] = useState<Array<OptionChunk | null>>([]);
-  const [draftAnswers, setDraftAnswers] = useState<DraftAnswers>({});
-  const [questionTimes, setQuestionTimes] = useState<QuestionTimes>({});
+  const [draftAnswers, setDraftAnswers] = useState<DraftAnswers>(restored.answers);
+  const [questionTimes, setQuestionTimes] = useState<QuestionTimes>(restored.questionTimes);
   const [showReview, setShowReview] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<SubmitResponse | null>(null);
-  const [startedAt] = useState(() => Date.now());
+  const [startedAt] = useState(() => Date.now() - initialTimedElapsedSeconds * 1000);
   const [questionStartedAt, setQuestionStartedAt] = useState(() => Date.now());
-  const [remainingSeconds, setRemainingSeconds] = useState(totalSeconds);
-  const [elapsedDisplaySeconds, setElapsedDisplaySeconds] = useState(0);
-  const [visitedQuestionIds, setVisitedQuestionIds] = useState<Set<string>>(() => new Set());
+  const [remainingSeconds, setRemainingSeconds] = useState(
+    Math.max(0, totalSeconds - initialTimedElapsedSeconds)
+  );
+  const [elapsedDisplaySeconds, setElapsedDisplaySeconds] = useState(
+    () => stopwatch ? safeInitialElapsedSeconds : 0
+  );
+  const [timerPaused, setTimerPaused] = useState(
+    () => Boolean(allowPause && stopwatch && initialPaused)
+  );
+  const elapsedBaseRef = useRef(safeInitialElapsedSeconds);
+  const elapsedRunStartedRef = useRef<number | null>(null);
+  const latestProgressRef = useRef<PracticeProgressSnapshot | null>(null);
+  const elapsedDisplayRef = useRef(elapsedDisplaySeconds);
+  elapsedDisplayRef.current = elapsedDisplaySeconds;
+  const [visitedQuestionIds, setVisitedQuestionIds] = useState<Set<string>>(
+    () => new Set(Object.keys(restored.answers))
+  );
+  const onProgressRef = useRef(onProgress);
+  onProgressRef.current = onProgress;
+  const [startStatus, setStartStatus] = useState<"loading" | "ready" | "error">(
+    requiresPracticeStart ? "loading" : "ready"
+  );
+  const [startError, setStartError] = useState("");
 
+  useEffect(() => {
+    if (!requiresPracticeStart || isVirtualPracticeSetId(setId.trim())) {
+      setStartStatus("ready");
+      return;
+    }
+    let cancelled = false;
+    async function startPractice() {
+      setStartStatus("loading");
+      setStartError("");
+      try {
+        const supabase = createBrowserSupabase();
+        const {
+          data: { session }
+        } = await supabase.auth.getSession();
+        const response = await fetch(
+          `/api/sets/${encodeURIComponent(setId)}/start`,
+          {
+            method: "POST",
+            cache: "no-store",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.access_token ?? ""}`
+            },
+            body: JSON.stringify({ assignmentId: assignmentId || null })
+          }
+        );
+        const payload = (await response.json().catch(() => ({}))) as {
+          access?: { allowed?: boolean };
+          error?: string;
+        };
+        if (!response.ok || payload.access?.allowed !== true) {
+          throw new Error(payload.error ?? "暂时无法开始这道练习，请稍后重试。");
+        }
+        invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+        invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
+        if (!cancelled) setStartStatus("ready");
+      } catch (error) {
+        invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+        invalidate(STUDENT_LOGICAL_CATALOG_CACHE_PREFIX);
+        if (!cancelled) {
+          setStartError(
+            error instanceof Error
+              ? error.message
+              : "暂时无法开始这道练习，请稍后重试。"
+          );
+          setStartStatus("error");
+        }
+      }
+    }
+    void startPractice();
+    return () => {
+      cancelled = true;
+    };
+  }, [assignmentId, invalidate, requiresPracticeStart, setId]);
+
+  const startLoading = requiresPracticeStart && startStatus === "loading";
+  const loading = questionLoading || startLoading;
   const currentQuestion = questions[currentIndex];
   const currentQuestionId = currentQuestion?.question_id;
   const currentBlankCount = currentQuestion?.blank_count ?? 0;
@@ -138,6 +262,7 @@ export function PracticeSession({
               body: JSON.stringify({
                 setId,
                 setTitle,
+                grammarSessionId: grammarSessionId ?? undefined,
                 questionIds: effectiveQuestionIds,
                 answers: questions
                   .filter((question) =>
@@ -153,10 +278,12 @@ export function PracticeSession({
                   })),
                 timeSpentSeconds:
                   forcedTimeSpentSeconds ??
-                  Math.min(
-                    timed ? totalSeconds : Number.MAX_SAFE_INTEGER,
-                    Math.max(0, Math.round((Date.now() - startedAt) / 1000))
-                  )
+                  (stopwatch && !timed
+                    ? Math.max(0, Math.round(elapsedDisplayRef.current))
+                    : Math.min(
+                        timed ? totalSeconds : Number.MAX_SAFE_INTEGER,
+                        Math.max(0, Math.round((Date.now() - startedAt) / 1000))
+                      ))
               })
             });
             captureResponse(submitResponse);
@@ -228,6 +355,7 @@ export function PracticeSession({
       }
     },
     [
+      grammarSessionId,
       invalidate,
       questions,
       router,
@@ -235,6 +363,7 @@ export function PracticeSession({
       setId,
       setTitle,
       startedAt,
+      stopwatch,
       timed,
       totalSeconds,
       recordOfficialAttempt,
@@ -260,14 +389,147 @@ export function PracticeSession({
 
   // Positive timer for untimed wrong-question practice (history practice).
   useEffect(() => {
-    if (!stopwatch || timed || loading || result || submitting || questions.length === 0) return;
-    const update = () => setElapsedDisplaySeconds(
-      Math.max(0, Math.round((Date.now() - startedAt) / 1000))
-    );
+    if (!stopwatch || timed || loading || result || submitting || questions.length === 0) {
+      return;
+    }
+    if (timerPaused) {
+      setElapsedDisplaySeconds(elapsedBaseRef.current);
+      return;
+    }
+    if (elapsedRunStartedRef.current === null) {
+      elapsedRunStartedRef.current = Date.now();
+    }
+    const update = () => {
+      const runStartedAt = elapsedRunStartedRef.current;
+      if (runStartedAt === null) return;
+      setElapsedDisplaySeconds(
+        elapsedBaseRef.current + Math.max(0, Math.round((Date.now() - runStartedAt) / 1000))
+      );
+    };
     update();
     const timer = window.setInterval(update, 1000);
+    return () => {
+      window.clearInterval(timer);
+      const runStartedAt = elapsedRunStartedRef.current;
+      if (runStartedAt !== null) {
+        elapsedBaseRef.current += Math.max(
+          0,
+          Math.round((Date.now() - runStartedAt) / 1000)
+        );
+        elapsedDisplayRef.current = elapsedBaseRef.current;
+        elapsedRunStartedRef.current = null;
+      }
+    };
+  }, [loading, questions.length, result, stopwatch, submitting, timed, timerPaused]);
+
+  // Persisted Grammar sessions save a recoverable answer/progress snapshot.
+  // Ordinary PracticeSession callers do not pass onProgress and are unchanged.
+  useEffect(() => {
+    if (
+      !onProgressRef.current ||
+      loading ||
+      result ||
+      submitting ||
+      questions.length === 0
+    ) {
+      return;
+    }
+    const timer = window.setTimeout(() => {
+      const snapshot = buildProgressSnapshot(
+        questions,
+        draftAnswers,
+        questionTimes,
+        currentIndex,
+        currentAnswer,
+        startedAt,
+        totalSeconds,
+        stopwatch && !timed ? elapsedDisplayRef.current : undefined,
+        timerPaused
+      );
+      latestProgressRef.current = snapshot;
+      onProgressRef.current?.(snapshot);
+    }, 700);
+    return () => window.clearTimeout(timer);
+  }, [
+    currentAnswer,
+    currentIndex,
+    draftAnswers,
+    loading,
+    questionTimes,
+    questions,
+    result,
+    startedAt,
+    stopwatch,
+    submitting,
+    timed,
+    timerPaused,
+    totalSeconds
+  ]);
+
+  // Positive category Assignments store elapsed time even while the Student is
+  // idle. Answer/navigation changes still save immediately through the effect
+  // above; this is only a bounded elapsed-time checkpoint.
+  useEffect(() => {
+    if (
+      !onProgressRef.current ||
+      !stopwatch ||
+      timed ||
+      loading ||
+      result ||
+      submitting ||
+      questions.length === 0
+    ) {
+      return;
+    }
+    const timer = window.setInterval(() => {
+      const snapshot = buildProgressSnapshot(
+        questions,
+        draftAnswers,
+        questionTimes,
+        currentIndex,
+        currentAnswer,
+        startedAt,
+        totalSeconds,
+        elapsedDisplayRef.current,
+        timerPaused
+      );
+      latestProgressRef.current = snapshot;
+      onProgressRef.current?.(snapshot);
+    }, 10_000);
     return () => window.clearInterval(timer);
-  }, [loading, questions.length, result, startedAt, stopwatch, submitting, timed]);
+  }, [
+    currentAnswer,
+    currentIndex,
+    draftAnswers,
+    loading,
+    questionTimes,
+    questions,
+    result,
+    startedAt,
+    stopwatch,
+    submitting,
+    timed,
+    timerPaused,
+    totalSeconds
+  ]);
+
+  useEffect(() => {
+    if (!onProgressRef.current) return;
+    const flush = () => {
+      if (latestProgressRef.current) {
+        onProgressRef.current?.(latestProgressRef.current);
+      }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []);
 
   useEffect(() => {
     if (!timed || remainingSeconds !== 0 || loading || result || submitting || questions.length === 0) {
@@ -432,6 +694,14 @@ export function PracticeSession({
     setShowReview(false);
   }
 
+  if (startLoading) {
+    return <p className="student-loading">正在验证练习权限...</p>;
+  }
+
+  if (requiresPracticeStart && startStatus === "error") {
+    return <p className="student-error-state">{startError}</p>;
+  }
+
   if (loading) {
     return <p className="student-loading">Loading questions...</p>;
   }
@@ -468,6 +738,16 @@ export function PracticeSession({
             <p className="font-mono text-xl font-bold" data-testid="practice-elapsed-time">
               {formatTime(elapsedDisplaySeconds)}
             </p>
+            {allowPause ? (
+              <button
+                className="mt-1 text-xs font-semibold text-student-primary underline-offset-4 hover:underline disabled:opacity-50"
+                disabled={Boolean(result) || submitting}
+                onClick={() => setTimerPaused((paused) => !paused)}
+                type="button"
+              >
+                {timerPaused ? "继续计时" : "暂停"}
+              </button>
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -578,9 +858,13 @@ async function loadPracticeQuestions(setId: string, session: StudentCacheSession
 }
 
 function formatTime(totalSeconds: number) {
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  const safeSeconds = Math.max(0, Math.round(totalSeconds));
+  const hours = Math.floor(safeSeconds / 3600);
+  const minutes = Math.floor((safeSeconds % 3600) / 60);
+  const seconds = safeSeconds % 60;
+  return hours > 0
+    ? `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
+    : `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
 
 function elapsedQuestionSeconds(startedAt: number) {
@@ -596,6 +880,104 @@ function isSubmitResponse(value: Partial<SubmitResponse>): value is SubmitRespon
     typeof value.timeSpentSeconds === "number" &&
     Array.isArray(value.results)
   );
+}
+
+function hydratePracticeDraft(
+  questions: PublicQuestion[],
+  draft: PracticeSessionInitialDraft | undefined
+) {
+  const answers: DraftAnswers = {};
+  const questionTimes: QuestionTimes = {};
+
+  for (const question of questions) {
+    const savedAnswer = draft?.answers?.[question.question_id];
+    if (Array.isArray(savedAnswer)) {
+      const chunks = splitTextItems(question.options_text).map((text, index) => ({
+        id: `${question.question_id}-${index}`,
+        text
+      }));
+      const used = new Set<number>();
+      answers[question.question_id] = Array.from(
+        { length: question.blank_count },
+        (_, blankIndex) => {
+          const savedText = savedAnswer[blankIndex];
+          if (typeof savedText !== "string" || !savedText) return null;
+          const chunkIndex = chunks.findIndex(
+            (chunk, index) => !used.has(index) && chunk.text === savedText
+          );
+          if (chunkIndex === -1) return null;
+          used.add(chunkIndex);
+          return chunks[chunkIndex];
+        }
+      );
+    }
+
+    const savedTime = draft?.questionTimes?.[question.question_id];
+    if (typeof savedTime === "number" && Number.isFinite(savedTime) && savedTime >= 0) {
+      questionTimes[question.question_id] = Math.round(savedTime);
+    }
+  }
+
+  const savedIndex =
+    typeof draft?.currentIndex === "number" && Number.isInteger(draft.currentIndex)
+      ? draft.currentIndex
+      : 0;
+  return {
+    answers,
+    questionTimes,
+    currentIndex:
+      questions.length === 0
+        ? 0
+        : Math.max(0, Math.min(questions.length - 1, savedIndex))
+  };
+}
+
+function buildProgressSnapshot(
+  questions: PublicQuestion[],
+  draftAnswers: DraftAnswers,
+  questionTimes: QuestionTimes,
+  currentIndex: number,
+  currentAnswer: Array<OptionChunk | null>,
+  startedAt: number,
+  totalSeconds: number,
+  elapsedOverride?: number,
+  paused?: boolean
+): PracticeProgressSnapshot {
+  const nextDraftAnswers = { ...draftAnswers };
+  const currentQuestion = questions[currentIndex];
+  if (currentQuestion) {
+    nextDraftAnswers[currentQuestion.question_id] = normalizeOptionAnswer(
+      currentAnswer,
+      currentQuestion.blank_count
+    );
+  }
+
+  return {
+    answers: Object.fromEntries(
+      questions.map((question) => [
+        question.question_id,
+        (nextDraftAnswers[question.question_id] ?? [])
+          .map((chunk) => chunk?.text ?? "")
+          .slice(0, question.blank_count)
+      ])
+    ),
+    questionTimes: Object.fromEntries(
+      questions
+        .map((question) => [
+          question.question_id,
+          Math.max(0, Math.round(questionTimes[question.question_id] ?? 0))
+        ])
+        .filter(([, seconds]) => Number.isFinite(seconds))
+    ),
+    currentIndex,
+    elapsedSeconds: elapsedOverride !== undefined
+      ? Math.max(0, Math.round(elapsedOverride))
+      : Math.min(
+          totalSeconds,
+          Math.max(0, Math.round((Date.now() - startedAt) / 1000))
+        ),
+    ...(paused ? { paused: true } : {})
+  };
 }
 
 function normalizeOptionAnswer(

@@ -21,6 +21,10 @@ import {
 } from "@/components/teacher/TeacherUI";
 import { TeacherAssignmentCatalogPicker } from "@/components/teacher/TeacherAssignmentCatalogPicker";
 import {
+  TeacherCategoryAssignmentConfig,
+  type CategoryAssignmentOption
+} from "@/components/teacher/TeacherCategoryAssignmentConfig";
+import {
   defaultAssignmentPickerState,
   readAssignmentDraft,
   selectAssignmentPickerItemType,
@@ -49,11 +53,21 @@ import {
   assignmentCatalogEntryKey,
   assignmentItemSubject,
   assignmentItemTypeLabel,
+  categoryAssignmentItemTypeForSubject,
+  isCategoryAssignmentItemType,
   type AssignmentCatalogEntry,
   type AssignmentCatalogSelection,
-  type AssignmentItemType,
   type AssignmentSubject
 } from "@/lib/assignmentCatalog";
+import {
+  categoryAssignmentConfigFromManifest,
+  categoryAssignmentSummary,
+  categoryAssignmentTotalQuestions,
+  validateCategoryAssignmentConfig,
+  type CategoryAssignmentConfigRow,
+  type CategoryAssignmentItemType
+} from "@/lib/categoryAssignment";
+import { writingAssignmentCategoryManifest } from "@/lib/writingAssignments";
 import {
   CUSTOM_ACADEMIC_DISCUSSION_AVATAR_PATHS,
   isProfessorAvatarType,
@@ -187,6 +201,9 @@ export function TeacherWritingAssignmentForm({
 
 type WizardSeed = {
   assignmentIdsByKey: Map<string, string>;
+  categoryAssignmentId: string | null;
+  categoryEnabled: boolean;
+  categoryRows: CategoryAssignmentConfigRow[];
   className: string | null;
   customQuestions: CustomQuestionDraft[];
   dueAt: string;
@@ -194,6 +211,7 @@ type WizardSeed = {
   pickerState: AssignmentPickerState;
   selection: AssignmentCatalogSelection;
   source: WritingAssignmentQuestionSource | null;
+  standardEnabled: boolean;
   studentCount: number;
   students: string[];
   subject: AssignmentSubject | null;
@@ -212,7 +230,20 @@ function buildWizardSeed(
   const subject = assignments.length > 0
     ? assignmentItemSubject(assignments[0].task_type)
     : null;
-  for (const assignment of assignments) {
+  const categoryAssignments = assignments.filter((assignment) =>
+    isCategoryAssignmentItemType(assignment.task_type)
+  );
+  const standardAssignments = assignments.filter(
+    (assignment) => !isCategoryAssignmentItemType(assignment.task_type)
+  );
+  const firstCategoryAssignment = categoryAssignments[0];
+  const categoryManifest = firstCategoryAssignment
+    ? writingAssignmentCategoryManifest(firstCategoryAssignment.question_snapshot)
+    : null;
+  const categoryRows = categoryManifest
+    ? categoryAssignmentConfigFromManifest(categoryManifest)
+    : [];
+  for (const assignment of standardAssignments) {
     if (assignment.question_source === "question_bank" && assignment.question_id) {
       const entry = assignmentCatalogEntryFromAssignment(assignment);
       const key = assignmentCatalogEntryKey(entry);
@@ -224,15 +255,18 @@ function buildWizardSeed(
       customQuestions.push(customQuestionDraftFromAssignment(assignment));
     }
   }
-  const anyBank = assignments.some((assignment) => assignment.question_source === "question_bank");
-  const anyCustom = assignments.some((assignment) => assignment.question_source === "custom");
-  const firstBankItemType = assignments.find(
+  const anyBank = standardAssignments.some((assignment) => assignment.question_source === "question_bank");
+  const anyCustom = standardAssignments.some((assignment) => assignment.question_source === "custom");
+  const firstBankItemType = standardAssignments.find(
     (assignment) => assignment.question_source === "question_bank"
   )?.task_type;
   const defaultPickerState = defaultAssignmentPickerState(subject ?? "writing");
   const firstAssignment = assignments[0] ?? null;
   return {
     assignmentIdsByKey,
+    categoryAssignmentId: firstCategoryAssignment?.assignment_id ?? null,
+    categoryEnabled: categoryAssignments.length > 0,
+    categoryRows,
     className: firstAssignment?.class_name?.trim() || null,
     customQuestions,
     dueAt: assignments.flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
@@ -244,9 +278,10 @@ function buildWizardSeed(
       ? selectAssignmentPickerItemType(defaultPickerState, firstBankItemType)
       : defaultPickerState,
     selection,
-    source: assignments.length > 0
+    source: standardAssignments.length > 0
       ? anyBank || !anyCustom ? "question_bank" : "custom"
       : null,
+    standardEnabled: assignments.length === 0 || standardAssignments.length > 0,
     studentCount: firstAssignment?.students.length ?? 0,
     students: firstAssignment?.students.map((student) => student.student_id) ?? [],
     subject,
@@ -330,6 +365,10 @@ function TeacherAssignmentWizard({
     [initialAssignments, initialGroupTitle]
   );
   const [subject, setSubject] = useState<AssignmentSubject | null>(seed.subject);
+  const [standardEnabled, setStandardEnabled] = useState(seed.standardEnabled);
+  const [categoryEnabled, setCategoryEnabled] = useState(seed.categoryEnabled);
+  const [categoryRows, setCategoryRows] = useState<CategoryAssignmentConfigRow[]>(seed.categoryRows);
+  const [seededCategoryAssignmentId] = useState<string | null>(seed.categoryAssignmentId);
   const [source, setSource] = useState<WritingAssignmentQuestionSource | null>(seed.source);
   const [selection, setSelection] = useState<AssignmentCatalogSelection>(() => seed.selection);
   const [seededAssignmentIds] = useState<Map<string, string>>(() => seed.assignmentIdsByKey);
@@ -370,6 +409,25 @@ function TeacherAssignmentWizard({
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const assignmentSubject: AssignmentSubject = subject ?? "writing";
+  const activeCategoryKind: CategoryAssignmentItemType =
+    categoryAssignmentItemTypeForSubject(assignmentSubject);
+  const categoryValidation = useMemo(
+    () => validateCategoryAssignmentConfig(categoryRows),
+    [categoryRows]
+  );
+  const categoryOptionsState = useTeacherCachedData<{
+    categories: CategoryAssignmentOption[];
+    type: CategoryAssignmentItemType;
+  }>(
+    `teacher:category-assignment-options:${activeCategoryKind}`,
+    () => teacherApiFetch(
+      `/api/teacher/writing/assignments/category-options?type=${activeCategoryKind}`
+    ),
+    { enabled: categoryEnabled }
+  );
+  const categoryOptions = categoryOptionsState.data?.categories ?? [];
+  const categoryTotal = categoryAssignmentTotalQuestions(categoryRows);
+  const categorySummary = categoryAssignmentSummary(categoryRows);
   // The date the automatic title language uses: the assignment's own 布置日期 on
   // a withdrawn edit (so student / class / subject changes keep the same date),
   // today on a fresh create.
@@ -408,7 +466,7 @@ function TeacherAssignmentWizard({
     setPickerState(draft.picker);
   }, [editing]);
   useEffect(() => {
-    if (editing || !subject) return;
+    if (editing || !subject || !standardEnabled) return;
     writeAssignmentDraft({
       picker: pickerState,
       selection: Array.from(selection.values()),
@@ -416,7 +474,7 @@ function TeacherAssignmentWizard({
       subject,
       version: 2
     });
-  }, [editing, pickerState, selection, source, subject]);
+  }, [editing, pickerState, selection, source, standardEnabled, subject]);
   const subjectClasses = useMemo(
     () => classesForAssignmentSubject(classesState.data?.classes ?? [], assignmentSubject),
     [assignmentSubject, classesState.data]
@@ -541,21 +599,18 @@ function TeacherAssignmentWizard({
     [assignmentSubject, customQuestions]
   );
   const submitBankEntries = useMemo(
-    () => (editing || assignmentSubject === "reading" || source === "question_bank")
+    () => standardEnabled && (editing || assignmentSubject === "reading" || source === "question_bank")
       ? subjectBankEntries
       : [],
-    [assignmentSubject, editing, source, subjectBankEntries]
+    [assignmentSubject, editing, source, standardEnabled, subjectBankEntries]
   );
   const submitCustomQuestions = useMemo(
-    () => (editing || (assignmentSubject === "writing" && source === "custom"))
+    () => standardEnabled && (editing || (assignmentSubject === "writing" && source === "custom"))
       ? subjectCustomQuestions
       : [],
-    [assignmentSubject, editing, source, subjectCustomQuestions]
+    [assignmentSubject, editing, source, standardEnabled, subjectCustomQuestions]
   );
-  const activeCustomQuestions = useMemo(
-    () => assignmentSubject === "writing" && source === "custom" ? customQuestions : [],
-    [customQuestions, source, assignmentSubject]
-  );  const previewItems = useMemo(() => {
+  const previewItems = useMemo(() => {
     const bankItems = submitBankEntries.map((entry) => ({
       key: assignmentCatalogEntryKey(entry),
       label: entry.title
@@ -575,8 +630,14 @@ function TeacherAssignmentWizard({
         return [];
       }
     });
-    return [...bankItems, ...customItems];
-  }, [submitBankEntries, submitCustomQuestions]);
+    const categoryItems = categoryEnabled && categoryValidation.ok
+      ? [{
+          key: "category-assignment",
+          label: `${activeCategoryKind === "bas_category" ? "BAS 语法分类" : "RAP 题型分类"} · ${categorySummary}（${categoryTotal}题）`
+        }]
+      : [];
+    return [...bankItems, ...customItems, ...categoryItems];
+  }, [activeCategoryKind, categoryEnabled, categorySummary, categoryTotal, categoryValidation.ok, submitBankEntries, submitCustomQuestions]);
   const customPreviewCards = useMemo(
     () => submitCustomQuestions.flatMap((draft, index) => {
       try {
@@ -596,14 +657,21 @@ function TeacherAssignmentWizard({
     }),
     [submitBankEntries.length, submitCustomQuestions]
   );
-  const assignmentCount = previewItems.length;
+  const standardItemCount = submitBankEntries.length + submitCustomQuestions.length;
+  const assignmentCount = standardItemCount
+    + (categoryEnabled && categoryValidation.ok ? 1 : 0);
   const stepNumbers = useMemo(() => {
-    const order: Array<"source" | "items" | "students" | "title" | "due" | "preview"> =
-      subject === "reading"
-        ? ["items", "students", "title", "due", "preview"]
-        : ["source", "items", "students", "title", "due", "preview"];
+    const order: Array<"kind" | "source" | "items" | "students" | "title" | "due" | "preview"> = [
+      "kind",
+      ...(subject === "writing" && standardEnabled ? ["source" as const] : []),
+      "items",
+      "students",
+      "title",
+      "due",
+      "preview"
+    ];
     return new Map(order.map((key, index) => [key, String(index + 2)]));
-  }, [subject]);
+  }, [standardEnabled, subject]);
   const visibleCustomQuestions = useMemo(
     () => source === "custom"
       ? customQuestions.filter((draft) => draft.taskType === customTaskType)
@@ -617,7 +685,8 @@ function TeacherAssignmentWizard({
     // withdrawn group re-targets the whole group, so an existing selection must
     // be cleared first — never after the fact. Cancel keeps the subject, the
     // selection, the filters and the whole wizard state exactly as they were.
-    const hasItems = selection.size > 0 || customQuestions.length > 0;
+    const hasItems = (standardEnabled && (selection.size > 0 || customQuestions.length > 0))
+      || (categoryEnabled && categoryRows.length > 0);
     if (hasItems) {
       const message = subject === "writing"
         ? "已选择写作题目，切换到阅读会清空已选题目。是否切换？"
@@ -625,10 +694,26 @@ function TeacherAssignmentWizard({
       if (!window.confirm(message)) return;
     }
     setSubject(next);
+    setStandardEnabled(true);
+    setCategoryEnabled(false);
+    setCategoryRows([]);
     setSource(next === "reading" ? "question_bank" : null);
     setSelection(new Map());
     setCustomQuestions([]);
     setPickerState(defaultAssignmentPickerState(next));
+    setSubmitError("");
+  }
+
+  /**
+   * 普通题目 and 分类练习 are two independent contents of one batch. Toggling
+   * one never clears the other: the unselected side simply is not submitted.
+   */
+  function toggleAssignmentKind(next: "standard" | "category") {
+    if (next === "standard") {
+      setStandardEnabled((current) => !current);
+    } else {
+      setCategoryEnabled((current) => !current);
+    }
     setSubmitError("");
   }
 
@@ -762,8 +847,32 @@ function TeacherAssignmentWizard({
   async function submit(reactivate = false) {
     setSubmitError("");
     if (!subject) return setSubmitError("请先选择科目。");
-    if (subject === "writing" && !source) return setSubmitError("请选择题目来源。");
-    if (assignmentCount < 1) return setSubmitError("请至少选择或添加一道题目。");
+    if (!standardEnabled && !categoryEnabled) {
+      return setSubmitError("请至少选择普通题目或分类练习中的一种内容。");
+    }
+    if (categoryEnabled) {
+      if (!categoryValidation.ok) return setSubmitError(categoryValidation.error);
+      if (categoryOptionsState.loading) return setSubmitError("分类题库正在加载，请稍候。");
+      if (categoryOptionsState.error) return setSubmitError(categoryOptionsState.error);
+      const unavailable = categoryRows.find((row) => {
+        const option = categoryOptions.find((item) => item.category === row.category);
+        return !option || row.count > option.count;
+      });
+      if (unavailable) {
+        const option = categoryOptions.find((item) => item.category === unavailable.category);
+        return setSubmitError(
+          option
+            ? `分类「${unavailable.category}」题库仅有 ${option.count} 题，无法满足设置的 ${unavailable.count} 题。`
+            : `分类「${unavailable.category}」当前不可用，请重新选择。`
+        );
+      }
+    }
+    if (standardEnabled) {
+      if (subject === "writing" && !source) return setSubmitError("请选择题目来源。");
+      if (standardItemCount < 1 && !categoryEnabled) {
+        return setSubmitError("请至少选择或添加一道题目。");
+      }
+    }
     if (selectionMode === "class") {
       if (!selectedClassId) return setSubmitError("请选择班级。");
     } else if (!selectedStudents.length) {
@@ -773,16 +882,30 @@ function TeacherAssignmentWizard({
     let items: Array<Record<string, unknown>>;
     try {
       items = [
-        ...submitBankEntries.map((entry) => ({
-          ...(seededAssignmentIds.get(assignmentCatalogEntryKey(entry))
-            ? { assignmentId: seededAssignmentIds.get(assignmentCatalogEntryKey(entry)) }
-            : {}),
-          dueAt: dueAtFor(assignmentCatalogEntryKey(entry)),
-          itemType: entry.item_type,
-          questionId: entry.item_id,
-          questionSource: "question_bank" as const
-        })),
-        ...submitCustomQuestions.map((draft) => buildCustomDraftPatch(draft))
+        ...(standardEnabled
+          ? [
+              ...submitBankEntries.map((entry) => ({
+                ...(seededAssignmentIds.get(assignmentCatalogEntryKey(entry))
+                  ? { assignmentId: seededAssignmentIds.get(assignmentCatalogEntryKey(entry)) }
+                  : {}),
+                dueAt: dueAtFor(assignmentCatalogEntryKey(entry)),
+                itemType: entry.item_type,
+                questionId: entry.item_id,
+                questionSource: "question_bank" as const
+              })),
+              ...submitCustomQuestions.map((draft) => buildCustomDraftPatch(draft))
+            ]
+          : []),
+        ...(categoryEnabled
+          ? [{
+              ...(seededCategoryAssignmentId
+                ? { assignmentId: seededCategoryAssignmentId }
+                : {}),
+              categories: categoryValidation.ok ? categoryValidation.rows : [],
+              dueAt: dueAtFor("category-assignment"),
+              itemType: activeCategoryKind
+            }]
+          : [])
       ];
     } catch (error) {
       return setSubmitError(error instanceof Error ? error.message : "请完整填写每道题目。");
@@ -878,15 +1001,32 @@ function TeacherAssignmentWizard({
   }
 
   const assignmentKeys = [
-    ...submitBankEntries.map((entry) => ({
-      key: assignmentCatalogEntryKey(entry),
-      label: entry.title
-    })),
-    ...submitCustomQuestions.map((draft, index) => ({
-      key: draft.clientId,
-      label: String(draft.fields.title ?? "").trim() || `第 ${index + 1} 篇`
-    }))
+    ...(standardEnabled
+      ? [
+          ...submitBankEntries.map((entry) => ({
+            key: assignmentCatalogEntryKey(entry),
+            label: entry.title
+          })),
+          ...submitCustomQuestions.map((draft, index) => ({
+            key: draft.clientId,
+            label: String(draft.fields.title ?? "").trim() || `第 ${index + 1} 篇`
+          }))
+        ]
+      : []),
+    ...(categoryEnabled
+      ? [{
+          key: "category-assignment",
+          label: categorySummary || (activeCategoryKind === "bas_category"
+            ? "BAS 语法分类作业"
+            : "RAP 题型分类作业")
+        }]
+      : [])
   ];
+  const assignmentUnit = standardEnabled && categoryEnabled
+    ? "项"
+    : categoryEnabled
+      ? "份分类练习"
+      : "篇题目";
   return (
     <div className="grid gap-5">
       <StepCard number="1" title="选择科目">
@@ -900,10 +1040,26 @@ function TeacherAssignmentWizard({
             />
           ))}
         </div>
-        <p className="text-xs text-student-muted">写作支持 Write an Email、Academic Discussion、Build a Sentence；阅读支持 CTW、RDL、RAP、Full Set。</p>
+        <p className="text-xs text-student-muted">写作支持 Write an Email、Academic Discussion、Build a Sentence、BAS 语法分类作业；阅读支持 CTW、RDL、RAP、Full Set、RAP 题型分类作业。</p>
       </StepCard>
 
-      {subject === "writing" ? (
+      {subject ? (
+        <StepCard number={stepNumbers.get("kind")!} title="选择作业内容">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <ChoiceButton active={standardEnabled} label="普通题目作业" onClick={() => toggleAssignmentKind("standard")} />
+            <ChoiceButton
+              active={categoryEnabled}
+              label={assignmentSubject === "writing" ? "BAS 语法分类作业" : "RAP 题型分类作业"}
+              onClick={() => toggleAssignmentKind("category")}
+            />
+          </div>
+          <p className="text-xs text-student-muted">
+            普通题目与分类练习可以同时选择，并保存在同一个作业批次中；再次点击可移除其中一类内容，不会清空另一类配置。分类作业支持多分类、自定义题量和正计时，不消耗学生自主分类额度，也不会写入普通题目的永久解锁。
+          </p>
+        </StepCard>
+      ) : null}
+
+      {standardEnabled && subject === "writing" ? (
         <StepCard number={stepNumbers.get("source")!} title="选择题目来源">
           <div className="grid gap-3 sm:grid-cols-2">
             <ChoiceButton active={source === "question_bank"} label="从题库选择" onClick={() => chooseSource("question_bank")} />
@@ -915,22 +1071,54 @@ function TeacherAssignmentWizard({
         </StepCard>
       ) : null}
 
-      <StepCard number={stepNumbers.get("items")!} title={source === "custom" ? "填写自定义题" : "选择题目"}>
+      <StepCard
+        number={stepNumbers.get("items")!}
+        title={
+          standardEnabled && categoryEnabled
+            ? "选择题目与配置分类"
+            : categoryEnabled
+              ? "配置分类与题量"
+              : source === "custom"
+                ? "填写自定义题"
+                : "选择题目"
+        }
+      >
         {!subject ? (
           <p className="text-sm text-student-muted">请先选择科目。</p>
-        ) : subject === "writing" && !source ? (
-          <p className="text-sm text-student-muted">请先选择题目来源。</p>
-        ) : source === "custom" ? (
-          <div className="grid gap-4">
-            <div className="grid gap-3 sm:grid-cols-2">{(["email", "academic_discussion"] as const).map((type) => <ChoiceButton active={customTaskType === type} key={type} label={WRITING_TASK_CONFIG[type].label} onClick={() => setCustomTaskType(type)} />)}</div>{visibleCustomQuestions.map((draft, index) => <CustomQuestionDraftCard disabled={false} draft={draft} index={index} key={draft.clientId} onAvatarChange={(field, value) => chooseDraftAvatar(draft.clientId, field, value)} onChange={(field, value) => updateDraftField(draft.clientId, field, value)} onPromptChange={(value) => updateEmailPrompt(draft.clientId, value)} onRemove={() => setCustomQuestions((current) => current.filter((item) => item.clientId !== draft.clientId))} onToggle={() => updateCustomQuestion(draft.clientId, (current) => ({ ...current, expanded: !current.expanded }))} taskType={draft.taskType} />)}<button className="teacher-button-secondary justify-self-start" onClick={() => setCustomQuestions((current) => [...current, createCustomQuestionDraft(customTaskType, generatedAssignmentTitle)])} type="button"><Plus aria-hidden="true" size={16} />添加一篇</button></div>
         ) : (
-          <TeacherAssignmentCatalogPicker
-            onSelectionChange={setSelection}
-            onStateChange={setPickerState}
-            selection={selection}
-            state={pickerState}
-            subject={subject}
-          />
+          <div className="grid gap-5">
+            {standardEnabled ? (
+              subject === "writing" && !source ? (
+                <p className="text-sm text-student-muted">请先选择题目来源。</p>
+              ) : source === "custom" ? (
+                <div className="grid gap-4">
+                  <div className="grid gap-3 sm:grid-cols-2">{(["email", "academic_discussion"] as const).map((type) => <ChoiceButton active={customTaskType === type} key={type} label={WRITING_TASK_CONFIG[type].label} onClick={() => setCustomTaskType(type)} />)}</div>{visibleCustomQuestions.map((draft, index) => <CustomQuestionDraftCard disabled={false} draft={draft} index={index} key={draft.clientId} onAvatarChange={(field, value) => chooseDraftAvatar(draft.clientId, field, value)} onChange={(field, value) => updateDraftField(draft.clientId, field, value)} onPromptChange={(value) => updateEmailPrompt(draft.clientId, value)} onRemove={() => setCustomQuestions((current) => current.filter((item) => item.clientId !== draft.clientId))} onToggle={() => updateCustomQuestion(draft.clientId, (current) => ({ ...current, expanded: !current.expanded }))} taskType={draft.taskType} />)}<button className="teacher-button-secondary justify-self-start" onClick={() => setCustomQuestions((current) => [...current, createCustomQuestionDraft(customTaskType, generatedAssignmentTitle)])} type="button"><Plus aria-hidden="true" size={16} />添加一篇</button></div>
+              ) : (
+                <TeacherAssignmentCatalogPicker
+                  onSelectionChange={setSelection}
+                  onStateChange={setPickerState}
+                  selection={selection}
+                  state={pickerState}
+                  subject={subject}
+                />
+              )
+            ) : null}
+            {categoryEnabled ? (
+              <div className={standardEnabled ? "border-t border-student-border pt-5" : ""}>
+                <p className="mb-3 text-sm font-bold text-student-text">
+                  {assignmentSubject === "writing" ? "BAS 语法分类练习" : "RAP 题型分类练习"}
+                </p>
+                <TeacherCategoryAssignmentConfig
+                  error={categoryOptionsState.error}
+                  itemType={activeCategoryKind}
+                  loading={categoryOptionsState.loading}
+                  onChange={setCategoryRows}
+                  options={categoryOptions}
+                  rows={categoryRows}
+                />
+              </div>
+            ) : null}
+          </div>
         )}
       </StepCard>
 
@@ -1000,7 +1188,7 @@ function TeacherAssignmentWizard({
         ) : <p className="text-sm text-student-muted">完成题目选择或填写后，这里会显示题目列表。</p>}
       </StepCard>
 
-      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">{editing ? "保存作业修改" : "确认布置"}</p><p className="mt-1 text-sm text-student-muted">{editing ? `${selectionMode === "class" && selectedClass ? `将整组 ${assignmentCount} 篇题目重新布置给「${selectedClass.name}」的 ${selectedClass.member_count} 名学生。` : `将整组 ${assignmentCount} 篇题目重新布置给已选择的 ${selectedStudents.length} 名学生。`}` : selectionMode === "class" && selectedClass ? `将 ${assignmentCount} 篇题目布置给「${selectedClass.name}」的 ${selectedClass.member_count} 名学生，并保存同一个作业组。` : `将 ${assignmentCount} 篇题目布置给已选择的 ${selectedStudents.length} 名学生，并保存同一个作业组。`}</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<div className="flex flex-wrap justify-end gap-2">{editing ? <button className="teacher-button-secondary" disabled={submitting} onClick={() => void submit(false)} type="button">{submitting ? "正在保存…" : "保存修改"}</button> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit(editing)} type="button">{submitting ? (editing ? "正在保存…" : "正在布置…") : (editing ? "保存并重新布置" : "布置")}</button></div></div></TeacherCard>
+      <TeacherCard className="flex flex-wrap items-center justify-between gap-4 p-5"><div><p className="font-bold text-student-text">{editing ? "保存作业修改" : "确认布置"}</p><p className="mt-1 text-sm text-student-muted">{editing ? `${selectionMode === "class" && selectedClass ? `将整组 ${assignmentCount} ${assignmentUnit}重新布置给「${selectedClass.name}」的 ${selectedClass.member_count} 名学生。` : `将整组 ${assignmentCount} ${assignmentUnit}重新布置给已选择的 ${selectedStudents.length} 名学生。`}` : selectionMode === "class" && selectedClass ? `将 ${assignmentCount} ${assignmentUnit}布置给「${selectedClass.name}」的 ${selectedClass.member_count} 名学生，并保存同一个作业组。` : `将 ${assignmentCount} ${assignmentUnit}布置给已选择的 ${selectedStudents.length} 名学生，并保存同一个作业组。`}</p></div><div className="flex flex-col items-end gap-2">{submitError ? <p className="text-sm font-medium text-student-error">{submitError}</p> : null}<div className="flex flex-wrap justify-end gap-2">{editing ? <button className="teacher-button-secondary" disabled={submitting} onClick={() => void submit(false)} type="button">{submitting ? "正在保存…" : "保存修改"}</button> : null}<button className="teacher-button-primary" disabled={submitting} onClick={() => void submit(editing)} type="button">{submitting ? (editing ? "正在保存…" : "正在布置…") : (editing ? "保存并重新布置" : "布置")}</button></div></div></TeacherCard>
     </div>
   );
 }

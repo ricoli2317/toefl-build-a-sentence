@@ -9,10 +9,13 @@ import {
   assignmentItemSubject,
   buildAssignmentItemSnapshot,
   isAssignmentItemType,
+  isCategoryAssignmentItemType,
   type AssignmentCatalogEntry,
   type AssignmentItemType,
   type AssignmentSubject
 } from "./assignmentCatalog.ts";
+import { singleCategoryAssignmentValue } from "./categoryAssignment.ts";
+import { prepareCategoryAssignmentItem } from "./categoryAssignment.server.ts";
 import {
   loadAssignmentCatalogEntryMap,
   resolveTeacherAssignmentCatalogEntry
@@ -236,13 +239,52 @@ export async function prepareWritingAssignmentGroupEditMutation(
     throw new Error("请至少添加一道题目。");
   }
   if (body.items.length > 50) throw new Error("一次最多布置 50 道题目。");
+  const categoryItem = singleCategoryAssignmentValue(body.items);
+  if (categoryItem) {
+    const assignmentId = typeof categoryItem.assignmentId === "string"
+      ? categoryItem.assignmentId.trim()
+      : "";
+    const item = await prepareCategoryAssignmentItem(supabase, categoryItem, {
+      assignmentId: assignmentId || null
+    });
+    const subject = assignmentItemSubject(item.taskType);
+    if (options.subject && options.subject !== subject) {
+      throw new Error("作业科目与所选题目不匹配。");
+    }
+    const classId = typeof body.classId === "string" ? body.classId.trim() : "";
+    const membership = classId
+      ? { dueAt: item.dueAt, studentIds: [] as string[] }
+      : await prepareWritingAssignmentMembership(supabase, body, {
+          actor: options.actor,
+          subject
+        });
+    return {
+      categoryAssignment: true as const,
+      dueAt: item.dueAt,
+      items: [{
+        assignmentId: assignmentId || null,
+        ...item
+      }],
+      studentIds: membership.studentIds,
+      subject
+    };
+  }
+  const categoryItemValues = body.items.filter((value) =>
+    isRecord(value)
+    && isCategoryAssignmentItemType(readAssignmentItemType(value))
+  );
+  if (categoryItemValues.length > 1) {
+    throw new Error("分类作业只能包含一份分类配置。");
+  }
   const itemValues = body.items.filter(isRecord);
   const subject = resolveAssignmentGroupSubject(itemValues, options.subject);
   const catalogEntries = await loadAssignmentCatalogEntryMap(
     supabase,
     itemValues.flatMap((value) => {
       const itemType = readAssignmentItemType(value);
-      return itemType && !isWritingTaskType(itemType) ? [itemType] : [];
+      return itemType && !isWritingTaskType(itemType) && !isCategoryAssignmentItemType(itemType)
+        ? [itemType]
+        : [];
     })
   );
   // A withdrawn edit can re-target the group to a class (recipients are
@@ -258,6 +300,16 @@ export async function prepareWritingAssignmentGroupEditMutation(
   for (const value of body.items) {
     if (!isRecord(value)) throw new Error("请完整填写每道题目。");
     const assignmentId = typeof value.assignmentId === "string" ? value.assignmentId.trim() : "";
+    const itemType = readAssignmentItemType(value);
+    if (isCategoryAssignmentItemType(itemType)) {
+      items.push({
+        assignmentId: assignmentId || null,
+        ...(await prepareCategoryAssignmentItem(supabase, value, {
+          assignmentId: assignmentId || null
+        }))
+      });
+      continue;
+    }
     items.push({
       assignmentId: assignmentId || null,
       // The wizard always submits the stable catalog item id for 题库 items,

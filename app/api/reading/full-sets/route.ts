@@ -7,6 +7,7 @@ import {
 import { loadCachedPublicReadingFullSetCatalog } from "@/lib/reading/catalogCache.server";
 import { loadReadingFullSetPickerCatalog } from "@/lib/reading/fullSets.server";
 import { loadStudentPracticeItemStates } from "@/lib/studentPracticeItemState.server";
+import { loadPracticeEntitlementEnforcementEnabled } from "@/lib/practiceEntitlements.server";
 import { runStudentCatalogCriticalPath } from "@/lib/studentCatalogCriticalPath.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
@@ -20,6 +21,7 @@ export async function GET(request: Request) {
   try {
     const token = bearerToken(request);
     const db = createServiceSupabase();
+    let viewerRole: "student" | "teacher" | "admin" | null = null;
     // One request: cached complete Full Set public catalog + one sparse state
     // query, both started in parallel with the database profile authorization.
     // The browser slices 10 items per page locally.
@@ -37,36 +39,47 @@ export async function GET(request: Request) {
         taskType: "full_set",
         timing
       }),
-      authorization: (userId) => loadStudentCatalogAuthorization(token, userId, timing),
+      authorization: async (userId) => {
+        const authorization = await loadStudentCatalogAuthorization(token, userId, timing);
+        if (authorization.ok) viewerRole = authorization.role;
+        return authorization;
+      },
       merge: async (publicCatalogResult, stateResult, studentId) => {
         if (!publicCatalogResult.ok) throw publicCatalogResult.error;
         if (!stateResult.ok) throw stateResult.error;
         const publicCatalog = publicCatalogResult.value;
         const state = stateResult.value;
-        if (state.available) {
-          return {
-            fullSets: attachReadingFullSetStudentStates(publicCatalog, state.rows),
-            total: publicCatalog.length
-          };
-        }
-
-        // Transitional fallback while the sparse state migration is rolling out.
-        const catalog = await loadReadingFullSetPickerCatalog(db);
-        const attemptsResult = await db.from("reading_full_set_attempts")
-          .select("attempt_id,full_set_id,status,completed_at,created_at")
-          .eq("student_id", studentId);
-        if (attemptsResult.error) {
-          throw new Error(`read Reading Full Set catalog attempts: ${attemptsResult.error.message}`);
-        }
-        const stateByFullSet = buildReadingFullSetCatalogStates(
-          (attemptsResult.data ?? []) as ReadingFullSetCatalogAttemptRow[]
-        );
+        const enforcementEnabled = await loadPracticeEntitlementEnforcementEnabled(db);
+        const payload = state.available
+          ? {
+              fullSets: attachReadingFullSetStudentStates(publicCatalog, state.rows),
+              total: publicCatalog.length
+            }
+          : await (async () => {
+              // Transitional fallback while the sparse state migration is rolling out.
+              const catalog = await loadReadingFullSetPickerCatalog(db);
+              const attemptsResult = await db.from("reading_full_set_attempts")
+                .select("attempt_id,full_set_id,status,completed_at,created_at")
+                .eq("student_id", studentId);
+              if (attemptsResult.error) {
+                throw new Error(`read Reading Full Set catalog attempts: ${attemptsResult.error.message}`);
+              }
+              const stateByFullSet = buildReadingFullSetCatalogStates(
+                (attemptsResult.data ?? []) as ReadingFullSetCatalogAttemptRow[]
+              );
+              return {
+                fullSets: catalog.map((fullSet) => ({
+                  ...fullSet,
+                  studentState: stateByFullSet.get(fullSet.fullSetId) ?? fullSet.studentState
+                })),
+                total: catalog.length
+              };
+            })();
         return {
-          fullSets: catalog.map((fullSet) => ({
-            ...fullSet,
-            studentState: stateByFullSet.get(fullSet.fullSetId) ?? fullSet.studentState
-          })),
-          total: catalog.length
+          ...payload,
+          enforcementEnabled,
+          viewerRole,
+          canStartUnassigned: viewerRole !== "student" || !enforcementEnabled
         };
       }
     });

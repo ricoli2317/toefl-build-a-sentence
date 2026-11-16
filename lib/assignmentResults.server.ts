@@ -1,5 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { AssignmentItemType } from "./assignmentCatalog.ts";
+import {
+  isCategoryAssignmentItemType,
+  type AssignmentItemType
+} from "./assignmentCatalog.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import type { TeacherAssignmentItemResult } from "./writingAssignments.ts";
 
@@ -57,6 +60,8 @@ export type AssignmentResultLookupItem = {
 
 export type AssignmentStudentResult = {
   available_result: TeacherAssignmentItemResult | null;
+  /** Completed category-session history, newest first (Retake included). */
+  available_results?: TeacherAssignmentItemResult[];
   /** Any draft / in-progress row after the Assignment time, for 开始作答. */
   started: boolean;
 };
@@ -126,22 +131,182 @@ export async function loadAssignmentStudentResults(input: {
   const basItems = scopes.filter(
     (scope) => scope.itemType === "build_sentence" && Boolean(scope.sourceSetId)
   );
+  const categoryItems = scopes.filter((scope) =>
+    isCategoryAssignmentItemType(scope.itemType)
+  );
 
-  const [readingRows, fullSetRows, basRows] = await Promise.all([
+  const [readingRows, fullSetRows, basRows, categoryRows] = await Promise.all([
     readReadingAttemptRows(input.db, unique(readingItems.map((item) => item.itemId)), unique(readingItems.map((item) => item.studentId))),
     readFullSetAttemptRows(input.db, unique(fullSetItems.map((item) => item.itemId)), unique(fullSetItems.map((item) => item.studentId))),
     readBuildSentenceAttemptRows(
       input.db,
       unique(basItems.map((item) => item.sourceSetId!).filter(Boolean)),
       unique(basItems.map((item) => item.studentId))
+    ),
+    readCategorySessionRows(
+      input.db,
+      categoryItems,
+      unique(categoryItems.map((item) => item.studentId))
     )
   ]);
 
   applyScopes(results, readingItems, readingRows, "reading_attempt");
   applyScopes(results, fullSetItems, fullSetRows, "reading_full_set");
   applyScopes(results, basItems, basRows, "bas_set");
+  applyCategoryScopes(results, categoryItems, categoryRows);
 
   return results;
+}
+
+type CategorySessionRow = ResultAttemptRow & {
+  assignmentId: string;
+  categoryKind: "bas_category" | "rap_category";
+  attemptIdForTeacher?: string | null;
+  totalQuestions?: number | null;
+};
+
+/**
+ * Category Assignment progress is owned by its category session, not by an
+ * ordinary Writing attempt. Retakes only create another session for the same
+ * assignment; they never count as an additional completed student.
+ */
+function applyCategoryScopes(
+  results: AssignmentStudentResultMap,
+  scopes: ReadonlyArray<AssignmentResultScope>,
+  rows: ReadonlyArray<CategorySessionRow>
+) {
+  for (const scope of scopes) {
+    const candidates = rows
+      .filter((row) =>
+        row.assignmentId === scope.assignmentId
+        && row.studentId === scope.studentId
+        && row.categoryKind === scope.itemType
+      )
+      .filter((row) => isInsideAssignmentWindow(row, scope.boundaryAt));
+    if (candidates.length === 0) continue;
+    const completed = candidates
+      .filter((row) => row.completed)
+      .sort((left, right) => {
+        const leftTime = Date.parse(left.completedAt ?? "");
+        const rightTime = Date.parse(right.completedAt ?? "");
+        return (Number.isNaN(rightTime) ? Number.NEGATIVE_INFINITY : rightTime)
+          - (Number.isNaN(leftTime) ? Number.NEGATIVE_INFINITY : leftTime)
+          || right.attemptId.localeCompare(left.attemptId);
+      });
+    const history = completed.map(categoryResultForRow);
+    setResult(results, scope.assignmentId, scope.studentId, {
+      available_result: history[0] ?? null,
+      available_results: history,
+      started: true
+    });
+  }
+}
+
+async function readCategorySessionRows(
+  db: SupabaseClient,
+  scopes: ReadonlyArray<AssignmentResultScope>,
+  studentIds: string[]
+): Promise<CategorySessionRow[]> {
+  const basAssignmentIds = unique(scopes
+    .filter((scope) => scope.itemType === "bas_category")
+    .map((scope) => scope.assignmentId));
+  const rapAssignmentIds = unique(scopes
+    .filter((scope) => scope.itemType === "rap_category")
+    .map((scope) => scope.assignmentId));
+  if (studentIds.length === 0) return [];
+
+  const [basRows, rapRows] = await Promise.all([
+    basAssignmentIds.length
+      ? readAllSupabaseRows<{
+          session_id: string;
+          assignment_id: string;
+          student_id: string;
+          status: string;
+          attempt_id: string | null;
+          total_questions: number | null;
+          completed_at: string | null;
+          started_at: string | null;
+        }>((from, to) =>
+          db
+            .from("bas_grammar_practice_sessions")
+            .select("session_id,assignment_id,student_id,status,attempt_id,total_questions,completed_at,started_at")
+            .in("assignment_id", basAssignmentIds)
+            .in("student_id", studentIds)
+            .order("started_at", { ascending: true })
+            .range(from, to)
+        )
+      : Promise.resolve({ data: [], error: null } as {
+          data: Array<{
+            session_id: string;
+            assignment_id: string;
+            student_id: string;
+            status: string;
+            attempt_id: string | null;
+            total_questions: number | null;
+            completed_at: string | null;
+            started_at: string | null;
+          }>;
+          error: null;
+        }),
+    rapAssignmentIds.length
+      ? readAllSupabaseRows<{
+          session_id: string;
+          assignment_id: string;
+          student_id: string;
+          status: string;
+          total_points: number | null;
+          completed_at: string | null;
+          created_at: string | null;
+        }>((from, to) =>
+          db
+            .from("reading_question_category_sessions")
+            .select("session_id,assignment_id,student_id,status,total_points,completed_at,created_at")
+            .in("assignment_id", rapAssignmentIds)
+            .in("student_id", studentIds)
+            .order("created_at", { ascending: true })
+            .range(from, to)
+        )
+      : Promise.resolve({ data: [], error: null } as {
+          data: Array<{
+            session_id: string;
+            assignment_id: string;
+            student_id: string;
+            status: string;
+            total_points: number | null;
+            completed_at: string | null;
+            created_at: string | null;
+          }>;
+          error: null;
+        })
+  ]);
+  if (basRows.error) throw basRows.error;
+  if (rapRows.error) throw rapRows.error;
+
+  return [
+    ...(basRows.data ?? []).map((row) => ({
+      assignmentId: row.assignment_id,
+      attemptId: row.session_id,
+      attemptIdForTeacher: row.attempt_id,
+      categoryKind: "bas_category" as const,
+      completed: row.status === "completed",
+      completedAt: row.completed_at,
+      itemId: row.session_id,
+      startedAt: row.started_at,
+      studentId: row.student_id,
+      totalQuestions: row.total_questions
+    })),
+    ...(rapRows.data ?? []).map((row) => ({
+      assignmentId: row.assignment_id,
+      attemptId: row.session_id,
+      categoryKind: "rap_category" as const,
+      completed: row.status === "completed",
+      completedAt: row.completed_at,
+      itemId: row.session_id,
+      startedAt: row.created_at,
+      studentId: row.student_id,
+      totalQuestions: row.total_points
+    }))
+  ];
 }
 
 /**
@@ -217,6 +382,21 @@ function isInsideAssignmentWindow(row: ResultAttemptRow, boundaryAt: string | nu
   return time >= boundary;
 }
 
+function categoryResultForRow(row: CategorySessionRow): TeacherAssignmentItemResult {
+  return row.categoryKind === "bas_category"
+    ? {
+        attempt_id: row.attemptIdForTeacher ?? null,
+        completed_at: row.completedAt,
+        id: row.attemptId,
+        kind: "bas_category"
+      }
+    : {
+        completed_at: row.completedAt,
+        id: row.attemptId,
+        kind: "reading_category"
+      };
+}
+
 function setResult(
   results: AssignmentStudentResultMap,
   assignmentId: string,
@@ -227,7 +407,11 @@ function setResult(
   const current = results.get(key);
   // Merging keeps the completed identity even when an earlier row was a draft.
   if (current && (current.available_result || !value.available_result)) {
-    results.set(key, { ...current, started: current.started || value.started });
+    results.set(key, {
+      ...current,
+      available_results: value.available_results ?? current.available_results,
+      started: current.started || value.started
+    });
     return;
   }
   results.set(key, value);

@@ -4,6 +4,10 @@ import {
   isLogicalPracticeTaskType
 } from "@/lib/practiceLogicalCatalog";
 import { loadStudentPracticeItemStates } from "@/lib/studentPracticeItemState.server";
+import {
+  loadPracticeEntitlementEnforcementEnabled,
+  loadStudentPracticeUnlockItemIds
+} from "@/lib/practiceEntitlements.server";
 import { runStudentCatalogCriticalPath } from "@/lib/studentCatalogCriticalPath.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
@@ -24,10 +28,10 @@ export async function GET(request: Request) {
 
     const token = bearerToken(request);
     const db = createServiceSupabase();
-    // One request: a cached public lightweight catalog and one sparse student
-    // state query, both started in parallel with the database profile
-    // authorization. The payload has no search text; the search index is a
-    // separate request prefetched by the client after the first screen renders.
+    let viewerRole: "student" | "teacher" | "admin" | null = null;
+    // One request: a cached public lightweight catalog, one sparse student
+    // state query and one batched unlock query. The payload has no search text;
+    // the search index is a separate request prefetched by the client.
     const result = await runStudentCatalogCriticalPath({
       timing,
       identity: async () => {
@@ -42,17 +46,36 @@ export async function GET(request: Request) {
         taskType,
         timing
       }),
-      authorization: (userId) => loadStudentCatalogAuthorization(token, userId, timing),
-      merge: async (catalogResult, stateResult) => {
+      authorization: async (userId) => {
+        const authorization = await loadStudentCatalogAuthorization(token, userId, timing);
+        if (authorization.ok) viewerRole = authorization.role;
+        return authorization;
+      },
+      merge: async (catalogResult, stateResult, studentId) => {
         if (!catalogResult.ok) throw catalogResult.error;
         if (!stateResult.ok) throw stateResult.error;
-        return getLogicalPracticeItems({
-          supabase: db,
-          taskType,
-          timing,
-          publicCatalogPromise: Promise.resolve(catalogResult.value),
-          studentStatePromise: Promise.resolve(stateResult.value)
-        });
+        const [catalog, unlockedItemIds, enforcementEnabled] = await Promise.all([
+          getLogicalPracticeItems({
+            supabase: db,
+            taskType,
+            timing,
+            publicCatalogPromise: Promise.resolve(catalogResult.value),
+            studentStatePromise: Promise.resolve(stateResult.value)
+          }),
+          viewerRole === "student"
+            ? loadStudentPracticeUnlockItemIds(db, { studentId, taskType })
+            : Promise.resolve(new Set<string>()),
+          loadPracticeEntitlementEnforcementEnabled(db)
+        ]);
+        return {
+          ...catalog,
+          enforcementEnabled,
+          viewerRole,
+          items: catalog.items.map((item) => ({
+            ...item,
+            unlocked: unlockedItemIds.has(item.item_id)
+          }))
+        };
       }
     });
     if (result.forbidden) {

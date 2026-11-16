@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken, isUserRole, roleCanAccess } from "@/lib/auth";
 import {
-  dedupeGrammarQuestions,
   getGrammarTagSummaries,
-  questionHasGrammarTag,
-  shuffleQuestions,
-  type GrammarQuestionRow
+  grammarPracticeModePolicy,
+  normalizeGrammarPracticeMode,
+  type GrammarTagSummary
 } from "@/lib/grammarPractice";
-import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import {
+  loadGrammarQuestionPool,
+  selectGrammarPracticeQuestions,
+  toPublicGrammarQuestion
+} from "@/lib/grammarPractice.server";
+import { loadPracticeEntitlementEnforcementEnabled } from "@/lib/practiceEntitlements.server";
 import { createSupabaseFetch } from "@/lib/supabase/fetch";
 
 export const dynamic = "force-dynamic";
@@ -64,61 +68,52 @@ export async function GET(request: Request) {
         headers: serviceRoleKey ? {} : { Authorization: `Bearer ${token}` }
       }
     });
-    const questionResult = await readAllSupabaseRows<GrammarQuestionRow>((from, to) =>
-      db
-        .from("questions")
-        .select(
-          "question_id,set_id,set_title,question_order,prompt,sentence_template,blank_count,options_text,distractors_text,final_sentence,grammar_tags_text"
-        )
-        .order("set_id", { ascending: true })
-        .order("question_order", { ascending: true })
-        .order("question_id", { ascending: true })
-        .range(from, to)
-    );
-    if (questionResult.error) {
-      return jsonError(`Failed to load grammar questions: ${questionResult.error.message}`);
-    }
 
-    const questions = (questionResult.data ?? []).map(normalizeQuestion);
     const url = new URL(request.url);
     const selectedTag = url.searchParams.get("tag")?.trim() ?? "";
-    if (!selectedTag) {
-      return json({ tags: getGrammarTagSummaries(questions) });
+    // Loading the tag list is a preview and never changes any entitlement.
+    // The mode gate below applies only to an actual tagged question request.
+    const mode = normalizeGrammarPracticeMode(url.searchParams.get("mode"));
+    if (selectedTag) {
+      let enforcementEnabled = false;
+      if (profile.role === "student") {
+        try {
+          enforcementEnabled = await loadPracticeEntitlementEnforcementEnabled(db);
+        } catch (error) {
+          console.error("[grammar-practice] entitlement_switch_read_failed", {
+            message: error instanceof Error ? error.message : String(error)
+          });
+          return jsonError("练习权限状态加载失败，请稍后重试。", 503);
+        }
+      }
+      const policy = grammarPracticeModePolicy({
+        role: profile.role,
+        enforcementEnabled,
+        mode
+      });
+      if (!policy.allowed) {
+        return jsonError(policy.message ?? "当前练习模式不可用。", 403);
+      }
     }
 
-    const mode = url.searchParams.get("mode") === "random" ? "random" : "all";
-    const dedupedQuestions = dedupeGrammarQuestions(
-      questions.filter((question) => questionHasGrammarTag(question, selectedTag))
+    const questions = await loadGrammarQuestionPool(db);
+    if (!selectedTag) {
+      const tags: GrammarTagSummary[] = getGrammarTagSummaries(questions);
+      return json({ tags });
+    }
+
+    const selectedQuestions = selectGrammarPracticeQuestions(
+      questions,
+      selectedTag,
+      mode
     );
-    const selectedQuestions =
-      mode === "random" ? shuffleQuestions(dedupedQuestions).slice(0, 10) : dedupedQuestions;
 
     return json({
       count: selectedQuestions.length,
-      questions: selectedQuestions.map(toPublicQuestion),
+      questions: selectedQuestions.map(toPublicGrammarQuestion),
       tag: selectedTag
     });
   } catch (error) {
     return jsonError(error instanceof Error ? error.message : "Could not load grammar practice.");
   }
-}
-
-function normalizeQuestion(question: GrammarQuestionRow): GrammarQuestionRow {
-  return {
-    blank_count: question.blank_count ?? 0,
-    distractors_text: question.distractors_text ?? "",
-    final_sentence: question.final_sentence ?? "",
-    grammar_tags_text: question.grammar_tags_text ?? "",
-    options_text: question.options_text ?? "",
-    prompt: question.prompt ?? "",
-    question_id: String(question.question_id),
-    question_order: question.question_order ?? 0,
-    sentence_template: question.sentence_template ?? "",
-    set_id: String(question.set_id),
-    set_title: question.set_title ?? String(question.set_id)
-  };
-}
-
-function toPublicQuestion({ final_sentence: _finalSentence, ...question }: GrammarQuestionRow) {
-  return question;
 }

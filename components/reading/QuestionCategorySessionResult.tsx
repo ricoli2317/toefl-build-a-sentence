@@ -6,7 +6,7 @@ import { loadCategoryCompletedReview, sessionReviewBundleCacheKey } from "@/lib/
 import { PracticeResultSummary } from "@/components/PracticeResult";
 import { StudentNavigation, StudentLoadingState, StudentErrorState } from "@/components/student/StudentUI";
 import { ReadingResultDetailCard } from "./ReadingResult";
-import { categoryPracticeHref, categoryResultHref, categoryRetakeHref, categoryResultAnswers, categorySessionTitle } from "@/lib/reading/questionCategory";
+import { categoryPracticeHref, categoryResultHref, categoryRetakeHref, categoryResultAnswers, categorySessionAssignmentRetakeHref, categorySessionTitle } from "@/lib/reading/questionCategory";
 import { categorySessionCacheKey, loadCategorySession } from "@/lib/reading/questionCategory.client";
 import { getReadingCategoryResultNavigation, withStudentReturnTo } from "@/lib/studentNavigation";
 
@@ -34,9 +34,9 @@ export function QuestionCategorySessionResult({ sessionId, returnTo }: { session
   return <div className="reading-theme student-result-overview-layout">
     <div className="student-result-overview-navigation"><StudentNavigation backHref={navigation.backHref} crumbs={navigation.crumbs} /></div>
     <PracticeResultSummary correctPoints={session.correctPoints} totalPoints={session.totalPoints}
-      elapsedSeconds={session.elapsedSeconds} title={categorySessionTitle(session.questionCategory)} scoreComparison={null} timeComparison={null} />
+      elapsedSeconds={session.elapsedSeconds} title={categorySessionTitle(session.questionCategory, session.categories)} scoreComparison={null} timeComparison={null} />
     <ReadingResultDetailCard answers={ordered} questionHrefBase={selfBase}
       questionHref={(index) => withStudentReturnTo(`${selfBase}/questions/${index}`, returnTo)} submittedAt={session.completedAt!}
-      actions={<Link className="student-button-primary" href={categoryRetakeHref(session)}>重新练习</Link>} />
+      actions={<Link className="student-button-primary" href={categorySessionAssignmentRetakeHref(session) ?? categoryRetakeHref(session)}>重新练习</Link>} />
   </div>;
 }

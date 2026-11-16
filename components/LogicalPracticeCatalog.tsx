@@ -24,6 +24,12 @@ import {
   StudentNavigation
 } from "@/components/student/StudentUI";
 import {
+  StudentEntitlementNotice,
+  StudentUnlockBadge,
+  useStudentPracticeEntitlements,
+  type StudentEntitlementViewerRole
+} from "@/components/student/StudentPracticeEntitlements";
+import {
   LOGICAL_PRACTICE_ROOTS,
   logicalPracticeActionHref,
   type LogicalPracticeActionName
@@ -49,6 +55,10 @@ import {
   normalizeCatalogSearchText
 } from "@/lib/catalogDiscovery";
 import { formatOccurrenceDates } from "@/lib/catalogOccurrenceDates";
+import {
+  canStartOrdinaryPractice,
+  type PracticeEntitlementKind
+} from "@/lib/practiceEntitlements";
 
 const TASK_LABELS: Record<PracticeTaskType, string> = {
   build_sentence: "Build a Sentence",
@@ -75,6 +85,7 @@ export function LogicalPracticeCatalog({
     cacheKey,
     (session) => loadLogicalPracticeCatalog(taskType, session)
   );
+  const entitlements = useStudentPracticeEntitlements();
   // The lightweight catalog renders first; the search index is prefetched once
   // the browser is idle, or immediately when the student starts searching.
   const searchIndexState = useIdleCatalogSearchIndex<LogicalPracticeCatalogSearchIndexPayload>({
@@ -115,6 +126,7 @@ export function LogicalPracticeCatalog({
           { label }
         ]}
       />
+      <StudentEntitlementNotice kind={taskType as PracticeEntitlementKind} />
       {state.loading ? (
         <LogicalPracticeListSkeleton />
       ) : state.error || !state.data ? (
@@ -124,6 +136,16 @@ export function LogicalPracticeCatalog({
         />
       ) : (
         <CatalogContent
+          access={{
+            enforcementEnabled: entitlements.data
+              ? entitlements.enforcementEnabled
+              : state.data.enforcementEnabled === true,
+            remaining: entitlements.remaining(taskType as PracticeEntitlementKind),
+            viewerRole:
+              entitlements.viewerRole
+              ?? state.data.viewerRole
+              ?? null
+          }}
           catalog={state.data}
           controls={controls}
           debouncedQuery={debouncedQuery}
@@ -164,7 +186,14 @@ async function loadLogicalPracticeCatalog(
   });
 }
 
+type CatalogAccess = {
+  enforcementEnabled: boolean;
+  remaining: number | null;
+  viewerRole: StudentEntitlementViewerRole;
+};
+
 function CatalogContent({
+  access,
   catalog,
   controls,
   debouncedQuery,
@@ -176,6 +205,7 @@ function CatalogContent({
   searchIndexError,
   taskType
 }: {
+  access: CatalogAccess;
   catalog: LogicalPracticeCatalogLightweight;
   controls: CatalogDiscoveryControlValue;
   debouncedQuery: string;
@@ -253,7 +283,7 @@ function CatalogContent({
               : <StudentEmptyState text={emptyStateText(taskType)} />}
             renderActions={(catalogSet) => {
               const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
-              return <LogicalItemActions item={item} taskType={taskType} />;
+              return <LogicalItemActions access={access} item={item} taskType={taskType} />;
             }}
             renderStatus={(catalogSet) => {
               const item = items.find((candidate) => candidate.item_id === catalogSet.setId)!;
@@ -261,10 +291,21 @@ function CatalogContent({
             }}
             sets={items.map((item) => ({
               icon: STUDENT_PRACTICE_ICONS[item.task_type],
-              metadata: formatOccurrenceDates(
-                item.occurrence_date_counts
-                  ?? (item as LogicalPracticeCatalogItemLightweight & { occurrenceDateCounts?: Parameters<typeof formatOccurrenceDates>[0] }).occurrenceDateCounts
-                  ?? item.occurrence_dates
+              metadata: (
+                <span className="inline-flex flex-wrap items-center gap-1.5">
+                  <span>{formatOccurrenceDates(
+                    item.occurrence_date_counts
+                      ?? (item as LogicalPracticeCatalogItemLightweight & { occurrenceDateCounts?: Parameters<typeof formatOccurrenceDates>[0] }).occurrenceDateCounts
+                      ?? item.occurrence_dates
+                  )}</span>
+                  <StudentUnlockBadge
+                    enforcementEnabled={access.enforcementEnabled}
+                    remaining={access.remaining}
+                    status={item.student_state.status}
+                    unlocked={item.unlocked === true}
+                    viewerRole={access.viewerRole}
+                  />
+                </span>
               ),
               questionCount: item.question_count,
               setId: item.item_id,
@@ -297,17 +338,35 @@ function defaultControls(): CatalogDiscoveryControlValue {
 }
 
 function LogicalItemActions({
+  access,
   item,
   taskType
 }: {
+  access: CatalogAccess;
   item: LogicalPracticeCatalogItemLightweight;
   taskType: PracticeTaskType;
 }) {
   const viewLabel = taskType === "build_sentence" ? "查看结果" : "查看提交";
+  const startAllowed = canStartOrdinaryPractice({
+    enforcementEnabled: access.enforcementEnabled,
+    remaining: access.remaining,
+    status: item.student_state.status,
+    unlocked: item.unlocked === true,
+    viewerRole: access.viewerRole
+  });
   return (
     <>
       {item.student_state.status === "unstarted"
-        ? action(item, taskType, "start", Play, "开始练习")
+        ? action(
+            item,
+            taskType,
+            "start",
+            Play,
+            startAllowed ? "开始练习" : "额度已用完",
+            true,
+            !startAllowed,
+            "新题解锁次数已用完，仍可练习已解锁的题目。"
+          )
         : null}
       {item.student_state.status === "in_progress"
         ? action(item, taskType, "resume", FilePenLine, "继续练习", true)
@@ -328,11 +387,21 @@ function action(
   actionName: LogicalPracticeActionName,
   icon: typeof Play,
   label: string,
-  primary = false
+  primary = false,
+  disabled = false,
+  disabledReason?: string
 ) {
   const href = logicalPracticeActionHref(taskType, actionName, item.actions[actionName]);
   return href ? (
-    <PracticeSetAction href={href} icon={icon} key={actionName} label={label} primary={primary} />
+    <PracticeSetAction
+      disabled={disabled}
+      disabledReason={disabledReason}
+      href={href}
+      icon={icon}
+      key={actionName}
+      label={label}
+      primary={primary}
+    />
   ) : null;
 }
 

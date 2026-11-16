@@ -4,11 +4,18 @@ import { CATEGORY_ROUTE, isReadingQuestionCategory } from "@/lib/reading/questio
 import { normalizeWrongQuestionHistoryAmount } from "@/lib/wrongQuestionBank";
 
 export default function CategoryPracticePage({ searchParams }: {
-  searchParams: { questionCategory?: string; amount?: string; session?: string };
+  searchParams: {
+    questionCategory?: string;
+    amount?: string;
+    session?: string;
+    requestId?: string;
+  };
 }) {
   const amount = normalizeWrongQuestionHistoryAmount(searchParams.amount);
   const category = isReadingQuestionCategory(searchParams.questionCategory) ? searchParams.questionCategory : undefined;
   const sessionId = searchParams.session?.trim();
+  const requestId = searchParams.requestId?.trim();
   if (!sessionId && (!amount || !category)) redirect(CATEGORY_ROUTE);
-  return <QuestionCategoryPractice questionCategory={category} amount={amount ?? undefined} sessionId={sessionId} />;
+  return <QuestionCategoryPractice questionCategory={category} amount={amount ?? undefined}
+    requestId={requestId} sessionId={sessionId} />;
 }

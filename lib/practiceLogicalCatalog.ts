@@ -66,6 +66,8 @@ export type LogicalPracticeCatalog = {
 export type LogicalPracticeCatalogItemWithStudentState = LogicalPracticeListItem & {
   student_state: LogicalPracticeStudentState;
   actions: LogicalPracticeActions;
+  /** Permanent canonical unlock; merged from service-role unlock state. */
+  unlocked?: boolean;
 };
 
 export type LogicalPracticeCatalogWithStudentState = {
@@ -81,6 +83,9 @@ export type LogicalPracticeCatalogItemLightweight = LogicalPracticeCatalogItemWi
 export type LogicalPracticeCatalogLightweight = {
   items: LogicalPracticeCatalogItemLightweight[];
   pagination: LogicalPracticePagination;
+  /** Server-authoritative switch/role hints for UI gating and badge display. */
+  enforcementEnabled?: boolean;
+  viewerRole?: "student" | "teacher" | "admin" | null;
 };
 
 export type PublicLogicalPracticeCatalogData = {

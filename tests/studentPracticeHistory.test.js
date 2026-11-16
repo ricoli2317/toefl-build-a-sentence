@@ -24,6 +24,10 @@ const {
 const {
   buildTeacherStudentPracticeRange
 } = require("../lib/teacherStudentPracticeRange.ts");
+const {
+  parsePracticeActivityQuery,
+  readPracticeActivityDates
+} = require("../lib/practiceActivityDates.server.ts");
 const { buildReadingCatalogPublicPayload } = require("../lib/reading/catalog.ts");
 const { createMockSupabase } = require("./fixtures/mockSupabase.js");
 
@@ -356,6 +360,24 @@ test("record retake targets reuse the existing retake entries", () => {
     })),
     { kind: "link", href: "/student/assignments/a-1?new=1", label: "重新练习" }
   );
+  assert.deepEqual(
+    studentPracticeRecordRetakeTarget(objectiveRecord({
+      kind: "question_category",
+      taskType: "rap",
+      source: {
+        questionCategory: "词汇题",
+        categoryAmount: 25,
+        categoryOrigin: "teacher_assigned",
+        categoryAssignmentId: "assignment-1"
+      }
+    })),
+    {
+      kind: "link",
+      href: "/student/question-category-practice/assignment/assignment-1?new=1",
+      label: "重新练习"
+    },
+    "teacher category Retake stays on the frozen Assignment, never a self-practice spend"
+  );
   assert.equal(
     studentPracticeRecordRetakeTarget(objectiveRecord({ kind: "wrongbook" })),
     null
@@ -437,6 +459,196 @@ test("student scope keeps the seven task types and excludes every virtual BAS se
   assert.equal(teacher.records.length, 2);
   assert.equal(teacher.tasks.build_sentence.attempts, 1);
 });
+
+test("BAS teacher category sessions become one Writing history record with the frozen Assignment retake", () => {
+  const sessionId = "bas-session-1";
+  const session = {
+    assignment_id: "assignment-bas",
+    attempt_id: "b-cat-attempt",
+    categories: [{ category: "时态", count: 5 }],
+    category: "时态 5题",
+    completed_at: "2026-10-02T02:10:00.000Z",
+    correct_count: 3,
+    elapsed_seconds: 125,
+    session_id: sessionId,
+    started_at: "2026-10-02T02:00:00.000Z",
+    status: "completed",
+    total_questions: 5
+  };
+  const practice = buildTeacherStudentWritingPractice({
+    basAttempts: [{
+      attempt_id: "b-cat-attempt",
+      correct_count: 3,
+      set_id: `grammar-random-${sessionId}`,
+      set_title: "时态 5题",
+      submitted_at: "2026-10-02T02:10:00.000Z",
+      time_spent_seconds: 125,
+      total_questions: 5
+    }],
+    basCategorySessions: [session],
+    includeVirtualBas: false,
+    studentId: "student-1",
+    writingAttempts: [],
+    writingDisplayNames: new Map()
+  });
+
+  assert.equal(practice.tasks.build_sentence.attempts, 1);
+  assert.equal(practice.tasks.build_sentence.correctCount, 3);
+  assert.equal(practice.tasks.build_sentence.totalQuestions, 5);
+  assert.equal(practice.records.length, 1);
+  const record = practice.records[0];
+  assert.equal(record.kind, "bas_category");
+  assert.equal(record.taskType, "build_sentence");
+  assert.equal(record.title, "语法分类练习·时态");
+  assert.equal(record.attemptId, "b-cat-attempt");
+  assert.equal(record.durationSeconds, 125);
+  assert.deepEqual(record.metric, { kind: "objective", correct: 3, total: 5, accuracy: 0.6 });
+  assert.equal(record.source.basCategoryAssignmentId, "assignment-bas");
+  assert.deepEqual(
+    studentPracticeRecordResultTarget(record, "/student/practice-history"),
+    {
+      href: "/student/results/b-cat-attempt?source=practice-history"
+        + "&returnTo=%2Fstudent%2Fpractice-history",
+      label: "查看结果"
+    }
+  );
+  assert.deepEqual(studentPracticeRecordRetakeTarget(record), {
+    kind: "link",
+    href: "/student/grammar-practice/assignment/assignment-bas?new=1",
+    label: "重新练习"
+  });
+
+  // The same session never renders twice, including on the teacher view that
+  // keeps other virtual BAS sets.
+  const teacher = buildTeacherStudentWritingPractice({
+    basAttempts: [{
+      attempt_id: "b-cat-attempt",
+      correct_count: 3,
+      set_id: `grammar-random-${sessionId}`,
+      set_title: "时态 5题",
+      submitted_at: "2026-10-02T02:10:00.000Z",
+      time_spent_seconds: 125,
+      total_questions: 5
+    }],
+    basCategorySessions: [session],
+    studentId: "student-1",
+    writingAttempts: [],
+    writingDisplayNames: new Map()
+  });
+  assert.equal(teacher.records.length, 1);
+  assert.equal(teacher.tasks.build_sentence.attempts, 1);
+});
+
+test("BAS teacher category sessions count once in Writing range statistics", () => {
+  const sessionId = "bas-session-range";
+  const stats = buildTeacherStudentPracticeRange({
+    endAt: "2026-10-03T00:00:00.000Z",
+    includeVirtualBas: false,
+    reading: null,
+    startAt: "2026-10-02T00:00:00.000Z",
+    timeZone: "Asia/Shanghai",
+    writing: {
+      basAttempts: [{
+        correct_count: 3,
+        set_id: `grammar-random-${sessionId}`,
+        set_title: "时态 5题",
+        submitted_at: "2026-10-02T02:10:00.000Z",
+        total_questions: 5
+      }],
+      basCategorySessions: [{
+        assignment_id: "assignment-bas",
+        completed_at: "2026-10-02T02:10:00.000Z",
+        correct_count: 3,
+        session_id: sessionId,
+        status: "completed",
+        total_questions: 5
+      }],
+      writingAttempts: []
+    }
+  });
+  assert.equal(stats.writing.tasks.build_sentence.attempts, 1);
+  assert.equal(stats.writing.tasks.build_sentence.correctCount, 3);
+  assert.equal(stats.writing.tasks.build_sentence.totalQuestions, 5);
+  const day = stats.days.find((entry) => entry.date === "2026-10-02");
+  assert.equal(day.counts.build_sentence, 1);
+});
+
+test("student history loader reads completed BAS teacher category sessions from the session table", async () => {
+  const db = createMockSupabase({
+    attempts: [{
+      attempt_id: "b-cat-attempt",
+      correct_count: 3,
+      set_id: "grammar-random-bas-session-loader",
+      set_title: "时态 5题",
+      student_id: "student-1",
+      submitted_at: "2026-10-02T02:10:00.000Z",
+      time_spent_seconds: 125,
+      total_questions: 5
+    }],
+    bas_grammar_practice_sessions: [{
+      assignment_id: "assignment-bas",
+      attempt_id: "b-cat-attempt",
+      categories: [{ category: "时态", count: 5 }],
+      category: "时态 5题",
+      completed_at: "2026-10-02T02:10:00.000Z",
+      correct_count: 3,
+      elapsed_seconds: 125,
+      session_id: "bas-session-loader",
+      started_at: "2026-10-02T02:00:00.000Z",
+      status: "completed",
+      student_id: "student-1",
+      total_questions: 5
+    }],
+    reading_attempts: [],
+    reading_full_set_attempts: [],
+    reading_question_category_sessions: [],
+    writing_attempts: []
+  });
+  const payload = await loadStudentPracticeHistoryDay(
+    db,
+    "student-1",
+    "2026-10-02T00:00:00.000Z",
+    "2026-10-03T00:00:00.000Z",
+    catalogLoaderFromRows([])
+  );
+  assert.equal(payload.writing.records.length, 1);
+  assert.equal(payload.writing.records[0].kind, "bas_category");
+  assert.equal(payload.writing.tasks.build_sentence.attempts, 1);
+});
+
+
+test("student activity dates include completed BAS teacher category sessions", async () => {
+  const db = createMockSupabase(
+    {
+      bas_grammar_practice_sessions: [
+        {
+          assignment_id: "assignment-bas",
+          completed_at: "2026-10-03T02:00:00.000Z",
+          session_id: "bas-session-date",
+          status: "completed",
+          student_id: "student-1"
+        },
+        {
+          assignment_id: null,
+          completed_at: "2026-10-04T02:00:00.000Z",
+          session_id: "bas-session-self",
+          status: "completed",
+          student_id: "student-1"
+        }
+      ]
+    },
+    { rpc: () => ({ data: ["2026-10-02"], error: null }) }
+  );
+  const query = parsePracticeActivityQuery(
+    new URLSearchParams("month=2026-10&tasks=build_sentence&timeZone=Asia/Shanghai")
+  );
+  const student = await readPracticeActivityDates(db, "student-1", query, ["writing"]);
+  assert.deepEqual(student.dates, ["2026-10-02", "2026-10-03"]);
+
+  const teacher = await readPracticeActivityDates(db, "student-1", query, ["writing"], true);
+  assert.deepEqual(teacher.dates, ["2026-10-02"]);
+});
+
 
 test("student range keeps seven-type days only, teacher range keeps wrongbook days", () => {
   const reading = {
@@ -647,6 +859,7 @@ test("student day loader resolves published writing scores and full set sources"
     writing_attempts: [
       {
         attempt_id: "e-1",
+        attempt_kind: "original",
         user_id: "student-1",
         assignment_id: null,
         task_type: "email",
@@ -726,6 +939,7 @@ test("student range loader never touches wrong-question or content tables", asyn
     writing_attempts: [
       {
         attempt_id: "e-1",
+        attempt_kind: "original",
         user_id: "student-1",
         task_type: "email",
         status: "submitted",

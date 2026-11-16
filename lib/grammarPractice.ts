@@ -9,6 +9,75 @@ export type GrammarTagSummary = {
   questionCount: number;
 };
 
+export const GRAMMAR_PRACTICE_QUESTION_LIMIT = 10;
+export const GRAMMAR_PRACTICE_TIME_SECONDS = 6 * 60 + 50;
+
+export type GrammarPracticeMode = "all" | "random";
+
+export function normalizeGrammarPracticeMode(value: unknown): GrammarPracticeMode {
+  return value === "random" ? "random" : "all";
+}
+
+/**
+ * Server-side BAS mode policy. A Student may still preview random questions
+ * with the GET endpoint, but may not create a new unlimited `all` practice
+ * when enforcement is ON. Teacher/Admin keep the existing all-mode behavior.
+ */
+export function grammarPracticeModePolicy(input: {
+  role: string;
+  enforcementEnabled: boolean;
+  mode: GrammarPracticeMode;
+}): { allowed: boolean; message?: string } {
+  if (
+    input.role === "student" &&
+    input.enforcementEnabled &&
+    input.mode === "all"
+  ) {
+    return {
+      allowed: false,
+      message: "学生端暂只支持随机计时练习，请从语法分类选择随机练习。"
+    };
+  }
+  return { allowed: true };
+}
+
+export type GrammarPracticeDraft = {
+  answers: Record<string, string[]>;
+  questionTimes: Record<string, number>;
+  currentIndex: number;
+  elapsedSeconds: number;
+  paused?: boolean;
+  revision: number;
+};
+
+export type GrammarPracticeSessionCategory = {
+  category: string;
+  count: number;
+};
+
+export type GrammarPracticeSession = {
+  sessionId: string;
+  category: string;
+  mode: "random" | "assignment";
+  origin: "self_practice" | "teacher_assigned";
+  assignmentId?: string | null;
+  status: "active" | "completed";
+  questions: PublicQuestion[];
+  categories?: GrammarPracticeSessionCategory[];
+  draft: Partial<GrammarPracticeDraft>;
+  startedAt: string;
+  completedAt: string | null;
+  elapsedSeconds: number;
+  totalQuestions: number;
+  correctCount: number;
+  attemptId: string | null;
+};
+
+export type GrammarPracticeSessionPayload = {
+  session: GrammarPracticeSession;
+  created?: boolean;
+};
+
 export function parseGrammarTags(value: string | null | undefined) {
   const normalized = value?.trim() ?? "";
   if (!normalized || normalized === "[]") return [];

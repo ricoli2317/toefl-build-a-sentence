@@ -176,6 +176,15 @@ test("actual category home shares one selected state/dialog/router path between 
         return { data: { ranking: [{ questionCategory: "推断题", count: 7 }] }, loading: false, error: "" };
       } },
     "@/components/student/StudentUI": { StudentNavigation: () => null, StudentErrorState: () => null, StudentLoadingState: () => null },
+    "@/components/student/StudentPracticeEntitlements": {
+      StudentEntitlementNotice: () => null,
+      useStudentPracticeEntitlements: () => ({
+        data: null,
+        enforcementEnabled: false,
+        exhausted: () => false,
+        viewerRole: "student"
+      })
+    },
     "@/components/student/PracticeAmountDialog": { PracticeAmountDialog: Dialog },
     "@/components/student/StudentErrorAnalysis": shared,
     "@/lib/studentNavigation": require("../lib/studentNavigation.ts"),
@@ -196,14 +205,29 @@ test("actual category home shares one selected state/dialog/router path between 
   assert.deepEqual(dialog.props.options.map((option) => option.amount), [5, 10, 15, 20]);
   assert.equal(dialog.props.count, 30); // Pool count, NOT historical wrong count (7).
   dialog.props.onStart(5);
-  assert.equal(pushed, categoryPracticeHref("推断题", 5));
+  assertCategoryStartHref(pushed, "推断题", 5);
   dialog.props.onClose(); assert.equal(selected, null);
   elements(articles[0]).find((el) => el.type === "button").props.onClick();
   assert.equal(selected, "事实信息题");
   dialog = elements(QuestionCategoryPracticeHome()).find((el) => el.type === Dialog);
   dialog.props.onStart(20);
-  assert.equal(pushed, categoryPracticeHref("事实信息题", 20));
+  assertCategoryStartHref(pushed, "事实信息题", 20);
 });
+
+function assertCategoryStartHref(href, category, amount) {
+  const actual = new URL(href, "https://fixture.invalid");
+  const expected = new URL(
+    categoryPracticeHref(category, amount),
+    "https://fixture.invalid"
+  );
+  assert.equal(actual.pathname, expected.pathname);
+  assert.equal(actual.searchParams.get("questionCategory"), category);
+  assert.equal(actual.searchParams.get("amount"), String(amount));
+  assert.match(
+    actual.searchParams.get("requestId"),
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+  );
+}
 
 test("analysis API authorizes before service-only counts, takes owner from auth, and never writes sessions", () => {
   const api = read("app/api/reading/question-category/analysis/route.ts");

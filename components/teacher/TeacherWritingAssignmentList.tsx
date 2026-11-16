@@ -21,7 +21,7 @@ import {
   groupTeacherWritingAssignments,
   isWritingReviewItemType,
   teacherWritingAssignmentCardActions,
-  writingAssignmentTaskTypeBadges,
+  writingAssignmentCardTaskTypeBadges,
   writingAssignmentTitle,
   type TeacherWritingAssignmentListEntry,
   type WritingAssignmentRecipient,
@@ -217,7 +217,7 @@ export function TeacherWritingAssignmentList({
                     班级：{assignment.class_name}
                   </span>
                 ) : null}
-                {writingAssignmentTaskTypeBadges([assignment.task_type]).map((label) => <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>{label}</span>)}
+                {writingAssignmentCardTaskTypeBadges([assignment]).map((label) => <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>{label}</span>)}
                 <AssignmentStatusBadge
                   completedCount={assignment.completed_count}
                   lifecycleStatus={assignment.status}
@@ -312,9 +312,7 @@ function TeacherWritingAssignmentCollectionCard({
   const dueDates = entry.assignments
     .flatMap((assignment) => assignment.due_at ? [assignment.due_at] : [])
     .sort((left, right) => Date.parse(left) - Date.parse(right));
-  const taskTypeBadges = writingAssignmentTaskTypeBadges(
-    entry.assignments.map((assignment) => assignment.task_type)
-  );
+  const taskTypeBadges = writingAssignmentCardTaskTypeBadges(entry.assignments);
   const fallbackTitle = `${entry.assignments[0].display_name || writingAssignmentTitle(entry.assignments[0].question_snapshot)} 等 ${entry.assignments.length} 篇${entry.assignments[0].subject === "reading" ? "阅读" : "写作"}`;
 
   return (

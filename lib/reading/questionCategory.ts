@@ -36,10 +36,15 @@ export type CategoryGroupProgress = {
   submittedAt: string;
   revision?: number;
 };
+export type CategorySessionCategory = {
+  category: string;
+  count: number;
+};
+
 export type CategorySession = {
   sessionId: string;
   questionCategory: ReadingQuestionCategory;
-  amount: 5 | 10 | 15 | 20;
+  amount: number;
   groups: WrongQuestionSessionGroup[];
   progress: Record<string, CategoryGroupProgress>;
   status: "active" | "completed";
@@ -49,11 +54,19 @@ export type CategorySession = {
   createdAt: string;
   completedAt: string | null;
   draft?: { logicalItemId?: string; workspace?: CategoryDraft; workspaces?: Record<string, CategoryDraft> };
+  categories?: CategorySessionCategory[];
+  totalQuestions?: number;
+  origin?: "self_practice" | "teacher_assigned";
+  assignmentId?: string | null;
+  startRequestId?: string | null;
 };
-export type CategorySessionPayload = { session: CategorySession; answers: CategoryAnswer[] };
+export type CategorySessionPayload = { session: CategorySession; answers: CategoryAnswer[]; created?: boolean };
 export type CategoryHistoryRow = {
   session_id: string; question_category: ReadingQuestionCategory; amount: number; status: string;
   completed_at: string; elapsed_seconds: number; total_points: number; correct_points: number;
+  categories?: CategorySessionCategory[] | null;
+  origin?: "self_practice" | "teacher_assigned" | null;
+  assignment_id?: string | null;
 };
 export type CategorySubmitPayload = CategorySessionPayload & {
   alreadySubmitted: boolean;
@@ -71,12 +84,30 @@ export type CategoryDraft = {
 export function isReadingQuestionCategory(value: unknown): value is ReadingQuestionCategory {
   return typeof value === "string" && (READING_QUESTION_CATEGORIES as readonly string[]).includes(value);
 }
-export function categorySessionTitle(category: string) {
+export function categorySessionTitle(
+  category: string,
+  categories?: ReadonlyArray<CategorySessionCategory> | null
+) {
+  const rows = (categories ?? []).filter((row) => row.category.trim());
+  if (rows.length > 1) return "题型分类综合练习";
+  if (rows.length === 1) return `题型分类练习·${rows[0].category}`;
   return `题型分类练习·${category}`;
 }
-export function categoryPracticeHref(category: string, amount: number, sessionId?: string) {
+
+export function categorySessionAssignmentRetakeHref(session: CategorySession) {
+  return session.origin === "teacher_assigned" && session.assignmentId
+    ? `/student/question-category-practice/assignment/${encodeURIComponent(session.assignmentId)}?new=1`
+    : null;
+}
+export function categoryPracticeHref(
+  category: string,
+  amount: number,
+  sessionId?: string,
+  requestId?: string
+) {
   const params = new URLSearchParams({ questionCategory: category, amount: String(amount) });
   if (sessionId) params.set("session", sessionId);
+  if (!sessionId && requestId) params.set("requestId", requestId);
   return `${CATEGORY_ROUTE}/practice?${params}`;
 }
 export function categoryResultHref(sessionId: string) {

@@ -59,6 +59,18 @@ export function readingFullSetAttemptError(
   if (message.includes("FULL_SET_NOT_FOUND")) {
     return readingFullSetAttemptJson({ error: "没有找到这个完整阅读套题。" }, { status: 404 });
   }
+  if (message.includes("FULL_SET_ASSIGNMENT_REQUIRED")) {
+    return readingFullSetAttemptJson(
+      { error: "完整阅读套题只能从有效教师作业开始。" },
+      { status: 403 }
+    );
+  }
+  if (message.includes("FULL_SET_ASSIGNMENT_NOT_AVAILABLE")) {
+    return readingFullSetAttemptJson(
+      { error: "这项作业已撤回或不再可用。" },
+      { status: 409 }
+    );
+  }
   if (message.includes("FULL_SET_ATTEMPT_NOT_FOUND") || message.includes("FULL_SET_MODULE_NOT_FOUND")) {
     return readingFullSetAttemptJson({ error: "没有找到这次套题练习记录。" }, { status: 404 });
   }

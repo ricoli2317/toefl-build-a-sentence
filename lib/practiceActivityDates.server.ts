@@ -1,6 +1,8 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { readAllSupabaseRows } from "./supabasePagination.ts";
+import { practiceRangeDateKey } from "./teacherStudentPracticeRange.ts";
 import { TEACHER_PRACTICE_TASK_TYPES, type TeacherPracticeTaskType } from "./teacherStudentPractice.ts";
-import { parseWordbookQuery } from "./lexical/wordbookList.ts";
+import { parseWordbookQuery, zonedMidnight } from "./lexical/wordbookList.ts";
 
 export function parsePracticeActivityQuery(params: URLSearchParams) {
   params.forEach((_value, key) => {
@@ -24,5 +26,48 @@ export async function readPracticeActivityDates(db: SupabaseClient, studentId: s
     p_student: studentId, p_month: `${query.month}-01`, p_timezone: query.timeZone, p_tasks: tasks, p_teacher: teacher
   });
   if (error || !Array.isArray(data)) throw new Error("练习日期暂时无法读取，请稍后重试。");
-  return { dates: data as string[], month: query.month };
+  const dates = new Set(data as string[]);
+  // The Reading category session is already part of the SQL RPC. BAS Grammar
+  // teacher category sessions are not: their virtual `grammar-random-*`
+  // attempt is deliberately hidden from Student history, so the session's own
+  // completion date is added here. Teacher views already include the attempt.
+  if (!teacher && tasks.includes("build_sentence")) {
+    for (const date of await readBasCategoryActivityDates(db, studentId, query)) {
+      dates.add(date);
+    }
+  }
+  return { dates: Array.from(dates).sort(), month: query.month };
+}
+
+async function readBasCategoryActivityDates(
+  db: SupabaseClient,
+  studentId: string,
+  query: Pick<ReturnType<typeof parsePracticeActivityQuery>, "month" | "timeZone">
+) {
+  const start = zonedMidnight(`${query.month}-01`, query.timeZone);
+  const end = zonedMidnight(`${nextMonthKey(query.month)}-01`, query.timeZone);
+  const result = await readAllSupabaseRows<{ completed_at: string | null }>((from, to) =>
+    db
+      .from("bas_grammar_practice_sessions")
+      .select("completed_at")
+      .eq("student_id", studentId)
+      .eq("status", "completed")
+      .not("assignment_id", "is", null)
+      .gte("completed_at", start)
+      .lt("completed_at", end)
+      .order("completed_at", { ascending: true })
+      .range(from, to)
+  );
+  if (result.error) throw new Error(result.error.message);
+  return (result.data ?? []).flatMap((row) => {
+    const date = practiceRangeDateKey(row.completed_at, query.timeZone);
+    return date ? [date] : [];
+  });
+}
+
+function nextMonthKey(month: string) {
+  const [year, monthNumber] = month.split("-").map(Number);
+  return monthNumber === 12
+    ? `${year + 1}-01`
+    : `${year}-${String(monthNumber + 1).padStart(2, "0")}`;
 }

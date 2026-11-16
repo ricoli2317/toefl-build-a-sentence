@@ -21,6 +21,7 @@ import {
   isLaterWritingAssignmentSubmission,
   isTeacherAssignmentStudentCompleted,
   isWritingReviewItemType,
+  writingAssignmentCategoryManifest,
   writingAssignmentTitle,
   type WritingAssignmentCollectionDetail,
   type WritingAssignmentLifecycleStatus,
@@ -204,6 +205,7 @@ export async function GET(
     let publishedCount = 0;
     const details = assignments.map((assignment) => {
       const reviewBased = isWritingReviewItemType(assignment.task_type);
+      const categoryManifest = writingAssignmentCategoryManifest(assignment.question_snapshot);
       const assignmentMembers = membersByAssignment.get(assignment.assignment_id) ?? [];
       const students: WritingAssignmentStudentDetail[] = assignmentMembers.map((member) => {
         const key = assignmentStudentKey(assignment.assignment_id, member.student_id);
@@ -245,6 +247,7 @@ export async function GET(
           latest_submitted_attempt_id: reviewBased ? latest?.attempt_id ?? null : null,
           latest_review_status: reviewBased ? latestReviewStatus : null,
           available_result: reviewBased ? null : result.available_result,
+          available_results: reviewBased ? [] : result.available_results ?? [],
           completed,
           status: calculateWritingAssignmentStudentStatus({
             dueAt: assignment.due_at,
@@ -277,6 +280,8 @@ export async function GET(
         display_name:
           displayNames.get(assignment.assignment_id)
           ?? writingAssignmentTitle(assignment.question_snapshot),
+        category_summary: categoryManifest?.categorySummary ?? null,
+        category_total_questions: categoryManifest?.totalQuestions ?? null,
         status: assignment.status,
         due_at: assignment.due_at,
         created_at: assignment.created_at,
@@ -412,6 +417,42 @@ export async function PATCH(
     const prepared = await prepareWritingAssignmentGroupEditMutation(auth.supabase, body, {
       actor: auth.actor ?? undefined
     });
+    // The dedicated category RPC edits exactly one visible manifest item. A
+    // group that started as a mixed batch keeps the general edit RPC even when
+    // the teacher removes the normal items, because the group still owns more
+    // than one visible row until that RPC replaces it atomically.
+    if (prepared.categoryAssignment && currentItems.length === 1) {
+      const item = prepared.items[0];
+      if (!item || prepared.items.length !== 1) throw new Error("INVALID_GROUP_ITEMS");
+      const classId = typeof body.classId === "string" ? body.classId.trim() : "";
+      const title = typeof body.title === "string" ? body.title : null;
+      const { error: categoryEditError } = await auth.supabase.rpc(
+        "update_withdrawn_category_assignment_group",
+        {
+          p_class_id: classId || null,
+          p_due_at: prepared.dueAt,
+          p_group_id: params.batchId,
+          p_item: {
+            assignment_id: item.assignmentId,
+            question_id: item.questionId,
+            question_snapshot: item.questionSnapshot,
+            question_source: item.questionSource,
+            task_type: item.taskType
+          },
+          p_legacy_assignment_id: null,
+          p_reactivate: body.reactivate === true,
+          p_student_ids: classId ? [] : prepared.studentIds,
+          p_teacher_id: auth.teacherId,
+          p_title: title
+        }
+      );
+      if (categoryEditError) throw categoryEditError;
+      return writingAssignmentJson({
+        groupId: params.batchId,
+        status: body.reactivate === true ? "active" : "withdrawn",
+        assignmentIds: item.assignmentId ? [item.assignmentId] : []
+      });
+    }
     const submittedAssignmentIds = await readSubmittedAttemptAssignmentIds(
       auth.supabase,
       currentItems.map((item) => item.assignment_id)
@@ -489,7 +530,7 @@ export async function PATCH(
           { status: 400 }
         );
       }
-      if (/^(请选择|请至少|请填写|请输入|所选|截止|一次最多|同一份作业|作业科目|该题型)/.test(message)) {
+      if (/^(请选择|请至少|请填写|请输入|所选|截止|一次最多|同一份作业|作业科目|该题型|分类|题目总量|题量)/.test(message)) {
         return writingAssignmentJson({ code: "INVALID_ASSIGNMENT", message }, { status: 400 });
       }
       throw updateError;
@@ -501,6 +542,12 @@ export async function PATCH(
     });
   } catch (error) {
     const message = errorMessage(error);
+    if (message.includes("INVALID_CATEGORY_ASSIGNMENT_MANIFEST")) {
+      return writingAssignmentJson(
+        { code: "INVALID_ASSIGNMENT", message: "分类作业的冻结题目无效，请重新选择分类和题量。" },
+        { status: 400 }
+      );
+    }
     if (message.includes("QUESTION_LOCKED_AFTER_SUBMISSION")) {
       return invalidState("已有学生提交，题型和题目内容不能修改。");
     }

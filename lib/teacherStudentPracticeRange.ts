@@ -134,6 +134,15 @@ export type TeacherRangeBasAttemptRow = {
   submitted_at: string | null;
 };
 
+export type TeacherRangeBasCategorySessionRow = {
+  session_id: string;
+  assignment_id: string;
+  status: string;
+  completed_at: string | null;
+  total_questions: number | null;
+  correct_count: number | null;
+};
+
 export type TeacherRangeWritingAttemptRow = {
   attempt_id: string;
   task_type: "email" | "academic_discussion";
@@ -151,6 +160,7 @@ export type TeacherPracticeRangeReadingInput = {
 
 export type TeacherPracticeRangeWritingInput = {
   basAttempts: TeacherRangeBasAttemptRow[];
+  basCategorySessions?: TeacherRangeBasCategorySessionRow[];
   writingAttempts: TeacherRangeWritingAttemptRow[];
   reviewScores?: Map<string, number>;
 };
@@ -359,10 +369,15 @@ function buildWritingRange(
   };
   let emailScoreTotal = 0;
   let discussionScoreTotal = 0;
+  const basCategorySessions = writing.basCategorySessions ?? [];
+  const categorySessionSetIds = new Set(
+    basCategorySessions.map((session) => `grammar-random-${session.session_id}`)
+  );
 
   for (const attempt of writing.basAttempts) {
     const submittedAt = validSubmittedAt(attempt.submitted_at);
     if (!submittedAt) continue;
+    if (categorySessionSetIds.has(String(attempt.set_id))) continue;
     const category = basAttemptCategory(attempt.set_id, attempt.set_title);
     if (category !== "practice") {
       if (includeVirtualBas) {
@@ -383,6 +398,17 @@ function buildWritingRange(
     tasks.build_sentence.correctCount += correctCount;
     tasks.build_sentence.totalQuestions += totalQuestions;
     addCount(submittedAt, "build_sentence");
+  }
+
+  for (const session of basCategorySessions) {
+    const completedAt = validSubmittedAt(session.completed_at);
+    if (session.status !== "completed" || !completedAt) continue;
+    const totalQuestions = nonNegativeInteger(session.total_questions);
+    const correctCount = Math.min(totalQuestions, nonNegativeInteger(session.correct_count));
+    tasks.build_sentence.attempts += 1;
+    tasks.build_sentence.correctCount += correctCount;
+    tasks.build_sentence.totalQuestions += totalQuestions;
+    addCount(completedAt, "build_sentence");
   }
 
   for (const attempt of writing.writingAttempts) {

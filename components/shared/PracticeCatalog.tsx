@@ -101,16 +101,35 @@ function PracticeCatalogIcon({ icon: Icon = CalendarDays }: { icon?: StudentPrac
 }
 
 export function PracticeSetAction({
+  disabled = false,
+  disabledReason,
   href,
   icon: Icon,
   label,
   primary = false
 }: {
+  disabled?: boolean;
+  disabledReason?: string;
   href: string;
   icon: LucideIcon;
   label: string;
   primary?: boolean;
 }) {
+  if (disabled) {
+    return (
+      <span
+        aria-disabled="true"
+        className={primary
+          ? "student-button-primary inline-flex min-h-8 cursor-not-allowed items-center gap-1.5 px-3 py-1 text-xs opacity-50 sm:text-[13px]"
+          : "inline-flex min-h-8 min-w-0 cursor-not-allowed items-center justify-center gap-1.5 rounded-[9px] bg-student-primary-soft px-2.5 py-1 text-xs font-semibold text-student-primary opacity-50 sm:gap-2 sm:px-3 sm:text-[13px]"}
+        role="link"
+        title={disabledReason}
+      >
+        <Icon aria-hidden="true" className="shrink-0" size={16} strokeWidth={1.9} />
+        <span className="whitespace-nowrap">{label}</span>
+      </span>
+    );
+  }
   return (
     <Link
       className={primary

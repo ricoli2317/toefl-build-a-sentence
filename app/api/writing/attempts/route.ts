@@ -127,6 +127,21 @@ export async function POST(request: Request) {
       );
     }
 
+    // Supplementary historical/resumed-draft unlock. New draft inserts are
+    // already enforced atomically by the writing_attempts trigger; this helper
+    // only repairs a draft created before enforcement (or before the backfill).
+    // A missing helper must not block an otherwise valid practice entry.
+    const unlockEnsure = await auth.supabase.rpc(
+      "student_ensure_writing_practice_unlock",
+      { p_attempt_id: draft.attempt.attempt_id }
+    );
+    if (unlockEnsure.error && unlockEnsure.error.code !== "PGRST202") {
+      console.error("[writing-attempts] unlock_ensure_failed", {
+        code: unlockEnsure.error.code ?? null,
+        message: unlockEnsure.error.message
+      });
+    }
+
     const displayResolver = questionResult.questionSource === "custom"
       ? createHistoricalPracticeDisplayResolver({ items: [], sources: [] })
       : await loadWritingHistoricalPracticeDisplayResolver(
@@ -160,7 +175,7 @@ export async function POST(request: Request) {
   } catch (error) {
     if (error instanceof WritingAttemptLifecycleError) {
       logWritingAttemptError("get_or_create_draft", error.cause);
-      return respond({ error: error.message }, { status: 500 });
+      return respond({ error: error.message }, { status: error.status ?? 500 });
     }
     return respond(
       { error: "暂时无法进入写作练习，请稍后重试。" },

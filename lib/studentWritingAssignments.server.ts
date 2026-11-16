@@ -42,6 +42,8 @@ export const STUDENT_ASSIGNMENT_DETAIL_SELECT = `
     snapshot_question_id:question_snapshot->>question_id,
     snapshot_item_id:question_snapshot->>item_id,
     snapshot_source_set_id:question_snapshot->>source_set_id,
+    snapshot_category_summary:question_snapshot->>categorySummary,
+    snapshot_category_total:question_snapshot->>totalQuestions,
     title:question_snapshot->>set_title,
     due_at,
     status,
@@ -59,6 +61,8 @@ type EmbeddedAssignmentRow = {
   snapshot_question_id: string | null;
   snapshot_item_id: string | null;
   snapshot_source_set_id: string | null;
+  snapshot_category_summary: string | null;
+  snapshot_category_total: string | null;
   title: string;
   due_at: string | null;
   status: WritingAssignmentLifecycleStatus;
@@ -214,6 +218,9 @@ export async function loadStudentAssignmentDetails(input: {
     const itemResult = reviewType
       ? null
       : assignmentStudentResult(studentResultMap, assignment.assignment_id, input.userId);
+    const completedAt = reviewType
+      ? firstSubmittedAt
+      : itemResult?.available_result?.completed_at ?? null;
     return {
       assignment_id: assignment.assignment_id,
       group_id: assignment.group_id,
@@ -228,22 +235,27 @@ export async function loadStudentAssignmentDetails(input: {
       due_at: assignment.due_at,
       display_name: displayNames.get(assignment.assignment_id) ?? assignment.title,
       title: assignment.title,
-      first_submitted_at: firstSubmittedAt,
+      first_submitted_at: completedAt,
       latest_submitted_attempt_id: submitted[0]?.attempt_id ?? null,
       published_review_attempt_id: published?.attempt_id ?? null,
       latest_result_attempt_id: itemResult?.available_result
         ? assignment.task_type === "build_sentence"
+          || assignment.task_type === "bas_category"
           ? itemResult.available_result.attempt_id ?? null
           : itemResult.available_result.id
         : null,
       has_started_result: Boolean(itemResult?.started),
+      category_summary: assignment.snapshot_category_summary?.trim() || null,
+      category_total_questions: assignment.snapshot_category_total
+        ? Number(assignment.snapshot_category_total) || null
+        : null,
       question_id: resolvedAssignmentItemId(assignment),
       source_set_id: assignment.snapshot_source_set_id?.trim() || null,
       question_source: assignment.question_source,
       status: assignment.status,
       student_status: calculateWritingAssignmentStudentStatus({
         dueAt: assignment.due_at,
-        firstSubmittedAt
+        firstSubmittedAt: completedAt
       }),
       submitted_attempt_count: submitted.length,
       task_type: assignment.task_type

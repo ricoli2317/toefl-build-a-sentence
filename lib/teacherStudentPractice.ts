@@ -123,7 +123,12 @@ export type TeacherPracticeRecordMetric =
   | { kind: "objective"; correct: number; total: number; accuracy: number }
   | { kind: "writing"; hasScore: boolean; score: number | null; wordCount: number };
 
-export type TeacherPracticeRecordKind = "practice" | "wrongbook" | "full_set" | "question_category";
+export type TeacherPracticeRecordKind =
+  | "practice"
+  | "wrongbook"
+  | "full_set"
+  | "question_category"
+  | "bas_category";
 
 /**
  * Source ids the student result / retake routes need. The teacher student page
@@ -140,6 +145,10 @@ export type TeacherPracticeRecordSource = {
   writingQuestionId?: string;
   questionCategory?: string;
   categoryAmount?: number;
+  categoryOrigin?: "self_practice" | "teacher_assigned" | null;
+  categoryAssignmentId?: string | null;
+  /** BAS Grammar teacher-assigned category Assignment (frozen Manifest). */
+  basCategoryAssignmentId?: string | null;
 };
 
 export type TeacherPracticeRecord = {
@@ -336,6 +345,27 @@ export type TeacherBasAttemptRow = {
   submitted_at: string | null;
 };
 
+/**
+ * One completed teacher-assigned BAS Grammar category session. The session owns
+ * the frozen Manifest, while its submission also writes an ordinary
+ * `attempts` row under the virtual `grammar-random-{sessionId}` set id. History
+ * reads this row (not the virtual attempt) so a teacher category practice is
+ * one BAS category record with its real duration and result attempt.
+ */
+export type TeacherBasCategorySessionRow = {
+  session_id: string;
+  assignment_id: string;
+  category: string;
+  categories: Array<{ category: string; count: number }> | null;
+  status: string;
+  completed_at: string | null;
+  started_at: string | null;
+  elapsed_seconds: number | null;
+  total_questions: number | null;
+  correct_count: number | null;
+  attempt_id: string | null;
+};
+
 export type TeacherWritingAttemptRow = {
   attempt_id: string;
   assignment_id: string | null;
@@ -437,11 +467,17 @@ export function buildTeacherStudentReadingPractice(input: {
     accumulateReadingTask(tasks.rap, correct, total);
     records.push({
       recordId: `question-category:${session.session_id}`, attemptId: session.session_id,
-      domain: "reading", taskType: "rap", kind: "question_category", title: categorySessionTitle(session.question_category),
+      domain: "reading", taskType: "rap", kind: "question_category",
+      title: categorySessionTitle(session.question_category, session.categories),
       submittedAt, durationSeconds: nonNegativeInteger(session.elapsed_seconds), scope: null,
       metric: { kind: "objective", correct, total, accuracy: ratio(correct, total) },
       href: teacherReadingAttemptHref({ studentId: input.studentId, kind: "question_category", attemptId: session.session_id }),
-      source: { questionCategory: session.question_category, categoryAmount: session.amount }
+      source: {
+        questionCategory: session.question_category,
+        categoryAmount: session.amount,
+        categoryOrigin: session.origin ?? "self_practice",
+        categoryAssignmentId: session.assignment_id ?? null
+      }
     });
   }
 
@@ -574,6 +610,8 @@ export function buildTeacherStudentReadingPractice(input: {
 export function buildTeacherStudentWritingPractice(input: {
   basAttempts: TeacherBasAttemptRow[];
   basTitles?: Map<string, string>;
+  /** Completed teacher-assigned BAS Grammar category sessions. */
+  basCategorySessions?: TeacherBasCategorySessionRow[];
   /** Defaults to true; the student practice history passes false to skip
    *  `wrongbook-*` / `grammar-*` sets (see PracticeHistoryLoadScope). */
   includeVirtualBas?: boolean;
@@ -591,11 +629,22 @@ export function buildTeacherStudentWritingPractice(input: {
   let basScoreTotal = 0;
   let emailScoreTotal = 0;
   let discussionScoreTotal = 0;
+  const basCategorySessions = input.basCategorySessions ?? [];
+  // Every teacher-assigned BAS category submission also writes one virtual
+  // `grammar-random-*` attempt. The session record below is the one history
+  // record for it, so the raw attempt is never rendered a second time.
+  const categorySessionSetIds = new Set(
+    basCategorySessions.map((session) => `grammar-random-${session.session_id}`)
+  );
+  const attemptIdBySetId = new Map(
+    input.basAttempts.map((attempt) => [String(attempt.set_id), String(attempt.attempt_id)])
+  );
 
   for (const attempt of input.basAttempts) {
     const submittedAt = validSubmittedAt(attempt.submitted_at);
     if (!submittedAt) continue;
     const setId = String(attempt.set_id);
+    if (categorySessionSetIds.has(setId)) continue;
     const isWrongbook = isBasWrongbookSetId(setId);
     // The student practice history excludes the whole virtual set id space
     // (`wrongbook-*` / legacy `grammar-*`) from cards and records alike.
@@ -636,6 +685,46 @@ export function buildTeacherStudentWritingPractice(input: {
       // list of every attempt of that set.
       href: `/teacher/students/${encodeURIComponent(input.studentId)}/attempts/${encodeURIComponent(String(attempt.attempt_id))}`,
       source: { basSetId: setId }
+    });
+  }
+
+  for (const session of basCategorySessions) {
+    const completedAt = validSubmittedAt(session.completed_at);
+    if (session.status !== "completed" || !completedAt || !session.assignment_id) continue;
+    const totalQuestions = nonNegativeInteger(session.total_questions);
+    const correctCount = Math.min(totalQuestions, nonNegativeInteger(session.correct_count));
+    tasks.build_sentence.attempts += 1;
+    tasks.build_sentence.correctCount += correctCount;
+    tasks.build_sentence.totalQuestions += totalQuestions;
+    const setId = `grammar-random-${session.session_id}`;
+    const attemptId = session.attempt_id
+      ? String(session.attempt_id)
+      : attemptIdBySetId.get(setId) ?? "";
+    records.push({
+      recordId: `bas-category:${session.session_id}`,
+      attemptId,
+      domain: "writing",
+      taskType: "build_sentence",
+      kind: "bas_category",
+      title: basCategorySessionTitle(session),
+      submittedAt: completedAt,
+      durationSeconds: nonNegativeInteger(session.elapsed_seconds),
+      metric: {
+        kind: "objective",
+        correct: correctCount,
+        total: totalQuestions,
+        accuracy: ratio(correctCount, totalQuestions)
+      },
+      scope: null,
+      // The teacher opens the same attempt result page as an ordinary BAS
+      // record; the set-wide attempt list is deliberately not used.
+      href: attemptId
+        ? `/teacher/students/${encodeURIComponent(input.studentId)}/attempts/${encodeURIComponent(attemptId)}`
+        : null,
+      source: {
+        basCategoryAssignmentId: session.assignment_id,
+        basSetId: setId
+      }
     });
   }
 
@@ -716,6 +805,14 @@ export function sortPracticeRecords(records: TeacherPracticeRecord[]) {
     Date.parse(right.submittedAt) - Date.parse(left.submittedAt)
     || left.recordId.localeCompare(right.recordId)
   );
+}
+
+/** BAS category history title; the task chip still carries the BAS identity. */
+function basCategorySessionTitle(session: TeacherBasCategorySessionRow) {
+  const rows = (session.categories ?? []).filter((row) => row.category.trim());
+  if (rows.length > 1) return "语法分类综合练习";
+  if (rows.length === 1) return `语法分类练习·${rows[0].category}`;
+  return session.category?.trim() || "语法分类练习";
 }
 
 function buildFullSetReadingPractice(input: {

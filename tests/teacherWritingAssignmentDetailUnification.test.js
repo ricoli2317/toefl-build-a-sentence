@@ -225,6 +225,6 @@ test("question source badges are no longer rendered on teacher assignment cards 
     writingAssignmentTaskTypeBadges(["email", "academic_discussion", "academic_discussion"]),
     ["Write an Email", "Academic Discussion ×2"]
   );
-  assert.match(source(LIST), /writingAssignmentTaskTypeBadges\(\[assignment\.task_type\]\)/);
-  assert.match(source(DETAIL_BODY), /writingAssignmentTaskTypeBadges\(assignments\.map\(\(assignment\) => assignment\.task_type\)\)/);
+  assert.match(source(LIST), /writingAssignmentCardTaskTypeBadges\(\[assignment\]\)/);
+  assert.match(source(DETAIL_BODY), /writingAssignmentCardTaskTypeBadges\(assignments\)/);
 });

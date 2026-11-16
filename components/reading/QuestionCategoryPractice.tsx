@@ -1,19 +1,21 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useStudentCachedData, useStudentDataCache, STUDENT_PRACTICE_HISTORY_CACHE_PREFIX, STUDENT_DASHBOARD_SUMMARY_CACHE_KEY, type StudentCacheSession } from "@/components/StudentDataCache";
+import { useStudentCachedData, useStudentDataCache, STUDENT_PRACTICE_HISTORY_CACHE_PREFIX, STUDENT_DASHBOARD_SUMMARY_CACHE_KEY, STUDENT_READING_CATEGORY_COUNTS_CACHE_KEY, type StudentCacheSession } from "@/components/StudentDataCache";
+import { STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY } from "@/lib/practiceEntitlements";
 import { ReadingMultiSourceSessionRunner, ReadingSessionMessage, type ReadingSessionAdapter } from "./ReadingMultiSourceSessionRunner";
 import {
   CATEGORY_API, CATEGORY_ROUTE, categoryAnswerRows, categoryResultHref, categorySessionTitle, categoryWorkspace, categorySourceElapsedSeconds,
   type CategorySession, type CategorySessionPayload, type CategorySubmitPayload, type CategoryDraft,
   type ReadingQuestionCategory
 } from "@/lib/reading/questionCategory";
-import { categoryFetch, categoryGroupUrl, categoryPracticeCacheKey, categorySessionCacheKey, loadCategorySession } from "@/lib/reading/questionCategory.client";
+import { categoryFetch, categoryGroupUrl, categoryPracticeCacheKey, categorySessionCacheKey, loadCategorySession, startCategoryAssignmentSession } from "@/lib/reading/questionCategory.client";
 import { buildSubmittedReadingAnswerState } from "@/lib/reading/review";
 import { invalidateStudentWrongbook } from "@/lib/studentCacheEvents";
 import type { WrongQuestionSessionGroup } from "@/lib/wrongQuestionBank";
 import type { ReadingAttemptSummary } from "@/lib/reading/attempts";
 import { createCategoryDraftQueue } from "@/lib/reading/categoryDraftQueue";
+import { createClientRequestId } from "@/lib/clientRequestId";
 
 const creations = new Map<string, Promise<CategorySessionPayload>>();
 const draftKey = (studentId: string, id: string, itemId: string) => `tps:category-draft:${studentId}:${id}:${itemId}`;
@@ -31,8 +33,10 @@ export function categorySourceSummary(session: CategorySession, group: WrongQues
   };
 }
 
-export function QuestionCategoryPractice({ questionCategory, amount, sessionId }: {
-  questionCategory?: ReadingQuestionCategory; amount?: 5 | 10 | 15 | 20; sessionId?: string;
+export function QuestionCategoryPractice({ assignmentId, questionCategory, amount, requestId, returnTo, sessionId }: {
+  assignmentId?: string;
+  questionCategory?: ReadingQuestionCategory; amount?: 5 | 10 | 15 | 20;
+  requestId?: string; returnTo?: string; sessionId?: string;
 }) {
   const router = useRouter();
   const cache = useStudentDataCache();
@@ -40,8 +44,18 @@ export function QuestionCategoryPractice({ questionCategory, amount, sessionId }
   const [pinned, setPinned] = useState(sessionId ?? "");
   const [saveError, setSaveError] = useState("");
   const [nonce] = useState(() => `${Date.now()}-${Math.random()}`);
+  const [effectiveRequestId] = useState(
+    () => requestId || createClientRequestId()
+  );
   const revision = useRef(0);
-  const key = `reading:category-entry:${pinned || "create"}:${nonce}`;
+  const key = `reading:category-entry:${assignmentId ? `assignment:${assignmentId}` : "self"}:${pinned || `create:${effectiveRequestId}`}:${nonce}`;
+
+  useEffect(() => {
+    if (pinned || sessionId) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("requestId", effectiveRequestId);
+    window.history.replaceState(null, "", url.toString());
+  }, [effectiveRequestId, pinned, sessionId]);
   const state = useStudentCachedData<CategorySessionPayload>(key, async (auth) => {
     if (pinned) {
       const payload = await loadCategorySession(pinned, auth);
@@ -60,16 +74,33 @@ export function QuestionCategoryPractice({ questionCategory, amount, sessionId }
       } catch { /* server resume works even without browser storage */ }
       return payload;
     }
-    const creationKey = `${auth.studentId}:${nonce}`;
+    const creationKey = `${auth.studentId}:${assignmentId ? `assignment:${assignmentId}` : "self"}:${effectiveRequestId}`;
     let request = creations.get(creationKey);
     if (!request) {
-      request = categoryFetch<CategorySessionPayload>(CATEGORY_API, auth, { questionCategory, amount })
+      request = (assignmentId
+        ? startCategoryAssignmentSession(assignmentId, effectiveRequestId, auth)
+        : categoryFetch<CategorySessionPayload>(CATEGORY_API, auth, {
+            questionCategory,
+            amount,
+            requestId: effectiveRequestId
+          }))
         .finally(() => creations.delete(creationKey));
       creations.set(creationKey, request);
     }
     return request;
   }, { refreshOnMount: Boolean(sessionId) });
   const practiceSession = state.data?.session;
+  useEffect(() => {
+    if (state.data?.created && !assignmentId) {
+      cache.invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+      cache.invalidate(STUDENT_READING_CATEGORY_COUNTS_CACHE_KEY);
+    }
+  }, [assignmentId, cache, state.data?.created]);
+  useEffect(() => {
+    if (state.error && /额度已用完/.test(state.error)) {
+      cache.invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+    }
+  }, [cache, state.error]);
   const sourceElapsedSeconds = useMemo(() => practiceSession ? categorySourceElapsedSeconds(practiceSession) : {}, [practiceSession]);
   const sessionRef = useRef(state.data); sessionRef.current = state.data;
   useEffect(() => {
@@ -79,6 +110,8 @@ export function QuestionCategoryPractice({ questionCategory, amount, sessionId }
     setPinned(practiceSession.sessionId);
     const url = new URL(window.location.href);
     url.searchParams.set("session", practiceSession.sessionId);
+    url.searchParams.delete("requestId");
+    url.searchParams.delete("new");
     window.history.replaceState(null, "", url.toString());
   }, [nonce, pinned, practiceSession, state.data]);
   useEffect(() => {
@@ -167,6 +200,7 @@ export function QuestionCategoryPractice({ questionCategory, amount, sessionId }
     resumeItemId: practiceSession.draft?.logicalItemId, sourceElapsedSeconds,
     elapsedSeconds: Object.values(sourceElapsedSeconds).reduce((total, seconds) => total + seconds, 0) }}
     saveError={saveError}
-    title={categorySessionTitle(practiceSession.questionCategory)} onBack={() => router.push(CATEGORY_ROUTE)}
+    title={categorySessionTitle(practiceSession.questionCategory, practiceSession.categories)}
+    onBack={() => router.push(returnTo ?? CATEGORY_ROUTE)}
     onCompleted={() => router.replace(categoryResultHref(practiceSession.sessionId))} />;
 }

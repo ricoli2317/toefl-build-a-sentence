@@ -22,7 +22,9 @@ export type AssignmentItemType =
   | "ctw"
   | "rdl"
   | "rap"
-  | "full_set";
+  | "full_set"
+  | "bas_category"
+  | "rap_category";
 
 export type ReadingLength = "short" | "long";
 
@@ -89,6 +91,22 @@ export const ASSIGNMENT_ITEM_CONFIG = {
     hasTopic: false,
     subject: "reading",
     tabLabel: "Full Set"
+  },
+  bas_category: {
+    badgeLabel: "BAS Grammar Category",
+    hasLength: false,
+    hasQuestionView: false,
+    hasTopic: false,
+    subject: "writing",
+    tabLabel: "BAS 分类"
+  },
+  rap_category: {
+    badgeLabel: "RAP Question Category",
+    hasLength: false,
+    hasQuestionView: false,
+    hasTopic: false,
+    subject: "reading",
+    tabLabel: "RAP 分类"
   }
 } satisfies Record<
   AssignmentItemType,
@@ -106,6 +124,12 @@ export const ASSIGNMENT_ITEM_TYPES = Object.keys(
   ASSIGNMENT_ITEM_CONFIG
 ) as AssignmentItemType[];
 
+/** Item types backed by the normal question / reading catalog picker. */
+export const ASSIGNMENT_CATALOG_ITEM_TYPES = ASSIGNMENT_ITEM_TYPES.filter(
+  (itemType) =>
+    itemType !== "bas_category" && itemType !== "rap_category"
+) as Exclude<AssignmentItemType, "bas_category" | "rap_category">[];
+
 export function isAssignmentSubject(value: unknown): value is AssignmentSubject {
   return value === "writing" || value === "reading";
 }
@@ -114,10 +138,28 @@ export function isAssignmentItemType(value: unknown): value is AssignmentItemTyp
   return typeof value === "string" && value in ASSIGNMENT_ITEM_CONFIG;
 }
 
-export function assignmentItemTypesForSubject(subject: AssignmentSubject) {
-  return ASSIGNMENT_ITEM_TYPES.filter(
+export function isCategoryAssignmentItemType(
+  value: unknown
+): value is "bas_category" | "rap_category" {
+  return value === "bas_category" || value === "rap_category";
+}
+
+/**
+ * Catalog picker tabs. Category assignment types are configured by counts and
+ * drawn server-side, so they never join the normal item-picker tab list.
+ */
+export function assignmentItemTypesForSubject(
+  subject: AssignmentSubject
+): AssignmentItemType[] {
+  return ASSIGNMENT_CATALOG_ITEM_TYPES.filter(
     (itemType) => ASSIGNMENT_ITEM_CONFIG[itemType].subject === subject
   );
+}
+
+export function categoryAssignmentItemTypeForSubject(
+  subject: AssignmentSubject
+): "bas_category" | "rap_category" {
+  return subject === "writing" ? "bas_category" : "rap_category";
 }
 
 export function assignmentItemSubject(itemType: AssignmentItemType): AssignmentSubject {

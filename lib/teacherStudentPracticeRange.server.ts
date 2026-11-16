@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { loadCategoryHistoryRows } from "./reading/questionCategoryHistory.server.ts";
+import { loadBasCategoryHistoryRows } from "./grammarPracticeHistory.server.ts";
 import { readAllSupabaseRows } from "./supabasePagination.ts";
 import { loadTeacherWritingReviewScores } from "./teacherStudentPractice.server.ts";
 import type { PracticeHistoryLoadScope } from "./teacherStudentPractice.ts";
@@ -159,7 +160,7 @@ async function loadWritingRange(
   startAt: string,
   endAt: string
 ): Promise<TeacherPracticeRangeWritingInput> {
-  const [basResult, writingResult] = await Promise.all([
+  const [basResult, writingResult, basCategorySessions] = await Promise.all([
     readAllSupabaseRows<TeacherRangeBasAttemptRow>((from, to) =>
       db
         .from("attempts")
@@ -181,7 +182,8 @@ async function loadWritingRange(
         .lt("submitted_at", endAt)
         .order("submitted_at", { ascending: false })
         .range(from, to)
-    )
+    ),
+    loadBasCategoryHistoryRows(db, studentId, startAt, endAt)
   ]);
   const queryError = basResult.error ?? writingResult.error;
   if (queryError) throw new Error(queryError.message);
@@ -194,6 +196,7 @@ async function loadWritingRange(
 
   return {
     basAttempts: basResult.data ?? [],
+    basCategorySessions,
     writingAttempts,
     reviewScores
   };

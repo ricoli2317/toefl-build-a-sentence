@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
+import { mapPracticeAccessError } from "@/lib/practiceEntitlements";
 import { createAnonSupabase } from "@/lib/supabase/server";
 
 export type ReadingAttemptAuth = {
@@ -34,6 +35,23 @@ export function readingAttemptError(
   fallback: string
 ) {
   const message = error?.message ?? "";
+  if (
+    message.includes("PRACTICE_ENTITLEMENT_")
+    || message.includes("PRACTICE_ASSIGNMENT_")
+    || message.includes("PRACTICE_ITEM_NOT_FOUND")
+    || message.includes("PRACTICE_QUESTION_NOT_IN_SET")
+    || message.includes("CATEGORY_REQUEST_ID_CONFLICT")
+    || message.includes("CATEGORY_PRACTICE_ORIGIN_NOT_AVAILABLE")
+    || message.includes("READING_INVALID_CATEGORY_START")
+    || message.includes("READING_CATEGORY_ASSIGNMENT_")
+    || message.includes("READING_ASSIGNMENT_NOT_AVAILABLE")
+  ) {
+    const failure = mapPracticeAccessError(
+      error,
+      "暂时无法进入阅读练习，请稍后重试。"
+    );
+    return readingAttemptJson({ error: failure.message }, { status: failure.status });
+  }
   if (message.includes("READING_ITEM_NOT_FOUND")) {
     return readingAttemptJson({ error: "没有找到这个阅读练习。" }, { status: 404 });
   }

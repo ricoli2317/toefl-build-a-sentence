@@ -7,11 +7,20 @@ export default function PracticePage({
   searchParams
 }: {
   params: { setId: string };
-  searchParams: { returnTo?: string | string[] };
+  searchParams: {
+    assignmentId?: string | string[];
+    returnTo?: string | string[];
+  };
 }) {
+  const assignmentId = Array.isArray(searchParams.assignmentId)
+    ? searchParams.assignmentId[0]
+    : searchParams.assignmentId;
+
   return (
     <StudentPage title="Build a Sentence">
       <PracticeSession
+        assignmentId={assignmentId?.trim() || null}
+        requiresPracticeStart
         returnTo={safeStudentReturnTo(searchParams.returnTo)}
         setId={params.setId}
       />

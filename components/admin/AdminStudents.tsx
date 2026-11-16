@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { UserRound } from "lucide-react";
+import { KeyRound, UserRound } from "lucide-react";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import { useCurrentAccount } from "@/components/RoleGate";
 import { TeacherCard, TeacherEmptyState, TeacherSectionTitle } from "@/components/teacher/TeacherUI";
@@ -9,6 +9,7 @@ import { AccountTabs } from "@/components/teacher/TeacherAccounts";
 import { TeacherStudentOverviewList } from "@/components/teacher/TeacherStudentOverview";
 import { InlineStudentNameEditor } from "@/components/shared/InlineStudentNameEditor";
 import { AccountStatusControl } from "@/components/shared/AccountStatusControl";
+import { StudentPracticeEntitlementsPanel } from "@/components/admin/StudentPracticeEntitlementsPanel";
 import { publishCacheInvalidation } from "@/lib/cacheInvalidation";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 import { TEACHER_STUDENTS_HREF } from "@/lib/teacherNavigation";
@@ -48,6 +49,7 @@ export function AdminStudentsList() {
   const [students, setStudents] = useState<StudentAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [entitlementStudent, setEntitlementStudent] = useState<StudentAccount | null>(null);
   const loadSequence = useRef(0);
   const load = useCallback(async () => {
     const sequence = ++loadSequence.current;
@@ -89,53 +91,75 @@ export function AdminStudentsList() {
   }
 
   return (
-    <TeacherCard className="overflow-hidden p-0">
-      <div className="px-6 pt-6">
-        <TeacherSectionTitle>学生账号列表</TeacherSectionTitle>
-        <p className="mt-2 text-sm text-student-muted">平台学生账号总览，不含教学统计数据。</p>
-      </div>
-      {loading ? (
-        <p className="p-6 text-sm text-student-muted">正在加载...</p>
-      ) : error ? (
-        <p className="teacher-error m-6">{error}</p>
-      ) : students.length === 0 ? (
-        <div className="p-6"><TeacherEmptyState text="暂无学生账号。" /></div>
-      ) : (
-        <div className="overflow-x-auto px-6 pb-6 pt-4">
-          <table className="w-full min-w-[640px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-student-border text-student-muted">
-                <th className="px-3 py-3">学生</th>
-                <th className="px-3 py-3">账号</th>
-                <th className="px-3 py-3">状态</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student) => (
-                <tr className="border-b border-student-border last:border-0" key={student.id}>
-                  <td className="px-3 py-4">
-                    <div className="flex items-center gap-3">
-                      <UserRound size={20} className="text-student-muted" />
-                      <InlineStudentNameEditor
-                        displayName={formatManagedAccountName(student.displayName, student.email)}
-                        onSave={(fullName) => renameStudent(student.id, fullName)}
-                      />
-                    </div>
-                  </td>
-                  <td className="px-3 py-4 text-student-muted">账号：{formatAccountForDisplay(student.email)}</td>
-                  <td className="px-3 py-4">
-                    <AccountStatusControl
-                      accountId={student.id}
-                      isActive={student.isActive}
-                      onChanged={(isActive) => updateStudentStatus(student.id, isActive)}
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <>
+      <TeacherCard className="overflow-hidden p-0">
+        <div className="px-6 pt-6">
+          <TeacherSectionTitle>学生账号列表</TeacherSectionTitle>
+          <p className="mt-2 text-sm text-student-muted">平台学生账号总览，不含教学统计数据。</p>
         </div>
-      )}
-    </TeacherCard>
+        {loading ? (
+          <p className="p-6 text-sm text-student-muted">正在加载...</p>
+        ) : error ? (
+          <p className="teacher-error m-6">{error}</p>
+        ) : students.length === 0 ? (
+          <div className="p-6"><TeacherEmptyState text="暂无学生账号。" /></div>
+        ) : (
+          <div className="overflow-x-auto px-6 pb-6 pt-4">
+            <table className="w-full min-w-[720px] text-left text-sm">
+              <thead>
+                <tr className="border-b border-student-border text-student-muted">
+                  <th className="px-3 py-3">学生</th>
+                  <th className="px-3 py-3">账号</th>
+                  <th className="px-3 py-3">状态</th>
+                  <th className="px-3 py-3">练习权限</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((student) => (
+                  <tr className="border-b border-student-border last:border-0" key={student.id}>
+                    <td className="px-3 py-4">
+                      <div className="flex items-center gap-3">
+                        <UserRound size={20} className="text-student-muted" />
+                        <InlineStudentNameEditor
+                          displayName={formatManagedAccountName(student.displayName, student.email)}
+                          onSave={(fullName) => renameStudent(student.id, fullName)}
+                        />
+                      </div>
+                    </td>
+                    <td className="px-3 py-4 text-student-muted">账号：{formatAccountForDisplay(student.email)}</td>
+                    <td className="px-3 py-4">
+                      <AccountStatusControl
+                        accountId={student.id}
+                        isActive={student.isActive}
+                        onChanged={(isActive) => updateStudentStatus(student.id, isActive)}
+                      />
+                    </td>
+                    <td className="px-3 py-4">
+                      <button
+                        className="inline-flex items-center gap-1.5 font-semibold text-student-primary hover:underline"
+                        onClick={() => setEntitlementStudent(student)}
+                        type="button"
+                      >
+                        <KeyRound aria-hidden="true" size={15} strokeWidth={2} />
+                        练习权限
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </TeacherCard>
+      {entitlementStudent ? (
+        <StudentPracticeEntitlementsPanel
+          key={entitlementStudent.id}
+          open
+          studentId={entitlementStudent.id}
+          studentName={formatManagedAccountName(entitlementStudent.displayName, entitlementStudent.email)}
+          onClose={() => setEntitlementStudent(null)}
+        />
+      ) : null}
+    </>
   );
 }

@@ -6,10 +6,18 @@ export default function ReadingPracticePage({
   searchParams
 }: {
   params: { itemId: string };
-  searchParams: { returnTo?: string | string[] };
+  searchParams: {
+    assignmentId?: string | string[];
+    returnTo?: string | string[];
+  };
 }) {
+  const assignmentId = Array.isArray(searchParams.assignmentId)
+    ? searchParams.assignmentId[0]
+    : searchParams.assignmentId;
+
   return (
     <ReadingPractice
+      assignmentId={assignmentId?.trim() || null}
       itemId={params.itemId}
       returnTo={safeStudentReturnTo(searchParams.returnTo)}
     />

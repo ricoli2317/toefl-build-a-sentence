@@ -399,7 +399,10 @@ test("switching the subject asks first and only clears the old selection on conf
   const form = source(FORM);
   // No selection: switch directly. With selected bank items or custom drafts the
   // wizard asks before anything changes.
-  assert.match(form, /const hasItems = selection\.size > 0 \|\| customQuestions\.length > 0/);
+  assert.match(
+    form,
+    /const hasItems = \(standardEnabled && \(selection\.size > 0 \|\| customQuestions\.length > 0\)\)/
+  );
   assert.match(
     form,
     /已选择写作题目，切换到阅读会清空已选题目。是否切换？/

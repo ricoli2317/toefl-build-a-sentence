@@ -51,11 +51,14 @@ type AssignmentRow = Omit<
   | "question_snapshot"
   | "group_title"
   | "recipients"
+  | "category_total_questions"
 > & {
   teacher_id: string;
   updated_at: string;
   set_title: string | null;
   source_set_id: string | null;
+  category_summary: string | null;
+  category_total_questions: string | null;
 };
 type AssignmentStudentRow = { assignment_id: string; student_id: string; assigned_at: string };
 type ProfileRow = { id: string; email: string | null; full_name: string | null };
@@ -70,7 +73,7 @@ export async function GET(request: Request) {
     const assignmentsResult = await readAllSupabaseRows<AssignmentRow>((from, to) =>
       auth.supabase!
         .from("writing_assignments")
-        .select("assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,set_title:question_snapshot->>set_title,source_set_id:question_snapshot->>source_set_id,due_at,status,created_at,updated_at")
+        .select("assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,set_title:question_snapshot->>set_title,source_set_id:question_snapshot->>source_set_id,category_summary:question_snapshot->>categorySummary,category_total_questions:question_snapshot->>totalQuestions,due_at,status,created_at,updated_at")
         .eq("teacher_id", auth.teacherId!)
         .is("deleted_at", null)
         .order("created_at", { ascending: false })
@@ -266,6 +269,10 @@ export async function GET(request: Request) {
           question_source: assignment.question_source,
           question_id: assignment.question_id,
           question_snapshot: { set_title: assignment.set_title ?? "" } as WritingQuestion,
+          category_summary: assignment.category_summary?.trim() || null,
+          category_total_questions: assignment.category_total_questions
+            ? Number(assignment.category_total_questions) || null
+            : null,
           display_name: displayNames.get(assignment.assignment_id) ?? snapshotTitle,
           recipients: recipientRows.get(assignment.assignment_id) ?? [],
           status: assignment.status,
@@ -342,6 +349,7 @@ export async function POST(request: Request) {
     // never supplies student ids there, and the class must belong to the
     // current teacher and include the Assignment subject (写作 / 阅读).
     let rpcArgs: Record<string, unknown>;
+    let categoryCreate = false;
     let assignmentCount: number;
     let recipientCount: number;
     let resolvedTitle = groupTitle;
@@ -370,21 +378,42 @@ export async function POST(request: Request) {
         ? classAssignmentTitleBase(assignmentClass.name, new Date(), prepared.subject)
         : groupTitle;
       if (!resolvedTitle) return invalid("请填写作业标题。");
-      rpcArgs = {
-        p_teacher_id: auth.teacherId,
-        p_assignments: prepared.assignments.map((assignment) => ({
-          due_at: assignment.dueAt,
-          question_id: assignment.questionId,
-          question_snapshot: assignment.questionSnapshot,
-          question_source: assignment.questionSource,
-          task_type: assignment.taskType
-        })),
-        p_student_ids: [],
-        p_title: resolvedTitle,
-        p_title_is_automatic: titleIsAutomatic,
-        p_subject: prepared.subject,
-        p_class_id: classId
-      };
+      if (prepared.categoryAssignment) {
+        if (prepared.assignments.length !== 1) throw new Error("Invalid category Assignment");
+        const assignment = prepared.assignments[0]!;
+        categoryCreate = true;
+        rpcArgs = {
+          p_assignment: {
+            due_at: assignment.dueAt,
+            question_id: assignment.questionId,
+            question_snapshot: assignment.questionSnapshot,
+            question_source: assignment.questionSource,
+            task_type: assignment.taskType
+          },
+          p_class_id: classId,
+          p_student_ids: [],
+          p_subject: prepared.subject,
+          p_teacher_id: auth.teacherId,
+          p_title: resolvedTitle,
+          p_title_is_automatic: titleIsAutomatic
+        };
+      } else {
+        rpcArgs = {
+          p_teacher_id: auth.teacherId,
+          p_assignments: prepared.assignments.map((assignment) => ({
+            due_at: assignment.dueAt,
+            question_id: assignment.questionId,
+            question_snapshot: assignment.questionSnapshot,
+            question_source: assignment.questionSource,
+            task_type: assignment.taskType
+          })),
+          p_student_ids: [],
+          p_title: resolvedTitle,
+          p_title_is_automatic: titleIsAutomatic,
+          p_subject: prepared.subject,
+          p_class_id: classId
+        };
+      }
       assignmentCount = prepared.assignments.length;
       recipientCount = 0;
     } else {
@@ -399,25 +428,47 @@ export async function POST(request: Request) {
       // both receive the same sequence. A missing title is a client error; there
       // is no post-create patch step that could leave an untitled card behind.
       if (!groupTitle) return invalid("请填写作业标题。");
-      rpcArgs = {
-        p_teacher_id: auth.teacherId,
-        p_assignments: prepared.assignments.map((assignment) => ({
-          due_at: assignment.dueAt,
-          question_id: assignment.questionId,
-          question_snapshot: assignment.questionSnapshot,
-          question_source: assignment.questionSource,
-          task_type: assignment.taskType
-        })),
-        p_student_ids: prepared.studentIds,
-        p_title: groupTitle,
-        p_title_is_automatic: titleIsAutomatic,
-        p_subject: prepared.subject
-      };
+      if (prepared.categoryAssignment) {
+        if (prepared.assignments.length !== 1) throw new Error("Invalid category Assignment");
+        const assignment = prepared.assignments[0]!;
+        categoryCreate = true;
+        rpcArgs = {
+          p_assignment: {
+            due_at: assignment.dueAt,
+            question_id: assignment.questionId,
+            question_snapshot: assignment.questionSnapshot,
+            question_source: assignment.questionSource,
+            task_type: assignment.taskType
+          },
+          p_student_ids: prepared.studentIds,
+          p_subject: prepared.subject,
+          p_teacher_id: auth.teacherId,
+          p_title: groupTitle,
+          p_title_is_automatic: titleIsAutomatic
+        };
+      } else {
+        rpcArgs = {
+          p_teacher_id: auth.teacherId,
+          p_assignments: prepared.assignments.map((assignment) => ({
+            due_at: assignment.dueAt,
+            question_id: assignment.questionId,
+            question_snapshot: assignment.questionSnapshot,
+            question_source: assignment.questionSource,
+            task_type: assignment.taskType
+          })),
+          p_student_ids: prepared.studentIds,
+          p_title: groupTitle,
+          p_title_is_automatic: titleIsAutomatic,
+          p_subject: prepared.subject
+        };
+      }
       assignmentCount = prepared.assignments.length;
       recipientCount = prepared.studentIds.length;
     }
 
-    const { data, error } = await auth.supabase.rpc("create_writing_assignment_group", rpcArgs);
+    const { data, error } = categoryCreate
+      ? await auth.supabase.rpc("create_category_writing_assignment_group", rpcArgs)
+      : await auth.supabase.rpc("create_writing_assignment_group", rpcArgs);
     if (error) {
       logWritingAssignmentCreateFailure(error, {
         teacherId: auth.teacherId,
@@ -515,7 +566,7 @@ function invalid(message: string) {
 }
 
 function isAssignmentInputError(message: string) {
-  return /^(请选择|请至少|请完整|请填写|请输入|所选|截止|一次最多|作业标题)/.test(message);
+  return /^(请选择|请至少|请完整|请填写|请输入|所选|截止|一次最多|作业标题|作业科目|分类|题目总量|题量)/.test(message);
 }
 
 /**
@@ -525,6 +576,7 @@ function isAssignmentInputError(message: string) {
  */
 const WRITING_ASSIGNMENT_RPC_INPUT_ERROR_MESSAGES: Record<string, string> = {
   "Assignments must contain between 1 and 50 items": "请至少添加一道题目，且一次最多布置 50 道题目。",
+  "INVALID_CATEGORY_ASSIGNMENT_MANIFEST": "分类作业的冻结题目无效，请重新选择分类和题量。",
   "At least one student is required": "请至少选择一名学生。",
   "One or more students are invalid": "所选学生中包含无效账号。",
   "Invalid writing task type": "请选择有效的题型。",

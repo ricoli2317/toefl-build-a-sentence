@@ -8,6 +8,10 @@ import {
 } from "@/lib/reading/catalog";
 import { loadCachedPublicReadingCatalog } from "@/lib/reading/catalogCache.server";
 import { loadStudentPracticeItemStates } from "@/lib/studentPracticeItemState.server";
+import {
+  loadPracticeEntitlementEnforcementEnabled,
+  loadStudentPracticeUnlockItemIds
+} from "@/lib/practiceEntitlements.server";
 import { runStudentCatalogCriticalPath } from "@/lib/studentCatalogCriticalPath.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { createStudentPerformanceTrace } from "@/lib/studentPerformance.server";
@@ -32,6 +36,7 @@ export async function GET(request: Request) {
     // catalog + one sparse indexed student-state query, merged server-side.
     // Search text is never read here.
     const db = createServiceSupabase();
+    let viewerRole: "student" | "teacher" | "admin" | null = null;
     const result = await runStudentCatalogCriticalPath({
       timing,
       identity: async () => {
@@ -46,22 +51,42 @@ export async function GET(request: Request) {
         taskType,
         timing
       }),
-      authorization: (userId) => loadStudentCatalogAuthorization(token, userId, timing),
+      authorization: async (userId) => {
+        const authorization = await loadStudentCatalogAuthorization(token, userId, timing);
+        if (authorization.ok) viewerRole = authorization.role;
+        return authorization;
+      },
       merge: async (publicCatalogResult, stateResult, studentId) => {
         if (!publicCatalogResult.ok) throw publicCatalogResult.error;
         if (!stateResult.ok) throw stateResult.error;
         const publicCatalog = publicCatalogResult.value;
         const state = stateResult.value;
-        if (state.available) {
-          return attachReadingCatalogStudentStates(publicCatalog, state.rows);
-        }
-
-        // Transitional fallback while the sparse state migration is rolling out.
-        const legacy = await loadLegacyReadingCatalogInput(db, studentId, taskType);
-        if (legacy.error) {
-          throw new Error(legacy.error);
-        }
-        return buildReadingCatalogPayload(legacy);
+        const data = state.available
+          ? attachReadingCatalogStudentStates(publicCatalog, state.rows)
+          : await (async () => {
+              // Transitional fallback while the sparse state migration is rolling out.
+              const legacy = await loadLegacyReadingCatalogInput(db, studentId, taskType);
+              if (legacy.error) throw new Error(legacy.error);
+              return buildReadingCatalogPayload(legacy);
+            })();
+        const [unlockedItemIds, enforcementEnabled] = await Promise.all([
+          viewerRole === "student"
+            ? loadStudentPracticeUnlockItemIds(db, {
+                studentId,
+                taskType: taskType as "ctw" | "rdl" | "rap"
+              })
+            : Promise.resolve(new Set<string>()),
+          loadPracticeEntitlementEnforcementEnabled(db)
+        ]);
+        return {
+          ...data,
+          enforcementEnabled,
+          viewerRole,
+          items: data.items.map((item) => ({
+            ...item,
+            unlocked: unlockedItemIds.has(item.itemId)
+          }))
+        };
       }
     });
     if (result.forbidden) {

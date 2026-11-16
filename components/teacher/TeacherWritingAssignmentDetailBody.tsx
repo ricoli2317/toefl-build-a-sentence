@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { CheckCircle2, Clock3, FilePenLine, RefreshCw } from "lucide-react";
 import { TeacherDataError } from "@/components/teacher/TeacherUI";
+import { TeacherPopover } from "@/components/teacher/TeacherPopover";
+import { teacherReturnToHref } from "@/lib/teacherNavigation";
 import {
   ASSIGNMENT_CARD_CLASS,
   AssignmentDetailHeaderCard,
@@ -12,13 +14,16 @@ import {
 } from "@/components/assignments/AssignmentPresentation";
 import {
   collectWritingAssignmentStudentProgress,
-  writingAssignmentTaskTypeBadges,
+  writingAssignmentCardTaskTypeBadges,
   writingAssignmentTitle,
   type WritingAssignmentDetail,
   type WritingAssignmentLifecycleStatus,
   type WritingAssignmentStudentDetail
 } from "@/lib/writingAssignments";
-import { teacherAssignmentItemAction } from "@/lib/teacherAssignmentItems";
+import {
+  teacherAssignmentItemAction,
+  teacherAssignmentItemResultHref
+} from "@/lib/teacherAssignmentItems";
 import { formatAccountForDisplay, formatManagedAccountName } from "@/lib/accountIdentifier";
 
 /**
@@ -80,11 +85,21 @@ export function TeacherWritingAssignmentDetailBody({
         }
         badges={
           <>
-            {writingAssignmentTaskTypeBadges(assignments.map((assignment) => assignment.task_type)).map((label) => (
+            {writingAssignmentCardTaskTypeBadges(assignments).map((label) => (
               <span className="rounded-full bg-student-primary-soft px-3 py-1 text-xs font-bold text-student-primary" key={label}>
                 {label}
               </span>
             ))}
+            {assignments[0]?.category_summary ? (
+              <span className="rounded-full bg-student-bg px-3 py-1 text-xs font-semibold text-student-muted">
+                {assignments[0].category_summary}
+              </span>
+            ) : null}
+            {assignments[0]?.category_total_questions ? (
+              <span className="rounded-full bg-student-bg px-3 py-1 text-xs font-bold text-student-muted">
+                共 {assignments[0].category_total_questions} 题
+              </span>
+            ) : null}
             <AssignmentStatusBadge
               completedCount={completedCount}
               lifecycleStatus={lifecycleStatus}
@@ -232,13 +247,47 @@ function StudentWritingReviewAction({
     studentId
   });
   if (!action) return <span className="text-student-muted">{progress.has_attempt ? "等待提交" : "—"}</span>;
+  const history = progress.available_results ?? [];
   return (
-    <Link
-      className="text-sm font-semibold text-student-primary underline-offset-4 hover:text-student-primary-hover hover:underline"
-      href={action.href}
-    >
-      {action.label}
-    </Link>
+    <div className="flex flex-wrap items-center justify-end gap-2">
+      <Link
+        className="text-sm font-semibold text-student-primary underline-offset-4 hover:text-student-primary-hover hover:underline"
+        href={action.href}
+      >
+        {action.label}
+      </Link>
+      {history.length > 1 ? (
+        <TeacherPopover
+          buttonClassName="inline-flex min-h-7 items-center rounded-full border border-student-primary-border bg-white px-2.5 text-xs font-semibold text-student-primary transition hover:border-student-primary hover:bg-student-primary-soft"
+          buttonContent={<>历史 {history.length} 次</>}
+          menuClassName="min-w-[15rem]"
+        >
+          {() => (
+            <ul className="grid max-h-64 gap-0.5 overflow-y-auto">
+              {history.map((result, index) => {
+                const href = teacherAssignmentItemResultHref({
+                  itemType,
+                  result,
+                  studentId
+                });
+                return (
+                  <li key={`${result.kind}:${result.id}:${index}`}>
+                    {href ? (
+                      <Link
+                        className="block rounded-lg px-3 py-2 text-sm font-medium text-student-text hover:bg-student-primary-soft"
+                        href={teacherReturnToHref(href, returnTo)}
+                      >
+                        第 {history.length - index} 次 · {result.completed_at ? formatDate(result.completed_at) : "已完成"}
+                      </Link>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </TeacherPopover>
+      ) : null}
+    </div>
   );
 }
 

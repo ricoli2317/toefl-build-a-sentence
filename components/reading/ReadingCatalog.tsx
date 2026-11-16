@@ -21,6 +21,12 @@ import {
   StudentNavigation
 } from "@/components/student/StudentUI";
 import {
+  StudentEntitlementNotice,
+  StudentUnlockBadge,
+  useStudentPracticeEntitlements,
+  type StudentEntitlementViewerRole
+} from "@/components/student/StudentPracticeEntitlements";
+import {
   readingCatalogTitleParts,
   type ReadingCatalogItem,
   type ReadingCatalogPayload
@@ -32,6 +38,10 @@ import {
 } from "@/lib/reading/catalogSearchIndex";
 import type { ReadingModule } from "@/lib/reading/types";
 import { READING_PRODUCT_NAMES } from "@/lib/reading/product";
+import {
+  canStartOrdinaryPractice,
+  type PracticeEntitlementKind
+} from "@/lib/practiceEntitlements";
 import { STUDENT_ROUTES } from "@/lib/studentNavigation";
 import { ReadingRetakeButton } from "./ReadingRetakeButton";
 import { STUDENT_PRACTICE_ICONS } from "@/components/icons/StudentPracticeIcons";
@@ -66,6 +76,7 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
     cacheKey,
     (session) => loadReadingCatalog(taskType, session)
   );
+  const entitlements = useStudentPracticeEntitlements();
   // Every Reading product renders the lightweight catalog first; the search
   // index is prefetched once the browser is idle, or immediately when the
   // student starts searching.
@@ -147,6 +158,16 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
     setControls(defaultControls());
     setLengthFilter("all");
   };
+  const access = {
+    enforcementEnabled: entitlements.data
+      ? entitlements.enforcementEnabled
+      : state.data.enforcementEnabled === true,
+    remaining: entitlements.remaining(taskType as PracticeEntitlementKind),
+    viewerRole:
+      entitlements.viewerRole
+      ?? state.data.viewerRole
+      ?? null
+  };
   return (
     <div className="grid gap-5">
       <StudentNavigation
@@ -156,6 +177,7 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
           { label: state.data.taskName }
         ]}
       />
+      <StudentEntitlementNotice kind={taskType as PracticeEntitlementKind} />
       <CatalogDiscoveryControls
         categories={categories}
         months={catalogMonths(discoveryItems)}
@@ -186,7 +208,10 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
             emptyState={state.data.items.length
               ? <CatalogFilteredEmptyState onClear={clearControls} />
               : <StudentEmptyState text={`暂无可练习的 ${READING_PRODUCT_NAMES[taskType]} 题目。`} />}
-            renderActions={(set) => <ReadingCatalogActions item={items.find((item) => item.itemId === set.setId)!} />}
+            renderActions={(set) => {
+              const item = items.find((candidate) => candidate.itemId === set.setId)!;
+              return <ReadingCatalogActions access={access} item={item} />;
+            }}
             renderStatus={(set) => <ReadingCatalogStatusBadge status={items.find((item) => item.itemId === set.setId)!.status} />}
             sets={items.map((item) => {
               const title = readingCatalogTitleParts(item);
@@ -197,7 +222,7 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
                 titlePrefix: title.prefix,
                 titleSuffix: title.suffix,
                 questionCount: item.taskType === "ctw" ? item.scoringPointCount : item.questionCount,
-                metadata: <ReadingCatalogMetadata item={item} />
+                metadata: <ReadingCatalogMetadata access={access} item={item} />
               };
             })}
           />
@@ -213,10 +238,38 @@ export function ReadingCatalog({ taskType }: { taskType: ReadingModule }) {
   );
 }
 
-function ReadingCatalogActions({ item }: { item: ReadingCatalogItem }) {
+type ReadingCatalogAccess = {
+  enforcementEnabled: boolean;
+  remaining: number | null;
+  viewerRole: StudentEntitlementViewerRole;
+};
+
+function ReadingCatalogActions({
+  access,
+  item
+}: {
+  access: ReadingCatalogAccess;
+  item: ReadingCatalogItem;
+}) {
   const practiceHref = `/student/reading/practice/${encodeURIComponent(item.itemId)}`;
   if (item.status === "unstarted") {
-    return <PracticeSetAction href={practiceHref} icon={Play} label="开始练习" primary />;
+    const canStart = canStartOrdinaryPractice({
+      enforcementEnabled: access.enforcementEnabled,
+      remaining: access.remaining,
+      status: item.status,
+      unlocked: item.unlocked === true,
+      viewerRole: access.viewerRole
+    });
+    return (
+      <PracticeSetAction
+        disabled={!canStart}
+        disabledReason="新题解锁次数已用完，仍可练习已解锁的题目。"
+        href={practiceHref}
+        icon={Play}
+        label={canStart ? "开始练习" : "额度已用完"}
+        primary
+      />
+    );
   }
   if (item.status === "in_progress") {
     return <PracticeSetAction href={practiceHref} icon={FilePenLine} label="继续练习" primary />;
@@ -243,12 +296,29 @@ export function ReadingCatalogStatusBadge({ status }: { status: ReadingCatalogIt
   return <span className={`${className} bg-slate-100 text-student-muted`}>未开始</span>;
 }
 
-function ReadingCatalogMetadata({ item }: { item: ReadingCatalogItem }) {
-  return <span>{formatOccurrenceDates(
-    item.occurrenceDateCounts
-      ?? (item as ReadingCatalogItem & { occurrence_date_counts?: Parameters<typeof formatOccurrenceDates>[0] }).occurrence_date_counts
-      ?? item.occurrenceDates
-  )}</span>;
+function ReadingCatalogMetadata({
+  access,
+  item
+}: {
+  access: ReadingCatalogAccess;
+  item: ReadingCatalogItem;
+}) {
+  return (
+    <span className="inline-flex flex-wrap items-center gap-1.5">
+      <span>{formatOccurrenceDates(
+        item.occurrenceDateCounts
+          ?? (item as ReadingCatalogItem & { occurrence_date_counts?: Parameters<typeof formatOccurrenceDates>[0] }).occurrence_date_counts
+          ?? item.occurrenceDates
+      )}</span>
+      <StudentUnlockBadge
+        enforcementEnabled={access.enforcementEnabled}
+        remaining={access.remaining}
+        status={item.status}
+        unlocked={item.unlocked === true}
+        viewerRole={access.viewerRole}
+      />
+    </span>
+  );
 }
 
 function defaultControls(): CatalogDiscoveryControlValue {

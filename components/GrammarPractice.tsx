@@ -1,10 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BookOpen, Clock3, ListChecks } from "lucide-react";
 import { usePracticeHistory } from "@/components/PracticeHistory";
-import { PracticeSession } from "@/components/PracticeSession";
+import {
+  PracticeSession,
+  type PracticeProgressSnapshot
+} from "@/components/PracticeSession";
 import {
   StudentEmptyState,
   StudentErrorState,
@@ -15,10 +19,28 @@ import {
 import {
   STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX,
   useStudentCachedData,
+  useStudentDataCache,
   type StudentCacheSession
 } from "@/components/StudentDataCache";
-import type { GrammarTagSummary } from "@/lib/grammarPractice";
-import { STUDENT_ROUTES } from "@/lib/studentNavigation";
+import {
+  StudentEntitlementNotice,
+  useStudentPracticeEntitlements
+} from "@/components/student/StudentPracticeEntitlements";
+import {
+  GRAMMAR_PRACTICE_TIME_SECONDS,
+  type GrammarPracticeDraft,
+  type GrammarPracticeSessionPayload,
+  type GrammarTagSummary
+} from "@/lib/grammarPractice";
+import { createClientRequestId } from "@/lib/clientRequestId";
+import { STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY } from "@/lib/practiceEntitlements";
+import {
+  loadGrammarPracticeSession,
+  saveGrammarPracticeSessionDraft,
+  startGrammarCategoryAssignmentSession,
+  startGrammarPracticeSession
+} from "@/lib/grammarPractice.client";
+import { STUDENT_ROUTES, withStudentReturnTo } from "@/lib/studentNavigation";
 import { STUDENT_UI_TEXT } from "@/lib/studentUiText";
 import type { PublicQuestion } from "@/lib/types";
 import { BasGrammarAnalysis } from "@/components/WrongQuestionsHome";
@@ -35,7 +57,7 @@ type GrammarQuestionsPayload = {
   tag?: string;
 };
 
-const GRAMMAR_RANDOM_TIME_SECONDS = 6 * 60 + 50;
+const GRAMMAR_RANDOM_TIME_SECONDS = GRAMMAR_PRACTICE_TIME_SECONDS;
 const GRAMMAR_TAG_ORDER = [
   "简单句－陈述句",
   "简单句－疑问句",
@@ -60,12 +82,18 @@ const GRAMMAR_TAG_PRIORITY: ReadonlyMap<string, number> = new Map(
 export function GrammarPracticeHome() {
   const { data, error, loading } = useGrammarTags();
   const historyState = usePracticeHistory();
+  const entitlements = useStudentPracticeEntitlements();
   const sortedTags = useMemo(() => sortGrammarTags(data?.tags ?? []), [data?.tags]);
   const grammarPoints = historyState.data?.history.grammarPoints;
+  const exhausted = entitlements.exhausted("bas_category");
+  const showAllPractice = !(
+    entitlements.viewerRole === "student" && entitlements.enforcementEnabled
+  );
 
   return (
     <div className="grid gap-5">
       <GrammarNavigation />
+      <StudentEntitlementNotice kind="bas_category" />
       {grammarPoints ? (
         <BasGrammarAnalysis items={grammarPoints} showLinks={false} tone="orange" />
       ) : null}
@@ -79,9 +107,11 @@ export function GrammarPracticeHome() {
           <div className="grid gap-2">
             {sortedTags.map((item) => (
               <GrammarPracticeRow
+                exhausted={exhausted}
                 key={item.tag}
                 label={item.tag}
                 questionCount={item.questionCount}
+                showAllPractice={showAllPractice}
               />
             ))}
           </div>
@@ -92,11 +122,15 @@ export function GrammarPracticeHome() {
 }
 
 function GrammarPracticeRow({
+  exhausted,
   label,
-  questionCount
+  questionCount,
+  showAllPractice
 }: {
+  exhausted: boolean;
   label: string;
   questionCount: number;
+  showAllPractice: boolean;
 }) {
   return (
     <article className="grid min-h-[58px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 rounded-xl border border-student-border bg-white px-4 py-3 shadow-[0_1px_2px_rgba(23,32,51,0.025)] sm:px-5 lg:grid-cols-[minmax(0,1fr)_5.5rem_10rem_12rem] lg:gap-x-3 lg:py-2">
@@ -114,11 +148,44 @@ function GrammarPracticeRow({
       <p className="text-right text-[15px] font-medium tabular-nums text-student-muted lg:pr-2">
         {questionCount}题
       </p>
-      <div className="col-span-2 grid grid-cols-2 gap-2 lg:contents">
-        <GrammarAction href={practiceHref(label, "all")} icon={ListChecks} label="全部练习" />
-        <GrammarAction href={practiceHref(label, "random")} icon={Clock3} label="随机计时练习" />
+      <div className={`col-span-2 grid gap-2 lg:contents ${showAllPractice ? "grid-cols-2" : "grid-cols-1"}`}>
+        {showAllPractice ? (
+          <GrammarAction href={practiceHref(label, "all")} icon={ListChecks} label="全部练习" />
+        ) : null}
+        <GrammarRandomAction disabled={exhausted} tag={label} />
       </div>
     </article>
+  );
+}
+
+function GrammarRandomAction({ disabled, tag }: { disabled: boolean; tag: string }) {
+  const router = useRouter();
+  const pendingStart = useRef<{ tag: string; requestId: string } | null>(null);
+
+  function startRandomPractice() {
+    if (disabled) return;
+    if (pendingStart.current?.tag !== tag) {
+      pendingStart.current = { tag, requestId: createClientRequestId() };
+    }
+    router.push(practiceHref(tag, "random", pendingStart.current.requestId));
+    // Keep the same idempotency key for an accidental double click, but let a
+    // deliberate later return to this page start a genuinely new session.
+    window.setTimeout(() => {
+      pendingStart.current = null;
+    }, 1500);
+  }
+
+  return (
+    <button
+      className={`inline-flex min-h-9 min-w-0 items-center justify-center gap-2 rounded-[10px] bg-student-primary-soft px-3 py-1.5 text-sm font-semibold text-student-primary transition hover:bg-student-primary-border ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
+      disabled={disabled}
+      onClick={startRandomPractice}
+      title={disabled ? "自主分类练习次数已用完，已有练习仍可继续。" : undefined}
+      type="button"
+    >
+      <Clock3 aria-hidden="true" className="shrink-0" size={19} strokeWidth={1.9} />
+      <span className="whitespace-nowrap">{disabled ? "自主练习次数已用完" : "随机计时练习"}</span>
+    </button>
   );
 }
 
@@ -142,8 +209,9 @@ function GrammarAction({
   );
 }
 
-function practiceHref(tag: string, mode: "all" | "random") {
+function practiceHref(tag: string, mode: "all" | "random", requestId?: string) {
   const params = new URLSearchParams({ mode, tag });
+  if (mode === "random" && requestId) params.set("requestId", requestId);
   return `${STUDENT_ROUTES.grammarPractice}/practice?${params.toString()}`;
 }
 
@@ -177,24 +245,44 @@ function normalizeGrammarTagForSort(tag: string) {
 
 export function GrammarQuestionsPractice({
   mode,
-  tag
+  tag,
+  sessionId,
+  requestId
 }: {
   mode: "all" | "random";
   tag: string;
+  sessionId?: string;
+  requestId?: string;
 }) {
+  if (mode === "random") {
+    return (
+      <GrammarRandomSessionPractice
+        tag={tag}
+        sessionId={sessionId}
+        requestId={requestId}
+      />
+    );
+  }
+  return <GrammarAllPractice tag={tag} />;
+}
+
+function GrammarAllPractice({ tag }: { tag: string }) {
   const practiceSessionKey = useMemo(
     () => `${Date.now()}-${Math.random().toString(36).slice(2)}`,
     []
   );
-  const query = useMemo(() => new URLSearchParams({ mode, tag }).toString(), [mode, tag]);
+  const query = useMemo(
+    () => new URLSearchParams({ mode: "all", tag }).toString(),
+    [tag]
+  );
   const { data, error, loading } = useStudentCachedData<GrammarQuestionsPayload>(
     `${STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX}:session:${practiceSessionKey}`,
     (session) => loadGrammarPractice(query, session)
   );
   const questions = data?.questions ?? [];
   const virtualSetId = useMemo(
-    () => `grammar-${mode === "random" ? "random" : "all"}-${formatTimestamp(new Date())}`,
-    [mode]
+    () => `grammar-all-${formatTimestamp(new Date())}`,
+    []
   );
 
   if (loading) return <StudentLoadingState text="正在加载语法练习..." />;
@@ -210,13 +298,184 @@ export function GrammarQuestionsPractice({
 
   return (
     <PracticeSession
-      allowEndPractice={mode === "all"}
+      allowEndPractice
       hideQuestionCardNumber
       initialQuestions={questions}
       setId={virtualSetId}
       setTitle={`Grammar Practice · ${tag}`}
-      submitAnsweredOnly={mode === "all"}
-      timed={mode === "random"}
+      submitAnsweredOnly
+      timed={false}
+      totalSeconds={GRAMMAR_RANDOM_TIME_SECONDS}
+    />
+  );
+}
+
+export function GrammarCategoryAssignmentPractice({
+  assignmentId,
+  initialSessionId,
+  requestId,
+  returnTo
+}: {
+  assignmentId: string;
+  initialSessionId?: string;
+  requestId?: string;
+  returnTo?: string | null;
+}) {
+  return (
+    <GrammarRandomSessionPractice
+      assignmentId={assignmentId}
+      requestId={requestId}
+      returnTo={returnTo}
+      sessionId={initialSessionId}
+      tag=""
+    />
+  );
+}
+
+function GrammarRandomSessionPractice({
+  assignmentId,
+  tag,
+  sessionId,
+  requestId,
+  returnTo
+}: {
+  assignmentId?: string;
+  tag: string;
+  sessionId?: string;
+  requestId?: string;
+  returnTo?: string | null;
+}) {
+  const router = useRouter();
+  const cache = useStudentDataCache();
+  const [effectiveRequestId] = useState(
+    () => requestId || createClientRequestId()
+  );
+  const revisionRef = useRef(0);
+  const saveQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const positiveTimer = Boolean(assignmentId);
+  const cacheKey = `${STUDENT_GRAMMAR_PRACTICE_CACHE_PREFIX}:${assignmentId ? "assignment" : "random"}:${sessionId ?? assignmentId ?? effectiveRequestId}`;
+  const { data, error, loading } = useStudentCachedData<GrammarPracticeSessionPayload>(
+    cacheKey,
+    (auth) =>
+      sessionId
+        ? loadGrammarPracticeSession(sessionId, auth)
+        : assignmentId
+          ? startGrammarCategoryAssignmentSession(assignmentId, effectiveRequestId, auth)
+          : startGrammarPracticeSession(tag, effectiveRequestId, auth),
+    { enabled: Boolean(tag || assignmentId), refreshOnMount: Boolean(sessionId) }
+  );
+  const session = data?.session;
+
+  useEffect(() => {
+    if (data?.created && !assignmentId) {
+      cache.invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+    }
+  }, [assignmentId, cache, data?.created]);
+
+  useEffect(() => {
+    if (error && /额度已用完/.test(error)) {
+      cache.invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+    }
+  }, [cache, error]);
+
+  useEffect(() => {
+    if (session?.draft?.revision) {
+      revisionRef.current = Math.max(
+        revisionRef.current,
+        Number(session.draft.revision) || 0
+      );
+    }
+  }, [session?.draft?.revision]);
+
+  useEffect(() => {
+    if (!session || sessionId) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("session", session.sessionId);
+    url.searchParams.delete("requestId");
+    url.searchParams.delete("new");
+    window.history.replaceState(null, "", url.toString());
+  }, [session, sessionId]);
+
+  useEffect(() => {
+    if (sessionId || requestId) return;
+    const url = new URL(window.location.href);
+    url.searchParams.set("requestId", effectiveRequestId);
+    window.history.replaceState(null, "", url.toString());
+  }, [effectiveRequestId, requestId, sessionId]);
+
+  useEffect(() => {
+    if (session?.status === "completed" && session.attemptId) {
+      router.replace(withStudentReturnTo(
+        `/student/results/${encodeURIComponent(session.attemptId)}`,
+        returnTo
+      ));
+    }
+  }, [returnTo, router, session?.attemptId, session?.status]);
+
+  const handleProgress = useCallback(
+    (snapshot: PracticeProgressSnapshot) => {
+      if (!session || session.status !== "active") return;
+      revisionRef.current += 1;
+      const draft: GrammarPracticeDraft = {
+        ...snapshot,
+        revision: revisionRef.current
+      };
+      const targetSessionId = session.sessionId;
+      saveQueueRef.current = saveQueueRef.current
+        .catch(() => undefined)
+        .then(() => saveGrammarPracticeSessionDraft(targetSessionId, draft))
+        .catch((saveError) => {
+          console.warn("Grammar practice draft save failed", saveError);
+        });
+    },
+    [session]
+  );
+
+  const initialElapsedSeconds = useMemo(() => {
+    if (!session) return 0;
+    if (positiveTimer) {
+      return Math.max(
+        session.elapsedSeconds || 0,
+        Number(session.draft?.elapsedSeconds) || 0
+      );
+    }
+    const startedAt = Date.parse(session.startedAt);
+    const wallClockElapsed = Number.isFinite(startedAt)
+      ? Math.max(0, Math.floor((Date.now() - startedAt) / 1000))
+      : 0;
+    return Math.max(session.elapsedSeconds || 0, wallClockElapsed);
+  }, [positiveTimer, session]);
+
+  if (loading) return <StudentLoadingState text="正在准备语法练习..." />;
+  if (error) return <StudentErrorState text={error || "加载语法练习失败，请稍后重试。"} />;
+  if ((!tag && !assignmentId) || !session) {
+    return (
+      <div className="grid gap-5">
+        <GrammarNavigation tag={tag || undefined} />
+        <StudentEmptyState text="该语法标签暂无可练习题目，无法开始练习。" />
+      </div>
+    );
+  }
+  if (session.status === "completed") {
+    return (
+      <StudentInfoStrip>这次语法练习已经完成，正在打开练习结果。</StudentInfoStrip>
+    );
+  }
+
+  return (
+    <PracticeSession
+      key={`${session.sessionId}:${session.draft?.revision ?? 0}`}
+      grammarSessionId={session.sessionId}
+      hideQuestionCardNumber
+      initialDraft={session.draft}
+      initialElapsedSeconds={initialElapsedSeconds}
+      initialQuestions={session.questions}
+      onProgress={handleProgress}
+      returnTo={returnTo}
+      setId={`grammar-random-${session.sessionId}`}
+      setTitle={positiveTimer ? session.category : `Grammar Practice · ${tag}`}
+      stopwatch={positiveTimer}
+      timed={!positiveTimer}
       totalSeconds={GRAMMAR_RANDOM_TIME_SECONDS}
     />
   );

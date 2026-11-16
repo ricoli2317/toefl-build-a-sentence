@@ -1,6 +1,7 @@
 import { bearerToken, requireUserWithRole } from "@/lib/auth";
 import { findValidReadingFullSet } from "@/lib/reading/fullSets";
 import { loadReadingFullSets } from "@/lib/reading/fullSets.server";
+import { loadPracticeEntitlementEnforcementEnabled } from "@/lib/practiceEntitlements.server";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -16,10 +17,19 @@ export async function GET(
   }
 
   try {
-    const fullSets = await loadReadingFullSets(createServiceSupabase());
+    const db = createServiceSupabase();
+    const [fullSets, enforcementEnabled] = await Promise.all([
+      loadReadingFullSets(db),
+      loadPracticeEntitlementEnforcementEnabled(db)
+    ]);
     const fullSet = findValidReadingFullSet(fullSets, params.fullSetId);
     if (!fullSet) return json({ error: "没有找到这个完整阅读套题。" }, { status: 404 });
-    return json({ fullSet });
+    return json({
+      fullSet,
+      enforcementEnabled,
+      viewerRole: auth.role,
+      canStartUnassigned: auth.role !== "student" || !enforcementEnabled
+    });
   } catch (error) {
     console.error("Reading Full Set detail load failed", {
       error,

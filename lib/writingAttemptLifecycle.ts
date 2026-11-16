@@ -1,4 +1,5 @@
 import type { WritingAttempt, WritingMode, WritingQuestion, WritingTaskType } from "@/lib/writing";
+import { mapPracticeAccessError } from "./practiceEntitlements.ts";
 
 export type WritingDraftLookup = {
   data: WritingAttempt | null;
@@ -42,11 +43,13 @@ export type GetOrCreateWritingDraftResult = {
 
 export class WritingAttemptLifecycleError extends Error {
   cause?: unknown;
+  status?: number;
 
-  constructor(message: string, cause?: unknown) {
+  constructor(message: string, cause?: unknown, status?: number) {
     super(message);
     this.name = "WritingAttemptLifecycleError";
     this.cause = cause;
+    this.status = status;
   }
 }
 
@@ -121,5 +124,13 @@ export function isUniqueConstraintError(
 }
 
 function safeDraftError(error: WritingAttemptDatabaseError | null | undefined) {
-  return new WritingAttemptLifecycleError("暂时无法进入写作练习，请稍后重试。", error);
+  const accessError = mapPracticeAccessError(
+    error,
+    "暂时无法进入写作练习，请稍后重试。"
+  );
+  return new WritingAttemptLifecycleError(
+    accessError.message,
+    error,
+    accessError.status
+  );
 }

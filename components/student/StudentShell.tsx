@@ -170,6 +170,7 @@ export function StudentShell({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/student/writing-corrections/") ||
     pathname.startsWith("/student/reading/practice/") ||
     pathname.startsWith(`${STUDENT_ROUTES.questionCategoryPractice}/practice`) ||
+    pathname.startsWith(`${STUDENT_ROUTES.questionCategoryPractice}/assignment/`) ||
     /^\/student\/question-category-practice\/sessions\/[^/]+\/questions\/[^/]+/.test(pathname) ||
     /^\/student\/reading\/full-sets\/[^/]+\/attempt\/[^/]+/.test(pathname) ||
     /^\/student\/reading\/full-sets\/[^/]+\/result\/[^/]+\/questions\/[^/]+/.test(pathname) ||

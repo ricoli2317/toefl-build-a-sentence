@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { bearerToken, isUserRole, roleCanAccess } from "@/lib/auth";
+import { mapPracticeAccessError } from "@/lib/practiceEntitlements";
+import { loadPracticeEntitlementEnforcementEnabled } from "@/lib/practiceEntitlements.server";
 import { normalizeChunkForCompare, splitTextItems } from "@/lib/questionText";
 import { isOfficialPracticeSetId } from "@/lib/practiceHistory";
+import { isGrammarPracticeSetId, isVirtualPracticeSetId } from "@/lib/studentNavigation";
 import { basWrongQuestionEvents } from "@/lib/wrongQuestionBank";
 import { applyStudentWrongQuestionEvents } from "@/lib/wrongQuestionBank.server";
 import { wrongQuestionBusinessDate } from "@/lib/wrongQuestionBusinessDate";
@@ -23,6 +26,13 @@ type SubmittedAnswer = {
   submittedOrderText: string;
   question_time_seconds?: number;
   questionTimeSeconds?: number;
+};
+
+type GrammarPracticeSessionRow = {
+  session_id: string;
+  student_id: string;
+  status: string;
+  manifest: { questions?: Array<{ question_id?: unknown }> };
 };
 
 type QuestionForScoring = {
@@ -119,6 +129,7 @@ export async function POST(request: Request) {
       request.json() as Promise<{
         setId?: string;
         setTitle?: string;
+        grammarSessionId?: string;
         questionIds?: string[];
         answers?: SubmittedAnswer[];
         timeSpentSeconds?: number;
@@ -128,6 +139,8 @@ export async function POST(request: Request) {
     if (!body.setId || !Array.isArray(body.answers)) {
       return fail("Invalid submission payload", 400);
     }
+    const setId = String(body.setId);
+    const isVirtualPractice = isVirtualPracticeSetId(setId);
 
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const db = createClient(supabaseUrl, serviceRoleKey || supabaseAnonKey, {
@@ -141,18 +154,136 @@ export async function POST(request: Request) {
     const questionIds = Array.isArray(body.questionIds)
       ? body.questionIds.map((questionId) => String(questionId)).filter(Boolean)
       : [];
+
+    const isGrammarPractice = isGrammarPracticeSetId(setId);
+    if (
+      body.grammarSessionId !== undefined
+      && body.grammarSessionId !== null
+      && typeof body.grammarSessionId !== "string"
+    ) {
+      return fail("无效的语法练习记录。", 400);
+    }
+    const grammarSessionId = typeof body.grammarSessionId === "string"
+      ? body.grammarSessionId.trim()
+      : "";
+    if (grammarSessionId && !isGrammarPractice) {
+      return fail("无效的语法练习记录。", 400);
+    }
+
+    let grammarSession: GrammarPracticeSessionRow | null = null;
+    let grammarManifestQuestionIds: string[] = [];
+
+    if (isGrammarPractice) {
+      let enforcementEnabled = false;
+      if (profile.role === "student") {
+        try {
+          enforcementEnabled = await loadPracticeEntitlementEnforcementEnabled(db);
+        } catch (switchError) {
+          console.error("[submissions] grammar_entitlement_switch_read_failed", {
+            message: switchError instanceof Error ? switchError.message : String(switchError)
+          });
+          return fail("练习权限状态加载失败，请稍后重试。", 503);
+        }
+      }
+
+      if (profile.role === "student" && enforcementEnabled) {
+        if (setId.startsWith("grammar-all-")) {
+          return fail("学生端暂只支持随机计时练习。", 403);
+        }
+        if (!grammarSessionId) {
+          return fail("请从语法分类的随机计时练习开始。", 403);
+        }
+      }
+
+      if (grammarSessionId) {
+        if (
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(grammarSessionId)
+          || setId !== `grammar-random-${grammarSessionId}`
+        ) {
+          return fail("无效的语法练习记录。", 400);
+        }
+
+        const sessionResult = await db
+          .from("bas_grammar_practice_sessions")
+          .select("session_id,student_id,status,manifest")
+          .eq("session_id", grammarSessionId)
+          .eq("student_id", user.id)
+          .maybeSingle();
+        if (sessionResult.error) {
+          return fail("语法练习记录加载失败，请稍后重试。", 503);
+        }
+        if (!sessionResult.data) {
+          return fail("没有找到这次语法练习记录。", 404);
+        }
+        if (sessionResult.data.status !== "active") {
+          return fail("这次语法练习已经提交，不能重复提交。", 409);
+        }
+        const verifiedGrammarSession =
+          sessionResult.data as GrammarPracticeSessionRow;
+        grammarSession = verifiedGrammarSession;
+
+        const manifestQuestionIds = Array.isArray(verifiedGrammarSession.manifest.questions)
+          ? verifiedGrammarSession.manifest.questions
+              .map((question) => String(question.question_id ?? ""))
+              .filter(Boolean)
+          : [];
+        grammarManifestQuestionIds = manifestQuestionIds;
+        const submittedQuestionIds = new Set(questionIds);
+        const answerQuestionIds = body.answers!.map((answer) =>
+          String(answer.questionId)
+        );
+        const submittedAnswerIds = new Set(answerQuestionIds);
+
+        if (
+          manifestQuestionIds.length === 0
+          || submittedQuestionIds.size !== manifestQuestionIds.length
+          || submittedAnswerIds.size !== manifestQuestionIds.length
+          || answerQuestionIds.length !== manifestQuestionIds.length
+          || manifestQuestionIds.some(
+            (questionId) =>
+              !submittedQuestionIds.has(questionId)
+              || !submittedAnswerIds.has(questionId)
+          )
+        ) {
+          return fail("提交的题目不属于本次语法练习。", 400);
+        }
+      }
+    }
+
+    if (!isVirtualPractice) {
+      const authorization = await timing.measure(
+        "database",
+        "bas_submission_authorization",
+        () => authClient.rpc("student_assert_bas_submission_authorized", {
+          p_set_id: setId,
+          p_question_ids: questionIds
+        })
+      );
+      if (authorization.error) {
+        const failure = mapPracticeAccessError(
+          authorization.error,
+          "暂时无法验证练习授权，请稍后重试。"
+        );
+        return fail(failure.message, failure.status);
+      }
+    }
+
     const questionQuery = db
       .from("questions")
       .select(
         "question_id,set_id,set_title,question_order,prompt,sentence_template,options_text,correct_order_text,final_sentence,grammar_tags_text"
       );
+    const scopedQuestionQuery = questionIds.length > 0
+      ? isVirtualPractice
+        ? questionQuery.in("question_id", questionIds)
+        : questionQuery
+            .eq("set_id", setId)
+            .in("question_id", questionIds)
+      : questionQuery.eq("set_id", setId);
     const { data: questions, error: questionsError } = await timing.measure(
       "database",
       "questions_with_correct_answers",
-      () =>
-        questionIds.length > 0
-          ? questionQuery.in("question_id", questionIds)
-          : questionQuery.eq("set_id", body.setId!).order("question_order", { ascending: true })
+      () => scopedQuestionQuery.order("question_order", { ascending: true })
     );
 
     if (questionsError) {
@@ -174,6 +305,19 @@ export async function POST(request: Request) {
     });
     if (questionRows.length === 0) {
       return fail("No questions found for this set.", 404);
+    }
+    if (
+      grammarSession
+      && questionRows.length !== grammarManifestQuestionIds.length
+    ) {
+      return fail("本次语法练习的题目已发生变化，请重新开始一次练习。", 409);
+    }
+    if (
+      !isVirtualPractice
+      && questionIds.length > 0
+      && questionRows.length !== new Set(questionIds).size
+    ) {
+      return fail("提交的题目不属于当前套题。", 400);
     }
 
     const usesExplicitQuestionOrder = questionIds.length > 0;
@@ -203,7 +347,6 @@ export async function POST(request: Request) {
     // resolver's fallback for data without a logical item, never the visible
     // title by itself. This keeps the submit hot path and every cold result /
     // history read on the exact same title source.
-    const setId = String(body.setId);
     const displayResolver = await loadBuildSentenceHistoricalPracticeDisplayResolver(
       db,
       [setId],
@@ -253,6 +396,13 @@ export async function POST(request: Request) {
     );
 
     if (attemptError || !attempt) {
+      if (attemptError) {
+        const failure = mapPracticeAccessError(
+          attemptError,
+          `Failed to save attempt: ${attemptError.message}`
+        );
+        if (failure.status !== 500) return fail(failure.message, failure.status);
+      }
       return fail(`Failed to save attempt: ${attemptError?.message ?? "No attempt returned"}`);
     }
 
@@ -293,7 +443,11 @@ export async function POST(request: Request) {
         ? ` Cleanup of the incomplete attempt also failed: ${cleanupError.message}`
         : " The incomplete attempt was removed.";
 
-      return fail(`Failed to save attempt answers: ${answerError.message}.${cleanupMessage}`);
+      const failure = mapPracticeAccessError(
+        answerError,
+        `Failed to save attempt answers: ${answerError.message}.${cleanupMessage}`
+      );
+      return fail(failure.message, failure.status);
     }
 
     // Incremental wrong-question bank update. The attempt itself stays
@@ -323,6 +477,31 @@ export async function POST(request: Request) {
         });
       }
     });
+
+    if (grammarSession) {
+      const completion = await db.rpc(
+        "complete_bas_grammar_practice_session",
+        {
+          p_student_id: user.id,
+          p_session_id: grammarSession.session_id,
+          p_attempt_id: attempt.attempt_id,
+          p_correct_count: correctCount,
+          p_total_questions: totalQuestions,
+          p_elapsed_seconds: timeSpentSeconds
+        }
+      );
+      if (completion.error) {
+        // The attempt result is already authoritative. A transient completion
+        // failure must not invite a duplicate submission; the session can be
+        // reconciled from the saved attempt by its owner.
+        console.error("[submissions] grammar_session_completion_failed", {
+          attemptId: attempt.attempt_id,
+          sessionId: grammarSession.session_id,
+          code: completion.error.code ?? null,
+          message: completion.error.message
+        });
+      }
+    }
 
     const payload = timing.measureSync("processing", "build_submission_response", () => ({
         attemptId: attempt.attempt_id,

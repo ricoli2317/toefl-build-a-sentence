@@ -4,9 +4,12 @@ import { createServiceSupabase } from "@/lib/supabase/server";
 import {
   assignmentItemSubject,
   isAssignmentItemType,
+  isCategoryAssignmentItemType,
   type AssignmentItemType,
   type AssignmentSubject
 } from "@/lib/assignmentCatalog";
+import { prepareCategoryAssignmentItem } from "@/lib/categoryAssignment.server";
+import { singleCategoryAssignmentValue } from "@/lib/categoryAssignment";
 import { isWritingTaskType } from "@/lib/writing";
 import { loadAssignmentCatalogEntryMap } from "@/lib/assignmentCatalog.server";
 import {
@@ -110,13 +113,36 @@ export async function prepareWritingAssignmentGroupMutation(
     throw new Error("请至少添加一道题目。");
   }
   if (body.assignments.length > 50) throw new Error("一次最多布置 50 道题目。");
+  const categoryItem = singleCategoryAssignmentValue(body.assignments);
+  if (categoryItem) {
+    const item = await prepareCategoryAssignmentItem(supabase, categoryItem);
+    const subject = assignmentItemSubject(item.taskType);
+    if (options.subject && options.subject !== subject) {
+      throw new Error("作业科目与所选题目不匹配。");
+    }
+    const membership = await prepareWritingAssignmentMembership(supabase, body, {
+      actor: options.actor,
+      subject
+    });
+    return {
+      assignments: [item],
+      categoryAssignment: true as const,
+      studentIds: membership.studentIds,
+      subject
+    };
+  }
+  if (hasMoreThanOneCategoryAssignmentValue(body.assignments)) {
+    throw new Error("分类作业只能包含一份分类配置。");
+  }
   const itemValues = body.assignments.filter(isRecord);
   const subject = resolveAssignmentGroupSubject(itemValues, options.subject);
   const catalogEntries = await loadAssignmentCatalogEntryMap(
     supabase,
     itemValues.flatMap((value) => {
       const itemType = readAssignmentItemType(value);
-      return itemType && !isWritingTaskType(itemType) ? [itemType] : [];
+      return itemType && !isWritingTaskType(itemType) && !isCategoryAssignmentItemType(itemType)
+        ? [itemType]
+        : [];
     })
   );
   const membership = await prepareWritingAssignmentMembership(supabase, body, {
@@ -126,6 +152,11 @@ export async function prepareWritingAssignmentGroupMutation(
   const assignments = [];
   for (const value of body.assignments) {
     if (!isRecord(value)) throw new Error("请完整填写每道题目。");
+    const itemType = readAssignmentItemType(value);
+    if (isCategoryAssignmentItemType(itemType)) {
+      assignments.push(await prepareCategoryAssignmentItem(supabase, value));
+      continue;
+    }
     assignments.push(await prepareWritingAssignmentQuestion(supabase, value, {
       ...options,
       catalogEntries
@@ -152,18 +183,41 @@ export async function prepareClassWritingAssignmentGroupMutation(
     throw new Error("请至少添加一道题目。");
   }
   if (body.assignments.length > 50) throw new Error("一次最多布置 50 道题目。");
+  const categoryItem = singleCategoryAssignmentValue(body.assignments);
+  if (categoryItem) {
+    const item = await prepareCategoryAssignmentItem(supabase, categoryItem);
+    const subject = assignmentItemSubject(item.taskType);
+    if (options.subject && options.subject !== subject) {
+      throw new Error("作业科目与所选题目不匹配。");
+    }
+    return {
+      assignments: [item],
+      categoryAssignment: true as const,
+      subject
+    };
+  }
+  if (hasMoreThanOneCategoryAssignmentValue(body.assignments)) {
+    throw new Error("分类作业只能包含一份分类配置。");
+  }
   const itemValues = body.assignments.filter(isRecord);
   const subject = resolveAssignmentGroupSubject(itemValues, options.subject);
   const catalogEntries = await loadAssignmentCatalogEntryMap(
     supabase,
     itemValues.flatMap((value) => {
       const itemType = readAssignmentItemType(value);
-      return itemType && !isWritingTaskType(itemType) ? [itemType] : [];
+      return itemType && !isWritingTaskType(itemType) && !isCategoryAssignmentItemType(itemType)
+        ? [itemType]
+        : [];
     })
   );
   const assignments = [];
   for (const value of body.assignments) {
     if (!isRecord(value)) throw new Error("请完整填写每道题目。");
+    const itemType = readAssignmentItemType(value);
+    if (isCategoryAssignmentItemType(itemType)) {
+      assignments.push(await prepareCategoryAssignmentItem(supabase, value));
+      continue;
+    }
     assignments.push(await prepareWritingAssignmentQuestion(supabase, value, {
       ...options,
       catalogEntries
@@ -231,6 +285,13 @@ export function writingAssignmentClassErrorMessage(message: string) {
   if (message.includes("CLASS_NOT_READING_CLASS")) return "该班级不包含阅读科目。";
   if (message.includes("CLASS_HAS_NO_MEMBERS")) return "该班级还没有学生，请先添加学生。";
   return "所选班级不存在或无权布置作业。";
+}
+
+function hasMoreThanOneCategoryAssignmentValue(values: unknown[]) {
+  return values.filter((value) => {
+    if (!isRecord(value)) return false;
+    return isCategoryAssignmentItemType(readAssignmentItemType(value));
+  }).length > 1;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -35,6 +35,7 @@ import {
 } from "@/components/StudentDataCache";
 import type { StudentCacheSession } from "@/components/StudentDataCache";
 import { formatWritingTimer } from "@/lib/writing";
+import { STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY } from "@/lib/practiceEntitlements";
 import {
   buildReadingSubmissionAnswers,
   isReadingAttemptSummary,
@@ -236,7 +237,16 @@ const rapFramelessInteractionStyle = {
   WebkitAppearance: "none"
 } as CSSProperties;
 
-export function ReadingPractice({ itemId, returnTo }: { itemId: string; returnTo?: string }) {
+export function ReadingPractice({
+  assignmentId,
+  itemId,
+  returnTo
+}: {
+  /** Teacher Assignment origin; validated again by the start RPC. */
+  assignmentId?: string | null;
+  itemId: string;
+  returnTo?: string;
+}) {
   const router = useRouter();
   const { invalidate } = useStudentDataCache();
   const safeReturnTo = safeStudentReturnTo(returnTo);
@@ -264,7 +274,10 @@ export function ReadingPractice({ itemId, returnTo }: { itemId: string; returnTo
             method: "POST",
             cache: "no-store",
             headers,
-            body: JSON.stringify({ logicalItemId: itemId })
+            body: JSON.stringify({
+              assignmentId: assignmentId || null,
+              logicalItemId: itemId
+            })
           })
         ]);
         const result = await practiceResponse.json().catch(() => ({})) as PracticeResponse;
@@ -286,16 +299,23 @@ export function ReadingPractice({ itemId, returnTo }: { itemId: string; returnTo
           setPractice(result.practice);
           setAttempt(attemptResult.attempt);
           invalidate(studentReadingCatalogCacheKey(attemptResult.attempt.taskType));
+          invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
         }
       } catch (loadError) {
         if (!cancelled) {
-          setError(loadError instanceof Error ? loadError.message : "阅读练习加载失败，请稍后重试。");
+          const message = loadError instanceof Error
+            ? loadError.message
+            : "阅读练习加载失败，请稍后重试。";
+          setError(message);
+          if (/额度已用完|尚未获得练习授权/.test(message)) {
+            invalidate(STUDENT_PRACTICE_ENTITLEMENTS_CACHE_KEY);
+          }
         }
       }
     }
     void load();
     return () => { cancelled = true; };
-  }, [invalidate, itemId]);
+  }, [assignmentId, invalidate, itemId]);
 
   if (error) {
     return (
