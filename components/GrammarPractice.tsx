@@ -133,7 +133,7 @@ function GrammarPracticeRow({
   showAllPractice: boolean;
 }) {
   return (
-    <article className="grid min-h-[58px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 rounded-xl border border-student-border bg-white px-4 py-3 shadow-[0_1px_2px_rgba(23,32,51,0.025)] sm:px-5 lg:grid-cols-[minmax(0,1fr)_5.5rem_10rem_12rem] lg:gap-x-3 lg:py-2">
+    <article className={`grid min-h-[58px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 rounded-xl border border-student-border bg-white px-4 py-3 shadow-[0_1px_2px_rgba(23,32,51,0.025)] sm:px-5 lg:gap-x-3 lg:py-2 ${showAllPractice ? "lg:grid-cols-[minmax(0,1fr)_5.5rem_10rem_12rem]" : "lg:grid-cols-[minmax(0,1fr)_5.5rem_10rem]"}`}>
       <div className="flex min-w-0 items-center gap-3">
         <BookOpen
           aria-hidden="true"

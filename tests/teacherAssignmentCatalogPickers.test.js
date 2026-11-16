@@ -291,7 +291,8 @@ test("the visible row number restarts at 1 and never becomes an identity", () =>
   const picker = source(PICKER);
   assert.match(picker, /\{index \+ 1\}\. \{entry\.title\}/);
   assert.match(picker, /key=\{assignmentCatalogEntryKey\(entry\)\}/);
-  assert.match(picker, /序号按当前筛选结果从 1 开始/);
+  assert.match(picker, /当前结果 \{filteredEntries\.length\} 道/);
+  assert.doesNotMatch(picker, /序号按当前筛选结果从 1 开始/);
 });
 
 // ---------------------------------------------------------------------------

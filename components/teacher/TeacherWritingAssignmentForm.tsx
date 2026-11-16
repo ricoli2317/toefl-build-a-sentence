@@ -1040,7 +1040,6 @@ function TeacherAssignmentWizard({
             />
           ))}
         </div>
-        <p className="text-xs text-student-muted">写作支持 Write an Email、Academic Discussion、Build a Sentence、BAS 语法分类作业；阅读支持 CTW、RDL、RAP、Full Set、RAP 题型分类作业。</p>
       </StepCard>
 
       {subject ? (
@@ -1053,9 +1052,6 @@ function TeacherAssignmentWizard({
               onClick={() => toggleAssignmentKind("category")}
             />
           </div>
-          <p className="text-xs text-student-muted">
-            普通题目与分类练习可以同时选择，并保存在同一个作业批次中；再次点击可移除其中一类内容，不会清空另一类配置。分类作业支持多分类、自定义题量和正计时，不消耗学生自主分类额度，也不会写入普通题目的永久解锁。
-          </p>
         </StepCard>
       ) : null}
 
@@ -1065,7 +1061,7 @@ function TeacherAssignmentWizard({
             <ChoiceButton active={source === "question_bank"} label="从题库选择" onClick={() => chooseSource("question_bank")} />
             <ChoiceButton active={source === "custom"} label="自定义题目" onClick={() => chooseSource("custom")} />
           </div>
-          <p className="text-xs text-student-muted">同一份写作作业可以同时包含 WE、AD、BAS，切换题型或筛选不会清空已选题目。{editing ? "编辑已撤回作业时，切换到另一种来源也不会丢弃另一边的题目。" : ""}</p>
+          {editing ? <p className="text-xs text-student-muted">编辑已撤回作业时，切换到另一种来源也不会丢弃另一边的题目。</p> : null}
           {editing && source === "question_bank" && customQuestions.length > 0 ? <p className="text-xs text-student-muted">本组还有 {customQuestions.length} 篇自定义题，切换到「自定义题目」可继续编辑；保存时会一起保留。</p> : null}
           {editing && source === "custom" && selection.size > 0 ? <p className="text-xs text-student-muted">本组还有 {selection.size} 篇题库题目，切换到「从题库选择」可继续调整；保存时会一起保留。</p> : null}
         </StepCard>
@@ -1158,9 +1154,7 @@ function TeacherAssignmentWizard({
       </StepCard>
 
       <StepCard number={stepNumbers.get("title")!} title="作业标题">
-        <div className="grid gap-2"><input className="teacher-input max-w-xl" onChange={(event) => { setAssignmentTitleManuallyEdited(true); setAssignmentTitle(event.target.value); }} placeholder="选择学生后自动生成" value={candidateAssignmentTitle} />
-          <p className="text-xs text-student-muted">默认格式：学生姓名 写作/阅读 YYYY-MM-DD（多学生为“第一位学生等 写作/阅读 YYYY-MM-DD”）。同一教师下同名自动标题会依次追加 (2)、(3)；写作与阅读互不占号；手动修改后不再自动编号或覆盖，最终以服务端保存结果为准。</p>
-        </div>
+        <div className="grid gap-2"><input className="teacher-input max-w-xl" onChange={(event) => { setAssignmentTitleManuallyEdited(true); setAssignmentTitle(event.target.value); }} placeholder="选择学生后自动生成" value={candidateAssignmentTitle} /></div>
       </StepCard>
 
       <StepCard number={stepNumbers.get("due")!} title="截止时间">
@@ -1170,7 +1164,7 @@ function TeacherAssignmentWizard({
             <p className="text-xs text-student-muted">留空表示不设置截止时间；修改后会应用到整组题目。</p>
           </div>
         ) : (
-        <div className="grid gap-3"><div className="flex flex-wrap gap-5"><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={deadlineMode === "uniform"} name="deadline-mode" onChange={() => setDeadlineMode("uniform")} type="radio" />统一截止时间</label><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={deadlineMode === "individual"} name="deadline-mode" onChange={() => setDeadlineMode("individual")} type="radio" />分别设置</label></div>{deadlineMode === "uniform" ? <label className="grid max-w-sm gap-2 text-sm font-semibold text-student-text">截止时间（可不填）<input className="teacher-input" onChange={(event) => setUniformDueAt(event.target.value)} type="datetime-local" value={uniformDueAt} /></label> : <div className="grid gap-3">{assignmentKeys.map((item) => <label className="grid gap-2 text-sm font-semibold text-student-text sm:grid-cols-[minmax(0,1fr)_minmax(220px,320px)] sm:items-center" key={item.key}><span className="truncate">{item.label}</span><input className="teacher-input" onChange={(event) => setIndividualDueAt((current) => ({ ...current, [item.key]: event.target.value }))} type="datetime-local" value={individualDueAt[item.key] ?? ""} /></label>)}</div>}<p className="text-xs text-student-muted">留空表示不设置截止时间；截止时间不会禁止提交。</p></div>
+        <div className="grid gap-3"><div className="flex flex-wrap gap-5"><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={deadlineMode === "uniform"} name="deadline-mode" onChange={() => setDeadlineMode("uniform")} type="radio" />统一截止时间</label><label className="flex items-center gap-2 text-sm font-semibold text-student-text"><input checked={deadlineMode === "individual"} name="deadline-mode" onChange={() => setDeadlineMode("individual")} type="radio" />分别设置</label></div>{deadlineMode === "uniform" ? <label className="grid max-w-sm gap-2 text-sm font-semibold text-student-text">截止时间（可不填）<input className="teacher-input" onChange={(event) => setUniformDueAt(event.target.value)} type="datetime-local" value={uniformDueAt} /></label> : <div className="grid gap-3">{assignmentKeys.map((item) => <label className="grid gap-2 text-sm font-semibold text-student-text sm:grid-cols-[minmax(0,1fr)_minmax(220px,320px)] sm:items-center" key={item.key}><span className="truncate">{item.label}</span><input className="teacher-input" onChange={(event) => setIndividualDueAt((current) => ({ ...current, [item.key]: event.target.value }))} type="datetime-local" value={individualDueAt[item.key] ?? ""} /></label>)}</div>}</div>
         )}
       </StepCard>
 

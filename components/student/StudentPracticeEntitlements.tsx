@@ -121,7 +121,7 @@ export function StudentEntitlementNotice({
         ? "自主练习次数已用完，已有练习仍可继续。"
         : "新题解锁次数已用完，仍可练习已解锁的题目。"
       : category
-        ? "每次开始新的分类练习消耗 1 次；未完成的练习可继续。"
+        ? "每次开始新的分类练习消耗 1 次。"
         : "首次练习未解锁题目消耗 1 次；已解锁题目不限次数。";
 
   return (
@@ -184,7 +184,7 @@ export function StudentUnlockBadge({
       data-testid="student-unlock-badge"
       title="首次练习该题会消耗 1 次新题解锁额度。"
     >
-      首次解锁
+      未解锁
     </span>
   );
 }

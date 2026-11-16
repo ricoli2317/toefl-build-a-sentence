@@ -282,7 +282,7 @@ export function TeacherAssignmentCatalogPicker({
           </ul>
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs text-student-muted">
-              当前结果 {filteredEntries.length} 道 · 序号按当前筛选结果从 1 开始，仅用于显示。
+              当前结果 {filteredEntries.length} 道
             </p>
             <nav aria-label="题目分页" className="flex items-center gap-2 text-sm text-student-muted">
               <span>第 {pageData.page}/{pageData.pageCount} 页</span>

@@ -2,7 +2,6 @@
 
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import {
-  categoryAssignmentItemLabel,
   categoryAssignmentTotalQuestions,
   type CategoryAssignmentConfigRow,
   type CategoryAssignmentItemType
@@ -58,12 +57,6 @@ export function TeacherCategoryAssignmentConfig({
 
   return (
     <div className="grid gap-4">
-      <p className="text-sm text-student-muted">
-        {itemType === "bas_category"
-          ? "选择一个或多个真实语法点，并分别设置题量。系统会在布置时随机抽取并冻结全部题目。"
-          : "选择一个或多个 RAP 正式题型，并分别设置题量。系统会在布置时按题目随机抽取并冻结全部题目。"}
-        <span className="ml-1 font-semibold text-student-text">当前：{categoryAssignmentItemLabel(itemType)}</span>
-      </p>
       {loading ? (
         <div className="grid gap-2">
           {[1, 2, 3].map((item) => <TeacherSkeleton className="h-12 w-full rounded-xl" key={item} />)}
