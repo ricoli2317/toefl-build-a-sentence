@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CheckCircle2, Clock3, FilePenLine, RefreshCw } from "lucide-react";
 import { TeacherDataError } from "@/components/teacher/TeacherUI";
 import { TeacherPopover } from "@/components/teacher/TeacherPopover";
+import { TeacherAssignmentOverviewTable } from "@/components/teacher/TeacherAssignmentOverviewTable";
 import { teacherReturnToHref } from "@/lib/teacherNavigation";
 import {
   ASSIGNMENT_CARD_CLASS,
@@ -20,6 +21,7 @@ import {
   type WritingAssignmentLifecycleStatus,
   type WritingAssignmentStudentDetail
 } from "@/lib/writingAssignments";
+import type { AssignmentOverview } from "@/lib/assignmentOverview";
 import {
   teacherAssignmentItemAction,
   teacherAssignmentItemResultHref
@@ -46,6 +48,7 @@ export function TeacherWritingAssignmentDetailBody({
   errorText,
   lifecycleStatus = "active",
   onRefresh,
+  overview,
   refreshing = false,
   returnTo,
   title,
@@ -60,6 +63,8 @@ export function TeacherWritingAssignmentDetailBody({
   errorText?: string;
   lifecycleStatus?: WritingAssignmentLifecycleStatus;
   onRefresh: () => void;
+  /** Assignment Group overview; absent on the legacy single-item detail. */
+  overview?: AssignmentOverview;
   refreshing?: boolean;
   returnTo: string;
   /** Assignment / Assignment Group title shown as the main heading. */
@@ -122,6 +127,8 @@ export function TeacherWritingAssignmentDetailBody({
       />
 
       {errorText ? <TeacherDataError text={errorText} /> : null}
+
+      {overview ? <TeacherAssignmentOverviewTable overview={overview} /> : null}
 
       <div className="grid gap-4">
         {students.map((student) => {

@@ -76,6 +76,7 @@ export function TeacherWritingAssignmentCollectionDetailView({
       dueAt={dueDates[0] ?? null}
       lifecycleStatus={allWithdrawn ? "withdrawn" : "active"}
       onRefresh={() => cache.invalidate(cacheKey)}
+      overview={collection.overview}
       refreshing={refreshing}
       returnTo={detailHref}
       title={collectionTitle}

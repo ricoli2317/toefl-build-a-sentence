@@ -1,5 +1,6 @@
 import { assignmentDateKey, defaultWritingAssignmentTitle, normalizeAssignmentText, writingAssignmentAutoTitleSequence } from "./writingAssignments.ts";
 import { assignmentSubjectLabel, type AssignmentSubject } from "./assignmentCatalog.ts";
+import type { AssignmentOverview } from "./assignmentOverview.ts";
 import {
   STUDENT_BINDING_DOMAINS,
   normalizeBindingDomains,
@@ -42,6 +43,8 @@ export type TeacherClassMember = {
 export type TeacherClassDetail = {
   class: TeacherClassSummary;
   members: TeacherClassMember[];
+  /** 班级成员 table's class-scoped completion + per-type grade overview. */
+  overview: AssignmentOverview;
 };
 
 export type ClassStudentCandidate = {
@@ -103,18 +106,6 @@ export type ClassDuplicateMemberIssue = {
   member_index: number;
   student_name: string;
   candidates: Array<{ id: string; displayName: string; email: string }>;
-};
-
-export type ClassCompletionCounts = { total: number; completed: number };
-
-export type ClassCompletionItem = {
-  assignment_id: string;
-  recipient_student_ids: readonly string[];
-};
-
-export type ClassCompletionSubmission = {
-  assignment_id: string;
-  student_id: string;
 };
 
 export type TeacherClassReviewSummary = TeacherClassSummary & {
@@ -253,41 +244,6 @@ export function isAutomaticWritingAssignmentTitle(input: {
   return bases.some(
     (base) => writingAssignmentAutoTitleSequence(title, base) !== null
   );
-}
-
-/**
- * Per-student completion over exactly the supplied class items. Callers pass
- * only the items of one class, so direct (one-to-one) assignments and other
- * classes can never leak into the rate.
- */
-export function computeClassCompletions(input: {
-  items: readonly ClassCompletionItem[];
-  submissions: readonly ClassCompletionSubmission[];
-}): Map<string, ClassCompletionCounts> {
-  const submitted = new Set(
-    input.submissions.map((entry) => `${entry.assignment_id}:${entry.student_id}`)
-  );
-  const counts = new Map<string, ClassCompletionCounts>();
-  for (const item of input.items) {
-    for (const studentId of Array.from(new Set(item.recipient_student_ids))) {
-      const current = counts.get(studentId) ?? { total: 0, completed: 0 };
-      current.total += 1;
-      if (submitted.has(`${item.assignment_id}:${studentId}`)) current.completed += 1;
-      counts.set(studentId, current);
-    }
-  }
-  return counts;
-}
-
-/** `已完成 / 总数` teacher-facing text; `—` when the class has no assignment. */
-export function formatClassCompletion(counts: ClassCompletionCounts | undefined) {
-  if (!counts || counts.total <= 0) return "—";
-  return `${counts.completed} / ${counts.total}`;
-}
-
-export function classCompletionPercent(counts: ClassCompletionCounts | undefined) {
-  if (!counts || counts.total <= 0) return null;
-  return Math.round((counts.completed / counts.total) * 100);
 }
 
 /**

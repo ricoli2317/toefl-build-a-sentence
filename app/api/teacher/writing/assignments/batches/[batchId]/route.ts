@@ -10,8 +10,15 @@ import { resolveAssignmentCatalogItemIds } from "@/lib/assignmentCatalog.server"
 import { loadWritingAssignmentClassRefs } from "@/lib/teacherClasses.server";
 import {
   assignmentStudentResult,
-  loadAssignmentStudentResults
+  loadAssignmentStudentResults,
+  type AssignmentItemGrade
 } from "@/lib/assignmentResults.server";
+import {
+  buildAssignmentOverview,
+  type AssignmentOverviewItem
+} from "@/lib/assignmentOverview";
+import { loadStudentLatestPracticeAt } from "@/lib/assignmentOverview.server";
+import { loadWritingReviewSummaries } from "@/lib/writingReviewSummaries.server";
 import { loadWritingAssignmentGroupTitles } from "@/lib/writingAssignmentsGroupTitles.server";
 import type { WritingQuestion } from "@/lib/writing";
 import {
@@ -61,7 +68,7 @@ type AttemptRow = {
   status: string;
   submitted_at: string | null;
 };
-type ReviewRow = { attempt_id: string; status: string; published_at: string | null };
+
 
 export async function GET(
   request: Request,
@@ -150,7 +157,11 @@ export async function GET(
         member
       ]);
     }
-    const [profiles, studentResultMap] = await Promise.all([
+    // Optional grading sink: the shared locator already reads the exact rows
+    // that decided completion, so the overview gets their stored grading
+    // counts without a second per-item query.
+    const assignmentGrades = new Map<string, AssignmentItemGrade>();
+    const [profiles, studentResultMap, latestPracticeAtByStudent] = await Promise.all([
       readProfiles(auth.supabase, memberStudentIds),
       (() => {
         // One lookup row per (assignment, student): each carries the
@@ -175,11 +186,13 @@ export async function GET(
         return items.length
           ? loadAssignmentStudentResults({
               db: auth.supabase,
+              grades: assignmentGrades,
               items,
               studentIds: memberStudentIds
             })
           : Promise.resolve(new Map());
-      })()
+      })(),
+      loadStudentLatestPracticeAt(auth.supabase, memberStudentIds)
     ]);
     const profileById = new Map(profiles.map((profile) => [profile.id, profile]));
 
@@ -196,7 +209,7 @@ export async function GET(
         latestSubmission.set(key, attempt);
       }
     }
-    const reviewStatusByAttemptId = await readReviewStatuses(
+    const reviewStatusByAttemptId = await loadWritingReviewSummaries(
       auth.supabase,
       Array.from(latestSubmission.values(), (attempt) => attempt.attempt_id)
     );
@@ -211,9 +224,10 @@ export async function GET(
         const key = assignmentStudentKey(assignment.assignment_id, member.student_id);
         const firstSubmittedAt = earliestWritingAssignmentSubmission(submissions.get(key) ?? []);
         const latest = latestSubmission.get(key);
-        const latestReviewStatus = latest
+        const latestReview = latest
           ? reviewStatusByAttemptId.get(latest.attempt_id) ?? null
           : null;
+        const latestReviewStatus = latestReview?.status ?? null;
         const result = assignmentStudentResult(
           studentResultMap,
           assignment.assignment_id,
@@ -294,6 +308,45 @@ export async function GET(
         students
       };
     });
+    const overviewItems: AssignmentOverviewItem[] = details.flatMap((detail) =>
+      detail.students.map((student) => {
+        const latestReview = student.latest_submitted_attempt_id
+          ? reviewStatusByAttemptId.get(student.latest_submitted_attempt_id) ?? null
+          : null;
+        return {
+          assignmentId: detail.assignment_id,
+          studentId: student.student_id,
+          taskType: detail.task_type,
+          // The exact flag rendered by the per-item status badge below.
+          completed: Boolean(student.completed),
+          grade: assignmentGrades.get(
+            assignmentStudentKey(detail.assignment_id, student.student_id)
+          ) ?? null,
+          writingScore: isWritingReviewItemType(detail.task_type)
+            && latestReview?.status === "published"
+            ? latestReview.score
+            : null
+        };
+      })
+    );
+    const overview = buildAssignmentOverview({
+      students: memberStudentIds.map((studentId) => {
+        const profile = profileById.get(studentId);
+        return {
+          studentId,
+          studentName: getPreferredUserDisplayName({
+            email: profile?.email,
+            profileFullName: profile?.full_name
+          }),
+          latestPracticeAt: latestPracticeAtByStudent.get(studentId) ?? null
+        };
+      }),
+      assignments: details.map((detail) => ({
+        assignmentId: detail.assignment_id,
+        taskType: detail.task_type
+      })),
+      items: overviewItems
+    });
     const assignedCount = Math.max(0, ...details.map((detail) => detail.assigned_count));
     const collection: WritingAssignmentCollectionDetail = {
       collection_id: params.batchId,
@@ -302,6 +355,7 @@ export async function GET(
       assigned_count: assignedCount,
       completed_count: completedCount,
       created_at: details[0].created_at,
+      overview,
       pending_review_count: Math.max(0, completedCount - publishedCount),
       published_count: publishedCount,
       total_count: details.reduce((count, detail) => count + detail.assigned_count, 0)
@@ -318,31 +372,6 @@ export async function GET(
 
 function assignmentStudentKey(assignmentId: string, studentId: string) {
   return `${assignmentId}:${studentId}`;
-}
-
-async function readReviewStatuses(
-  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
-  attemptIds: string[]
-) {
-  const statuses = new Map<string, "reviewing" | "published">();
-  for (const batch of chunkValues(attemptIds)) {
-    if (!batch.length) continue;
-    const result = await readAllSupabaseRows<ReviewRow>((from, to) =>
-      supabase
-        .from("writing_reviews")
-        .select("attempt_id,status,published_at")
-        .in("attempt_id", batch)
-        .range(from, to)
-    );
-    if (result.error) throw result.error;
-    for (const review of result.data ?? []) {
-      statuses.set(
-        review.attempt_id,
-        review.status === "published" && review.published_at ? "published" : "reviewing"
-      );
-    }
-  }
-  return statuses;
 }
 
 async function readProfiles(

@@ -23,6 +23,7 @@ import {
   categoryAssignmentManifestFromSnapshot,
   type CategoryAssignmentManifest
 } from "./categoryAssignment.ts";
+import type { AssignmentOverview } from "./assignmentOverview.ts";
 
 export type WritingAssignmentQuestionSource = "question_bank" | "custom";
 export type WritingAssignmentPracticeResolution = {
@@ -520,6 +521,8 @@ export type WritingAssignmentCollectionDetail = {
   pending_review_count: number;
   published_count: number;
   total_count: number;
+  /** 作业总览 table built from the same per-item completion rows. */
+  overview: AssignmentOverview;
 };
 
 export type WritingAssignmentDetail = Omit<

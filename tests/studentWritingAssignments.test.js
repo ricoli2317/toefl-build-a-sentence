@@ -346,7 +346,10 @@ test("student and teacher multi-question pages reuse existing writing and review
     /teacherWritingReviewWorkspaceHref\(review\.attemptId, input\.returnTo\)/
   );
   assert.match(teacherRoute, /from\("writing_attempts"\)/);
-  assert.match(teacherRoute, /from\("writing_reviews"\)/);
+  assert.match(teacherRoute, /loadWritingReviewSummaries/);
+  const reviewSummarySource = source("lib/writingReviewSummaries.server.ts");
+  assert.match(reviewSummarySource, /from\("writing_reviews"\)/);
+  assert.match(reviewSummarySource, /review\.status === "published" && review\.published_at/);
   assert.doesNotMatch(teacherRoute, /\.(?:insert|update|delete)\(/i);
 });
 

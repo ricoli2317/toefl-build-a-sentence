@@ -68,6 +68,16 @@ export type AssignmentStudentResult = {
 
 export type AssignmentStudentResultMap = Map<string, AssignmentStudentResult>;
 
+/**
+ * Grading detail of the Assignment's latest valid result. It stays separate
+ * from `AssignmentStudentResult` because that identity object is persisted in
+ * existing API payloads; overview callers opt in through `grades`.
+ */
+export type AssignmentItemGrade = {
+  correct: number;
+  total: number;
+};
+
 export function assignmentStudentResultKey(assignmentId: string, studentId: string) {
   return `${assignmentId}:${studentId}`;
 }
@@ -97,12 +107,20 @@ type ResultAttemptRow = {
   startedAt: string | null;
   /** True when the row represents a formally completed attempt. */
   completed: boolean;
+  /** Stored grading counts of this row; null when the table has no grading. */
+  grade: AssignmentItemGrade | null;
 };
 
 export async function loadAssignmentStudentResults(input: {
   db: SupabaseClient;
   items: ReadonlyArray<AssignmentResultLookupItem>;
   studentIds: ReadonlyArray<string>;
+  /**
+   * Optional caller-owned sink. When present it receives the latest valid
+   * grading counts of every completed result, keyed by
+   * `assignmentStudentResultKey`. The existing result shape is never changed.
+   */
+  grades?: Map<string, AssignmentItemGrade>;
 }): Promise<AssignmentStudentResultMap> {
   const results: AssignmentStudentResultMap = new Map();
   const studentIds = Array.from(new Set(input.studentIds));
@@ -150,10 +168,10 @@ export async function loadAssignmentStudentResults(input: {
     )
   ]);
 
-  applyScopes(results, readingItems, readingRows, "reading_attempt");
-  applyScopes(results, fullSetItems, fullSetRows, "reading_full_set");
-  applyScopes(results, basItems, basRows, "bas_set");
-  applyCategoryScopes(results, categoryItems, categoryRows);
+  applyScopes(results, readingItems, readingRows, "reading_attempt", input.grades);
+  applyScopes(results, fullSetItems, fullSetRows, "reading_full_set", input.grades);
+  applyScopes(results, basItems, basRows, "bas_set", input.grades);
+  applyCategoryScopes(results, categoryItems, categoryRows, input.grades);
 
   return results;
 }
@@ -173,7 +191,8 @@ type CategorySessionRow = ResultAttemptRow & {
 function applyCategoryScopes(
   results: AssignmentStudentResultMap,
   scopes: ReadonlyArray<AssignmentResultScope>,
-  rows: ReadonlyArray<CategorySessionRow>
+  rows: ReadonlyArray<CategorySessionRow>,
+  grades?: Map<string, AssignmentItemGrade>
 ) {
   for (const scope of scopes) {
     const candidates = rows
@@ -194,6 +213,7 @@ function applyCategoryScopes(
           || right.attemptId.localeCompare(left.attemptId);
       });
     const history = completed.map(categoryResultForRow);
+    setGrade(grades, scope.assignmentId, scope.studentId, completed[0]?.grade ?? null);
     setResult(results, scope.assignmentId, scope.studentId, {
       available_result: history[0] ?? null,
       available_results: history,
@@ -223,13 +243,14 @@ async function readCategorySessionRows(
           student_id: string;
           status: string;
           attempt_id: string | null;
+          correct_count: number | null;
           total_questions: number | null;
           completed_at: string | null;
           started_at: string | null;
         }>((from, to) =>
           db
             .from("bas_grammar_practice_sessions")
-            .select("session_id,assignment_id,student_id,status,attempt_id,total_questions,completed_at,started_at")
+            .select("session_id,assignment_id,student_id,status,attempt_id,correct_count,total_questions,completed_at,started_at")
             .in("assignment_id", basAssignmentIds)
             .in("student_id", studentIds)
             .order("started_at", { ascending: true })
@@ -242,6 +263,7 @@ async function readCategorySessionRows(
             student_id: string;
             status: string;
             attempt_id: string | null;
+            correct_count: number | null;
             total_questions: number | null;
             completed_at: string | null;
             started_at: string | null;
@@ -254,13 +276,14 @@ async function readCategorySessionRows(
           assignment_id: string;
           student_id: string;
           status: string;
+          correct_points: number | null;
           total_points: number | null;
           completed_at: string | null;
           created_at: string | null;
         }>((from, to) =>
           db
             .from("reading_question_category_sessions")
-            .select("session_id,assignment_id,student_id,status,total_points,completed_at,created_at")
+            .select("session_id,assignment_id,student_id,status,correct_points,total_points,completed_at,created_at")
             .in("assignment_id", rapAssignmentIds)
             .in("student_id", studentIds)
             .order("created_at", { ascending: true })
@@ -272,6 +295,7 @@ async function readCategorySessionRows(
             assignment_id: string;
             student_id: string;
             status: string;
+            correct_points: number | null;
             total_points: number | null;
             completed_at: string | null;
             created_at: string | null;
@@ -290,6 +314,7 @@ async function readCategorySessionRows(
       categoryKind: "bas_category" as const,
       completed: row.status === "completed",
       completedAt: row.completed_at,
+      grade: gradeFromCounts(row.correct_count, row.total_questions),
       itemId: row.session_id,
       startedAt: row.started_at,
       studentId: row.student_id,
@@ -301,6 +326,7 @@ async function readCategorySessionRows(
       categoryKind: "rap_category" as const,
       completed: row.status === "completed",
       completedAt: row.completed_at,
+      grade: gradeFromCounts(row.correct_points, row.total_points),
       itemId: row.session_id,
       startedAt: row.created_at,
       studentId: row.student_id,
@@ -318,7 +344,8 @@ function applyScopes(
   results: AssignmentStudentResultMap,
   scopes: ReadonlyArray<AssignmentResultScope>,
   rows: ReadonlyArray<ResultAttemptRow>,
-  kind: TeacherAssignmentItemResult["kind"]
+  kind: TeacherAssignmentItemResult["kind"],
+  grades?: Map<string, AssignmentItemGrade>
 ) {
   const rowsByKey = new Map<string, ResultAttemptRow[]>();
   for (const row of rows) {
@@ -345,6 +372,9 @@ function applyScopes(
         ? row
         : current
     );
+    if (latest.completed) {
+      setGrade(grades, scope.assignmentId, scope.studentId, latest.grade);
+    }
     const availableResult = latest.completed
       ? kind === "bas_set"
         ? {
@@ -397,6 +427,47 @@ function categoryResultForRow(row: CategorySessionRow): TeacherAssignmentItemRes
       };
 }
 
+/**
+ * Stored grading counts are only a display detail for the Assignment overview.
+ * Rows without both a positive total and a usable correct count carry no grade
+ * (e.g. Full Set, or historical rows whose grading was not persisted).
+ */
+function gradeFromCounts(
+  correct: number | null | undefined,
+  total: number | null | undefined
+): AssignmentItemGrade | null {
+  const correctCount = numericCount(correct);
+  const totalCount = numericCount(total);
+  if (correctCount === null || totalCount === null) return null;
+  if (totalCount <= 0 || correctCount < 0) return null;
+  return {
+    correct: Math.min(correctCount, totalCount),
+    total: totalCount
+  };
+}
+
+/** A missing count is "no grade", never an accidental 0/0 accuracy. */
+function numericCount(value: unknown): number | null {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : null;
+  }
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
+function setGrade(
+  grades: Map<string, AssignmentItemGrade> | undefined,
+  assignmentId: string,
+  studentId: string,
+  grade: AssignmentItemGrade | null
+) {
+  if (!grades || !grade) return;
+  grades.set(assignmentStudentResultKey(assignmentId, studentId), grade);
+}
+
 function setResult(
   results: AssignmentStudentResultMap,
   assignmentId: string,
@@ -437,6 +508,8 @@ type ReadingAttemptRow = {
   status: string;
   submitted_at: string | null;
   created_at: string | null;
+  correct_points: number | null;
+  total_points: number | null;
 };
 
 async function readReadingAttemptRows(
@@ -451,7 +524,7 @@ async function readReadingAttemptRows(
       const result = await readAllSupabaseRows<ReadingAttemptRow>((from, to) =>
         db
           .from("reading_attempts")
-          .select("attempt_id,student_id,logical_item_id,status,submitted_at,created_at")
+          .select("attempt_id,student_id,logical_item_id,status,submitted_at,created_at,correct_points,total_points")
           .in("logical_item_id", itemBatch)
           .in("student_id", studentBatch)
           .order("attempt_id", { ascending: true })
@@ -463,6 +536,7 @@ async function readReadingAttemptRows(
           attemptId: String(row.attempt_id),
           completed: row.status === "submitted",
           completedAt: row.submitted_at,
+          grade: gradeFromCounts(row.correct_points, row.total_points),
           itemId: row.logical_item_id,
           startedAt: row.created_at,
           studentId: row.student_id
@@ -506,6 +580,7 @@ async function readFullSetAttemptRows(
           attemptId: String(row.attempt_id),
           completed: row.status === "completed",
           completedAt: row.completed_at,
+          grade: null,
           itemId: row.full_set_id,
           startedAt: row.created_at,
           studentId: row.student_id
@@ -522,6 +597,8 @@ type BuildSentenceAttemptRow = {
   set_id: string;
   submitted_at: string | null;
   created_at: string | null;
+  correct_count: number | null;
+  total_questions: number | null;
 };
 
 async function readBuildSentenceAttemptRows(
@@ -536,7 +613,7 @@ async function readBuildSentenceAttemptRows(
       const result = await readAllSupabaseRows<BuildSentenceAttemptRow>((from, to) =>
         db
           .from("attempts")
-          .select("attempt_id,student_id,set_id,submitted_at,created_at")
+          .select("attempt_id,student_id,set_id,submitted_at,created_at,correct_count,total_questions")
           .in("set_id", itemBatch)
           .in("student_id", studentBatch)
           .order("attempt_id", { ascending: true })
@@ -548,6 +625,7 @@ async function readBuildSentenceAttemptRows(
           attemptId: String(row.attempt_id),
           completed: Boolean(row.submitted_at),
           completedAt: row.submitted_at,
+          grade: gradeFromCounts(row.correct_count, row.total_questions),
           itemId: row.set_id,
           startedAt: row.created_at,
           studentId: row.student_id

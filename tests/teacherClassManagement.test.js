@@ -6,14 +6,11 @@ import { fileURLToPath } from "node:url";
 
 import {
   classAssignmentTitleBase,
-  classCompletionPercent,
   classIncludesWriting,
   classSubjectsLabel,
-  computeClassCompletions,
   filterClassSummariesByName,
   filterDirectWritingAssignments,
   filterWritingAssignmentsByClass,
-  formatClassCompletion,
   isClassWritingAssignment,
   normalizeClassSubjects,
   parseClassMemberInputs,
@@ -209,11 +206,11 @@ test("class assignment recipients are the creation-time member snapshot", () => 
   assert.match(assignRpc, /insert into public\.writing_assignment_students \(assignment_id, student_id, sort_order\)/);
   // Recipients are persisted per assignment; nothing joins memberships at read
   // time, so later joins/leaves never rewrite history.
-  const server = read("lib/teacherClasses.server.ts");
-  assert.match(server, /from\("writing_assignment_students"\)/);
-  assert.match(server, /\.in\("assignment_id", batch\)/);
+  const overview = read("lib/classAssignmentOverview.server.ts");
+  assert.match(overview, /from\("writing_assignment_students"\)/);
+  assert.match(overview, /\.in\("assignment_id", assignmentBatch\)/);
   assert.doesNotMatch(
-    server,
+    overview,
     /from\("class_members"\)[\s\S]{0,200}\.in\("assignment_id"/
   );
 });
@@ -275,29 +272,35 @@ test("class assignment titles use class name + Shanghai date with (2)(3) sequenc
 });
 
 // 15 + 16: completion and reviews only count the class's own assignments
-test("class completion only counts the class's own assignment items", () => {
-  const items = [
-    { assignment_id: "class-a-1", recipient_student_ids: ["student-1", "student-2"] },
-    { assignment_id: "class-a-2", recipient_student_ids: ["student-1"] }
-  ];
-  const submissions = [
-    { assignment_id: "class-a-1", student_id: "student-1" },
-    // Direct assignment submission of the same student must not count.
-    { assignment_id: "direct-1", student_id: "student-1" },
-    // Another class must not count either.
-    { assignment_id: "class-b-1", student_id: "student-2" }
-  ];
-  const counts = computeClassCompletions({ items, submissions });
-  assert.deepEqual(counts.get("student-1"), { total: 2, completed: 1 });
-  assert.deepEqual(counts.get("student-2"), { total: 1, completed: 0 });
-  assert.equal(formatClassCompletion(counts.get("student-1")), "1 / 2");
-  assert.equal(classCompletionPercent(counts.get("student-1")), 50);
-  assert.equal(formatClassCompletion(undefined), "—");
-  assert.equal(classCompletionPercent({ total: 0, completed: 0 }), null);
+test("class completion only counts the class's own effective assignment items", () => {
+  const overview = read("lib/classAssignmentOverview.server.ts");
+  assert.match(
+    overview,
+    /\.from\("writing_assignment_groups"\)[\s\S]{0,160}\.eq\("class_id", classId\)[\s\S]{0,80}\.eq\("teacher_id", teacherId\)/
+  );
+  assert.match(overview, /\.neq\("status", "withdrawn"\)/);
+  assert.match(overview, /\.is\("deleted_at", null\)/);
+  assert.match(overview, /loadAssignmentStudentResults\(\{/);
+  assert.match(overview, /loadWritingReviewSummaries\(/);
+  assert.match(overview, /teacher_student_bindings/);
+  assert.match(overview, /includeSummary: true/);
+});
+
+test("class member table reuses the shared assignment overview cells", () => {
+  const detail = read("components/teacher/TeacherClassDetail.tsx");
+  assert.match(detail, /AssignmentOverviewMetricCells/);
+  assert.match(detail, /overview\.columns\.map/);
+  assert.match(detail, /overview\.summary/);
+  assert.match(detail, /最近练习/);
+  assert.match(detail, /refreshOnMount: true/);
+  assert.doesNotMatch(detail, /loadClassCompletionCounts/);
+  assert.doesNotMatch(detail, /writing_attempts/);
 
   const server = read("lib/teacherClasses.server.ts");
-  assert.match(server, /\.from\("writing_assignment_groups"\)[\s\S]{0,160}\.eq\("class_id", classId\)[\s\S]{0,80}\.eq\("teacher_id", teacherId\)/);
-  assert.match(server, /\.neq\("status", "withdrawn"\)/);
+  assert.match(server, /loadClassAssignmentOverview/);
+  assert.doesNotMatch(server, /computeClassCompletions/);
+  const overview = read("lib/classAssignmentOverview.server.ts");
+  assert.match(overview, /loadStudentLatestPracticeAt/);
 });
 
 test("class lists, filters and reviews never mix classes or direct assignments", () => {

@@ -1,8 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
 import {
-  computeClassCompletions,
-  type ClassCompletionCounts,
   type ClassDuplicateMemberIssue,
   type ClassMemberInput,
   type ClassStudentCandidate,
@@ -11,6 +9,7 @@ import {
   type TeacherClassReviewSummary,
   type TeacherClassSummary
 } from "@/lib/teacherClasses";
+import { loadClassAssignmentOverview } from "@/lib/classAssignmentOverview.server";
 import { accountAutoSuffixAllowed } from "@/lib/studentAccountSuggestion";
 import { listVisibleStudentIds, type AccountActor } from "@/lib/accountAccess";
 import type { StudentBindingDomain } from "@/lib/studentBindings";
@@ -70,7 +69,9 @@ async function readRowsByIds<T extends Record<string, unknown>>(
       let query = db
         .from(table)
         .select(fields);
-      if (originalWritingOnly && table === "writing_attempts") query = query.eq("attempt_kind", "original");
+      if (originalWritingOnly && table === "writing_attempts") {
+        query = query.eq("attempt_kind", "original");
+      }
       return query
         .in(column, batch)
         .order(column, { ascending: true })
@@ -116,129 +117,69 @@ export async function loadTeacherClassDetail(
   const membershipRows = membersResult.data ?? [];
   const memberIds = membershipRows.map((row) => String(row.student_id));
 
-  const [profileRows, completion] = await Promise.all([
-    readRowsByIds<{ id: string; email: string | null; full_name: string | null }>(
+  // The overview only needs ids to compute; profile names are loaded in the
+  // same round and overlaid afterwards, so the class does not pay for two
+  // serial network stages.
+  const [profileRows, overview] = await Promise.all([
+    readRowsByIds<{
+      id: string;
+      email: string | null;
+      full_name: string | null;
+    }>(
       db,
       "profiles",
       "id,email,full_name",
       memberIds,
       "id"
     ),
-    loadClassCompletionCounts(db, teacherId, classId)
+    loadClassAssignmentOverview({
+      classId,
+      db,
+      members: memberIds.map((studentId) => ({ studentId })),
+      teacherId
+    })
   ]);
   const profileById = new Map(profileRows.map((profile) => [String(profile.id), profile]));
-
-  const members: TeacherClassMember[] = membershipRows.map((row) => {
-    const studentId = String(row.student_id);
-    const profile = profileById.get(studentId);
-    const counts = completion.get(studentId);
-    return {
-      student_id: studentId,
-      student_name:
+  const studentNameById = new Map(
+    memberIds.map((studentId) => {
+      const profile = profileById.get(studentId);
+      return [
+        studentId,
         getPreferredUserDisplayName({
           email: profile?.email,
           profileFullName: profile?.full_name
-        }) || "未命名学生",
+        }) || "未命名学生"
+      ];
+    })
+  );
+  const namedOverview = {
+    ...overview,
+    rows: overview.rows.map((row) => ({
+      ...row,
+      studentName: studentNameById.get(row.studentId) ?? "未命名学生"
+    }))
+  };
+  const overviewByStudentId = new Map(
+    namedOverview.rows.map((row) => [row.studentId, row])
+  );
+
+  const members: TeacherClassMember[] = membershipRows.map((row) => {
+    const studentId = String(row.student_id);
+    const counts = overviewByStudentId.get(studentId);
+    return {
+      student_id: studentId,
+      student_name: studentNameById.get(studentId) || "未命名学生",
       joined_at: row.joined_at,
-      completed_count: counts?.completed ?? 0,
-      total_count: counts?.total ?? 0
+      completed_count: counts?.completedCount ?? 0,
+      total_count: counts?.assignedCount ?? 0
     };
   });
 
   return {
     class: mapClassSummary(classRow, members.length, viewerSubjects),
-    members
+    members,
+    overview: namedOverview
   };
-}
-
-/**
- * Completion counts are scoped to the ACTING teacher's own assignment items
- * for the class. A shared class may carry another teacher's groups; those are
- * never counted or exposed here.
- */
-async function loadClassCompletionCounts(
-  db: Db,
-  teacherId: string,
-  classId: string
-): Promise<Map<string, ClassCompletionCounts>> {
-  const groupsResult = await readAllSupabaseRows<{ group_id: string }>((from, to) =>
-    db
-      .from("writing_assignment_groups")
-      .select("group_id")
-      .eq("class_id", classId)
-      .eq("teacher_id", teacherId)
-      .order("group_id", { ascending: true })
-      .range(from, to)
-  );
-  if (groupsResult.error) throw groupsResult.error;
-  const groupIds = (groupsResult.data ?? []).map((row) => String(row.group_id));
-  if (groupIds.length === 0) return new Map();
-
-  const items: Array<{ assignment_id: string; recipient_student_ids: string[] }> = [];
-  const assignmentIds: string[] = [];
-  const recipientRows: Array<{ assignment_id: string; student_id: string }> = [];
-  for (const batch of chunkValues(groupIds)) {
-    const itemResult = await readAllSupabaseRows<{ assignment_id: string }>((from, to) =>
-      db
-        .from("writing_assignments")
-        .select("assignment_id")
-        .in("group_id", batch)
-        .is("deleted_at", null)
-        .neq("status", "withdrawn")
-        .order("assignment_id", { ascending: true })
-        .range(from, to)
-    );
-    if (itemResult.error) throw itemResult.error;
-    for (const row of itemResult.data ?? []) assignmentIds.push(String(row.assignment_id));
-  }
-  if (assignmentIds.length === 0) return new Map();
-
-  for (const batch of chunkValues(assignmentIds)) {
-    const recipientResult = await readAllSupabaseRows<{ assignment_id: string; student_id: string }>(
-      (from, to) =>
-        db
-          .from("writing_assignment_students")
-          .select("assignment_id,student_id")
-          .in("assignment_id", batch)
-          .order("assignment_id", { ascending: true })
-          .order("student_id", { ascending: true })
-          .range(from, to)
-    );
-    if (recipientResult.error) throw recipientResult.error;
-    recipientRows.push(
-      ...(recipientResult.data ?? []).map((row) => ({
-        assignment_id: String(row.assignment_id),
-        student_id: String(row.student_id)
-      }))
-    );
-  }
-  const recipientsByAssignment = new Map<string, string[]>();
-  for (const row of recipientRows) {
-    recipientsByAssignment.set(row.assignment_id, [
-      ...(recipientsByAssignment.get(row.assignment_id) ?? []),
-      row.student_id
-    ]);
-  }
-  for (const assignmentId of assignmentIds) {
-    items.push({
-      assignment_id: assignmentId,
-      recipient_student_ids: recipientsByAssignment.get(assignmentId) ?? []
-    });
-  }
-
-  const submissionRows = await readRowsByIds<{
-    assignment_id: string;
-    user_id: string;
-    submitted_at: string | null;
-  }>(db, "writing_attempts", "assignment_id,user_id,submitted_at", assignmentIds, "assignment_id", true);
-  const submissions = submissionRows
-    .filter((row) => row.assignment_id && row.user_id && row.submitted_at)
-    .map((row) => ({
-      assignment_id: String(row.assignment_id),
-      student_id: String(row.user_id)
-    }));
-
-  return computeClassCompletions({ items, submissions });
 }
 
 /**

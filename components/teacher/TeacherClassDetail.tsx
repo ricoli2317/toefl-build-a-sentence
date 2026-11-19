@@ -19,6 +19,7 @@ import {
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
 import { TeacherSubjectFieldset } from "@/components/teacher/TeacherSubjectFieldset";
+import { AssignmentOverviewMetricCells } from "@/components/teacher/TeacherAssignmentOverviewTable";
 import {
   TeacherClassMemberEditor,
   applyDuplicateMemberIssues,
@@ -46,9 +47,7 @@ import {
 } from "@/lib/teacherNavigation";
 import type { StudentBindingDomain } from "@/lib/studentBindings";
 import {
-  classCompletionPercent,
   classIncludesWriting,
-  formatClassCompletion,
   type ClassStudentCandidate,
   type TeacherClassDetail as TeacherClassDetailData,
   type TeacherClassMember
@@ -79,8 +78,12 @@ type DialogState = "none" | "name" | "subjects" | "add";
 export function TeacherClassDetail({ classId }: { classId: string }) {
   const cache = useTeacherDataCache();
   const cacheKey = `${TEACHER_CLASS_DETAIL_CACHE_PREFIX}:${classId}`;
-  const { data, error, loading } = useTeacherCachedData<DetailPayload>(cacheKey, () =>
-    teacherApiFetch(`/api/teacher/classes/${encodeURIComponent(classId)}`)
+  const { data, error, loading } = useTeacherCachedData<DetailPayload>(
+    cacheKey,
+    () => teacherApiFetch(`/api/teacher/classes/${encodeURIComponent(classId)}`),
+    // Class completion and grades depend on work students do outside this
+    // page, so entering the class revalidates the cached snapshot.
+    { refreshOnMount: true }
   );
   const candidatesState = useTeacherCachedData<{ students: ClassStudentCandidate[] }>(
     TEACHER_CLASS_STUDENTS_CACHE_KEY,
@@ -257,7 +260,11 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
   }
 
   const { class: classInfo, members } = detail;
+  // A cached payload from before the class overview existed still renders the
+  // member actions while the entry refresh replaces it.
+  const overview = detail.overview ?? fallbackClassOverview(members);
   const writingClass = classIncludesWriting(classInfo.subjects);
+  const memberById = new Map(members.map((member) => [member.student_id, member]));
 
   return (
     <div className="grid gap-5">
@@ -317,34 +324,46 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
         </div>
       </TeacherCard>
 
-      <TeacherCard className="p-0">
+      <TeacherCard className="min-w-0 p-0">
         <div className="px-6 pt-6">
           <TeacherSectionTitle>班级成员</TeacherSectionTitle>
           {memberError ? <p className="teacher-error mt-3">{memberError}</p> : null}
         </div>
-        <div className="overflow-x-auto px-6 pb-6 pt-4">
-          <table className="w-full min-w-[720px] border-collapse text-left text-sm">
+        <div className="max-w-full min-w-0 overflow-x-auto px-6 pb-6 pt-4">
+          <table
+            className="w-full border-collapse text-left text-sm"
+            style={{ minWidth: `${44 + overview.columns.length * 8.75}rem` }}
+          >
             <thead>
               <tr className="border-b border-student-border text-student-muted">
                 <th className="px-3 py-3 font-medium">学生</th>
-                <th className="px-3 py-3 font-medium">班级作业完成率</th>
+                <th className="whitespace-nowrap px-3 py-3 font-medium">最近练习</th>
+                <th className="whitespace-nowrap px-3 py-3 font-medium">班级作业进度</th>
+                {overview.columns.map((column) => (
+                  <th
+                    className="min-w-[8.5rem] whitespace-nowrap px-3 py-3 font-medium"
+                    key={column.taskType}
+                  >
+                    {column.label}
+                  </th>
+                ))}
                 <th className="w-px whitespace-nowrap px-3 py-3 font-medium">操作</th>
               </tr>
             </thead>
             <tbody>
               {members.length === 0 ? (
                 <tr>
-                  <td className="px-3 py-8 text-center text-student-muted" colSpan={3}>
+                  <td
+                    className="px-3 py-8 text-center text-student-muted"
+                    colSpan={4 + overview.columns.length}
+                  >
                     班级还没有学生。点击右上角“添加学生”添加。
                   </td>
                 </tr>
               ) : (
-                members.map((member) => {
-                  const counts = {
-                    completed: member.completed_count,
-                    total: member.total_count
-                  };
-                  const percent = classCompletionPercent(counts);
+                overview.rows.map((row) => {
+                  const member = memberById.get(row.studentId);
+                  if (!member) return null;
                   return (
                     <tr
                       className="border-b border-student-border transition last:border-b-0 hover:bg-student-primary-soft/45"
@@ -355,15 +374,14 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
                           <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-student-primary-soft text-student-primary">
                             <UserRound aria-hidden="true" size={20} strokeWidth={1.9} />
                           </span>
-                          <span className="font-semibold text-student-text">{member.student_name}</span>
+                          <span className="font-semibold text-student-text">{row.studentName}</span>
                         </div>
                       </td>
-                      <td className="px-3 py-3 tabular-nums text-student-text">
-                        {formatClassCompletion(counts)}
-                        {percent !== null ? (
-                          <span className="ml-2 text-student-muted">（{percent}%）</span>
-                        ) : null}
-                      </td>
+                      <AssignmentOverviewMetricCells
+                        columns={overview.columns}
+                        progressEmptyText="—"
+                        row={row}
+                      />
                       <td className="w-px whitespace-nowrap px-3 py-3 text-right">
                         <div className="flex flex-nowrap items-center justify-end gap-2">
                           <Link
@@ -389,6 +407,21 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
                   );
                 })
               )}
+              {overview.summary ? (
+                <tr className="border-b border-student-border bg-student-bg/60 last:border-b-0">
+                  <td className="whitespace-nowrap px-3 py-3 font-bold text-student-text">
+                    {overview.summary.studentName}
+                  </td>
+                  <AssignmentOverviewMetricCells
+                    columns={overview.columns}
+                    progressEmptyText="—"
+                    row={overview.summary}
+                  />
+                  <td className="w-px whitespace-nowrap px-3 py-3 text-right text-student-muted">
+                    —
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>
@@ -458,6 +491,24 @@ export function TeacherClassDetail({ classId }: { classId: string }) {
       </ModalShell>
     </div>
   );
+}
+
+function fallbackClassOverview(members: TeacherClassMember[]) {
+  return {
+    columns: [],
+    summary: null,
+    rows: members.map((member) => ({
+      studentId: member.student_id,
+      studentName: member.student_name,
+      latestPracticeAt: null,
+      assignedCount: member.total_count,
+      completedCount: member.completed_count,
+      completionPercent: member.total_count > 0
+        ? Math.round((member.completed_count / member.total_count) * 100)
+        : 0,
+      cells: []
+    }))
+  };
 }
 
 function extractErrorPayload(error: unknown) {
