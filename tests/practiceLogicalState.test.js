@@ -247,6 +247,30 @@ test("newer Writing draft wins current status while preserving latest completed"
   assert.equal(result.student_state.can_view_result, true);
 });
 
+test("archived returned Writing row never becomes a resume or latest target", () => {
+  const result = attach({
+    items: [item({ taskType: "email" })],
+    sources: [source({ taskType: "email" })],
+    writingAttempts: [
+      writingAttempt({
+        attemptId: "returned-old",
+        status: "returned",
+        submittedAt: "2026-08-17T10:00:00.000Z",
+        updatedAt: "2026-08-19T10:00:00.000Z"
+      }),
+      writingAttempt({
+        attemptId: "draft-new",
+        updatedAt: "2026-08-18T10:00:00.000Z"
+      })
+    ]
+  })[0];
+  assert.equal(result.student_state.status, "in_progress");
+  assert.equal(result.student_state.resume_attempt_id, "draft-new");
+  assert.equal(result.student_state.latest_attempt_id, "draft-new");
+  assert.equal(result.student_state.latest_completed_attempt_id, null);
+  assert.equal(result.student_state.can_view_result, false);
+});
+
 test("duplicate Writing sources aggregate submitted A and draft B into one logical item", () => {
   const result = attach({
     items: [item({ taskType: "email", questionId: "question-b" })],

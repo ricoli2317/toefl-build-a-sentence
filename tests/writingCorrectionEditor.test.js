@@ -219,6 +219,22 @@ test("Writing header uses Reading's shared presentation and only one Back action
   assert.doesNotMatch(text(tree), /Exit Practice|Elapsed|Time Left/);
 });
 
+test("Writing practice header keeps the writing purple theme instead of inheriting Reading blue", () => {
+  const h = harness();
+  for (const props of [
+    { title: "WE practice", onBack: () => undefined },
+    { title: "AD submitted", onBack: () => undefined, readOnly: true },
+    { title: "Correction", onBack: () => undefined, correction: true }
+  ]) {
+    const tree = h.practice.WritingPageHeader(props);
+    assert.equal(tree.props.className, "font-sans");
+    assert.doesNotMatch(tree.props.className, /reading-theme/);
+  }
+  const css = fs.readFileSync(path.join(ROOT, "app/globals.css"), "utf8");
+  assert.match(css, /:root\s*\{[\s\S]*--student-primary: #6b5cf6;/);
+  assert.match(css, /\.reading-theme\s*\{[\s\S]*--student-primary: #347fdc;/);
+});
+
 test("shared timer is a pure Reading display with caller-owned label, value and responsive visibility", () => {
   const h = harness();
   const tree = h.header.PracticeTimer({ label: 'Time Left', value: '01:09', testId: 'writing-practice-time' });

@@ -9,10 +9,12 @@ import {
   isWritingReviewModerationAction,
   normalizeWritingReviewModerationAttemptIds,
   parseWritingReviewModerationResponse,
+  writingReviewModerationFailureMessage,
   writingReviewModerationNotice,
   writingReviewModerationSucceededIds,
   WRITING_REVIEW_MODERATION_MAX_ATTEMPTS
 } from "../lib/writingReviewModeration.ts";
+import { moderateWritingReviewAttempts } from "../lib/writingReviewModeration.server.ts";
 import {
   cacheDomainsForEvent
 } from "../lib/cacheInvalidation.ts";
@@ -32,6 +34,8 @@ import {
 const ATTEMPT_A = "11111111-1111-4111-8111-111111111111";
 const ATTEMPT_B = "22222222-2222-4222-8222-222222222222";
 const ATTEMPT_C = "33333333-3333-4333-8333-333333333333";
+const STUDENT_A = "44444444-4444-4444-8444-444444444444";
+const STUDENT_B = "55555555-5555-4555-8555-555555555555";
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const read = (relativePath) => readFileSync(resolve(projectRoot, relativePath), "utf8");
@@ -213,6 +217,203 @@ test("moderation notice reports processed and skipped attempts", () => {
   assert.match(partial, /已退回 1 条。/);
   assert.match(partial, /另有 1 条未处理/);
 });
+
+test("a zero-success batch reports the concrete server reason as an error", () => {
+  assert.equal(
+    writingReviewModerationFailureMessage("return", [
+      { attemptId: ATTEMPT_A, outcome: "skipped", reason: "already_reviewed" }
+    ]),
+    "退回失败：已开始批改或已发布。请刷新列表后重试。"
+  );
+  assert.equal(
+    writingReviewModerationFailureMessage("return", [
+      { attemptId: ATTEMPT_A, outcome: "skipped", reason: "not_submitted" },
+      { attemptId: ATTEMPT_B, outcome: "skipped", reason: "not_submitted" }
+    ]),
+    "退回失败：已不是待批改状态。请刷新列表后重试。"
+  );
+  assert.match(
+    writingReviewModerationNotice("return", [
+      { attemptId: ATTEMPT_A, outcome: "returned", reason: null },
+      { attemptId: ATTEMPT_B, outcome: "skipped", reason: "draft_exists" }
+    ]),
+    /已退回 1 条。另有 1 条未处理（学生已有新的草稿）。/
+  );
+});
+
+test("zero-success moderation reloads the list and surfaces the server reason", () => {
+  const list = read("components/teacher/TeacherWritingReviewList.tsx");
+  assert.match(list, /writingReviewModerationSucceededIds\(parsed\.results\)\.size === 0/);
+  assert.match(list, /cache\.invalidate\(cacheKey\)/);
+  assert.match(list, /throw new Error\(writingReviewModerationFailureMessage\(action, parsed\.results\)\)/);
+});
+
+test("moderation scope denies foreign attempts before the RPC", async () => {
+  const db = createModerationDb({
+    bindings: [writingBinding(STUDENT_B)],
+    attempts: [{
+      attempt_id: ATTEMPT_A,
+      attempt_kind: "original",
+      assignment_id: null,
+      user_id: STUDENT_A,
+      status: "submitted"
+    }]
+  });
+
+  const results = await moderateWritingReviewAttempts(db.client, {
+    action: "return",
+    attemptIds: [ATTEMPT_A],
+    actor: { userId: "teacher-1", role: "teacher" }
+  });
+
+  assert.deepEqual(results, [
+    { attemptId: ATTEMPT_A, outcome: "skipped", reason: "not_found" }
+  ]);
+  assert.equal(db.rpcCalls.length, 0);
+});
+
+test("a teacher cannot moderate another teacher's assignment", async () => {
+  const db = createModerationDb({
+    attempts: [{
+      attempt_id: ATTEMPT_A,
+      attempt_kind: "original",
+      assignment_id: ATTEMPT_B,
+      user_id: STUDENT_A,
+      status: "submitted"
+    }],
+    assignments: [{ assignment_id: ATTEMPT_B, teacher_id: "teacher-2" }]
+  });
+
+  const results = await moderateWritingReviewAttempts(db.client, {
+    action: "return",
+    attemptIds: [ATTEMPT_A],
+    actor: { userId: "teacher-1", role: "teacher" }
+  });
+
+  assert.deepEqual(results, [
+    { attemptId: ATTEMPT_A, outcome: "skipped", reason: "not_found" }
+  ]);
+  assert.equal(db.rpcCalls.length, 0);
+});
+
+test("a reviewed correction is skipped before the moderation RPC", async () => {
+  const db = createModerationDb({
+    bindings: [writingBinding(STUDENT_A)],
+    attempts: [{
+      attempt_id: ATTEMPT_A,
+      attempt_kind: "correction",
+      assignment_id: null,
+      user_id: STUDENT_A,
+      status: "submitted"
+    }],
+    correctionReviews: [{ attempt_id: ATTEMPT_A }]
+  });
+
+  const results = await moderateWritingReviewAttempts(db.client, {
+    action: "return",
+    attemptIds: [ATTEMPT_A],
+    actor: { userId: "teacher-1", role: "teacher" }
+  });
+
+  assert.deepEqual(results, [
+    { attemptId: ATTEMPT_A, outcome: "skipped", reason: "already_reviewed" }
+  ]);
+  assert.equal(db.rpcCalls.length, 0);
+});
+
+test("an authorized attempt is passed to the transactional RPC", async () => {
+  const db = createModerationDb({
+    bindings: [writingBinding(STUDENT_A)],
+    attempts: [{
+      attempt_id: ATTEMPT_A,
+      attempt_kind: "original",
+      assignment_id: null,
+      user_id: STUDENT_A,
+      status: "submitted"
+    }],
+    rpcRows: [{ attempt_id: ATTEMPT_A, outcome: "returned", reason: null }]
+  });
+
+  const results = await moderateWritingReviewAttempts(db.client, {
+    action: "return",
+    attemptIds: [ATTEMPT_A],
+    actor: { userId: "teacher-1", role: "teacher" }
+  });
+
+  assert.deepEqual(results, [
+    { attemptId: ATTEMPT_A, outcome: "returned", reason: null }
+  ]);
+  assert.deepEqual(db.rpcCalls, [[
+    "moderate_teacher_writing_attempts",
+    { p_action: "return", p_attempt_ids: [ATTEMPT_A] }
+  ]]);
+});
+
+function writingBinding(studentId) {
+  return {
+    teacher_id: "teacher-1",
+    student_id: studentId,
+    domain: "writing",
+    student: {
+      id: studentId,
+      role: "student",
+      email: `${studentId}@example.test`,
+      full_name: null,
+      is_active: true
+    }
+  };
+}
+
+function createModerationDb({
+  assignments = [],
+  attempts = [],
+  bindings = [],
+  correctionReviews = [],
+  rpcRows = []
+}) {
+  const rowsByTable = {
+    writing_attempts: attempts,
+    writing_assignments: assignments,
+    teacher_student_bindings: bindings,
+    writing_correction_reviews: correctionReviews,
+    profiles: []
+  };
+  const rpcCalls = [];
+  const client = {
+    from(table) {
+      let rows = [...(rowsByTable[table] ?? [])];
+      const query = {
+        select() { return query; },
+        eq(key, value) {
+          rows = rows.filter((row) => String(row[key]) === String(value));
+          return query;
+        },
+        in(key, values) {
+          const allowed = new Set(values.map(String));
+          rows = rows.filter((row) => allowed.has(String(row[key])));
+          return query;
+        },
+        order() { return query; },
+        range(from, to) {
+          rows = rows.slice(from, to + 1);
+          return query;
+        },
+        maybeSingle() {
+          return Promise.resolve({ data: rows[0] ?? null, error: null });
+        },
+        then(resolve, reject) {
+          return Promise.resolve({ data: rows.slice(), error: null }).then(resolve, reject);
+        }
+      };
+      return query;
+    },
+    rpc(name, args) {
+      rpcCalls.push([name, args]);
+      return Promise.resolve({ data: rpcRows, error: null });
+    }
+  };
+  return { client, rpcCalls };
+}
 
 test("the empty ignored placeholder supports AI generation and regeneration", () => {
   // Exactly the shape the moderation RPC inserts for an ignored review.

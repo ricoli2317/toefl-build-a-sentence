@@ -6,19 +6,19 @@ const test = require("node:test");
 const {
   ASSIGNMENT_ITEM_CONFIG,
   ASSIGNMENT_CATALOG_PAGE_SIZE,
+  allAssignmentCatalogEntriesSelected,
   assignmentCatalogEntryKey,
   assignmentCatalogMonths,
+  assignmentCatalogPageSelectionState,
   assignmentCatalogTopics,
   assignmentItemTypesForSubject,
   assignmentItemViewerHref,
   assignmentPreviewVisibility,
   buildAssignmentItemSnapshot,
-  clearAssignmentCatalogEntries,
   filterAssignmentCatalogEntries,
   isAssignmentCatalogEntrySelected,
   paginateAssignmentCatalogEntries,
-  selectAllAssignmentCatalogEntries,
-  someAssignmentCatalogEntriesSelected,
+  setAssignmentCatalogPageSelection,
   toggleAssignmentCatalogSelection,
   ASSIGNMENT_PREVIEW_LIMIT
 } = require("../lib/assignmentCatalog.ts");
@@ -263,28 +263,108 @@ test("switching the tab or the filters never clears the cross-type selection", (
   assert.doesNotMatch(picker, /setSelection|onSelectionChange\(new Map/);
 });
 
-test("全选当前结果 only selects the currently filtered rows", () => {
-  const entries = [
-    entry({ item_id: "we-1", item_type: "email", months: ["2026-09"] }),
-    entry({ item_id: "we-2", item_type: "email", months: ["2026-08"] }),
-    entry({ item_id: "we-3", item_type: "email", months: ["2026-09"] })
-  ];
+test("全选当前页 only selects the visible page and keeps other pages", () => {
+  const entries = Array.from({ length: 12 }, (_, index) =>
+    entry({ item_id: `we-${index + 1}`, item_type: "email", months: ["2026-09"] })
+  );
   const filtered = filterAssignmentCatalogEntries(entries, { itemType: "email", month: "2026-09" });
-  assert.deepEqual(filtered.map((item) => item.item_id), ["we-1", "we-3"]);
-  let selection = selectAllAssignmentCatalogEntries(new Map(), filtered);
-  assert.equal(selection.size, 2);
-  assert.equal(isAssignmentCatalogEntrySelected(selection, entries[1]), false);
-  // Selecting all again is idempotent and never duplicates.
-  selection = selectAllAssignmentCatalogEntries(selection, filtered);
-  assert.equal(selection.size, 2);
-  assert.equal(someAssignmentCatalogEntriesSelected(selection, filtered), true);
-  // Unchecking removes exactly the filtered rows, never the others.
-  selection = toggleAssignmentCatalogSelection(selection, entry({ item_id: "ad-1", item_type: "academic_discussion" }));
-  selection = clearAssignmentCatalogEntries(selection, filtered);
-  assert.deepEqual(Array.from(selection.keys()), ["academic_discussion:ad-1"]);
+  assert.equal(filtered.length, 12);
+  const firstPage = paginateAssignmentCatalogEntries(filtered, 1);
+  const secondPage = paginateAssignmentCatalogEntries(filtered, 2);
+  assert.equal(firstPage.items.length, 10);
+  assert.equal(secondPage.items.length, 2);
+
+  let selection = setAssignmentCatalogPageSelection(new Map(), firstPage.items, true);
+  assert.equal(selection.size, 10);
+  assert.equal(isAssignmentCatalogEntrySelected(selection, secondPage.items[0]), false);
+  assert.equal(allAssignmentCatalogEntriesSelected(selection, firstPage.items), true);
+  assert.deepEqual(assignmentCatalogPageSelectionState(selection, firstPage.items), {
+    allSelected: true,
+    disabled: false,
+    indeterminate: false,
+    someSelected: true
+  });
+  // Another page stays fully unchecked, so its 全选当前页 is not partial.
+  assert.deepEqual(assignmentCatalogPageSelectionState(selection, secondPage.items), {
+    allSelected: false,
+    disabled: false,
+    indeterminate: false,
+    someSelected: false
+  });
+
+  // Paging keeps the first page and 全选当前页 accumulates onto it.
+  selection = setAssignmentCatalogPageSelection(selection, secondPage.items, true);
+  assert.equal(selection.size, 12);
+  assert.equal(assignmentCatalogPageSelectionState(selection, secondPage.items).allSelected, true);
+
+  // Selecting the same page again is idempotent and never duplicates.
+  selection = setAssignmentCatalogPageSelection(selection, firstPage.items, true);
+  assert.equal(selection.size, 12);
+
+  // A partially selected current page is indeterminate.
+  selection = toggleAssignmentCatalogSelection(selection, firstPage.items[0]);
+  assert.deepEqual(assignmentCatalogPageSelectionState(selection, firstPage.items), {
+    allSelected: false,
+    disabled: false,
+    indeterminate: true,
+    someSelected: true
+  });
+
+  // Unchecking removes exactly the current page; the other page survives.
+  const cleared = setAssignmentCatalogPageSelection(selection, firstPage.items, false);
+  assert.equal(cleared.size, 2);
+  assert.equal(isAssignmentCatalogEntrySelected(cleared, secondPage.items[0]), true);
+  assert.equal(isAssignmentCatalogEntrySelected(cleared, secondPage.items[1]), true);
+
   const picker = source(PICKER);
-  assert.match(picker, /selectAllAssignmentCatalogEntries\(selection, filteredEntries\)/);
-  assert.match(picker, /clearAssignmentCatalogEntries\(selection, filteredEntries\)/);
+  assert.match(picker, /全选当前页/);
+  assert.doesNotMatch(picker, /全选当前结果/);
+  assert.match(picker, /assignmentCatalogPageSelectionState\(selection, pageData\.items\)/);
+  assert.match(
+    picker,
+    /setAssignmentCatalogPageSelection\(selection, pageData\.items, event\.target\.checked\)/
+  );
+  // The cumulative count still shows the whole cross-page selection.
+  assert.match(picker, /已选 \{selection\.size\} 篇/);
+});
+
+test("全选当前页 follows the current search / filter result", () => {
+  const entries = [
+    entry({ item_id: "we-1", item_type: "email", months: ["2026-09"], title: "Campus Housing" }),
+    entry({ item_id: "we-2", item_type: "email", months: ["2026-09"], title: "Library Hours" }),
+    entry({ item_id: "we-3", item_type: "email", months: ["2026-08"], title: "Campus Housing Follow-up" })
+  ];
+  const september = filterAssignmentCatalogEntries(entries, {
+    itemType: "email",
+    month: "2026-09",
+    query: "campus"
+  });
+  assert.deepEqual(september.map((item) => item.item_id), ["we-1"]);
+  let selection = setAssignmentCatalogPageSelection(new Map(), september, true);
+  assert.equal(selection.size, 1);
+
+  // Switching the filter never clears the old selection; the new page simply
+  // starts unchecked because its own rows are not selected.
+  const august = filterAssignmentCatalogEntries(entries, { itemType: "email", month: "2026-08" });
+  assert.equal(august[0].item_id, "we-3");
+  assert.deepEqual(assignmentCatalogPageSelectionState(selection, august), {
+    allSelected: false,
+    disabled: false,
+    indeterminate: false,
+    someSelected: false
+  });
+  // A filtered page with no rows disables the checkbox without touching data.
+  const empty = filterAssignmentCatalogEntries(entries, { itemType: "email", query: "no such title" });
+  assert.deepEqual(assignmentCatalogPageSelectionState(selection, empty), {
+    allSelected: false,
+    disabled: true,
+    indeterminate: false,
+    someSelected: false
+  });
+  // Unchecking the new page never removes the previous page's selection.
+  selection = setAssignmentCatalogPageSelection(selection, august, false);
+  assert.equal(selection.size, 1);
+  assert.equal(isAssignmentCatalogEntrySelected(selection, entries[0]), true);
 });
 
 test("the visible row number restarts at 1 and never becomes an identity", () => {
@@ -722,25 +802,32 @@ test("pagination keeps ten rows per page and clamps the last page", () => {
   assert.match(picker, /setAssignmentPickerPage\(state, activeItemType, pageData\.page \+ 1\)/);
 });
 
-test("selection survives paging and 全选当前结果 still covers the whole filtered result", () => {
+test("selection survives paging and 全选当前页 covers only the visible page", () => {
   const entries = Array.from({ length: 21 }, (_, index) =>
     entry({ item_id: `we-${index + 1}`, item_type: "email" })
   );
   const filtered = filterAssignmentCatalogEntries(entries, { itemType: "email" });
+  const pageOne = paginateAssignmentCatalogEntries(filtered, 1);
   const pageThree = paginateAssignmentCatalogEntries(filtered, 3);
+  assert.equal(pageOne.items.length, 10);
   assert.equal(pageThree.items.length, 1);
-  // 全选当前结果 acts on the whole filtered result, not the visible page.
-  let selection = selectAllAssignmentCatalogEntries(new Map(), filtered);
-  assert.equal(selection.size, 21);
+  // 全选当前页 acts on the visible page, not the whole filtered result.
+  let selection = setAssignmentCatalogPageSelection(new Map(), pageThree.items, true);
+  assert.equal(selection.size, 1);
   assert.equal(isAssignmentCatalogEntrySelected(selection, pageThree.items[0]), true);
-  // Selection still survives a page change (nothing reads the page).
+  assert.equal(allAssignmentCatalogEntriesSelected(selection, filtered), false);
+  // Returning to page one selects only its ten rows and accumulates onto page three.
+  selection = setAssignmentCatalogPageSelection(selection, pageOne.items, true);
+  assert.equal(selection.size, 11);
+  assert.equal(isAssignmentCatalogEntrySelected(selection, pageThree.items[0]), true);
+  // A page change itself never removes anything; a manual row toggle still works.
   selection = toggleAssignmentCatalogSelection(selection, entries[0]);
-  assert.equal(selection.size, 20);
+  assert.equal(selection.size, 10);
   assert.equal(isAssignmentCatalogEntrySelected(selection, pageThree.items[0]), true);
   const picker = source(PICKER);
-  assert.match(picker, /selectAllAssignmentCatalogEntries\(selection, filteredEntries\)/);
-  assert.match(picker, /clearAssignmentCatalogEntries\(selection, filteredEntries\)/);
+  assert.match(picker, /pageData\.items\.length/);
   assert.match(picker, /pageData\.from \+ index/);
+  assert.doesNotMatch(picker, /全选当前结果/);
 });
 
 test("every item type keeps its own filter set and page", () => {

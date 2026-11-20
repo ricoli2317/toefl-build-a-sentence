@@ -41,6 +41,12 @@ export async function GET(
     if (submissionOnly && attemptResult.data.status !== "submitted") {
       return respond({ error: "Submitted writing attempt not found" }, { status: 404 });
     }
+    if (attemptResult.data.status === "returned") {
+      return respond(
+        { error: "这次提交已退回，请从当前草稿继续练习。" },
+        { status: 409 }
+      );
+    }
     if (attemptResult.data.status === "draft" && attemptResult.data.assignment_id) {
       const assignmentAvailable = await isAssignmentAvailable(
         auth.supabase,
@@ -170,6 +176,12 @@ export async function PATCH(
     const attempt = attemptResult.data;
     if (!attempt) return respond({ error: "Writing attempt not found" }, { status: 404 });
 
+    if (attempt.status === "returned") {
+      return respond(
+        { error: "这次提交已退回，请从当前草稿继续练习。" },
+        { status: 409 }
+      );
+    }
     if (attempt.status === "submitted") {
       if (action === "submit") return respond({ attempt, alreadySubmitted: true });
       return respond({ error: "Submitted writing attempts cannot be modified." }, { status: 409 });

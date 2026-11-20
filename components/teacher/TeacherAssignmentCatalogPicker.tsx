@@ -18,22 +18,20 @@ import {
 } from "@/lib/assignmentPickerState";
 import {
   ASSIGNMENT_CATALOG_PAGE_SIZE,
-  allAssignmentCatalogEntriesSelected,
   assignmentCatalogEntryKey,
   assignmentCatalogMonths,
+  assignmentCatalogPageSelectionState,
   assignmentCatalogTopics,
   assignmentItemHasLength,
   assignmentItemHasTopic,
   assignmentItemTypeTabLabel,
   assignmentItemTypesForSubject,
   assignmentItemViewerHref,
-  clearAssignmentCatalogEntries,
   filterAssignmentCatalogEntries,
   formatAssignmentCatalogMonth,
   isAssignmentCatalogEntrySelected,
   paginateAssignmentCatalogEntries,
-  selectAllAssignmentCatalogEntries,
-  someAssignmentCatalogEntriesSelected,
+  setAssignmentCatalogPageSelection,
   toggleAssignmentCatalogSelection,
   type AssignmentCatalogEntry,
   type AssignmentCatalogPayload,
@@ -54,10 +52,12 @@ const ALL_OPTION_LABEL = "全部";
  * the server for anything. Every item type keeps its own filter set (month /
  * topic / length / search / page): switching tabs neither inherits nor resets
  * another tab. Paging is pure client-side over the already filtered rows and
- * keeps the list area at a stable height. Switching tabs or filters never
- * clears the cross-type selection, and every row keeps its stable item id —
- * the natural row number is display-only and never enters an Assignment or a
- * route.
+ * keeps the list area at a stable height. 全选当前页 acts only on the visible
+ * page: checking adds those rows to the cross-type selection, unchecking
+ * removes exactly them, and other pages stay selected. Switching tabs or
+ * filters never clears the cross-type selection, and every row keeps its
+ * stable item id — the natural row number is display-only and never enters an
+ * Assignment or a route.
  */
 export function TeacherAssignmentCatalogPicker({
   onSelectionChange,
@@ -112,15 +112,14 @@ export function TeacherAssignmentCatalogPicker({
     () => Array.from(selection.values()),
     [selection]
   );
-  const allFilteredSelected = allAssignmentCatalogEntriesSelected(selection, filteredEntries);
-  const someFilteredSelected = someAssignmentCatalogEntriesSelected(selection, filteredEntries);
+  const pageSelection = assignmentCatalogPageSelectionState(selection, pageData.items);
   const selectAllRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (selectAllRef.current) {
-      selectAllRef.current.indeterminate = someFilteredSelected && !allFilteredSelected;
+      selectAllRef.current.indeterminate = pageSelection.indeterminate;
     }
-  }, [allFilteredSelected, someFilteredSelected]);
+  }, [pageSelection.indeterminate]);
 
   // A short last page (or an empty result) still renders a full page of row
   // slots, so the list block keeps a stable height and nothing below it jumps.
@@ -223,17 +222,15 @@ export function TeacherAssignmentCatalogPicker({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <label className="flex items-center gap-2 text-sm font-semibold text-student-text">
               <input
-                checked={allFilteredSelected}
-                disabled={filteredEntries.length === 0}
+                checked={pageSelection.allSelected}
+                disabled={pageSelection.disabled}
                 onChange={(event) => onSelectionChange(
-                  event.target.checked
-                    ? selectAllAssignmentCatalogEntries(selection, filteredEntries)
-                    : clearAssignmentCatalogEntries(selection, filteredEntries)
+                  setAssignmentCatalogPageSelection(selection, pageData.items, event.target.checked)
                 )}
                 ref={selectAllRef}
                 type="checkbox"
               />
-              全选当前结果
+              全选当前页
             </label>
             <span className="text-sm font-bold text-student-primary">
               已选 {selection.size} 篇

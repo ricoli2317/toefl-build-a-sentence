@@ -34,7 +34,9 @@ type ActiveStudentRow = {
  * attempts, writing-bound active students for self practice, everything for
  * admin) and only hands authorized attempts to the transactional
  * moderate_teacher_writing_attempts RPC, which re-validates the live attempt
- * status and review state under a row lock.
+ * status and review state under a row lock. An original submission whose
+ * student already has a newer draft is archived as 'returned' by that RPC
+ * instead of deleting the draft or skipping the teacher's action.
  */
 export async function moderateWritingReviewAttempts(
   supabase: SupabaseClient,

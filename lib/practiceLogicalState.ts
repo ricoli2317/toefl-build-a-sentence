@@ -4,6 +4,7 @@ import type { PracticeTaskType } from "./practiceImporter/types.ts";
 import type { FormalPracticeItemSource } from "./practicePublicUniverse.ts";
 import type { StudentPracticeItemStateRow } from "./studentPracticeItemState.ts";
 import { compareWritingSubmittedAttempts } from "./writingSubmissionHistory.ts";
+import type { WritingAttemptStatus } from "./writing.ts";
 
 export type LogicalPracticeStudentStatus = "unstarted" | "in_progress" | "completed";
 
@@ -49,7 +50,7 @@ export type WritingLogicalAttemptRow = {
   assignment_id: string | null;
   task_type: "email" | "academic_discussion";
   question_id: string;
-  status: "draft" | "submitted";
+  status: WritingAttemptStatus;
   saved_at: string | null;
   submitted_at: string | null;
   created_at: string | null;
@@ -241,15 +242,18 @@ function buildWritingState(
   item: LogicalStateItem,
   attempts: WritingLogicalAttemptRow[]
 ) {
-  const drafts = attempts
+  // Archived 'returned' rows are audit history only: they must never become a
+  // resume/view target or make a question look completed.
+  const activeAttempts = attempts.filter((attempt) => attempt.status !== "returned");
+  const drafts = activeAttempts
     .filter((attempt) => attempt.status === "draft")
     .sort(compareWritingDraftAttempts);
-  const submitted = attempts
+  const submitted = activeAttempts
     .filter((attempt) => attempt.status === "submitted")
     .sort(compareWritingSubmittedAttempts);
   const resume = drafts[0] ?? null;
   const latestCompleted = submitted[0] ?? null;
-  const latest = attempts.slice().sort(compareWritingAttempts)[0] ?? null;
+  const latest = activeAttempts.slice().sort(compareWritingAttempts)[0] ?? null;
   const status: LogicalPracticeStudentStatus = resume
     ? "in_progress"
     : latestCompleted

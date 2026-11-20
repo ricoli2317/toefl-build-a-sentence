@@ -1037,13 +1037,14 @@ function WritingPracticeHeader({
   );
 }
 
-/** Reading's presentation, with Writing-owned callbacks and optional clock.
+/** Shared compact presentation, with Writing-owned callbacks and optional clock.
+ * Writing keeps the root purple tokens; only Reading applies .reading-theme.
  * Back and the former Exit shared requestExit; keep just the Back action. */
 export function WritingPageHeader({ title, onBack, readOnly = false, disabled = false, children, correction = false }: {
   title: string; onBack: () => void; readOnly?: boolean; disabled?: boolean; children?: ReactNode; correction?: boolean;
 }) {
   return (
-    <div className={correction ? "font-sans" : "reading-theme font-sans"}>
+    <div className="font-sans">
       <PracticeHeader title={title} onBack={onBack} backDisabled={disabled} productName={readOnly ? correction ? "已提交" : "已提交 · 只读" : undefined} actions={children} />
     </div>
   );

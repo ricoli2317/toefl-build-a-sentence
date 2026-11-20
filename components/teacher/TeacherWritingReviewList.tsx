@@ -52,7 +52,9 @@ import {
   applyWritingReviewModerationToEntries,
   parseWritingReviewModerationResponse,
   publishWritingReviewModerationInvalidation,
+  writingReviewModerationFailureMessage,
   writingReviewModerationNotice,
+  writingReviewModerationSucceededIds,
   type WritingReviewModerationAction
 } from "@/lib/writingReviewModeration";
 import { classSubjectsLabel, type TeacherClassReviewSummary } from "@/lib/teacherClasses";
@@ -487,6 +489,16 @@ function useWritingReviewModeration(options: {
             )
           );
         }
+        // Zero processed attempts is a failure: the server's per-attempt
+        // reason (already reviewed / not pending / no permission / newer
+        // draft) must be shown as an error instead of a "已退回 0 条" notice
+        // that looks like success. The server also just confirmed that this
+        // tab's row is stale, so invalidate it and reload the authoritative
+        // state instead of leaving the impossible row on screen.
+        if (writingReviewModerationSucceededIds(parsed.results).size === 0) {
+          cache.invalidate(cacheKey);
+          throw new Error(writingReviewModerationFailureMessage(action, parsed.results));
+        }
         // Capture this list's payload BEFORE the invalidation below clears it,
         // then store the merged result after: the acting tab updates
         // immediately (no loading skeleton) while every other cache consumer
@@ -623,8 +635,8 @@ function WritingReviewReturnDialog({
       confirming={busy}
       message={
         count > 1
-          ? `退回后这 ${count} 篇作文将恢复为学生草稿，学生可以继续修改并重新提交；教师端会从当前列表移除。`
-          : "退回后这篇作文将恢复为学生草稿，学生可以继续修改并重新提交；教师端会从当前列表移除。"
+          ? `退回后这 ${count} 篇作文将退出待批改列表；学生可以继续在草稿中修改并重新提交。若学生已有新草稿，将保留该草稿。`
+          : "退回后这篇作文将退出待批改列表；学生可以继续在草稿中修改并重新提交。若学生已有新草稿，将保留该草稿。"
       }
       onCancel={onCancel}
       onConfirm={onConfirm}

@@ -1,5 +1,11 @@
 export type WritingTaskType = "email" | "academic_discussion";
-export type WritingAttemptStatus = "draft" | "submitted";
+/**
+ * 'returned' is the archived state of an older submission whose student
+ * already owns a newer draft for the same question/assignment. It is never an
+ * editable attempt and is excluded from submitted history, teacher queues and
+ * practice states.
+ */
+export type WritingAttemptStatus = "draft" | "submitted" | "returned";
 export type WritingMode = "exam" | "practice";
 export type WritingOvertimeRange = { start: number; end: number };
 export type AcademicDiscussionProfessorAvatarType =

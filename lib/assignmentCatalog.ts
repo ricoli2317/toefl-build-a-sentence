@@ -238,7 +238,11 @@ export function toggleAssignmentCatalogSelection(
   return next;
 }
 
-/** 全选当前结果: only the currently filtered rows are added, never removed. */
+/**
+ * 全选当前页: only the rows actually visible on the current page are added,
+ * never removed. Rows selected on other pages stay selected, so the selection
+ * accumulates across pages and the stable key is never added twice.
+ */
 export function selectAllAssignmentCatalogEntries(
   current: AssignmentCatalogSelection,
   entries: ReadonlyArray<AssignmentCatalogEntry>
@@ -248,7 +252,7 @@ export function selectAllAssignmentCatalogEntries(
   return next;
 }
 
-/** Unchecking 全选当前结果 removes exactly the currently filtered rows. */
+/** Unchecking 全选当前页 removes exactly the currently visible page rows. */
 export function clearAssignmentCatalogEntries(
   current: AssignmentCatalogSelection,
   entries: ReadonlyArray<AssignmentCatalogEntry>
@@ -256,6 +260,21 @@ export function clearAssignmentCatalogEntries(
   const next = new Map(current);
   for (const entry of entries) next.delete(assignmentCatalogEntryKey(entry));
   return next;
+}
+
+/**
+ * The one page-scoped toggle shared by every Assignment entry (CTW / RDL /
+ * RAP / Full Set / BAS / WE / AD). Checking selects the current page only;
+ * unchecking removes the current page only. Cross-page selections survive.
+ */
+export function setAssignmentCatalogPageSelection(
+  current: AssignmentCatalogSelection,
+  pageEntries: ReadonlyArray<AssignmentCatalogEntry>,
+  selected: boolean
+) {
+  return selected
+    ? selectAllAssignmentCatalogEntries(current, pageEntries)
+    : clearAssignmentCatalogEntries(current, pageEntries);
 }
 
 export function selectedAssignmentCatalogEntries(
@@ -285,6 +304,32 @@ export function someAssignmentCatalogEntriesSelected(
   entries: ReadonlyArray<AssignmentCatalogEntry>
 ) {
   return entries.some((entry) => isAssignmentCatalogEntrySelected(current, entry));
+}
+
+export type AssignmentCatalogPageSelectionState = {
+  allSelected: boolean;
+  someSelected: boolean;
+  indeterminate: boolean;
+  disabled: boolean;
+};
+
+/**
+ * The 全选当前页 checkbox is computed from the current page only. A selection
+ * made on another page never changes this page's checked / indeterminate
+ * state; the cross-page total is displayed separately.
+ */
+export function assignmentCatalogPageSelectionState(
+  current: AssignmentCatalogSelection,
+  pageEntries: ReadonlyArray<AssignmentCatalogEntry>
+): AssignmentCatalogPageSelectionState {
+  const allSelected = allAssignmentCatalogEntriesSelected(current, pageEntries);
+  const someSelected = someAssignmentCatalogEntriesSelected(current, pageEntries);
+  return {
+    allSelected,
+    disabled: pageEntries.length === 0,
+    indeterminate: someSelected && !allSelected,
+    someSelected
+  };
 }
 
 export type AssignmentCatalogFilters = {
@@ -361,8 +406,9 @@ export function assignmentItemViewerHref(
 
 /**
  * The Assignment picker paginates its filtered rows entirely on the client:
- * ten rows per page, never a new catalog request. The filter / selection model
- * is unchanged, only the visible slice moves.
+ * ten rows per page, never a new catalog request. The filter model is
+ * unchanged; selection is page-scoped, so 全选当前页 adds or removes only the
+ * visible slice and pages accumulate.
  */
 export const ASSIGNMENT_CATALOG_PAGE_SIZE = 10;
 

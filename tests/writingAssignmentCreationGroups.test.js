@@ -254,7 +254,7 @@ test("creation form supports multi-select, custom multi-question editing, deadli
   assert.match(createForm, /AssignmentCatalogSelection/);
   assert.match(createForm, /TeacherAssignmentCatalogPicker/);
   assert.match(picker, /已选 \{selection\.size\} 篇/);
-  assert.match(picker, /全选当前结果/);
+  assert.match(picker, /全选当前页/);
   assert.match(picker, /filterAssignmentCatalogEntries/);
   assert.match(picker, /onSelectionChange\(toggleAssignmentCatalogSelection\(selection, entry\)\)/);
   assert.match(createForm, /添加一篇/);

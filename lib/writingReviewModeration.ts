@@ -153,6 +153,21 @@ export function applyWritingReviewModerationToEntries<
   );
 }
 
+function moderationReasonLabel(reason: WritingReviewModerationReason | null) {
+  switch (reason) {
+    case "not_found":
+      return "未找到或无权处理";
+    case "not_submitted":
+      return "已不是待批改状态";
+    case "already_reviewed":
+      return "已开始批改或已发布";
+    case "draft_exists":
+      return "学生已有新的草稿";
+    default:
+      return "服务器未能处理";
+  }
+}
+
 export function writingReviewModerationNotice(
   action: WritingReviewModerationAction,
   results: readonly WritingReviewModerationResult[]
@@ -162,11 +177,35 @@ export function writingReviewModerationNotice(
   const verb = action === "return" ? "已退回" : "已忽略";
   const base = `${verb} ${succeeded} 条。`;
   if (skipped <= 0) return base;
-  const skipHint =
-    action === "return"
-      ? "可能已进入批改或已有新的草稿"
-      : "可能已进入批改或状态已变化";
-  return `${base}另有 ${skipped} 条未处理（${skipHint}）。`;
+  const labels = Array.from(
+    new Set(
+      results
+        .filter((result) => result.outcome === "skipped")
+        .map((result) => moderationReasonLabel(result.reason))
+    )
+  );
+  return `${base}另有 ${skipped} 条未处理（${labels.join("；")}）。`;
+}
+
+/**
+ * A moderation batch where nothing succeeded is a failure, not a quiet
+ * "0 条" success. The list renders this through the red error region so a
+ * teacher never confirms the same impossible 退回 three times.
+ */
+export function writingReviewModerationFailureMessage(
+  action: WritingReviewModerationAction,
+  results: readonly WritingReviewModerationResult[]
+): string {
+  const verb = action === "return" ? "退回" : "忽略";
+  const labels = Array.from(
+    new Set(
+      results
+        .filter((result) => result.outcome === "skipped")
+        .map((result) => moderationReasonLabel(result.reason))
+    )
+  );
+  if (labels.length === 0) return `${verb}失败，请刷新列表后重试。`;
+  return `${verb}失败：${labels.join("；")}。请刷新列表后重试。`;
 }
 
 /**
