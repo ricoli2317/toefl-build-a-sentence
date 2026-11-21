@@ -22,6 +22,9 @@
 --     unique draft index is never bypassed.
 -- ============================================================================
 
+-- Execute the migration atomically, including constraint, function and grants.
+begin;
+
 -- ----------------------------------------------------------------------------
 -- 1. writing_attempts.status gains the terminal 'returned' state. It is only
 --    used when a newer active draft already exists.
@@ -76,7 +79,7 @@ declare
   v_mutated integer;
   v_constraint text;
 begin
-  if p_action not in ('return', 'ignore') then
+  if p_action is null or p_action not in ('return', 'ignore') then
     raise exception 'UNSUPPORTED_WRITING_MODERATION_ACTION: %', p_action;
   end if;
 
@@ -147,9 +150,12 @@ begin
 
             get diagnostics v_mutated = row_count;
           exception when check_violation then
-            -- Safety net for an application deploy that reaches this RPC
-            -- before the status constraint migration: report the existing
-            -- conflict explicitly instead of failing the whole batch.
+            get stacked diagnostics v_constraint = constraint_name;
+            -- Only the known old status constraint can be treated as a
+            -- draft conflict. Propagate unrelated check violations.
+            if v_constraint is distinct from 'writing_attempts_status_check' then
+              raise;
+            end if;
             reason := 'draft_exists';
             return next;
             continue;
@@ -240,3 +246,5 @@ revoke all on function public.moderate_teacher_writing_attempts(text, uuid[])
   from public, anon, authenticated;
 grant execute on function public.moderate_teacher_writing_attempts(text, uuid[])
   to service_role;
+
+commit;
