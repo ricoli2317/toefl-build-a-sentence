@@ -53,3 +53,12 @@ export function isNotificationSafePage(path: string) {
 export function notificationTime(value: string) {
   return new Date(value).toLocaleString("zh-CN");
 }
+
+// Recipient list timestamps stay in the browser's local time zone (the same
+// rule as notificationTime) but omit seconds. Admin keeps its existing format.
+export function notificationListTime(value: string) {
+  return new Date(value).toLocaleString("zh-CN", {
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit"
+  });
+}

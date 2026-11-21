@@ -2,6 +2,7 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const {notificationEntryView,firstUnreadNotification,nextUnreadNotification}=require('../lib/notificationPresentation.ts');
+const {notificationTime,notificationListTime}=require('../lib/notifications.ts');
 const {NotificationCache}=require('../lib/notificationCache.ts');
 const items=[3,2,1].map(id=>({id:String(id),title:`Notice ${id}`,type:'announcement',published_at:`2026-11-0${id}T00:00:00Z`,read_at:null}));
 
@@ -34,4 +35,22 @@ test('preview reuses authenticated blob and modal stack owns Escape, preserving 
  assert.match(body,/label="通知图片预览"/);assert.match(body,/aria-label="放大通知图片"/);assert.match(body,/图片已过期/);
  assert.match(body,/setPreview\(false\); if \(objectUrl\) URL\.revokeObjectURL/);assert.match(shell,/modalStack\[modalStack\.length - 1\] === layer\.current/);
  assert.doesNotMatch(body,/object-cover/);
+});
+test('recipient list timestamp keeps the existing local time zone but drops seconds',()=>{
+  const value='2026-11-21T06:05:09Z',formatted=notificationListTime(value);
+  assert.match(formatted,/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/);
+  assert.equal(formatted,notificationTime(value).replace(/:\d{2}$/,''));
+  assert.doesNotMatch(formatted,/:\d{2}:\d{2}/);
+});
+test('shared recipient list shows type, unchanged title and publish time as compact left-aligned rows',()=>{
+  const source=fs.readFileSync('components/notifications/NotificationCenter.tsx','utf8');
+  const start=source.indexOf('{items.map(item =>'),row=source.slice(start,source.indexOf('</ul>',start));
+  assert.match(row,/flex min-w-0 flex-1 flex-col items-start gap-0\.5/);
+  assert.match(row,/text-xs font-normal leading-4 text-student-muted">\{NOTIFICATION_TYPES\[item\.type\]\}/);
+  assert.match(row,/break-words font-semibold">\{item\.title\}/);
+  assert.match(row,/text-xs font-normal leading-4 text-student-muted">\{notificationListTime\(item\.published_at\)\}/);
+  assert.match(row,/aria-label="未读"/);
+  assert.match(row,/border border-student-border/);
+  assert.match(row,/hover:border-student-primary/);
+  assert.match(row,/disabled=\{loading\}/);
 });

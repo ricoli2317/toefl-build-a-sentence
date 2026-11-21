@@ -8,7 +8,7 @@ import { createBrowserSupabase } from "@/lib/supabase/client";
 import { NotificationCache } from "@/lib/notificationCache";
 import { createLatestRequestGate, startVisiblePolling } from "@/lib/clientRefreshPolicy";
 import { notificationRequest, NotificationRequestError } from "@/lib/notifications.client";
-import { isNotificationSafePage, type NotificationCursor, type NotificationItem, type NotificationListItem, type NotificationPage } from "@/lib/notifications";
+import { isNotificationSafePage, notificationListTime, NOTIFICATION_TYPES, type NotificationCursor, type NotificationItem, type NotificationListItem, type NotificationPage } from "@/lib/notifications";
 import { NotificationBody } from "./NotificationBody";
 import { NotificationModal } from "./NotificationModal";
 import { firstUnreadNotification, nextUnreadNotification, notificationEntryView, type NotificationEntry } from "@/lib/notificationPresentation";
@@ -217,8 +217,12 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
         <ul className="mt-4 grid gap-2" aria-label="通知列表">
           {items.map(item => <li key={item.id}><button type="button" disabled={loading}
             onClick={() => { void openDetail(item.id); }} className="flex w-full items-start gap-2 rounded-xl border border-student-border p-3 text-left hover:border-student-primary">
-            {!item.read_at ? <span className="text-student-primary" aria-label="未读">●</span> : null}
-            <span className="break-words font-semibold">{item.title}</span>
+            {!item.read_at ? <span className="text-xs leading-4 text-student-primary" aria-label="未读">●</span> : null}
+            <span className="flex min-w-0 flex-1 flex-col items-start gap-0.5">
+              <span className="text-xs font-normal leading-4 text-student-muted">{NOTIFICATION_TYPES[item.type]}</span>
+              <span className="break-words font-semibold">{item.title}</span>
+              <span className="text-xs font-normal leading-4 text-student-muted">{notificationListTime(item.published_at)}</span>
+            </span>
           </button></li>)}
         </ul>
       </> : <>
