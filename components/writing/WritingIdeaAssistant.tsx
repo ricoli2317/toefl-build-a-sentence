@@ -163,7 +163,7 @@ export function WritingIdeaAssistant({
       <button
         aria-busy={loading}
         aria-expanded={expanded}
-        className={`flex h-full min-h-[52px] w-full items-center gap-2.5 px-4 text-left transition ${
+        className={`flex h-[52px] w-full items-center gap-2.5 px-4 text-left transition ${
           expanded ? "bg-student-primary-soft/55" : "bg-white hover:bg-student-primary-soft/40"
         }`}
         onClick={toggle}

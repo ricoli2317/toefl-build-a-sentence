@@ -25,14 +25,17 @@ function lockPageScroll() {
 }
 
 /** One geometry/scroll contract for recipient list/detail and Admin forms. */
-export function NotificationModal({ open, onClose, title, label = "通知中心", dismissible = true, children, footer, onSubmit, image = false }: {
+export function NotificationModal({ open, onClose, title, label = "通知中心", dismissible = true, children, footer, headerAction, onSubmit, image = false }: {
   open: boolean; onClose: () => void; title: ReactNode; label?: string; dismissible?: boolean;
-  children: ReactNode; footer?: ReactNode; onSubmit?: FormEventHandler<HTMLFormElement>; image?: boolean;
+  children: ReactNode; footer?: ReactNode; headerAction?: ReactNode; onSubmit?: FormEventHandler<HTMLFormElement>; image?: boolean;
 }) {
   useEffect(() => { if (open) return lockPageScroll(); }, [open]);
   const content = <>
     <header className="shrink-0 border-b border-student-border px-4 py-4 sm:px-6">
-      <h2 className="break-words text-xl font-bold text-student-text">{title}</h2>
+      <div className="flex items-start justify-between gap-3">
+        <h2 className="min-w-0 break-words text-xl font-bold text-student-text">{title}</h2>
+        {headerAction ? <div className="shrink-0">{headerAction}</div> : null}
+      </div>
     </header>
     <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 [overflow-wrap:anywhere] sm:px-6" data-notification-scroll>
       {children}

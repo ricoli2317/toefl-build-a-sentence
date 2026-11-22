@@ -973,3 +973,17 @@ test("custom question IDs are server-generated per creation and ignore client fi
     /buildCustomWritingQuestionSnapshot\(\{[\s\S]{0,200}id: crypto\.randomUUID\(\)/
   );
 });
+
+test("idea assistant header stays 52px when the result body expands", () => {
+  const fs = require("node:fs");
+  const source = fs.readFileSync(
+    "components/writing/WritingIdeaAssistant.tsx",
+    "utf8"
+  );
+  assert.match(source, /flex h-\[52px\] w-full items-center/);
+  assert.doesNotMatch(source, /h-full min-h-\[52px\]/);
+  assert.match(
+    source,
+    /expanded \? "min-h-\[52px\]" : "h-\[52px\]"/
+  );
+});

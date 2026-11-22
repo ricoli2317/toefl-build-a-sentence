@@ -11,6 +11,7 @@ import { notificationRequest, NotificationRequestError } from "@/lib/notificatio
 import { isNotificationSafePage, notificationListTime, NOTIFICATION_TYPES, type NotificationCursor, type NotificationItem, type NotificationListItem, type NotificationPage } from "@/lib/notifications";
 import { NotificationBody } from "./NotificationBody";
 import { NotificationModal } from "./NotificationModal";
+import { NotificationScreenshotActions } from "./NotificationScreenshotActions";
 import { firstUnreadNotification, nextUnreadNotification, notificationEntryView, type NotificationEntry } from "@/lib/notificationPresentation";
 
 const caches = new Map<string, NotificationCache>();
@@ -42,6 +43,7 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
   const [error, setError] = useState("");
   const pageRef = useRef<NotificationCursor | null>(null);
   const modeRef = useRef(false);
+  const detailCaptureRef = useRef<HTMLDivElement | null>(null);
   const safeRef = useRef(safe); safeRef.current = safe;
   const mounted = useRef(true);
   const gate = useRef(createLatestRequestGate());
@@ -204,7 +206,14 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
 
   return <CenterContext.Provider value={eligible ? { count, safe, error, open: () => { if (safe) void loadPage(null, false); } } : null}>
     {children}
-    <NotificationModal open={open && safe && eligible} title={view === "detail" ? "通知详情" : "通知中心"} dismissible={!saving} onClose={close} footer={footer}>
+    <NotificationModal open={open && safe && eligible} title={view === "detail" ? "通知详情" : "通知中心"} dismissible={!saving} onClose={close} footer={footer}
+      headerAction={view === "detail" && detail ? (
+        <NotificationScreenshotActions
+          key={detail.id}
+          targetRef={detailCaptureRef}
+          title={detail.title}
+        />
+      ) : null}>
       {error ? <p className="teacher-error mt-3" role="alert">{error}</p> : null}
       {view === "list" ? <>
         <div className="mt-4 flex gap-2">
@@ -228,8 +237,10 @@ export function NotificationProvider({ children }: { children: React.ReactNode }
       </> : <>
         {loading ? <p className="py-6 text-sm" role="status">正在加载详情…</p> : null}
         {detail ? <article className="grid min-w-0 grid-cols-1 gap-4" aria-label="通知详情">
-          <h3 className="break-words text-lg font-bold">{detail.title}</h3>
-          <NotificationBody content={detail.content} document={detail.content_document} notificationId={detail.id} />
+          <div className="grid min-w-0 grid-cols-1 gap-4" ref={detailCaptureRef}>
+            <h3 className="break-words text-lg font-bold">{detail.title}</h3>
+            <NotificationBody content={detail.content} document={detail.content_document} notificationId={detail.id} />
+          </div>
         </article> : null}
       </>}
     </NotificationModal>
