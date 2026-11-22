@@ -1,5 +1,5 @@
 import { assignmentDateKey, defaultWritingAssignmentTitle, normalizeAssignmentText, writingAssignmentAutoTitleSequence } from "./writingAssignments.ts";
-import { assignmentSubjectLabel, type AssignmentSubject } from "./assignmentCatalog.ts";
+import { assignmentSubjectLabel, ASSIGNMENT_SUBJECTS, type AssignmentSubject } from "./assignmentCatalog.ts";
 import type { AssignmentOverview } from "./assignmentOverview.ts";
 import {
   STUDENT_BINDING_DOMAINS,
@@ -292,6 +292,36 @@ export function classesForAssignmentSubject<T extends { subjects: readonly Stude
 ) {
   return subject === "reading" ? readingClassesOnly(classes) : writingClassesOnly(classes);
 }
+
+/**
+ * The subject set a class can receive in the 布置作业 wizard. It is the ACTING
+ * teacher's own subject set for that class (owner: 班级科目; bound teacher: the
+ * teacher's link subjects), so another teacher's subjects never widen it.
+ */
+export function assignmentSubjectsForClassSubjects(
+  subjects: readonly StudentBindingDomain[]
+): AssignmentSubject[] {
+  return ASSIGNMENT_SUBJECTS.filter((subject) => subjects.includes(subject));
+}
+
+/**
+ * The subject set every selected student is bound to. A student without a
+ * subject binding cannot receive that subject's Assignment, so the wizard only
+ * offers the intersection; an empty result means the selection has no common
+ * subject and must be adjusted. No student selected means no restriction yet.
+ */
+export function assignmentSubjectsForStudents(
+  students: ReadonlyArray<{ domains: readonly StudentBindingDomain[] }>
+): AssignmentSubject[] {
+  if (students.length === 0) return [...ASSIGNMENT_SUBJECTS];
+  return ASSIGNMENT_SUBJECTS.filter((subject) =>
+    students.every((student) => student.domains.includes(subject))
+  );
+}
+
+/** Shared display copy for the empty student-subject intersection. */
+export const NO_COMMON_ASSIGNMENT_SUBJECT_MESSAGE =
+  "所选学生没有共同的可布置科目，请调整学生选择。";
 
 /**
  * The class member picker can only offer students the teacher already has a

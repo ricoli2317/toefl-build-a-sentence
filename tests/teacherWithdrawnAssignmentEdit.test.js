@@ -401,7 +401,7 @@ test("switching the subject asks first and only clears the old selection on conf
   // wizard asks before anything changes.
   assert.match(
     form,
-    /const hasItems = \(standardEnabled && \(selection\.size > 0 \|\| customQuestions\.length > 0\)\)/
+    /const hasItems = hasSubjectDependentContent\(\)/
   );
   assert.match(
     form,
@@ -544,13 +544,13 @@ test("the wizard keeps regenerating automatic titles and protects manual ones", 
   assert.match(form, /const assignmentTitleDate = useMemo\(/);
   assert.match(form, /editing && seed\.titleAssignedAt \? seed\.titleAssignedAt : new Date\(\)/);
   assert.match(form, /assignedAt: assignmentTitleDate/);
-  assert.match(form, /classAssignmentTitleBase\(classEntry\.name, assignmentTitleDate, assignmentSubject\)/);
+  assert.match(form, /classAssignmentTitleBase\(classEntry\.name, assignmentTitleDate, subject\)/);
   // The edited group never counts against its own auto-title sequence.
   assert.match(form, /initialGroupId && assignment\.group_id === initialGroupId/);
   // Student / class / subject changes all flow through the shared generators.
-  assert.match(form, /classAssignmentTitleBase\(selectedClass\.name, titleAssignedAt, assignmentSubject\)/);
+  assert.match(form, /classAssignmentTitleBase\(selectedClass\.name, titleAssignedAt, subject\)/);
   assert.match(form, /defaultWritingAssignmentTitle\(\{/);
-  assert.match(form, /subject: assignmentSubject/);
+  assert.match(form, /defaultWritingAssignmentTitle\(\{[\s\S]*?subject\s*\n\s*\}\);/);
   // A manual title is never overwritten by the regeneration effect.
   assert.match(form, /if \(assignmentTitleManuallyEdited\) return;/);
   // On withdraw-edit the resolved candidate is persisted verbatim.

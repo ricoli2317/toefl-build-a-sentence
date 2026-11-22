@@ -20,6 +20,7 @@ import {
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
 import { TeacherAssignmentCatalogPicker } from "@/components/teacher/TeacherAssignmentCatalogPicker";
+import { useAssignmentPracticeStatus } from "@/components/teacher/useAssignmentPracticeStatus";
 import {
   TeacherCategoryAssignmentConfig,
   type CategoryAssignmentOption
@@ -95,13 +96,22 @@ import { TeacherClassIcon } from "@/components/icons/TeacherClassIcon";
 import {
   classAssignmentTitleBase,
   classSubjectsLabel,
-  classesForAssignmentSubject,
+  filterClassSummariesByName,
   isAutomaticWritingAssignmentTitle,
   seededAssignmentTitleBase,
+  assignmentSubjectsForClassSubjects,
+  assignmentSubjectsForStudents,
+  NO_COMMON_ASSIGNMENT_SUBJECT_MESSAGE,
   type TeacherClassSummary
 } from "@/lib/teacherClasses";
+import type { StudentBindingDomain } from "@/lib/studentBindings";
 
-type StudentOption = { id: string; displayName: string; email: string };
+type StudentOption = {
+  id: string;
+  displayName: string;
+  email: string;
+  domains: StudentBindingDomain[];
+};
 export type QuestionSearchPayload = { questions: LogicalWritingQuestionSearchResult[]; page: number; pageSize: number; total: number };
 type CustomQuestionDraft = {
   /** Existing withdrawn custom item identity; absent for a new draft. */
@@ -145,8 +155,14 @@ export const AVATAR_FIELD_BY_NAME = {
 /**
  * One shared Assignment wizard for 写作 and 阅读.
  *
- * 布置作业 -> 选择科目 -> (写作: 题库 / 自定义题目 | 阅读: 直接进入题库) -> 选题
- * -> 学生 / 班级 -> 标题 -> 截止时间 -> 预览 -> 布置.
+ * 布置作业 -> 学生 / 班级 -> 选择科目 -> 选择作业内容 -> (写作: 题库 / 自定义题目
+ * | 阅读: 直接进入题库) -> 选题 -> 标题 -> 截止时间 -> 预览 -> 布置.
+ *
+ * The recipient selection now comes first: the selected students' shared
+ * subject bindings (or the acting teacher's subjects in the selected class)
+ * decide which subjects step 2 may offer. The catalog picker marks every item
+ * any selected student has already completed, so the teacher can prefer
+ * untouched questions.
  *
  * A withdrawn Assignment re-enters this exact wizard seeded with the original
  * data (items, recipients, title, deadline): 撤回 already guarantees there is
@@ -436,14 +452,12 @@ function TeacherAssignmentWizard({
     [editing, seed.titleAssignedAt]
   );
   const studentsState = useTeacherCachedData<{ students: StudentOption[] }>(
-    teacherAssignmentStudentsCacheKey(assignmentSubject),
-    () => teacherApiFetch(
-      `/api/teacher/writing/assignments/students?subject=${assignmentSubject}`
-    )
+    teacherAssignmentStudentsCacheKey(),
+    () => teacherApiFetch("/api/teacher/writing/assignments/students")
   );
-  // Step 4 works in one of two mutually exclusive modes; the 班级 tab only
-  // appears when the teacher actually has at least one eligible class for the
-  // chosen subject. Legacy group-less edits stay on the student list.
+  // Step 1 works in one of two mutually exclusive modes. The class tab lists
+  // every class this teacher is bound to; the class's own subject set (the
+  // teacher's subjects there) decides which subjects stay offerable.
   const [selectionMode, setSelectionMode] = useState<"students" | "class">(
     initialClassId ? "class" : "students"
   );
@@ -475,28 +489,27 @@ function TeacherAssignmentWizard({
       version: 2
     });
   }, [editing, pickerState, selection, source, standardEnabled, subject]);
-  const subjectClasses = useMemo(
-    () => classesForAssignmentSubject(classesState.data?.classes ?? [], assignmentSubject),
-    [assignmentSubject, classesState.data]
+  const allClasses = useMemo(
+    () => classesState.data?.classes ?? [],
+    [classesState.data]
   );
   const selectedClass = useMemo(
-    () => subjectClasses.find((entry) => entry.class_id === selectedClassId) ?? null,
-    [subjectClasses, selectedClassId]
+    () => allClasses.find((entry) => entry.class_id === selectedClassId) ?? null,
+    [allClasses, selectedClassId]
   );
-  const filteredClasses = useMemo(() => {
-    const needle = classQuery.trim().toLocaleLowerCase();
-    if (!needle) return subjectClasses;
-    return subjectClasses.filter((entry) => entry.name.toLocaleLowerCase().includes(needle));
-  }, [subjectClasses, classQuery]);
+  const filteredClasses = useMemo(
+    () => filterClassSummariesByName(allClasses, classQuery),
+    [allClasses, classQuery]
+  );
   // Deep-linked or stale class ids are dropped as soon as the real class list
-  // is known; a class that is missing (or no longer teaches the subject) can
-  // never be submitted.
+  // is known. The class list itself is never subject-filtered, so the teacher
+  // always sees every bound class in step 1.
   useEffect(() => {
     if (!classesState.data) return;
-    const available = subjectClasses.some((entry) => entry.class_id === selectedClassId);
+    const available = allClasses.some((entry) => entry.class_id === selectedClassId);
     if (selectedClassId && !available) setSelectedClassId("");
-    if (selectionMode === "class" && subjectClasses.length === 0) setSelectionMode("students");
-  }, [classesState.data, selectedClassId, selectionMode, subjectClasses]);
+    if (selectionMode === "class" && allClasses.length === 0) setSelectionMode("students");
+  }, [allClasses, classesState.data, selectedClassId, selectionMode]);
 
   const studentEntries = useMemo(() => (studentsState.data?.students ?? []).map((student) => ({
     ...createStudentSearchMetadata(student.displayName),
@@ -504,18 +517,90 @@ function TeacherAssignmentWizard({
     id: student.id,
     student
   })), [studentsState.data]);
-  // The studentId query only preselects an eligible recipient for the chosen
-  // subject. A student without that subject binding never appears in this list
-  // and is dropped here; the server still re-validates every recipient.
+  // The student list is the teacher's whole visible student list (any
+  // subject). A stale deep-linked id that is no longer visible is dropped; the
+  // server still re-validates every recipient for the submitted subject.
   useEffect(() => {
     if (!studentsState.data) return;
-    const eligible = new Set(studentsState.data.students.map((student) => student.id));
+    const visible = new Set(studentsState.data.students.map((student) => student.id));
     setSelectedStudents((current) =>
-      current.every((studentId) => eligible.has(studentId))
+      current.every((studentId) => visible.has(studentId))
         ? current
-        : current.filter((studentId) => eligible.has(studentId))
+        : current.filter((studentId) => visible.has(studentId))
     );
   }, [studentsState.data]);
+  const domainsByStudentId = useMemo(
+    () => new Map(
+      (studentsState.data?.students ?? []).map((student) => [student.id, student.domains])
+    ),
+    [studentsState.data]
+  );
+  // Which subjects the current recipient selection can receive. Student mode
+  // is the intersection of every selected student's bound subjects; class mode
+  // is the acting teacher's own subject set for the class. An empty selection
+  // does not restrict yet.
+  const availableSubjects = useMemo<AssignmentSubject[]>(() => {
+    if (selectionMode === "class") {
+      return selectedClass
+        ? assignmentSubjectsForClassSubjects(selectedClass.subjects)
+        : [...ASSIGNMENT_SUBJECTS];
+    }
+    if (!studentsState.data || selectedStudents.length === 0) {
+      return [...ASSIGNMENT_SUBJECTS];
+    }
+    return assignmentSubjectsForStudents(
+      selectedStudents.map((studentId) => ({
+        domains: domainsByStudentId.get(studentId) ?? []
+      }))
+    );
+  }, [
+    domainsByStudentId,
+    selectedClass,
+    selectedStudents,
+    selectionMode,
+    studentsState.data
+  ]);
+  const selectionSubjectsReady = selectionMode === "class"
+    ? classesState.data !== null
+    : studentsState.data !== null;
+  const recipientSelected = selectionMode === "class"
+    ? Boolean(selectedClassId)
+    : selectedStudents.length > 0;
+  const currentSubjectAvailable = !subject || availableSubjects.includes(subject);
+  // Data arriving after mount can reveal that a seeded / draft subject is no
+  // longer valid for the selected recipients. Content is never cleared here:
+  // the teacher sees a blocking message and decides. A selection change made
+  // by the teacher goes through confirmSelectionChange instead.
+  useEffect(() => {
+    if (!selectionSubjectsReady || !subject) return;
+    if (availableSubjects.includes(subject)) return;
+    const hasContent = (standardEnabled && (selection.size > 0 || customQuestions.length > 0))
+      || (categoryEnabled && categoryRows.length > 0);
+    if (hasContent) {
+      setSubmitError("当前科目对所选学生／班级不可用，请重新选择科目或调整对象。");
+      return;
+    }
+    setSubject(null);
+    setStandardEnabled(true);
+    setCategoryEnabled(false);
+    setCategoryRows([]);
+    setSource(null);
+    setSelection(new Map());
+    setCustomQuestions([]);
+    setPickerState(defaultAssignmentPickerState("writing"));
+    setSubmitError("当前科目对所选学生／班级不可用，请重新选择科目。");
+  }, [availableSubjects, categoryEnabled, categoryRows.length, customQuestions.length, selection.size, selectionSubjectsReady, standardEnabled, subject]);
+  // Practice badges are only requested for the catalog the teacher is actually
+  // looking at, and always after a recipient selection exists.
+  const practiceStatus = useAssignmentPracticeStatus({
+    classId: selectionMode === "class" ? selectedClassId : "",
+    enabled: Boolean(subject)
+      && currentSubjectAvailable
+      && standardEnabled
+      && (subject === "reading" || source === "question_bank"),
+    studentIds: selectionMode === "students" ? selectedStudents : [],
+    subject
+  });
   const filteredStudents = useMemo(() => studentEntries
     .map((entry) => {
       const nameRank = studentSearchRank(entry, entry.displayName, studentQuery);
@@ -526,24 +611,26 @@ function TeacherAssignmentWizard({
     .sort((left, right) => left.rank - right.rank || compareStudentSearchMetadata(left.entry, right.entry))
     .map(({ entry }) => entry.student), [studentEntries, studentQuery]);
   const generatedAssignmentTitle = useMemo(() => {
+    // Step 2 (subject) now comes after the recipient selection: no automatic
+    // title exists before a subject is chosen.
+    if (!subject) return "";
     // A withdrawn edit keeps the assignment's own 布置日期 in the automatic
     // title; a fresh create uses today.
     const titleAssignedAt = assignmentTitleDate;
-    // While the eligible students / classes for the (possibly just switched)
-    // subject are still loading, the seed's own name part keeps the automatic
-    // title stable and lets 写作 → 阅读 update in place.
+    // While the student / class lists are still loading, the seed's own name
+    // part keeps the automatic title stable and lets 写作 → 阅读 update in place.
     const seedTitleBase = editing
       ? seededAssignmentTitleBase({
           assignedAt: seed.titleAssignedAt,
           className: seed.className,
           firstStudentName: seed.firstStudentName,
           studentCount: seed.studentCount,
-          subject: assignmentSubject
+          subject
         })
       : "";
     if (selectionMode === "class") {
       return selectedClass
-        ? classAssignmentTitleBase(selectedClass.name, titleAssignedAt, assignmentSubject)
+        ? classAssignmentTitleBase(selectedClass.name, titleAssignedAt, subject)
         : seedTitleBase;
     }
     const firstStudent = (studentsState.data?.students ?? []).find(
@@ -554,9 +641,9 @@ function TeacherAssignmentWizard({
       assignedAt: titleAssignedAt,
       firstStudentName: firstStudent.displayName,
       studentCount: selectedStudents.length,
-      subject: assignmentSubject
+      subject
     });
-  }, [assignmentSubject, assignmentTitleDate, editing, seed.className, seed.firstStudentName, seed.studentCount, seed.titleAssignedAt, selectionMode, selectedClass, selectedStudents, studentsState.data]);
+  }, [assignmentTitleDate, editing, seed.className, seed.firstStudentName, seed.studentCount, seed.titleAssignedAt, selectionMode, selectedClass, selectedStudents, studentsState.data, subject]);
   useEffect(() => {
     if (assignmentTitleManuallyEdited) return;
     setAssignmentTitle(generatedAssignmentTitle);
@@ -661,16 +748,16 @@ function TeacherAssignmentWizard({
   const assignmentCount = standardItemCount
     + (categoryEnabled && categoryValidation.ok ? 1 : 0);
   const stepNumbers = useMemo(() => {
-    const order: Array<"kind" | "source" | "items" | "students" | "title" | "due" | "preview"> = [
+    const order: Array<"kind" | "source" | "items" | "title" | "due" | "preview"> = [
       "kind",
       ...(subject === "writing" && standardEnabled ? ["source" as const] : []),
       "items",
-      "students",
       "title",
       "due",
       "preview"
     ];
-    return new Map(order.map((key, index) => [key, String(index + 2)]));
+    // 1 = 学生／班级, 2 = 科目, then this order.
+    return new Map(order.map((key, index) => [key, String(index + 3)]));
   }, [standardEnabled, subject]);
   const visibleCustomQuestions = useMemo(
     () => source === "custom"
@@ -681,12 +768,19 @@ function TeacherAssignmentWizard({
 
   function chooseSubject(next: AssignmentSubject) {
     if (subject === next) return;
+    if (!availableSubjects.includes(next)) {
+      setSubmitError(
+        availableSubjects.length === 0
+          ? NO_COMMON_ASSIGNMENT_SUBJECT_MESSAGE
+          : "当前学生／班级没有该科目的授课权限，请选择其他科目。"
+      );
+      return;
+    }
     // One Assignment Group is single-subject. Switching the subject of a
     // withdrawn group re-targets the whole group, so an existing selection must
     // be cleared first — never after the fact. Cancel keeps the subject, the
     // selection, the filters and the whole wizard state exactly as they were.
-    const hasItems = (standardEnabled && (selection.size > 0 || customQuestions.length > 0))
-      || (categoryEnabled && categoryRows.length > 0);
+    const hasItems = hasSubjectDependentContent();
     if (hasItems) {
       const message = subject === "writing"
         ? "已选择写作题目，切换到阅读会清空已选题目。是否切换？"
@@ -774,11 +868,64 @@ function TeacherAssignmentWizard({
     }));
   }
 
+  function subjectsForStudents(nextStudents: readonly string[]) {
+    if (!studentsState.data || nextStudents.length === 0) return [...ASSIGNMENT_SUBJECTS];
+    return assignmentSubjectsForStudents(
+      nextStudents.map((studentId) => ({
+        domains: domainsByStudentId.get(studentId) ?? []
+      }))
+    );
+  }
+
+  function subjectsForClass(classId: string) {
+    const classEntry = allClasses.find((entry) => entry.class_id === classId);
+    return classEntry
+      ? assignmentSubjectsForClassSubjects(classEntry.subjects)
+      : [...ASSIGNMENT_SUBJECTS];
+  }
+
+  function hasSubjectDependentContent() {
+    return (standardEnabled && (selection.size > 0 || customQuestions.length > 0))
+      || (categoryEnabled && categoryRows.length > 0);
+  }
+
+  /** The only place that clears the invalid subject and its own content. */
+  function clearInvalidSubjectState() {
+    setSubject(null);
+    setStandardEnabled(true);
+    setCategoryEnabled(false);
+    setCategoryRows([]);
+    setSource(null);
+    setSelection(new Map());
+    setCustomQuestions([]);
+    setPickerState(defaultAssignmentPickerState("writing"));
+    setSubmitError("当前科目对所选学生／班级不可用，请重新选择科目。");
+  }
+
+  /**
+   * A student / class change that invalidates the current subject must never
+   * silently discard teacher-entered content. The selection change is cancelled
+   * when the teacher declines, so the wizard stays exactly as it was.
+   */
+  function confirmSelectionChange(nextSubjects: readonly AssignmentSubject[], label: string) {
+    if (!subject || !selectionSubjectsReady) return true;
+    if (nextSubjects.includes(subject)) return true;
+    if (!hasSubjectDependentContent()) return true;
+    return window.confirm(
+      `调整${label}后，当前科目「${ASSIGNMENT_SUBJECT_LABELS[subject]}」不可用，已选题目和自定义题将被清空。是否继续？`
+    );
+  }
+
   function toggleStudent(studentId: string) {
     const nextStudents = selectedStudents.includes(studentId)
       ? selectedStudents.filter((id) => id !== studentId)
       : [...selectedStudents, studentId];
+    const nextSubjects = subjectsForStudents(nextStudents);
+    if (!confirmSelectionChange(nextSubjects, "学生选择")) return;
+    const invalidatesSubject = Boolean(subject) && !nextSubjects.includes(subject!);
+    if (invalidatesSubject) clearInvalidSubjectState();
     setSelectedStudents(nextStudents);
+    if (!subject || invalidatesSubject) return;
     const firstStudent = (studentsState.data?.students ?? []).find(
       (student) => student.id === nextStudents[0]
     );
@@ -787,7 +934,7 @@ function TeacherAssignmentWizard({
           assignedAt: assignmentTitleDate,
           firstStudentName: firstStudent.displayName,
           studentCount: nextStudents.length,
-          subject: assignmentSubject
+          subject
         })
       : "";
     setCustomQuestions((current) => current.map((draft) => draft.titleManuallyEdited
@@ -797,6 +944,8 @@ function TeacherAssignmentWizard({
 
   function chooseSelectionMode(next: "students" | "class") {
     if (selectionMode === next) return;
+    // The new mode starts with no recipient, so the current subject stays
+    // valid until a class / student makes it impossible.
     setSelectionMode(next);
     // The two modes are mutually exclusive: switching never leaves a hidden
     // selection from the other mode behind.
@@ -807,10 +956,15 @@ function TeacherAssignmentWizard({
 
   function toggleClass(classId: string) {
     const next = selectedClassId === classId ? "" : classId;
+    const nextSubjects = subjectsForClass(next);
+    if (!confirmSelectionChange(nextSubjects, "班级选择")) return;
+    const invalidatesSubject = Boolean(subject) && Boolean(next) && !nextSubjects.includes(subject!);
+    if (invalidatesSubject) clearInvalidSubjectState();
     setSelectedClassId(next);
-    const classEntry = subjectClasses.find((entry) => entry.class_id === next);
+    if (!subject || invalidatesSubject) return;
+    const classEntry = allClasses.find((entry) => entry.class_id === next);
     const nextTitle = classEntry
-      ? classAssignmentTitleBase(classEntry.name, assignmentTitleDate, assignmentSubject)
+      ? classAssignmentTitleBase(classEntry.name, assignmentTitleDate, subject)
       : "";
     setCustomQuestions((current) => current.map((draft) => draft.titleManuallyEdited
       ? draft
@@ -847,6 +1001,13 @@ function TeacherAssignmentWizard({
   async function submit(reactivate = false) {
     setSubmitError("");
     if (!subject) return setSubmitError("请先选择科目。");
+    if (!availableSubjects.includes(subject)) {
+      return setSubmitError(
+        availableSubjects.length === 0
+          ? NO_COMMON_ASSIGNMENT_SUBJECT_MESSAGE
+          : "当前科目对所选学生／班级不可用，请重新选择科目。"
+      );
+    }
     if (!standardEnabled && !categoryEnabled) {
       return setSubmitError("请至少选择普通题目或分类练习中的一种内容。");
     }
@@ -1029,17 +1190,67 @@ function TeacherAssignmentWizard({
       : "篇题目";
   return (
     <div className="grid gap-5">
-      <StepCard number="1" title="选择科目">
-        <div className="grid gap-3 sm:grid-cols-2">
-          {ASSIGNMENT_SUBJECTS.map((entry) => (
-            <ChoiceButton
-              active={subject === entry}
-              key={entry}
-              label={ASSIGNMENT_SUBJECT_LABELS[entry]}
-              onClick={() => chooseSubject(entry)}
-            />
-          ))}
+      <StepCard number="1" title="选择学生／班级">
+        {allClasses.length > 0 ? (
+          <nav aria-label="选择方式" className="mb-4 flex gap-2 border-b border-student-border">
+            <button
+              className={`border-b-2 px-5 py-3 text-sm font-bold ${selectionMode === "students" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
+              onClick={() => chooseSelectionMode("students")}
+              type="button"
+            >
+              学生
+            </button>
+            <button
+              className={`border-b-2 px-5 py-3 text-sm font-bold ${selectionMode === "class" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
+              onClick={() => chooseSelectionMode("class")}
+              type="button"
+            >
+              班级
+            </button>
+          </nav>
+        ) : null}
+        {selectionMode === "class" ? (
+          <div className="grid gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="relative min-w-[240px] flex-1"><Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} /><input className="teacher-input w-full pl-9" onChange={(event) => setClassQuery(event.target.value)} placeholder="搜索班级名称" value={classQuery} /></div>
+              <span className="text-sm font-bold text-student-primary">一次只能选择一个班级</span>
+            </div>
+            {classesState.loading ? <TeacherSkeleton className="h-40 w-full rounded-xl" /> : classesState.error ? <TeacherDataError text={classesState.error} /> : <div className="max-h-72 overflow-y-auto rounded-xl border border-student-border"><div className="grid gap-px bg-student-border">{filteredClasses.map((entry) => { const active = selectedClassId === entry.class_id; return <button className={`flex items-center gap-3 bg-white px-4 py-3 text-left transition hover:bg-student-bg ${active ? "!bg-student-primary-soft" : ""}`} key={entry.class_id} onClick={() => toggleClass(entry.class_id)} type="button"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-student-primary"><TeacherClassIcon aria-hidden="true" size={18} strokeWidth={1.9} /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-student-text">{entry.name}</span><span className="block truncate text-xs text-student-muted">{classSubjectsLabel(entry.subjects)} · {entry.member_count} 名学生</span></span>{active ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</button>; })}{!filteredClasses.length ? <p className="bg-white px-4 py-8 text-center text-sm text-student-muted">没有匹配的班级。</p> : null}</div></div>}
+            <p className="text-xs text-student-muted">班级作业按保存时的班级成员生成，之后加入的学生不会补收这次作业。</p>
+          </div>
+        ) : (
+        <div className="grid gap-3"><div className="flex flex-wrap items-center justify-between gap-3"><div className="relative min-w-[240px] flex-1"><Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} /><input className="teacher-input w-full pl-9" onChange={(event) => setStudentQuery(event.target.value)} placeholder="搜索中文姓名、拼音或账号" value={studentQuery} /></div><span className="text-sm font-bold text-student-primary">已选择 {selectedStudents.length} 人</span></div>
+          {studentsState.loading ? <TeacherSkeleton className="h-40 w-full rounded-xl" /> : studentsState.error ? <TeacherDataError text={studentsState.error} /> : <div className="max-h-72 overflow-y-auto rounded-xl border border-student-border"><div className="grid gap-px bg-student-border">{filteredStudents.map((student) => { const active = selectedStudents.includes(student.id); return <button className={`flex items-center gap-3 bg-white px-4 py-3 text-left transition hover:bg-student-bg ${active ? "!bg-student-primary-soft" : ""}`} key={student.id} onClick={() => toggleStudent(student.id)} type="button"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-student-primary"><UserRound aria-hidden="true" size={18} /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-student-text">{formatManagedAccountName(student.displayName, student.email)}</span><span className="block truncate text-xs text-student-muted">账号：{formatAccountForDisplay(student.email)} · 科目：{classSubjectsLabel(student.domains)}</span></span>{active ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</button>; })}{!filteredStudents.length ? <p className="bg-white px-4 py-8 text-center text-sm text-student-muted">没有匹配的学生。</p> : null}</div></div>}
         </div>
+        )}
+      </StepCard>
+
+      <StepCard number="2" title="选择科目">
+        {selectionMode === "students" && selectedStudents.length === 0 ? (
+          <p className="text-sm text-student-muted">请先选择学生；可选科目会按所有已选学生共同拥有的授课科目限制。</p>
+        ) : selectionMode === "class" && !selectedClass ? (
+          <p className="text-sm text-student-muted">请先选择一个班级；可选科目会按当前教师在该班级负责的授课科目限制。</p>
+        ) : null}
+        {availableSubjects.length === 0 ? (
+          <p className="text-sm font-medium text-student-error">{NO_COMMON_ASSIGNMENT_SUBJECT_MESSAGE}</p>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {availableSubjects.map((entry) => (
+              <ChoiceButton
+                active={subject === entry}
+                disabled={!recipientSelected}
+                key={entry}
+                label={ASSIGNMENT_SUBJECT_LABELS[entry]}
+                onClick={() => chooseSubject(entry)}
+              />
+            ))}
+          </div>
+        )}
+        {!currentSubjectAvailable && subject ? (
+          <p className="text-sm font-medium text-student-error">
+            当前科目「{ASSIGNMENT_SUBJECT_LABELS[subject]}」对所选学生／班级不可用，请重新选择科目。
+          </p>
+        ) : null}
       </StepCard>
 
       {subject ? (
@@ -1093,6 +1304,9 @@ function TeacherAssignmentWizard({
                 <TeacherAssignmentCatalogPicker
                   onSelectionChange={setSelection}
                   onStateChange={setPickerState}
+                  practiceError={practiceStatus.error}
+                  practiceLoading={practiceStatus.loading}
+                  practiceStatuses={practiceStatus.statuses}
                   selection={selection}
                   state={pickerState}
                   subject={subject}
@@ -1118,43 +1332,8 @@ function TeacherAssignmentWizard({
         )}
       </StepCard>
 
-      <StepCard number={stepNumbers.get("students")!} title="选择学生">
-        {subjectClasses.length > 0 ? (
-          <nav aria-label="选择方式" className="mb-4 flex gap-2 border-b border-student-border">
-            <button
-              className={`border-b-2 px-5 py-3 text-sm font-bold ${selectionMode === "students" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
-              onClick={() => chooseSelectionMode("students")}
-              type="button"
-            >
-              学生
-            </button>
-            <button
-              className={`border-b-2 px-5 py-3 text-sm font-bold ${selectionMode === "class" ? "border-student-primary text-student-primary" : "border-transparent text-student-muted hover:text-student-text"}`}
-              onClick={() => chooseSelectionMode("class")}
-              type="button"
-            >
-              班级
-            </button>
-          </nav>
-        ) : null}
-        {selectionMode === "class" ? (
-          <div className="grid gap-3">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="relative min-w-[240px] flex-1"><Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} /><input className="teacher-input w-full pl-9" onChange={(event) => setClassQuery(event.target.value)} placeholder="搜索班级名称" value={classQuery} /></div>
-              <span className="text-sm font-bold text-student-primary">一次只能选择一个班级</span>
-            </div>
-            {classesState.loading ? <TeacherSkeleton className="h-40 w-full rounded-xl" /> : classesState.error ? <TeacherDataError text={classesState.error} /> : <div className="max-h-72 overflow-y-auto rounded-xl border border-student-border"><div className="grid gap-px bg-student-border">{filteredClasses.map((entry) => { const active = selectedClassId === entry.class_id; return <button className={`flex items-center gap-3 bg-white px-4 py-3 text-left transition hover:bg-student-bg ${active ? "!bg-student-primary-soft" : ""}`} key={entry.class_id} onClick={() => toggleClass(entry.class_id)} type="button"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-student-primary"><TeacherClassIcon aria-hidden="true" size={18} strokeWidth={1.9} /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-student-text">{entry.name}</span><span className="block truncate text-xs text-student-muted">{classSubjectsLabel(entry.subjects)} · {entry.member_count} 名学生</span></span>{active ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</button>; })}{!filteredClasses.length ? <p className="bg-white px-4 py-8 text-center text-sm text-student-muted">没有匹配的班级。</p> : null}</div></div>}
-            <p className="text-xs text-student-muted">班级作业按保存时的班级成员生成，之后加入的学生不会补收这次作业。</p>
-          </div>
-        ) : (
-        <div className="grid gap-3"><div className="flex flex-wrap items-center justify-between gap-3"><div className="relative min-w-[240px] flex-1"><Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 text-student-muted" size={16} /><input className="teacher-input w-full pl-9" onChange={(event) => setStudentQuery(event.target.value)} placeholder="搜索中文姓名、拼音或账号" value={studentQuery} /></div><span className="text-sm font-bold text-student-primary">已选择 {selectedStudents.length} 人</span></div>
-          {studentsState.loading ? <TeacherSkeleton className="h-40 w-full rounded-xl" /> : studentsState.error ? <TeacherDataError text={studentsState.error} /> : <div className="max-h-72 overflow-y-auto rounded-xl border border-student-border"><div className="grid gap-px bg-student-border">{filteredStudents.map((student) => { const active = selectedStudents.includes(student.id); return <button className={`flex items-center gap-3 bg-white px-4 py-3 text-left transition hover:bg-student-bg ${active ? "!bg-student-primary-soft" : ""}`} key={student.id} onClick={() => toggleStudent(student.id)} type="button"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-student-primary"><UserRound aria-hidden="true" size={18} /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-student-text">{formatManagedAccountName(student.displayName, student.email)}</span><span className="block truncate text-xs text-student-muted">账号：{formatAccountForDisplay(student.email)}</span></span>{active ? <Check aria-hidden="true" className="text-student-primary" size={19} /> : null}</button>; })}{!filteredStudents.length ? <p className="bg-white px-4 py-8 text-center text-sm text-student-muted">没有匹配的学生。</p> : null}</div></div>}
-        </div>
-        )}
-      </StepCard>
-
       <StepCard number={stepNumbers.get("title")!} title="作业标题">
-        <div className="grid gap-2"><input className="teacher-input max-w-xl" onChange={(event) => { setAssignmentTitleManuallyEdited(true); setAssignmentTitle(event.target.value); }} placeholder="选择学生后自动生成" value={candidateAssignmentTitle} /></div>
+        <div className="grid gap-2"><input className="teacher-input max-w-xl" onChange={(event) => { setAssignmentTitleManuallyEdited(true); setAssignmentTitle(event.target.value); }} placeholder="选择学生并设置科目后自动生成" value={candidateAssignmentTitle} /></div>
       </StepCard>
 
       <StepCard number={stepNumbers.get("due")!} title="截止时间">

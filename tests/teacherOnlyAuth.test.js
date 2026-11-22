@@ -29,6 +29,7 @@ test("Phase 3 case 1-2: writing assignment APIs are teacher-only and 403 for Adm
     "app/api/teacher/writing/assignments/[assignmentId]/route.ts",
     "app/api/teacher/writing/assignments/batches/[batchId]/route.ts",
     "app/api/teacher/writing/assignments/students/route.ts",
+    "app/api/teacher/writing/assignments/practice-status/route.ts",
     "app/api/teacher/writing/assignments/avatars/route.ts",
     "app/api/teacher/writing/assignments/questions/route.ts"
   ];

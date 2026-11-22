@@ -1,7 +1,4 @@
-import { readAllSupabaseRows } from "@/lib/supabasePagination";
-import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
-import { listVisibleStudentIds } from "@/lib/accountAccess";
-import { isAssignmentSubject } from "@/lib/assignmentCatalog";
+import { loadTeacherScope } from "@/lib/teacherScope.server";
 import {
   requireWritingAssignmentTeacher,
   writingAssignmentJson
@@ -9,45 +6,41 @@ import {
 
 export const dynamic = "force-dynamic";
 
-type StudentRow = { id: string; email: string | null; full_name: string | null };
-
+/**
+ * Assignment recipient candidates.
+ *
+ * 布置作业 now selects the student / class before the subject, so this list
+ * carries every active student the acting teacher is bound to (any subject)
+ * together with that student's own subject domains. The wizard intersects the
+ * domains of the selected students to decide which subjects are offerable; the
+ * creation API still re-validates every recipient for the submitted subject.
+ */
 export async function GET(request: Request) {
   try {
     const auth = await requireWritingAssignmentTeacher(request);
     if (auth.error) return auth.error;
-    if (!auth.supabase || !auth.actor) return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
-    // The eligible-student list follows the Assignment subject: a 阅读
-    // Assignment can only be given to students bound for 阅读.
-    const subjectParam = new URL(request.url).searchParams.get("subject");
-    const subject = isAssignmentSubject(subjectParam) ? subjectParam : "writing";
-    const studentIds = await listVisibleStudentIds(
-      auth.supabase,
-      auth.actor,
-      auth.actor.role === "admin" ? undefined : subject
-    );
-    if (studentIds.length === 0) return writingAssignmentJson({ students: [] });
-    const result = await readAllSupabaseRows<StudentRow>((from, to) =>
-      auth.supabase!
-        .from("profiles")
-        .select("id,email,full_name")
-        .eq("is_active", true)
-        .in("id", studentIds)
-        .order("full_name", { ascending: true, nullsFirst: false })
-        .order("email", { ascending: true, nullsFirst: false })
-        .order("id", { ascending: true })
-        .range(from, to)
-    );
-    if (result.error) throw result.error;
-    return writingAssignmentJson({
-      students: (result.data ?? []).map((student) => ({
-        id: student.id,
-        email: student.email ?? "",
-        displayName: getPreferredUserDisplayName({
-          email: student.email,
-          profileFullName: student.full_name
-        })
-      }))
-    });
+    if (!auth.supabase || !auth.actor) {
+      return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
+    }
+    const scope = await loadTeacherScope(auth.supabase, auth.actor);
+    const collator = new Intl.Collator("zh-Hans-CN");
+    const students = scope.visibleStudentIds
+      .flatMap((studentId) => {
+        const profile = scope.studentProfiles.get(studentId);
+        if (!profile) return [];
+        return [{
+          id: studentId,
+          email: profile.email,
+          displayName: profile.displayName || "未命名学生",
+          domains: scope.studentDomains.get(studentId) ?? []
+        }];
+      })
+      .sort((left, right) =>
+        collator.compare(left.displayName, right.displayName)
+        || left.email.localeCompare(right.email)
+        || left.id.localeCompare(right.id)
+      );
+    return writingAssignmentJson({ students });
   } catch (error) {
     console.error("[writing-assignments] students_load_failed", error);
     return writingAssignmentJson(

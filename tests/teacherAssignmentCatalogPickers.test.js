@@ -440,12 +440,15 @@ test("automatic titles carry the subject and keep the sequence per subject", () 
     nextWritingAssignmentAutoTitle("张三 写作 2026-09-28", ["张三 阅读 2026-09-28 (2)"]),
     "张三 写作 2026-09-28"
   );
-  // A BAS-only assignment is still 写作: the subject comes from step 1.
+  // A BAS-only assignment is still 写作: the seeded subject comes from the
+  // persisted item type and step 2 only ever offers that subject.
   const form = source(CREATE_FORM);
-  assert.match(form, /subject: assignmentSubject/);
+  assert.match(form, /const subject = assignments\.length > 0\s*\n\s*\? assignmentItemSubject\(assignments\[0\]\.task_type\)/);
   assert.match(form, /const assignmentSubject: AssignmentSubject = subject \?\? "writing"/);
+  assert.match(form, /if \(!subject\) return "";/);
 
-  // Class titles follow the same rule, and the class list is subject-scoped.
+  // Class titles follow the same rule, and the class list is no longer
+  // subject-filtered: the selected class's own subjects constrain step 2.
   assert.equal(
     classAssignmentTitleBase("托福A班", assignedAt),
     "托福A班 写作 2026-09-28"
@@ -467,7 +470,9 @@ test("automatic titles carry the subject and keep the sequence per subject", () 
     classesForAssignmentSubject(classes, "reading").map((entry) => entry.class_id),
     ["r", "b"]
   );
-  assert.match(form, /classesForAssignmentSubject\(classesState\.data\?\.classes \?\? \[\], assignmentSubject\)/);
+  assert.match(form, /filterClassSummariesByName\(allClasses, classQuery\)/);
+  assert.match(form, /allClasses\.length > 0/);
+  assert.doesNotMatch(form, /classesForAssignmentSubject/);
 });
 
 // ---------------------------------------------------------------------------

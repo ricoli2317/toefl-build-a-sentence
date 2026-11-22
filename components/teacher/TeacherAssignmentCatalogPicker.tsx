@@ -40,6 +40,11 @@ import {
   type AssignmentSubject,
   type ReadingLength
 } from "@/lib/assignmentCatalog";
+import {
+  assignmentPracticeBadgeForEntry,
+  type AssignmentPracticeBadge,
+  type AssignmentPracticeStatusRecord
+} from "@/lib/assignmentPracticeStatus";
 
 const ALL_OPTION_LABEL = "全部";
 
@@ -62,12 +67,18 @@ const ALL_OPTION_LABEL = "全部";
 export function TeacherAssignmentCatalogPicker({
   onSelectionChange,
   onStateChange,
+  practiceError = "",
+  practiceLoading = false,
+  practiceStatuses = {},
   selection,
   state,
   subject
 }: {
   onSelectionChange: (selection: AssignmentCatalogSelection) => void;
   onStateChange: (state: AssignmentPickerState) => void;
+  practiceError?: string;
+  practiceLoading?: boolean;
+  practiceStatuses?: AssignmentPracticeStatusRecord;
   selection: AssignmentCatalogSelection;
   state: AssignmentPickerState;
   subject: AssignmentSubject;
@@ -232,12 +243,21 @@ export function TeacherAssignmentCatalogPicker({
               />
               全选当前页
             </label>
-            <span className="text-sm font-bold text-student-primary">
-              已选 {selection.size} 篇
-              {selectedInActiveType > 0 && selection.size !== selectedInActiveType
-                ? `（当前题型 ${selectedInActiveType} 篇）`
-                : ""}
-            </span>
+            <div className="flex flex-wrap items-center gap-3">
+              {practiceLoading ? (
+                <span className="text-xs text-student-muted">练习状态加载中…</span>
+              ) : practiceError ? (
+                <span className="text-xs text-student-error" role="status">
+                  {practiceError}（未标记的题目不代表没有练习过。）
+                </span>
+              ) : null}
+              <span className="text-sm font-bold text-student-primary">
+                已选 {selection.size} 篇
+                {selectedInActiveType > 0 && selection.size !== selectedInActiveType
+                  ? `（当前题型 ${selectedInActiveType} 篇）`
+                  : ""}
+              </span>
+            </div>
           </div>
 
           {selectedEntries.length > 0 ? (
@@ -269,6 +289,7 @@ export function TeacherAssignmentCatalogPicker({
                   entry,
                   index: pageData.from + index,
                   onSelectionChange,
+                  practiceStatuses,
                   selection
                 })}
               </li>
@@ -311,10 +332,12 @@ export function TeacherAssignmentCatalogPicker({
     index: number;
     selection: AssignmentCatalogSelection;
     onSelectionChange: (selection: AssignmentCatalogSelection) => void;
+    practiceStatuses: AssignmentPracticeStatusRecord;
   }) {
     const { entry, index } = input;
     const selected = isAssignmentCatalogEntrySelected(input.selection, entry);
     const viewerHref = assignmentItemViewerHref(entry);
+    const practiceBadge = assignmentPracticeBadgeForEntry(entry, input.practiceStatuses);
     return (
       <>
         <label className="flex min-w-0 flex-1 cursor-pointer items-center gap-3">
@@ -324,9 +347,17 @@ export function TeacherAssignmentCatalogPicker({
             onChange={() => input.onSelectionChange(toggleAssignmentCatalogSelection(input.selection, entry))}
             type="checkbox"
           />
-          <span className="min-w-0 truncate text-sm font-normal text-student-text">
+          <span className="min-w-0 flex-1 truncate text-sm font-normal text-student-text">
             {index + 1}. {entry.title}
           </span>
+          {practiceBadge ? (
+            <span
+              className={assignmentPracticeBadgeClass(practiceBadge)}
+              data-assignment-practice-badge={practiceBadge}
+            >
+              {practiceBadge === "practiced" ? "已练习" : "部分练习"}
+            </span>
+          ) : null}
         </label>
         {viewerHref ? (
           <Link
@@ -346,4 +377,10 @@ export function TeacherAssignmentCatalogPicker({
       </>
     );
   }
+}
+
+function assignmentPracticeBadgeClass(badge: AssignmentPracticeBadge) {
+  return badge === "practiced"
+    ? "inline-flex shrink-0 items-center rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700"
+    : "inline-flex shrink-0 items-center rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs text-amber-700";
 }

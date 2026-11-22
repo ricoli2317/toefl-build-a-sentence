@@ -177,7 +177,11 @@ test("class assignments accept exactly one Writing class", () => {
   assert.match(route, /prepared\.subject === "reading"/);
   const form = read("components/teacher/TeacherWritingAssignmentForm.tsx");
   assert.match(form, /一次只能选择一个班级/);
-  assert.match(form, /classesForAssignmentSubject/);
+  // The class list is no longer subject-filtered; the class's own subject set
+  // decides the offerable subjects after selection.
+  assert.match(form, /assignmentSubjectsForClassSubjects/);
+  assert.match(form, /filterClassSummariesByName/);
+  assert.doesNotMatch(form, /classesForAssignmentSubject/);
   assert.equal(classIncludesWriting(["reading"]), false);
   assert.equal(classIncludesWriting(["reading", "writing"]), true);
   assert.deepEqual(writingClassesOnly([{ subjects: ["reading"] }, { subjects: ["writing"] }]), [

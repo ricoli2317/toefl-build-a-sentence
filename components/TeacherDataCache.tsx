@@ -37,8 +37,8 @@ export const TEACHER_ASSIGNMENT_CATALOG_CACHE_PREFIX = "teacher:assignment-catal
 export const TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY =
   "teacher:writing-assignments:students";
 export const TEACHER_ASSIGNMENT_STUDENTS_CACHE_PREFIX = "teacher:assignment-students";
-export function teacherAssignmentStudentsCacheKey(subject: "writing" | "reading") {
-  return `${TEACHER_ASSIGNMENT_STUDENTS_CACHE_PREFIX}:${subject}`;
+export function teacherAssignmentStudentsCacheKey() {
+  return `${TEACHER_ASSIGNMENT_STUDENTS_CACHE_PREFIX}:options`;
 }
 export const TEACHER_WRITING_ASSIGNMENT_AVATARS_CACHE_KEY =
   "teacher:writing-assignments:academic-discussion-avatars";
