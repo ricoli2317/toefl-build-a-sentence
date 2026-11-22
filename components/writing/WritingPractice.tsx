@@ -45,6 +45,7 @@ import {
   AcademicStudentPost,
   EmailPrompt
 } from "@/components/writing/WritingQuestionPrompt";
+import { WritingIdeaAssistant } from "@/components/writing/WritingIdeaAssistant";
 import {
   WRITING_TASK_CONFIG,
   countEnglishWords,
@@ -945,21 +946,32 @@ function WritingPracticeSession({
       />
       <main className="mx-auto flex min-h-[calc(100dvh-var(--reading-header-height))] w-full max-w-[1920px] flex-col px-4 py-3 sm:px-6 lg:h-[calc(100dvh-var(--reading-header-height))] lg:min-h-0 lg:overflow-hidden lg:px-8">
         <div className="grid min-h-0 grid-cols-1 gap-4 lg:h-full lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:overflow-hidden">
-          {taskType === "email" ? (
-            <EmailPrompt question={question as EmailQuestion} />
-          ) : (
-            <AcademicPrompt
-              avatarMap={avatarMap}
-              avatarMapReady={avatarMapReady}
-              avatarPathOverride={assignmentQuestionSource === "custom"
-                ? resolveCustomAcademicDiscussionAvatar(
-                    (question as AcademicDiscussionQuestion).professor_avatar_type,
-                    "professor"
-                  )
-                : undefined}
-              question={question as AcademicDiscussionQuestion}
-            />
-          )}
+          <div className="flex min-h-0 flex-col gap-2 lg:h-full lg:overflow-hidden">
+            <div className="min-h-0 lg:flex-1">
+              {taskType === "email" ? (
+                <EmailPrompt question={question as EmailQuestion} />
+              ) : (
+                <AcademicPrompt
+                  avatarMap={avatarMap}
+                  avatarMapReady={avatarMapReady}
+                  avatarPathOverride={assignmentQuestionSource === "custom"
+                    ? resolveCustomAcademicDiscussionAvatar(
+                        (question as AcademicDiscussionQuestion).professor_avatar_type,
+                        "professor"
+                      )
+                    : undefined}
+                  question={question as AcademicDiscussionQuestion}
+                />
+              )}
+            </div>
+            {!readOnly && attempt.status === "draft" && answerMode === "practice" ? (
+              <WritingIdeaAssistant
+                attemptId={attempt.attempt_id}
+                key={attempt.attempt_id}
+                taskType={taskType}
+              />
+            ) : null}
+          </div>
           <section className="min-h-[650px] overflow-hidden lg:h-full lg:min-h-0">
             {taskType === "email" ? (
               <EmailResponsePanel
@@ -1098,7 +1110,7 @@ function EmailResponsePanel({
           reviewHref={reviewHref}
         />
       ) : (
-        <WritingPracticeActions compact disabled={disabled} onSave={onSave} onSubmit={onSubmit} />
+        <WritingPracticeActions compact disabled={disabled} flush onSave={onSave} onSubmit={onSubmit} />
       )}
     </div>
   );
@@ -1156,7 +1168,7 @@ function AcademicResponsePanel({
           reviewHref={reviewHref}
         />
       ) : (
-        <WritingPracticeActions compact disabled={disabled} onSave={onSave} onSubmit={onSubmit} />
+        <WritingPracticeActions compact disabled={disabled} flush onSave={onSave} onSubmit={onSubmit} />
       )}
     </div>
   );
