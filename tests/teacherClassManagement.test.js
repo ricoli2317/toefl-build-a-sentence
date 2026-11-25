@@ -331,7 +331,11 @@ test("class lists, filters and reviews never mix classes or direct assignments",
   const reviewClassesRoute = read("app/api/teacher/writing/review-classes/route.ts");
   assert.match(reviewClassesRoute, /listClassReviewSummaries/);
   const server = read("lib/teacherClasses.server.ts");
-  assert.match(server, /groupToClass\.get\(String\(row\.group_id\)\)/);
+  // Class counts are scoped through the class's own group relation, so a
+  // direct assignment or another class can never enter the count.
+  assert.match(server, /assignment\.group\.class_id", classId/);
+  assert.match(server, /writing_assignments!inner\(group:writing_assignment_groups!inner/);
+  assert.match(server, /countClassAttempts/);
 });
 
 // 18 + 19 + 20: frozen binding rules, teacher isolation, no Writing prompts

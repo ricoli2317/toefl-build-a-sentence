@@ -261,7 +261,7 @@ export function TeacherWritingAssignmentsPageClient({
           onClearFilter={() => selectStudentFilter("")}
           onLoadMore={() => void list.loadMore()}
           onRetryInitial={list.reload}
-          onRetryLoadMore={() => void list.loadMore()}
+          onRetryLoadMore={() => void list.retryLoadMore()}
         />
       </div>
     </TeacherAppShell>

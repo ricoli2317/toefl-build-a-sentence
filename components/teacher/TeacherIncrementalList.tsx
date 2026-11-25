@@ -48,6 +48,7 @@ export function useTeacherIncrementalList<T>({
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadMoreError, setLoadMoreError] = useState("");
   const loadingRef = useRef(false);
+  const pausedRef = useRef(false);
   const requestIdRef = useRef(0);
   const cacheKeyRef = useRef(cacheKey);
   const dataRef = useRef(state.data);
@@ -58,56 +59,120 @@ export function useTeacherIncrementalList<T>({
   getIdRef.current = getId;
   loadPageRef.current = loadPage;
 
+  const resetFailureState = useCallback(() => {
+    pausedRef.current = false;
+    setLoadMoreError("");
+  }, []);
+
   // A new tab/filter context starts with its own first page; the old request
-  // (if any) must not append into it.
+  // and any pending auto-retry must not append into it.
   useEffect(() => {
     requestIdRef.current += 1;
     loadingRef.current = false;
+    pausedRef.current = false;
     setLoadingMore(false);
     setLoadMoreError("");
   }, [cacheKey]);
 
-  const loadMore = useCallback(async () => {
-    const current = dataRef.current;
-    if (!current || !current.hasMore || !current.nextCursor) return;
-    if (loadingRef.current) return;
-    const requestKey = cacheKeyRef.current;
-    const cursor = current.nextCursor;
-    const requestId = requestIdRef.current + 1;
-    requestIdRef.current = requestId;
-    loadingRef.current = true;
-    setLoadingMore(true);
-    setLoadMoreError("");
-    try {
-      const page = await loadPageRef.current(cursor);
-      if (cacheKeyRef.current !== requestKey || requestIdRef.current !== requestId) return;
-      const entry = cache.getEntry(requestKey);
-      if (
-        (entry?.status !== "success" && entry?.status !== "refreshing") ||
-        entry.data !== current
-      ) {
-        // The list was invalidated / refreshed while this page was in flight;
-        // the fresh first page is authoritative.
-        return;
+  // A delayed auto-retry must not outlive the list that scheduled it.
+  useEffect(
+    () => () => {
+      requestIdRef.current += 1;
+    },
+    []
+  );
+
+  // A fresh first page (cache invalidation, refresh or mutation) clears the
+  // failure/pause state; the error never follows the user into new data.
+  useEffect(() => {
+    resetFailureState();
+  }, [resetFailureState, state.data]);
+
+  /**
+   * Request the next page. A failure is retried automatically at most
+   * `MAX_AUTO_RETRIES` times with a short backoff; only after that does the
+   * list pause and expose the manual retry button. The same cursor is used for
+   * every retry, and only one request may run at a time.
+   */
+  const requestNextPage = useCallback(
+    async (manual: boolean) => {
+      const current = dataRef.current;
+      if (!current || !current.hasMore || !current.nextCursor) return;
+      if (loadingRef.current) return;
+      if (!manual && pausedRef.current) return;
+
+      const requestKey = cacheKeyRef.current;
+      const cursor = current.nextCursor;
+      const requestId = requestIdRef.current + 1;
+      requestIdRef.current = requestId;
+      loadingRef.current = true;
+      if (manual) {
+        pausedRef.current = false;
+        setLoadMoreError("");
       }
-      const seen = new Set(current.items.map((item) => getIdRef.current(item)));
-      const appended = page.items.filter((item) => !seen.has(getIdRef.current(item)));
-      cache.set<TeacherIncrementalPage<T>>(requestKey, {
-        items: [...current.items, ...appended],
-        nextCursor: page.nextCursor,
-        hasMore: page.hasMore
-      });
-    } catch (error) {
-      if (cacheKeyRef.current === requestKey && requestIdRef.current === requestId) {
-        setLoadMoreError(loadMoreErrorMessage(error));
+      setLoadingMore(true);
+      const isCurrentRequest = () =>
+        cacheKeyRef.current === requestKey &&
+        requestIdRef.current === requestId &&
+        dataRef.current === current;
+
+      try {
+        for (let attempt = 0; ; attempt += 1) {
+          try {
+            const page = await loadPageRef.current(cursor);
+            if (!isCurrentRequest()) return;
+            const entry = cache.getEntry(requestKey);
+            if (
+              (entry?.status !== "success" && entry?.status !== "refreshing") ||
+              entry.data !== current
+            ) {
+              // The list was invalidated / refreshed while this page was in
+              // flight; the fresh first page is authoritative.
+              return;
+            }
+            const seen = new Set(current.items.map((item) => getIdRef.current(item)));
+            const appended = page.items.filter(
+              (item) => !seen.has(getIdRef.current(item))
+            );
+            cache.set<TeacherIncrementalPage<T>>(requestKey, {
+              items: [...current.items, ...appended],
+              nextCursor: page.nextCursor,
+              hasMore: page.hasMore
+            });
+            pausedRef.current = false;
+            setLoadMoreError("");
+            return;
+          } catch (error) {
+            if (!isCurrentRequest()) return;
+            if (attempt < MAX_AUTO_RETRIES) {
+              // Keep the loading indicator and the request lock while waiting;
+              // the sentinel cannot start a second request in the meantime.
+              await waitForRetry(AUTO_RETRY_DELAY_MS * (attempt + 1));
+              if (!isCurrentRequest()) return;
+              continue;
+            }
+            pausedRef.current = true;
+            setLoadMoreError(loadMoreErrorMessage(error));
+            return;
+          }
+        }
+      } finally {
+        if (requestIdRef.current === requestId) {
+          loadingRef.current = false;
+          setLoadingMore(false);
+        }
       }
-    } finally {
-      if (requestIdRef.current === requestId) {
-        loadingRef.current = false;
-        setLoadingMore(false);
-      }
-    }
-  }, [cache]);
+    },
+    [cache]
+  );
+
+  const loadMore = useCallback(() => {
+    void requestNextPage(false);
+  }, [requestNextPage]);
+
+  const retryLoadMore = useCallback(() => {
+    void requestNextPage(true);
+  }, [requestNextPage]);
 
   const reload = useCallback(() => {
     void cache.refresh(cacheKey, () => loadPageRef.current(null));
@@ -122,9 +187,20 @@ export function useTeacherIncrementalList<T>({
     error: state.error,
     loadingMore,
     loadMoreError,
+    paused: Boolean(loadMoreError),
     loadMore,
+    retryLoadMore,
     reload
   };
+}
+
+const MAX_AUTO_RETRIES = 2;
+const AUTO_RETRY_DELAY_MS = 700;
+
+function waitForRetry(delayMs: number) {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, delayMs);
+  });
 }
 
 /**
@@ -137,11 +213,13 @@ export function useInfiniteListTrigger({
   hasMore,
   loading,
   loadingMore,
+  paused = false,
   onLoadMore
 }: {
   hasMore: boolean;
   loading: boolean;
   loadingMore: boolean;
+  paused?: boolean;
   onLoadMore: () => void;
 }): RefObject<HTMLDivElement> {
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -150,7 +228,7 @@ export function useInfiniteListTrigger({
 
   useEffect(() => {
     const node = sentinelRef.current;
-    if (!node || !hasMore) return;
+    if (!node || !hasMore || paused) return;
     const observer =
       typeof IntersectionObserver === "undefined"
         ? null
@@ -190,7 +268,7 @@ export function useInfiniteListTrigger({
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-  }, [hasMore, loading, loadingMore]);
+  }, [hasMore, loading, loadingMore, paused]);
 
   return sentinelRef;
 }

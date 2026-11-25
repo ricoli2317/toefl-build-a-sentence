@@ -12,6 +12,7 @@ import {
 import { classIncludesWriting, normalizeClassSubjects } from "@/lib/teacherClasses";
 import { createdAtKeysetFilter, type TeacherListCursor } from "@/lib/teacherListPagination";
 import { loadClassAssignmentOverview } from "@/lib/classAssignmentOverview.server";
+import { mapWithConcurrency } from "@/lib/mapWithConcurrency";
 import { accountAutoSuffixAllowed } from "@/lib/studentAccountSuggestion";
 import { listVisibleStudentIds, type AccountActor } from "@/lib/accountAccess";
 import type { StudentBindingDomain } from "@/lib/studentBindings";
@@ -737,100 +738,93 @@ async function readReviewClassPage(
 }
 
 /**
- * Submitted / pending / published counts for one page of classes. Only the
- * page's groups, assignments and attempts are read; nothing outside the visible
- * class page contributes to the query.
+ * Submitted / pending / published counts for one page of classes.
+ *
+ * Each class is a database-side count, not a history transfer: the submitted
+ * count is one count query, and the reviewed / published / ignored counts are
+ * three parallel count queries. Pending and reviewing are the exact
+ * differences:
+ *
+ *   pending   = submitted - reviewed
+ *   reviewing = reviewed - published - ignored
+ *
+ * The bucket definitions stay the historical ones:
+ * - only submitted original attempts count (corrections never enter the class
+ *   summary, and published requires `status=published` AND `published_at`);
+ * - `已忽略` belongs to no visible bucket and is never reported as 批改中;
+ * - the group's teacher scope and the class id are unchanged.
+ *
+ * Counting is scoped to the page's classes and only runs for classes that have
+ * at least one submitted attempt. No attempt/review detail rows cross into
+ * Next.js.
  */
 async function loadClassReviewCounts(
   db: Db,
   teacherId: string,
   classIds: string[]
 ) {
-  const countsByClass = new Map<
-    string,
-    { pending: number; reviewing: number; published: number }
-  >();
-  const groupRows: Array<{ group_id: string; class_id: string | null }> = [];
-  for (const batch of chunkValues(classIds)) {
-    const groupResult = await readAllSupabaseRows<{ group_id: string; class_id: string | null }>(
-      (from, to) =>
-        db
-          .from("writing_assignment_groups")
-          .select("group_id,class_id")
-          .in("class_id", batch)
-          .eq("teacher_id", teacherId)
-          .order("group_id", { ascending: true })
-          .range(from, to)
-    );
-    if (groupResult.error) throw groupResult.error;
-
-    groupRows.push(...(groupResult.data ?? []));
-  }
-  const groupToClass = new Map(
-    groupRows.map((row) => [String(row.group_id), String(row.class_id)])
+  const entries = await mapWithConcurrency(classIds, 4, async (classId) => [
+    classId,
+    await loadClassReviewCount(db, teacherId, classId)
+  ] as const);
+  return new Map<string, { pending: number; reviewing: number; published: number }>(
+    entries
   );
-  if (groupToClass.size === 0) {
-    return countsByClass;
-  }
+}
 
-  const assignmentRows = await readRowsByIds<{ assignment_id: string; group_id: string | null }>(
-    db,
-    "writing_assignments",
-    "assignment_id,group_id",
-    Array.from(groupToClass.keys()),
-    "group_id"
-  );
-  const assignmentToClass = new Map<string, string>();
-  for (const row of assignmentRows) {
-    const classId = row.group_id ? groupToClass.get(String(row.group_id)) : undefined;
-    if (classId) assignmentToClass.set(String(row.assignment_id), classId);
+async function loadClassReviewCount(
+  db: Db,
+  teacherId: string,
+  classId: string
+) {
+  const submitted = await countClassAttempts(db, teacherId, classId, "none");
+  if (submitted === 0) {
+    return { pending: 0, reviewing: 0, published: 0 };
   }
-  if (assignmentToClass.size === 0) {
-    return countsByClass;
+  const [reviewed, published, ignored] = await Promise.all([
+    countClassAttempts(db, teacherId, classId, "any"),
+    countClassAttempts(db, teacherId, classId, "published"),
+    countClassAttempts(db, teacherId, classId, "ignored")
+  ]);
+  const publishedCount = Math.min(published, reviewed);
+  const ignoredCount = Math.min(ignored, reviewed);
+  return {
+    pending: Math.max(0, submitted - reviewed),
+    reviewing: Math.max(0, reviewed - publishedCount - ignoredCount),
+    published: publishedCount
+  };
+}
+
+async function countClassAttempts(
+  db: Db,
+  teacherId: string,
+  classId: string,
+  reviewBucket: "none" | "any" | "published" | "ignored"
+) {
+  const fields = [
+    "attempt_id",
+    "assignment:writing_assignments!inner(group:writing_assignment_groups!inner(class_id,teacher_id))"
+  ];
+  if (reviewBucket !== "none") {
+    fields.push("writing_reviews!inner(attempt_id,status,published_at)");
   }
-
-  const attemptRows = await readRowsByIds<{
-    attempt_id: string;
-    assignment_id: string | null;
-    status: string;
-  }>(
-    db,
-    "writing_attempts",
-    "attempt_id,assignment_id,status",
-    Array.from(assignmentToClass.keys()),
-    "assignment_id",
-    true
-  );
-  const submittedAttempts = attemptRows.filter((row) => row.status === "submitted");
-  const attemptIds = submittedAttempts.map((row) => String(row.attempt_id));
-  const reviewRows =
-    attemptIds.length > 0
-      ? await readRowsByIds<{ attempt_id: string; status: string | null; published_at: string | null }>(
-          db,
-          "writing_reviews",
-          "attempt_id,status,published_at",
-          attemptIds,
-          "attempt_id"
-        )
-      : [];
-  const reviewByAttempt = new Map(reviewRows.map((row) => [String(row.attempt_id), row]));
-
-  for (const attempt of submittedAttempts) {
-    const classId = attempt.assignment_id
-      ? assignmentToClass.get(String(attempt.assignment_id))
-      : undefined;
-    if (!classId) continue;
-    const counts = countsByClass.get(classId) ?? { pending: 0, reviewing: 0, published: 0 };
-    const review = reviewByAttempt.get(String(attempt.attempt_id));
-    if (!review) counts.pending += 1;
-    else if (review.status === "published" && review.published_at) counts.published += 1;
-    // 已忽略 belongs to neither the 待批改 / 批改中 / 已发布 buckets; it has
-    // its own list filter and is never reported as 批改中.
-    else if (review.status !== "ignored") counts.reviewing += 1;
-    countsByClass.set(classId, counts);
+  let query = db
+    .from("writing_attempts")
+    .select(fields.join(","), { count: "exact", head: true })
+    .eq("status", "submitted")
+    .eq("attempt_kind", "original")
+    .eq("assignment.group.class_id", classId)
+    .eq("assignment.group.teacher_id", teacherId);
+  if (reviewBucket === "published") {
+    query = query
+      .eq("writing_reviews.status", "published")
+      .not("writing_reviews.published_at", "is", null);
+  } else if (reviewBucket === "ignored") {
+    query = query.eq("writing_reviews.status", "ignored");
   }
-
-  return countsByClass;
+  const result = await query;
+  if (result.error) throw result.error;
+  return result.count ?? 0;
 }
 
 /**

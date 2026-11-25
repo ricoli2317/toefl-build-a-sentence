@@ -400,6 +400,7 @@ export function TeacherWritingReviewList({
           loadingMore={studentList.loadingMore}
           loadMoreError={studentList.loadMoreError}
           onLoadMore={studentList.loadMore}
+          onRetryLoadMore={studentList.retryLoadMore}
           onRetryInitial={studentList.reload}
           onStatusFilter={selectStatusFilter}
           onStudentFilter={selectStudentFilter}
@@ -422,6 +423,7 @@ export function TeacherWritingReviewList({
           classesLoadingMore={classList.loadingMore}
           classesLoadMoreError={classList.loadMoreError}
           classesOnLoadMore={classList.loadMore}
+          classesOnRetryLoadMore={classList.retryLoadMore}
           classesOnRetryInitial={classList.reload}
           classesReady={classesReady}
           onBack={() => selectClassFilter("")}
@@ -706,6 +708,7 @@ function StudentReviewSection({
   loadingMore,
   loadMoreError,
   onLoadMore,
+  onRetryLoadMore,
   onRetryInitial,
   onStatusFilter,
   onStudentFilter,
@@ -723,6 +726,7 @@ function StudentReviewSection({
   loadingMore: boolean;
   loadMoreError: string;
   onLoadMore: () => void;
+  onRetryLoadMore: () => void;
   onRetryInitial: () => void;
   onStatusFilter: (value: WritingReviewStatusFilter) => void;
   onStudentFilter: (studentId: string) => void;
@@ -746,6 +750,7 @@ function StudentReviewSection({
     hasMore,
     loading,
     loadingMore,
+    paused: Boolean(loadMoreError),
     onLoadMore
   });
   const selectedStudent = selectedStudentId
@@ -820,7 +825,7 @@ function StudentReviewSection({
             itemsCount={items.length}
             loadingMore={loadingMore}
             loadMoreError={loadMoreError}
-            onRetry={onLoadMore}
+            onRetry={onRetryLoadMore}
             sentinelRef={sentinelRef}
           />
         </>
@@ -846,6 +851,7 @@ function ClassReviewSection({
   classesLoadingMore,
   classesLoadMoreError,
   classesOnLoadMore,
+  classesOnRetryLoadMore,
   classesOnRetryInitial,
   classesReady,
   onBack,
@@ -866,6 +872,7 @@ function ClassReviewSection({
   classesLoadingMore: boolean;
   classesLoadMoreError: string;
   classesOnLoadMore: () => void;
+  classesOnRetryLoadMore: () => void;
   classesOnRetryInitial: () => void;
   classesReady: boolean;
   onBack: () => void;
@@ -880,6 +887,7 @@ function ClassReviewSection({
     hasMore: classesHasMore,
     loading: classesLoading,
     loadingMore: classesLoadingMore,
+    paused: Boolean(classesLoadMoreError),
     onLoadMore: classesOnLoadMore
   });
   const classFilter = (
@@ -966,7 +974,7 @@ function ClassReviewSection({
             itemsCount={classes.length}
             loadingMore={classesLoadingMore}
             loadMoreError={classesLoadMoreError}
-            onRetry={classesOnLoadMore}
+            onRetry={classesOnRetryLoadMore}
             sentinelRef={sentinelRef}
           />
         </>
@@ -1070,6 +1078,7 @@ function ClassReviewList({
     hasMore: list.hasMore,
     loading: list.loading,
     loadingMore: list.loadingMore,
+    paused: Boolean(list.loadMoreError),
     onLoadMore: list.loadMore
   });
   const selectedCount = selection.selectedIds.size;
@@ -1142,7 +1151,7 @@ function ClassReviewList({
             itemsCount={items.length}
             loadingMore={list.loadingMore}
             loadMoreError={list.loadMoreError}
-            onRetry={list.loadMore}
+            onRetry={list.retryLoadMore}
             sentinelRef={sentinelRef}
           />
         </>

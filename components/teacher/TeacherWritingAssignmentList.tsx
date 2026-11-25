@@ -91,6 +91,7 @@ export function TeacherWritingAssignmentList({
     hasMore,
     loading,
     loadingMore,
+    paused: Boolean(loadMoreError),
     onLoadMore: () => onLoadMore?.()
   });
 

@@ -14,12 +14,16 @@ import { loadTeacherScope } from "@/lib/teacherScope.server";
 import { listClassAssignmentIds } from "@/lib/teacherClasses.server";
 import {
   clampTeacherListLimit,
-  compareTeacherListUnitDesc,
-  encodeTeacherListCursor,
-  parseTeacherListCursor,
   submittedAtKeysetFilter,
   type TeacherListCursor
 } from "@/lib/teacherListPagination";
+import {
+  encodeReviewPageCursor,
+  parseReviewPageCursor,
+  scanTeacherReviewPage,
+  type ReviewPageCursor,
+  type ReviewScanRow
+} from "@/lib/teacherReviewScan";
 import {
   isWritingReviewStatusFilter,
   isWritingReviewTaskTypeFilter,
@@ -69,16 +73,17 @@ type AssignmentRow = {
 
 type PageError = { message: string };
 
-type AttemptRowWithStatus = AttemptRow & { __reviewStatus?: WritingReviewListStatus };
-
 const QUERY_BATCH_SIZE = 100;
 /**
- * Each scan batch reads at most this many rows per source. A page is cut only
- * after the status/student/task-type filter, so a rare filter may need more
- * than one batch; the batch itself stays bounded.
+ * 全部 / 待批改 are resolved in memory (pending has no review row and PostgREST
+ * cannot express an anti-join). They are common filters, so a small batch is
+ * enough for a normal page; the bounded scanner can continue later without
+ * skipping a row.
  */
-const SCAN_BATCH_SIZE = 200;
-const MAX_SCAN_BATCHES = 200;
+const IN_MEMORY_BATCH_SIZE = 40;
+const IN_MEMORY_MAX_BATCHES = 40;
+/** Published / reviewing / ignored are filtered by the database itself. */
+const STATUS_FILTERED_MAX_BATCHES = 64;
 
 const ATTEMPT_FIELDS =
   "attempt_id,attempt_kind,original_attempt_id,correction_source_snapshot,assignment_id,user_id,task_type,question_id,set_id,word_count,submitted_at";
@@ -112,7 +117,7 @@ export async function GET(request: Request) {
       status: (isWritingReviewStatusFilter(statusParam) ? statusParam : "all") as WritingReviewStatusFilter,
       taskType: (isWritingReviewTaskTypeFilter(taskTypeParam) ? taskTypeParam : "all") as WritingReviewTaskTypeFilter
     };
-    const cursor = parseTeacherListCursor(params.get("cursor"));
+    const cursor = parseReviewPageCursor(params.get("cursor"));
     const limit = requestedAttemptId ? 1 : clampTeacherListLimit(params.get("limit"));
 
     const supabase = createServiceSupabase();
@@ -153,8 +158,8 @@ export async function GET(request: Request) {
       );
     }
 
-    const attempts = page.data ?? [];
-    const nextCursor = encodeTeacherListCursor(page.nextCursor);
+    const attempts = page.rows;
+    const nextCursor = encodeReviewPageCursor(page.nextCursor);
     if (attempts.length === 0) {
       return json({ attempts: [], hasMore: page.hasMore, nextCursor });
     }
@@ -179,19 +184,22 @@ export async function GET(request: Request) {
 /**
  * Cursor page of reviewable submissions.
  *
- * The review list has two disjoint sources (self practice and assignment
- * attempts) and the 批改状态 filter lives in the review tables, so a page is
- * produced by scanning both sources in the shared `submitted_at DESC` order,
- * resolving each scanned row's review status, and only then cutting the page.
- * Filters are applied to every scanned row, so they always act on the whole
- * history instead of the rows already sent to the client.
+ * 全部 / 待批改 are merged from the two sources with a bounded in-memory status
+ * scan (pending has no review row, so it cannot be pushed into PostgREST).
+ * Published / reviewing / ignored are filtered by the database per review
+ * table and attempt kind, so a sparse status never scans unrelated history.
+ *
+ * Each stream keeps its own cursor; the shared scanner merges them in
+ * `(submitted_at DESC, attempt_id DESC)` order. When a bounded scan stops
+ * before exhausting a stream, its cursor is carried in the opaque page cursor,
+ * so the rest of the history is neither skipped nor reported as finished.
  */
 async function loadReviewableAttemptPage(
   supabase: ReturnType<typeof createServiceSupabase>,
   options: {
     admin: boolean;
     classAssignmentIds: string[] | null;
-    cursor: TeacherListCursor | null;
+    cursor: ReviewPageCursor | null;
     filters: {
       studentId: string;
       status: WritingReviewStatusFilter;
@@ -205,10 +213,10 @@ async function loadReviewableAttemptPage(
     writingStudentIds: string[];
   }
 ): Promise<{
-  data: AttemptRow[] | null;
+  rows: ReviewAttemptRow[];
   error: PageError | null;
   hasMore: boolean;
-  nextCursor: TeacherListCursor | null;
+  nextCursor: ReviewPageCursor | null;
 }> {
   // A class-scoped list only contains submissions of that class's assignments;
   // self-practice and other assignments can never leak in.
@@ -222,133 +230,108 @@ async function loadReviewableAttemptPage(
       (options.classAssignmentIds !== null
         ? options.classAssignmentIds.length > 0
         : options.hasOwnAssignments));
+  const sources = [
+    { source: "self" as const, enabled: selfEnabled },
+    { source: "assignment" as const, enabled: assignmentEnabled }
+  ].filter((entry) => entry.enabled);
 
-  type ScanSource = {
-    source: "self" | "assignment";
-    enabled: boolean;
-    exhausted: boolean;
-    /** Last row fetched from THIS source (its own keyset, never the merged one). */
-    fetchedCursor: TeacherListCursor | null;
-    buffer: AttemptRowWithStatus[];
-  };
-  const sources: ScanSource[] = [
-    {
-      source: "self",
-      enabled: selfEnabled,
-      exhausted: !selfEnabled,
-      fetchedCursor: options.cursor,
-      buffer: []
-    },
-    {
-      source: "assignment",
-      enabled: assignmentEnabled,
-      exhausted: !assignmentEnabled,
-      fetchedCursor: options.cursor,
-      buffer: []
-    }
-  ];
+  if (sources.length === 0) {
+    return { rows: [], error: null, hasMore: false, nextCursor: null };
+  }
 
-  const collected: AttemptRowWithStatus[] = [];
-  const collectedIds = new Set<string>();
-  let scanCursor = options.cursor;
-  let batches = 0;
-
-  const fillSource = async (state: ScanSource) => {
-    const result = await readAttemptSourcePage(
-      supabase,
-      state.source,
-      options,
-      state.fetchedCursor
-    );
-    if (result.error) return result.error;
-    const rows = (result.data ?? []) as AttemptRowWithStatus[];
-    if (rows.length < SCAN_BATCH_SIZE) state.exhausted = true;
-    if (rows.length > 0) {
-      const last = rows[rows.length - 1];
-      state.fetchedCursor = {
-        at: last.submitted_at ?? "",
-        id: String(last.attempt_id)
+  try {
+    if (isDatabaseFilteredReviewStatus(options.filters.status)) {
+      const status = options.filters.status;
+      const streams = sources.flatMap(({ source }) =>
+        (["original", "correction"] as const).map((kind) => ({
+          id: `${source}:${kind}`,
+          enabled: true,
+          load: async (cursor: TeacherListCursor | null, limit: number) => {
+            const result = await readStatusFilteredAttemptPage(
+              supabase,
+              source,
+              kind,
+              status,
+              options,
+              cursor,
+              limit
+            );
+            if (result.error) throw new Error(result.error.message);
+            return result.data ?? [];
+          }
+        }))
+      );
+      const page = await scanTeacherReviewPage({
+        streams,
+        cursor: options.cursor,
+        limit: options.limit,
+        batchSize: Math.max(2, options.limit + 1),
+        maxBatches: STATUS_FILTERED_MAX_BATCHES,
+        matches: (row) => matchesReviewFilters(row, options.filters)
+      });
+      return {
+        rows: page.rows,
+        error: null,
+        hasMore: page.hasMore,
+        nextCursor: page.nextCursor
       };
     }
-    const seen = new Set(collectedIds);
-    state.buffer = rows.filter((attempt) => {
-      const attemptId = String(attempt.attempt_id);
-      if (seen.has(attemptId)) return false;
-      seen.add(attemptId);
-      return true;
-    });
-    if (state.buffer.length > 0) {
-      const statuses = await loadReviewStatusMap(supabase, state.buffer);
-      for (const attempt of state.buffer) {
-        attempt.__reviewStatus = statuses.get(String(attempt.attempt_id)) ?? "pending";
+
+    const streams = sources.map(({ source }) => ({
+      id: source,
+      enabled: true,
+      load: async (cursor: TeacherListCursor | null, limit: number) => {
+        const result = await readAttemptSourcePage(
+          supabase,
+          source,
+          options,
+          cursor,
+          limit
+        );
+        if (result.error) throw new Error(result.error.message);
+        const rows = result.data ?? [];
+        const statuses = await loadReviewStatusMap(supabase, rows);
+        return rows.map((attempt) => ({
+          ...attempt,
+          review_status:
+            statuses.get(String(attempt.attempt_id)) ?? ("pending" as const)
+        }));
       }
-    }
-    return null;
-  };
-
-  while (collected.length <= options.limit) {
-    for (const state of sources) {
-      if (!state.enabled || state.exhausted || state.buffer.length > 0) continue;
-      if (batches >= MAX_SCAN_BATCHES) break;
-      batches += 1;
-      const error = await fillSource(state);
-      if (error) return { data: null, error, hasMore: false, nextCursor: null };
-    }
-
-    // Both sources are consumed in the same `(timestamp DESC, id DESC)` order;
-    // taking only the newest available front keeps the merged order intact
-    // without ever skipping a source's un-fetched rows.
-    const candidates = sources.filter((state) => state.buffer.length > 0);
-    if (candidates.length === 0) {
-      if (sources.every((state) => !state.enabled || state.exhausted)) break;
-      if (batches >= MAX_SCAN_BATCHES) break;
-      continue;
-    }
-    const nextState = candidates.reduce((left, right) =>
-      compareTeacherListUnitDesc(
-        sourceCursor(left.buffer[0]),
-        sourceCursor(right.buffer[0])
-      ) <= 0
-        ? left
-        : right
-    );
-    const attempt = nextState.buffer.shift();
-    if (!attempt) break;
-    scanCursor = sourceCursor(attempt);
-    if (!matchesReviewFilters(attempt, options.filters)) continue;
-    const attemptId = String(attempt.attempt_id);
-    collectedIds.add(attemptId);
-    collected.push(attempt);
+    }));
+    const page = await scanTeacherReviewPage({
+      streams,
+      cursor: options.cursor,
+      limit: options.limit,
+      batchSize: IN_MEMORY_BATCH_SIZE,
+      maxBatches: IN_MEMORY_MAX_BATCHES,
+      matches: (row) => matchesReviewFilters(row, options.filters)
+    });
+    return {
+      rows: page.rows,
+      error: null,
+      hasMore: page.hasMore,
+      nextCursor: page.nextCursor
+    };
+  } catch (error) {
+    return {
+      rows: [],
+      error: { message: error instanceof Error ? error.message : "review_scan_failed" },
+      hasMore: false,
+      nextCursor: null
+    };
   }
-
-  const exhausted = sources.every(
-    (state) => !state.enabled || (state.exhausted && state.buffer.length === 0)
-  );
-  const hasMore = collected.length > options.limit ? true : !exhausted;
-  const emitted = collected.slice(0, options.limit);
-  let nextCursor: TeacherListCursor | null = null;
-  if (hasMore) {
-    if (collected.length > options.limit) {
-      const last = emitted[emitted.length - 1];
-      nextCursor = last ? sourceCursor(last) : scanCursor;
-    } else {
-      // The scan cap was reached; continue strictly after the last scanned row
-      // so a long run of filtered-out rows cannot drop a later match.
-      nextCursor = scanCursor;
-    }
-  }
-  return { data: emitted, error: null, hasMore, nextCursor };
 }
 
-function sourceCursor(attempt: { submitted_at: string | null; attempt_id: string }): TeacherListCursor {
-  return {
-    at: attempt.submitted_at ?? "",
-    id: String(attempt.attempt_id)
-  };
+type ReviewAttemptRow = AttemptRow & ReviewScanRow;
+
+function isDatabaseFilteredReviewStatus(
+  status: WritingReviewStatusFilter
+): status is "published" | "reviewing" | "ignored" {
+  return status === "published" || status === "reviewing" || status === "ignored";
 }
 
 function matchesReviewFilters(
-  attempt: AttemptRowWithStatus,
+  attempt: ReviewAttemptRow,
   filters: {
     studentId: string;
     status: WritingReviewStatusFilter;
@@ -358,17 +341,13 @@ function matchesReviewFilters(
   if (filters.studentId && String(attempt.user_id) !== filters.studentId) return false;
   if (!isWritingTaskType(attempt.task_type)) return false;
   if (filters.taskType !== "all" && attempt.task_type !== filters.taskType) return false;
-  return matchesWritingReviewStatusFilter(
-    attempt.__reviewStatus ?? "pending",
-    filters.status
-  );
+  return matchesWritingReviewStatusFilter(attempt.review_status, filters.status);
 }
 
 /**
- * One source's next scan batch. Student / task type filters are applied by the
- * database, and the cursor is the shared `(submitted_at DESC, attempt_id DESC)`
- * keyset, so repeated pages never duplicate or omit a row. The 批改状态 filter
- * is resolved after this read because it spans two review tables.
+ * One source's next in-memory scan batch (全部 / 待批改). Student and task type
+ * filters are applied by the database; the cursor is the shared
+ * `(submitted_at DESC, attempt_id DESC)` keyset.
  */
 async function readAttemptSourcePage(
   supabase: ReturnType<typeof createServiceSupabase>,
@@ -386,35 +365,18 @@ async function readAttemptSourcePage(
     teacherId: string;
     writingStudentIds: string[];
   },
-  cursor: TeacherListCursor | null
+  cursor: TeacherListCursor | null,
+  limit: number
 ): Promise<{ data: AttemptRow[] | null; error: PageError | null }> {
-  // The assignment source is scoped through its foreign key instead of a giant
-  // id list: the teacher (or the requested class) is a relation filter, so the
-  // request URL stays short even for teachers with hundreds of assignments.
-  let columns = ATTEMPT_FIELDS;
-  if (source === "assignment" && !options.admin) {
-    columns += options.classAssignmentIds !== null
-      ? ",assignment:writing_assignments!inner(teacher_id,deleted_at,group:writing_assignment_groups!inner(class_id))"
-      : ",assignment:writing_assignments!inner(teacher_id,deleted_at)";
-  }
+  const columns =
+    source === "assignment" && !options.admin
+      ? `${ATTEMPT_FIELDS},${assignmentScopeEmbed(options)}`
+      : ATTEMPT_FIELDS;
   let query = supabase
     .from("writing_attempts")
     .select(columns)
     .eq("status", "submitted");
-  if (source === "self") {
-    query = query
-      .is("assignment_id", null)
-      .in("user_id", options.writingStudentIds);
-  } else if (options.admin) {
-    query = query.not("assignment_id", "is", null);
-  } else if (options.classAssignmentIds !== null) {
-    query = query
-      .eq("assignment.teacher_id", options.teacherId)
-      .is("assignment.deleted_at", null)
-      .eq("assignment.group.class_id", options.requestedClassId);
-  } else {
-    query = query.eq("assignment.teacher_id", options.teacherId);
-  }
+  query = applyAttemptSourceScope(query, source, options);
   if (options.requestedAttemptId) {
     query = query.eq("attempt_id", options.requestedAttemptId);
   }
@@ -430,11 +392,136 @@ async function readAttemptSourcePage(
   const result = await query
     .order("submitted_at", { ascending: false, nullsFirst: false })
     .order("attempt_id", { ascending: false })
-    .limit(SCAN_BATCH_SIZE);
+    .limit(limit);
   return {
     data: (result.data ?? []) as unknown as AttemptRow[],
     error: result.error
   };
+}
+
+/**
+ * One database-filtered status stream (published / reviewing / ignored) for a
+ * source and attempt kind. Only rows that already satisfy the filter are read,
+ * and the review status is known from the stream itself.
+ */
+async function readStatusFilteredAttemptPage(
+  supabase: ReturnType<typeof createServiceSupabase>,
+  source: "self" | "assignment",
+  kind: "original" | "correction",
+  status: "published" | "reviewing" | "ignored",
+  options: {
+    admin: boolean;
+    classAssignmentIds: string[] | null;
+    filters: {
+      studentId: string;
+      status: WritingReviewStatusFilter;
+      taskType: WritingReviewTaskTypeFilter;
+    };
+    requestedAttemptId: string | undefined;
+    requestedClassId: string;
+    teacherId: string;
+    writingStudentIds: string[];
+  },
+  cursor: TeacherListCursor | null,
+  limit: number
+): Promise<{ data: ReviewAttemptRow[] | null; error: PageError | null }> {
+  const reviewTable =
+    kind === "correction" ? "writing_correction_reviews" : "writing_reviews";
+  let columns =
+    `${ATTEMPT_FIELDS},${reviewTable}!inner(attempt_id,status)`;
+  if (source === "assignment" && !options.admin) {
+    columns += `,${assignmentScopeEmbed(options)}`;
+  }
+  let query = supabase
+    .from("writing_attempts")
+    .select(columns)
+    .eq("status", "submitted")
+    .eq("attempt_kind", kind);
+  query = applyAttemptSourceScope(query, source, options);
+  query = applyReviewStatusFilter(query, reviewTable, status);
+  if (options.requestedAttemptId) {
+    query = query.eq("attempt_id", options.requestedAttemptId);
+  }
+  if (options.filters.studentId) {
+    query = query.eq("user_id", options.filters.studentId);
+  }
+  if (options.filters.taskType !== "all") {
+    query = query.eq("task_type", options.filters.taskType);
+  }
+  if (cursor) {
+    query = query.or(submittedAtKeysetFilter(cursor));
+  }
+  const result = await query
+    .order("submitted_at", { ascending: false, nullsFirst: false })
+    .order("attempt_id", { ascending: false })
+    .limit(limit);
+  const rows = (result.data ?? []) as unknown as AttemptRow[];
+  return {
+    data: rows.map((row) => ({ ...row, review_status: status })),
+    error: result.error
+  };
+}
+
+function assignmentScopeEmbed(options: {
+  classAssignmentIds: string[] | null;
+}) {
+  return options.classAssignmentIds !== null
+    ? "assignment:writing_assignments!inner(teacher_id,deleted_at,group:writing_assignment_groups!inner(class_id,teacher_id))"
+    : "assignment:writing_assignments!inner(teacher_id,deleted_at)";
+}
+
+function applyAttemptSourceScope<T extends {
+  is: (column: string, value: null) => T;
+  in: (column: string, values: string[]) => T;
+  not: (column: string, operator: "is", value: null) => T;
+  eq: (column: string, value: string) => T;
+}>(
+  query: T,
+  source: "self" | "assignment",
+  options: {
+    admin: boolean;
+    classAssignmentIds: string[] | null;
+    requestedClassId: string;
+    teacherId: string;
+    writingStudentIds: string[];
+  }
+): T {
+  if (source === "self") {
+    return query
+      .is("assignment_id", null)
+      .in("user_id", options.writingStudentIds);
+  }
+  if (options.admin) {
+    return query.not("assignment_id", "is", null);
+  }
+  if (options.classAssignmentIds !== null) {
+    // Class scope follows the class group's teacher (the old
+    // listClassAssignmentIds contract), not the assignment row's creator.
+    return query
+      .eq("assignment.group.teacher_id", options.teacherId)
+      .is("assignment.deleted_at", null)
+      .eq("assignment.group.class_id", options.requestedClassId);
+  }
+  return query.eq("assignment.teacher_id", options.teacherId);
+}
+
+function applyReviewStatusFilter<T extends {
+  eq: (column: string, value: string) => T;
+  neq: (column: string, value: string) => T;
+}>(
+  query: T,
+  reviewTable: string,
+  status: "published" | "reviewing" | "ignored"
+): T {
+  if (status === "published") {
+    return query.eq(`${reviewTable}.status`, "published");
+  }
+  if (status === "ignored") {
+    return query.eq(`${reviewTable}.status`, "ignored");
+  }
+  return query
+    .neq(`${reviewTable}.status`, "published")
+    .neq(`${reviewTable}.status`, "ignored");
 }
 
 async function loadReviewStatusMap(

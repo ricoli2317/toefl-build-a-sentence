@@ -529,10 +529,9 @@ test("the list keeps every 全部 consumer consistent with the ignored exclusion
   // The class overview counts already classify 已忽略 into no bucket, so
   // 全部 = 待批改 + 批改中 + 已发布 stays true there as well.
   const classServer = read("lib/teacherClasses.server.ts");
-  assert.match(
-    classServer,
-    /else if \(review\.status !== "ignored"\) counts\.reviewing \+= 1;/
-  );
+  assert.match(classServer, /reviewing: Math\.max\(0, reviewed - publishedCount - ignoredCount\)/);
+  assert.match(classServer, /\.eq\("writing_reviews\.status", "ignored"\)/);
+  assert.match(classServer, /countClassAttempts\(db, teacherId, classId, "published"\)/);
   // The dashboard 待批改 count also subtracts ignored reviews.
   const dashboardServer = read("lib/teacherDashboardServer.ts");
   assert.match(dashboardServer, /selfIgnored -[\s\S]{0,20}assignmentIgnored/);

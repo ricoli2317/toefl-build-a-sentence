@@ -64,9 +64,12 @@ test("writing submissions sort by submitted_at DESC with a stable attempt id tie
   // rows, so both tabs and every class drill-down share the one order and the
   // client never re-sorts.
   const route = read("app/api/teacher/writing/reviews/route.ts");
-  // The two review sources merge through the shared `(time DESC, id DESC)`
+  const scan = read("lib/teacherReviewScan.ts");
+  // Every source stream merges through the shared `(time DESC, id DESC)`
   // comparator, so the emitted page keeps the same stable order.
-  assert.match(route, /compareTeacherListUnitDesc/);
+  assert.match(route, /submittedAtKeysetFilter/);
+  assert.match(route, /scanTeacherReviewPage/);
+  assert.match(scan, /compareTeacherListUnitDesc/);
   const list = read("components/teacher/TeacherWritingReviewList.tsx");
   assert.doesNotMatch(list, /\.sort\(/);
 });
@@ -106,7 +109,12 @@ test("student tab filters combine student, status and task type with AND", () =>
   const route = read("app/api/teacher/writing/reviews/route.ts");
   assert.match(route, /query = query\.eq\("user_id", options\.filters\.studentId\)/);
   assert.match(route, /query = query\.eq\("task_type", options\.filters\.taskType\)/);
-  assert.match(route, /matchesWritingReviewStatusFilter\(\s*attempt\.__reviewStatus \?\? "pending",\s*filters\.status\s*\)/);
+  assert.match(route, /matchesWritingReviewStatusFilter\(attempt\.review_status, filters\.status\)/);
+  // A status-filtered request does not scan history: the status is pushed to
+  // the corresponding review table before the page is cut.
+  assert.match(route, /readStatusFilteredAttemptPage/);
+  assert.match(route, /applyReviewStatusFilter/);
+  assert.match(route, /writing_correction_reviews/);
 });
 
 // 8 + 9 + 10 + 11: the class tab applies the same status ∩ task type view to
