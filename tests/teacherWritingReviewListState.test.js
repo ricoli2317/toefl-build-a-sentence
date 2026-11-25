@@ -64,7 +64,9 @@ test("writing submissions sort by submitted_at DESC with a stable attempt id tie
   // rows, so both tabs and every class drill-down share the one order and the
   // client never re-sorts.
   const route = read("app/api/teacher/writing/reviews/route.ts");
-  assert.match(route, /\.sort\(compareWritingSubmissionsBySubmittedAtDesc\)/);
+  // The two review sources merge through the shared `(time DESC, id DESC)`
+  // comparator, so the emitted page keeps the same stable order.
+  assert.match(route, /compareTeacherListUnitDesc/);
   const list = read("components/teacher/TeacherWritingReviewList.tsx");
   assert.doesNotMatch(list, /\.sort\(/);
 });
@@ -92,16 +94,19 @@ test("student tab filters combine student, status and task type with AND", () =>
   assert.deepEqual(ids({ studentId: "li", status: "pending", taskType: "academic_discussion" }), []);
   assert.deepEqual(ids({ status: "all", taskType: "all", studentId: "li" }), ["3", "4"]);
 
-  // Both tabs run the shared predicate with all three values together.
+  // Both tabs send all three values to the server; the list only renders the
+  // rows it receives.
   const list = read("components/teacher/TeacherWritingReviewList.tsx");
   assert.match(
     list,
-    /filterWritingReviewListEntries\(attempts, \{\s*studentId: activeStudentId,\s*status: statusFilter,\s*taskType: taskFilter\s*\}\)/
+    /loadWritingReviewPage\(\{\s*cursor,\s*status: statusFilter,\s*studentId: activeStudentId,\s*taskFilter\s*\}\)/
   );
-  assert.match(
-    list,
-    /filterWritingReviewListEntries\(attempts, \{\s*status: statusFilter,\s*taskType: taskFilter\s*\}\)/
-  );
+  assert.match(list, /loadWritingReviewPage\(\{\s*classId,\s*cursor,\s*status: statusFilter,\s*studentId: "",\s*taskFilter\s*\}\)/);
+  assert.doesNotMatch(list, /filterWritingReviewListEntries/);
+  const route = read("app/api/teacher/writing/reviews/route.ts");
+  assert.match(route, /query = query\.eq\("user_id", options\.filters\.studentId\)/);
+  assert.match(route, /query = query\.eq\("task_type", options\.filters\.taskType\)/);
+  assert.match(route, /matchesWritingReviewStatusFilter\(\s*attempt\.__reviewStatus \?\? "pending",\s*filters\.status\s*\)/);
 });
 
 // 8 + 9 + 10 + 11: the class tab applies the same status ∩ task type view to
@@ -137,17 +142,23 @@ test("student filter options stay scoped, distinct and name-sorted", () => {
 test("class review scope stays limited to the teacher's own writing classes", () => {
   const route = read("app/api/teacher/writing/reviews/route.ts");
   assert.match(route, /listClassAssignmentIds\(supabase, auth\.userId, requestedClassId\)/);
-  assert.match(route, /const assignmentIds = classAssignmentIds \?\? ownAssignmentIds;/);
-  assert.match(route, /classAssignmentIds !== null \|\| writingStudentIds\.length === 0/);
+  assert.match(route, /options\.classAssignmentIds !== null/);
+  assert.match(route, /options\.hasOwnAssignments/);
+  assert.match(route, /assignment\.teacher_id", options\.teacherId/);
+  assert.match(route, /assignment\.group\.class_id", options\.requestedClassId/);
+  assert.match(route, /requestedClassId && auth\.role !== "admin" && classAssignmentIds === null/);
 
   const list = read("components/teacher/TeacherWritingReviewList.tsx");
-  assert.match(list, /loadWritingReviews\(`\?classId=\$\{encodeURIComponent\(classId\)\}`\)/);
+  assert.match(list, /loadWritingReviewPage\(\{\s*classId,\s*cursor,/);
   assert.match(list, /classOptions\.some\(\(entry\) => entry\.class_id === classId\)/);
+  assert.match(list, /writingClassesOnly\(classOptionsState\.data\?\.classes \?\? \[\]\)/);
 
   const server = read("lib/teacherClasses.server.ts");
-  assert.match(server, /entry\.subjects\.includes\("writing"\)/);
+  assert.match(server, /classIncludesWriting\(subjects\)/);
 
-  // The class filter options come from the Writing-only review classes API.
+  // The class filter options come from the lightweight class API, while the
+  // overview cards are their own paginated source.
+  assert.match(list, /TEACHER_CLASSES_CACHE_KEY/);
   assert.match(list, /loadClassReviewSummaries/);
   assert.match(list, /\/api\/teacher\/writing\/review-classes/);
 });

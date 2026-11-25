@@ -1,4 +1,12 @@
 import { readAllSupabaseRows } from "@/lib/supabasePagination";
+import {
+  clampTeacherListLimit,
+  createdAtKeysetFilter,
+  encodeTeacherListCursor,
+  mergeTeacherListUnitsDesc,
+  parseTeacherListCursor,
+  type TeacherListCursor
+} from "@/lib/teacherListPagination";
 import { getPreferredUserDisplayName } from "@/lib/userDisplayName";
 import {
   assignmentSnapshotSourceSetId,
@@ -39,6 +47,9 @@ import {
 
 export const dynamic = "force-dynamic";
 
+const ASSIGNMENT_LIST_FIELDS =
+  "assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,set_title:question_snapshot->>set_title,source_set_id:question_snapshot->>source_set_id,category_summary:question_snapshot->>categorySummary,category_total_questions:question_snapshot->>totalQuestions,due_at,status,created_at,updated_at";
+
 type AssignmentRow = Omit<
   WritingAssignmentSummary,
   | "assigned_count"
@@ -65,24 +76,96 @@ type ProfileRow = { id: string; email: string | null; full_name: string | null }
 type AssignmentAttemptRow = { assignment_id: string; attempt_id: string; user_id: string; attempt_kind: "original" | "correction" | null; status: string; submitted_at: string | null };
 type AssignmentReviewRow = { attempt_id: string; status: string; published_at: string | null };
 
+/**
+ * One card = one display unit. A multi-question Assignment Group is never
+ * split across pages, so the page cursor is the group id for a group unit and
+ * the assignment id for a legacy standalone assignment.
+ */
+type AssignmentUnitRef = {
+  at: string;
+  id: string;
+  kind: "group" | "assignment";
+};
+
+type AssignmentGroupUnitRow = {
+  group_id: string;
+  created_at: string;
+};
+
+type AssignmentStandaloneUnitRow = {
+  assignment_id: string;
+  created_at: string;
+};
+
 export async function GET(request: Request) {
   try {
     const auth = await requireWritingAssignmentTeacher(request);
     if (auth.error) return auth.error;
     if (!auth.supabase || !auth.teacherId) return writingAssignmentJson({ message: "无权访问教师端作业数据。" }, { status: 401 });
-    const assignmentsResult = await readAllSupabaseRows<AssignmentRow>((from, to) =>
-      auth.supabase!
-        .from("writing_assignments")
-        .select("assignment_id,group_id,group_position,teacher_id,task_type,question_source,question_id,set_title:question_snapshot->>set_title,source_set_id:question_snapshot->>source_set_id,category_summary:question_snapshot->>categorySummary,category_total_questions:question_snapshot->>totalQuestions,due_at,status,created_at,updated_at")
-        .eq("teacher_id", auth.teacherId!)
-        .is("deleted_at", null)
-        .order("created_at", { ascending: false })
-        .order("assignment_id", { ascending: false })
-        .range(from, to)
+    const params = new URL(request.url).searchParams;
+    // The tab and both filters are server-side: the page is cut AFTER the
+    // filter, never by hiding already-loaded rows on the client.
+    const view = params.get("view") === "class" ? "class" : "students";
+    const studentId = view === "students" ? params.get("studentId")?.trim() ?? "" : "";
+    const classId = view === "class" ? params.get("classId")?.trim() ?? "" : "";
+    const cursor = parseTeacherListCursor(params.get("cursor"));
+    const limit = clampTeacherListLimit(params.get("limit"));
+
+    const [groupRows, standaloneRows] = await Promise.all([
+      loadAssignmentGroupUnitPage(auth.supabase, {
+        classId,
+        cursor,
+        limit,
+        studentId,
+        teacherId: auth.teacherId,
+        view
+      }),
+      view === "class"
+        ? Promise.resolve([] as AssignmentStandaloneUnitRow[])
+        : loadStandaloneAssignmentUnitPage(auth.supabase, {
+            cursor,
+            limit,
+            studentId,
+            teacherId: auth.teacherId
+          })
+    ]);
+
+    const groupUnits: AssignmentUnitRef[] = groupRows.map((row) => ({
+      at: row.created_at,
+      id: String(row.group_id),
+      kind: "group"
+    }));
+    const standaloneUnits: AssignmentUnitRef[] = standaloneRows.map((row) => ({
+      at: row.created_at,
+      id: String(row.assignment_id),
+      kind: "assignment"
+    }));
+    const mergedUnits = mergeTeacherListUnitsDesc(
+      groupUnits,
+      standaloneUnits,
+      (unit) => ({ at: unit.at, id: unit.id })
     );
-    if (assignmentsResult.error) throw assignmentsResult.error;
-    const assignments = assignmentsResult.data ?? [];
-    if (assignments.length === 0) return writingAssignmentJson({ assignments: [] });
+    const pageUnits = mergedUnits.slice(0, limit);
+    const hasMore = mergedUnits.length > limit;
+    const lastUnit = pageUnits[pageUnits.length - 1] ?? null;
+    const nextCursor = hasMore && lastUnit
+      ? { at: lastUnit.at, id: lastUnit.id }
+      : null;
+    if (pageUnits.length === 0) {
+      return writingAssignmentJson({ assignments: [], hasMore: false, nextCursor: null });
+    }
+
+    // Only the current page's groups/assignments are read from here on:
+    // members, attempts, reviews, profiles and completion progress never touch
+    // the rest of the teacher's history.
+    const assignments = await readAssignmentRowsForUnits(auth.supabase, pageUnits);
+    if (assignments.length === 0) {
+      return writingAssignmentJson({
+        assignments: [],
+        hasMore,
+        nextCursor: encodeTeacherListCursor(nextCursor)
+      });
+    }
 
     const assignmentIds = assignments.map((assignment) => assignment.assignment_id);
     // Members, attempts, review statuses, display names, the persisted group
@@ -292,7 +375,11 @@ export async function GET(request: Request) {
           )
         } satisfies WritingAssignmentSummary;
     });
-    return writingAssignmentJson({ assignments: enrichedAssignments });
+    return writingAssignmentJson({
+      assignments: enrichedAssignments,
+      hasMore,
+      nextCursor: encodeTeacherListCursor(nextCursor)
+    });
   } catch (error) {
     console.error("[writing-assignments] list_load_failed", error);
     return writingAssignmentJson(
@@ -300,6 +387,156 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * The display-unit page of Assignment Groups. Filters (class / student) are
+ * applied by the database before LIMIT, and a group is one row, so its items
+ * can never be split across pages.
+ */
+async function loadAssignmentGroupUnitPage(
+  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
+  options: {
+    classId: string;
+    cursor: TeacherListCursor | null;
+    limit: number;
+    studentId: string;
+    teacherId: string;
+    view: "students" | "class";
+  }
+) {
+  const itemEmbed = options.studentId
+    ? "writing_assignments!inner(assignment_id,deleted_at,writing_assignment_students!inner(student_id))"
+    : "writing_assignments!inner(assignment_id,deleted_at)";
+  let query = supabase
+    .from("writing_assignment_groups")
+    .select(`group_id,created_at,${itemEmbed}`)
+    .eq("teacher_id", options.teacherId)
+    .is("writing_assignments.deleted_at", null);
+  if (options.view === "class") {
+    query = query.not("class_id", "is", null);
+    if (options.classId) query = query.eq("class_id", options.classId);
+  } else {
+    query = query.is("class_id", null);
+    if (options.studentId) {
+      query = query.eq(
+        "writing_assignments.writing_assignment_students.student_id",
+        options.studentId
+      );
+    }
+  }
+  if (options.cursor) {
+    query = query.or(createdAtKeysetFilter(options.cursor, "created_at", "group_id"));
+  }
+  const result = await query
+    .order("created_at", { ascending: false })
+    .order("group_id", { ascending: false })
+    .limit(options.limit + 1);
+  if (result.error) throw result.error;
+  return (result.data ?? []) as unknown as AssignmentGroupUnitRow[];
+}
+
+/**
+ * Legacy standalone Assignments (`group_id is null`) are their own display
+ * unit. They share the same cursor order as the group source and are merged
+ * with it, so the two sources never duplicate or omit a unit.
+ */
+async function loadStandaloneAssignmentUnitPage(
+  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
+  options: {
+    cursor: TeacherListCursor | null;
+    limit: number;
+    studentId: string;
+    teacherId: string;
+  }
+) {
+  const fields = options.studentId
+    ? "assignment_id,created_at,writing_assignment_students!inner(student_id)"
+    : "assignment_id,created_at";
+  let query = supabase
+    .from("writing_assignments")
+    .select(fields)
+    .eq("teacher_id", options.teacherId)
+    .is("group_id", null)
+    .is("deleted_at", null);
+  if (options.studentId) {
+    query = query.eq("writing_assignment_students.student_id", options.studentId);
+  }
+  if (options.cursor) {
+    query = query.or(
+      createdAtKeysetFilter(options.cursor, "created_at", "assignment_id")
+    );
+  }
+  const result = await query
+    .order("created_at", { ascending: false })
+    .order("assignment_id", { ascending: false })
+    .limit(options.limit + 1);
+  if (result.error) throw result.error;
+  return (result.data ?? []) as unknown as AssignmentStandaloneUnitRow[];
+}
+
+/** Assignment rows of the page units, returned in the page's unit order. */
+async function readAssignmentRowsForUnits(
+  supabase: NonNullable<Awaited<ReturnType<typeof requireWritingAssignmentTeacher>>["supabase"]>,
+  units: AssignmentUnitRef[]
+) {
+  const groupIds = units.filter((unit) => unit.kind === "group").map((unit) => unit.id);
+  const standaloneIds = units
+    .filter((unit) => unit.kind === "assignment")
+    .map((unit) => unit.id);
+  const rows: AssignmentRow[] = [];
+  for (const batch of chunkValues(groupIds)) {
+    const result = await readAllSupabaseRows<AssignmentRow>((from, to) =>
+      supabase
+        .from("writing_assignments")
+        .select(ASSIGNMENT_LIST_FIELDS)
+        .in("group_id", batch)
+        .is("deleted_at", null)
+        .order("group_id", { ascending: true })
+        .order("group_position", { ascending: true })
+        .order("assignment_id", { ascending: true })
+        .range(from, to)
+    );
+    if (result.error) throw result.error;
+    rows.push(...(result.data ?? []));
+  }
+  for (const batch of chunkValues(standaloneIds)) {
+    const result = await readAllSupabaseRows<AssignmentRow>((from, to) =>
+      supabase
+        .from("writing_assignments")
+        .select(ASSIGNMENT_LIST_FIELDS)
+        .in("assignment_id", batch)
+        .is("deleted_at", null)
+        .order("assignment_id", { ascending: true })
+        .range(from, to)
+    );
+    if (result.error) throw result.error;
+    rows.push(...(result.data ?? []));
+  }
+
+  const byGroup = new Map<string, AssignmentRow[]>();
+  const byAssignment = new Map<string, AssignmentRow>();
+  for (const row of rows) {
+    byAssignment.set(row.assignment_id, row);
+    if (!row.group_id) continue;
+    byGroup.set(row.group_id, [...(byGroup.get(row.group_id) ?? []), row]);
+  }
+  const ordered: AssignmentRow[] = [];
+  for (const unit of units) {
+    if (unit.kind === "group") {
+      const groupRows = byGroup.get(unit.id) ?? [];
+      groupRows.sort((left, right) =>
+        (left.group_position ?? Number.MAX_SAFE_INTEGER) -
+          (right.group_position ?? Number.MAX_SAFE_INTEGER) ||
+        left.assignment_id.localeCompare(right.assignment_id)
+      );
+      ordered.push(...groupRows);
+      continue;
+    }
+    const row = byAssignment.get(unit.id);
+    if (row) ordered.push(row);
+  }
+  return ordered;
 }
 
 async function readAssignmentReviewStatuses(

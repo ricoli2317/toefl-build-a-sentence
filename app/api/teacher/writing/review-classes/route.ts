@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { bearerToken, requireTeacherOnly } from "@/lib/auth";
 import { createServiceSupabase } from "@/lib/supabase/server";
 import { listClassReviewSummaries } from "@/lib/teacherClasses.server";
+import {
+  clampTeacherListLimit,
+  encodeTeacherListCursor,
+  parseTeacherListCursor
+} from "@/lib/teacherListPagination";
 
 export const dynamic = "force-dynamic";
 
@@ -21,9 +26,17 @@ export async function GET(request: Request) {
       );
     }
 
-    const classes = await listClassReviewSummaries(createServiceSupabase(), auth.userId);
+    const params = new URL(request.url).searchParams;
+    const page = await listClassReviewSummaries(createServiceSupabase(), auth.userId, {
+      cursor: parseTeacherListCursor(params.get("cursor")),
+      limit: clampTeacherListLimit(params.get("limit"))
+    });
     return NextResponse.json(
-      { classes },
+      {
+        classes: page.classes,
+        hasMore: page.hasMore,
+        nextCursor: encodeTeacherListCursor(page.nextCursor)
+      },
       { headers: { "Cache-Control": "no-store" } }
     );
   } catch (error) {

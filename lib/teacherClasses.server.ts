@@ -9,6 +9,8 @@ import {
   type TeacherClassReviewSummary,
   type TeacherClassSummary
 } from "@/lib/teacherClasses";
+import { classIncludesWriting, normalizeClassSubjects } from "@/lib/teacherClasses";
+import { createdAtKeysetFilter, type TeacherListCursor } from "@/lib/teacherListPagination";
 import { loadClassAssignmentOverview } from "@/lib/classAssignmentOverview.server";
 import { accountAutoSuffixAllowed } from "@/lib/studentAccountSuggestion";
 import { listVisibleStudentIds, type AccountActor } from "@/lib/accountAccess";
@@ -20,6 +22,7 @@ import {
   listTeacherClasses,
   loadClassSubjectsForTeacher,
   loadTeacherClassRow,
+  readLinkRows,
   searchTeacherClasses,
   toTeacherClassSummary,
   type TeacherClassRow
@@ -582,19 +585,171 @@ export async function loadTeacherClassForAssignment(
 }
 
 /**
- * The review page class tab: per-class submitted/pending/published counts over
- * the class's own assignment items only.
+ * The review page class tab: one page of Writing classes plus the
+ * submitted/pending/published counts of exactly those classes.
+ *
+ * The class list itself is keyset-paginated (owned + shared classes merged in
+ * the same `created_at DESC` order); the costly history scan is scoped to the
+ * returned page's classes instead of every class the teacher ever had.
  */
 export async function listClassReviewSummaries(
   db: Db,
-  teacherId: string
-): Promise<TeacherClassReviewSummary[]> {
-  const classes = (await listTeacherClasses(db, teacherId)).filter((entry) =>
-    entry.subjects.includes("writing")
+  teacherId: string,
+  options?: { cursor?: TeacherListCursor | null; limit?: number }
+): Promise<{
+  classes: TeacherClassReviewSummary[];
+  hasMore: boolean;
+  nextCursor: TeacherListCursor | null;
+}> {
+  const limit = Math.max(1, Math.trunc(options?.limit ?? 20));
+  const cursor = options?.cursor ?? null;
+  const page = await readReviewClassPage(db, teacherId, cursor, limit);
+  if (page.classes.length === 0) {
+    return { classes: [], hasMore: page.hasMore, nextCursor: page.nextCursor };
+  }
+  const countsByClass = await loadClassReviewCounts(
+    db,
+    teacherId,
+    page.classes.map((entry) => entry.class_id)
   );
-  if (classes.length === 0) return [];
-  const classIds = classes.map((entry) => entry.class_id);
+  const classes = page.classes.map((entry) => {
+    const counts = countsByClass.get(entry.class_id) ?? {
+      pending: 0,
+      reviewing: 0,
+      published: 0
+    };
+    return {
+      ...entry,
+      pending_count: counts.pending,
+      reviewing_count: counts.reviewing,
+      published_count: counts.published
+    };
+  });
+  return { classes, hasMore: page.hasMore, nextCursor: page.nextCursor };
+}
 
+type ReviewClassPageRow = TeacherClassRow & {
+  class_members: Array<{ count: number }> | null;
+};
+
+async function readReviewClassPage(
+  db: Db,
+  teacherId: string,
+  cursor: TeacherListCursor | null,
+  limit: number
+): Promise<{
+  classes: TeacherClassSummary[];
+  hasMore: boolean;
+  nextCursor: TeacherListCursor | null;
+}> {
+  const readOwned = async () => {
+    let query = db
+      .from("teacher_classes")
+      .select("class_id,teacher_id,name,subjects,created_at,class_members(count)")
+      .eq("teacher_id", teacherId)
+      .contains("subjects", ["writing"]);
+    if (cursor) query = query.or(createdAtKeysetFilter(cursor, "created_at", "class_id"));
+    const result = await query
+      .order("created_at", { ascending: false })
+      .order("class_id", { ascending: false })
+      .limit(limit + 1);
+    if (result.error) throw result.error;
+    return (result.data ?? []) as unknown as ReviewClassPageRow[];
+  };
+
+  const readLinked = async (classIds: string[]) => {
+    const rows: ReviewClassPageRow[] = [];
+    for (const batch of chunkValues(classIds)) {
+      let query = db
+        .from("teacher_classes")
+        .select("class_id,teacher_id,name,subjects,created_at,class_members(count)")
+        .in("class_id", batch);
+      if (cursor) query = query.or(createdAtKeysetFilter(cursor, "created_at", "class_id"));
+      const result = await query
+        .order("created_at", { ascending: false })
+        .order("class_id", { ascending: false })
+        .limit(limit + 1);
+      if (result.error) throw result.error;
+      rows.push(...((result.data ?? []) as unknown as ReviewClassPageRow[]));
+    }
+    return rows;
+  };
+
+  const ownedRows = await readOwned();
+  // Links never decide the subject set of a class the teacher owns, even when
+  // that owned class is outside the current page.
+  const ownedClassIds = new Set<string>();
+  const ownedIdResult = await readAllSupabaseRows<{ class_id: string }>((from, to) =>
+    db
+      .from("teacher_classes")
+      .select("class_id")
+      .eq("teacher_id", teacherId)
+      .order("class_id", { ascending: true })
+      .range(from, to)
+  );
+  if (ownedIdResult.error) throw ownedIdResult.error;
+  for (const row of ownedIdResult.data ?? []) ownedClassIds.add(String(row.class_id));
+  const linkSubjectsByClass = new Map<string, ReturnType<typeof normalizeClassSubjects>>();
+  for (const link of await readLinkRows(db, { teacherId })) {
+    const subjects = normalizeClassSubjects(link.subjects);
+    if (!classIncludesWriting(subjects)) continue;
+    if (ownedClassIds.has(link.class_id)) continue;
+    linkSubjectsByClass.set(link.class_id, subjects);
+  }
+  const linkedRows = await readLinked(Array.from(linkSubjectsByClass.keys()));
+
+  const byClassId = new Map<string, { row: ReviewClassPageRow; subjects: ReturnType<typeof normalizeClassSubjects> }>();
+  for (const row of ownedRows) {
+    byClassId.set(String(row.class_id), {
+      row,
+      subjects: normalizeClassSubjects(row.subjects)
+    });
+  }
+  for (const row of linkedRows) {
+    const classId = String(row.class_id);
+    if (byClassId.has(classId)) continue;
+    byClassId.set(classId, {
+      row,
+      subjects: linkSubjectsByClass.get(classId) ?? []
+    });
+  }
+  const merged = Array.from(byClassId.values()).sort(
+    (left, right) =>
+      String(right.row.created_at).localeCompare(String(left.row.created_at)) ||
+      String(right.row.class_id).localeCompare(String(left.row.class_id))
+  );
+  const page = merged.slice(0, limit).map((entry) =>
+    toTeacherClassSummary(
+      entry.row,
+      Number(entry.row.class_members?.[0]?.count ?? 0),
+      entry.subjects
+    )
+  );
+  const hasMore = merged.length > limit;
+  const last = page[page.length - 1];
+  return {
+    classes: page,
+    hasMore,
+    nextCursor: hasMore && last
+      ? { at: String(last.created_at), id: last.class_id }
+      : null
+  };
+}
+
+/**
+ * Submitted / pending / published counts for one page of classes. Only the
+ * page's groups, assignments and attempts are read; nothing outside the visible
+ * class page contributes to the query.
+ */
+async function loadClassReviewCounts(
+  db: Db,
+  teacherId: string,
+  classIds: string[]
+) {
+  const countsByClass = new Map<
+    string,
+    { pending: number; reviewing: number; published: number }
+  >();
   const groupRows: Array<{ group_id: string; class_id: string | null }> = [];
   for (const batch of chunkValues(classIds)) {
     const groupResult = await readAllSupabaseRows<{ group_id: string; class_id: string | null }>(
@@ -608,18 +763,14 @@ export async function listClassReviewSummaries(
           .range(from, to)
     );
     if (groupResult.error) throw groupResult.error;
+
     groupRows.push(...(groupResult.data ?? []));
   }
   const groupToClass = new Map(
     groupRows.map((row) => [String(row.group_id), String(row.class_id)])
   );
   if (groupToClass.size === 0) {
-    return classes.map((entry) => ({
-      ...entry,
-      pending_count: 0,
-      reviewing_count: 0,
-      published_count: 0
-    }));
+    return countsByClass;
   }
 
   const assignmentRows = await readRowsByIds<{ assignment_id: string; group_id: string | null }>(
@@ -635,12 +786,7 @@ export async function listClassReviewSummaries(
     if (classId) assignmentToClass.set(String(row.assignment_id), classId);
   }
   if (assignmentToClass.size === 0) {
-    return classes.map((entry) => ({
-      ...entry,
-      pending_count: 0,
-      reviewing_count: 0,
-      published_count: 0
-    }));
+    return countsByClass;
   }
 
   const attemptRows = await readRowsByIds<{
@@ -669,10 +815,6 @@ export async function listClassReviewSummaries(
       : [];
   const reviewByAttempt = new Map(reviewRows.map((row) => [String(row.attempt_id), row]));
 
-  const countsByClass = new Map<
-    string,
-    { pending: number; reviewing: number; published: number }
-  >();
   for (const attempt of submittedAttempts) {
     const classId = attempt.assignment_id
       ? assignmentToClass.get(String(attempt.assignment_id))
@@ -688,15 +830,7 @@ export async function listClassReviewSummaries(
     countsByClass.set(classId, counts);
   }
 
-  return classes.map((entry) => {
-    const counts = countsByClass.get(entry.class_id) ?? { pending: 0, reviewing: 0, published: 0 };
-    return {
-      ...entry,
-      pending_count: counts.pending,
-      reviewing_count: counts.reviewing,
-      published_count: counts.published
-    };
-  });
+  return countsByClass;
 }
 
 /**

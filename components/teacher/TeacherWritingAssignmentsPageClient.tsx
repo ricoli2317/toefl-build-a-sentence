@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Plus } from "lucide-react";
 import {
   TEACHER_CLASSES_CACHE_KEY,
-  TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY,
-  useTeacherCachedData
+  TEACHER_WRITING_ASSIGNMENTS_FILTER_OPTIONS_CACHE_KEY,
+  TEACHER_WRITING_ASSIGNMENTS_PAGE_CACHE_PREFIX,
+  TEACHER_WRITING_ASSIGNMENT_TITLES_CACHE_KEY,
+  useTeacherCachedData,
+  useTeacherDataCache
 } from "@/components/TeacherDataCache";
 import {
   TeacherClassFilterPopover,
@@ -15,29 +18,34 @@ import {
 } from "@/components/teacher/TeacherListFilters";
 import { TeacherWritingAssignmentList } from "@/components/teacher/TeacherWritingAssignmentList";
 import { TeacherAppShell } from "@/components/teacher/TeacherAppShell";
+import {
+  useTeacherIncrementalList,
+  type TeacherIncrementalPage
+} from "@/components/teacher/TeacherIncrementalList";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
   teacherAssignmentsListHref,
   teacherQueryUrl
 } from "@/lib/teacherNavigation";
-import {
-  collectWritingAssignmentRecipients,
-  filterWritingAssignmentsByStudent,
-  type WritingAssignmentRecipient,
-  type WritingAssignmentSummary
+import type {
+  WritingAssignmentRecipient,
+  WritingAssignmentSummary
 } from "@/lib/writingAssignments";
 import {
   filterClassSummariesByName,
-  filterDirectWritingAssignments,
-  filterWritingAssignmentsByClass,
-  isClassWritingAssignment,
   type TeacherClassSummary
 } from "@/lib/teacherClasses";
 
+type AssignmentsPagePayload = {
+  assignments: WritingAssignmentSummary[];
+  hasMore?: boolean;
+  nextCursor?: string | null;
+};
+
 /**
- * The page owns the single assignment request. The 学生作业 / 班级作业 tabs and
- * both filters work off that one payload, so switching a tab or filter is a
- * pure local operation with no loading state and no extra API call.
+ * The page owns the cursor-paginated assignment request for the current tab
+ * and filters. Switching a tab or filter switches the server query and its own
+ * cached page sequence; the client never filters a partial history.
  */
 export function TeacherWritingAssignmentsPageClient({
   initialClassId,
@@ -49,6 +57,7 @@ export function TeacherWritingAssignmentsPageClient({
   initialView?: "students" | "class";
 }) {
   const router = useRouter();
+  const cache = useTeacherDataCache();
   const [view, setView] = useState<"students" | "class">(
     initialView === "class" ? "class" : "students"
   );
@@ -90,28 +99,35 @@ export function TeacherWritingAssignmentsPageClient({
     setFilterClassId(classId);
     syncListUrl({ view, studentId: filterStudentId, classId });
   }
-  const { data, error, loading } = useTeacherCachedData<{
-    assignments: WritingAssignmentSummary[];
-  }>(
-    TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY,
-    () => teacherApiFetch("/api/teacher/writing/assignments")
-  );
+
+  const listCacheKey =
+    `${TEACHER_WRITING_ASSIGNMENTS_PAGE_CACHE_PREFIX}:${view}`
+    + `:${view === "students" ? filterStudentId || "all" : "all"}`
+    + `:${view === "class" ? filterClassId || "all" : "all"}`;
+  const list = useTeacherIncrementalList<WritingAssignmentSummary>({
+    cacheKey: listCacheKey,
+    getId: getAssignmentId,
+    loadPage: (cursor) =>
+      loadAssignmentPage({
+        classId: view === "class" ? filterClassId : "",
+        cursor,
+        studentId: view === "students" ? filterStudentId : "",
+        view
+      })
+  });
+
   const classesState = useTeacherCachedData<{ classes: TeacherClassSummary[] }>(
     TEACHER_CLASSES_CACHE_KEY,
     () => teacherApiFetch("/api/teacher/classes")
   );
+  // Independent lightweight source for the student picker: ids + names of the
+  // direct-assignment recipients, never the full assignment history.
+  const studentOptionsState = useTeacherCachedData<{ students: WritingAssignmentRecipient[] }>(
+    TEACHER_WRITING_ASSIGNMENTS_FILTER_OPTIONS_CACHE_KEY,
+    () => teacherApiFetch("/api/teacher/writing/assignments/filter-options"),
+    { enabled: view === "students" }
+  );
 
-  const assignments = useMemo(() => data?.assignments ?? [], [data]);
-  // 学生作业 keeps exactly the previous direct-assignment flow; class
-  // assignments live only in the 班级作业 tab.
-  const directAssignments = useMemo(
-    () => filterDirectWritingAssignments(assignments),
-    [assignments]
-  );
-  const classAssignments = useMemo(
-    () => assignments.filter(isClassWritingAssignment),
-    [assignments]
-  );
   const classOptions = useMemo(
     () => filterClassSummariesByName(classesState.data?.classes ?? [], ""),
     [classesState.data]
@@ -127,17 +143,14 @@ export function TeacherWritingAssignmentsPageClient({
     : null;
 
   const studentOptions = useMemo(() => {
-    const recipients = collectWritingAssignmentRecipients(directAssignments);
-    const collator = new Intl.Collator("zh-Hans-CN");
-    const sorted = [...recipients].sort((left, right) =>
-      collator.compare(left.student_name, right.student_name)
-    );
+    const recipients = studentOptionsState.data?.students ?? [];
+    const sorted = [...recipients];
     // Keep a deep-linked student selectable even before their name is known.
-    if (filterStudentId && !recipients.some((recipient) => recipient.student_id === filterStudentId)) {
+    if (filterStudentId && !sorted.some((recipient) => recipient.student_id === filterStudentId)) {
       sorted.unshift({ student_id: filterStudentId, student_name: "" });
     }
     return sorted;
-  }, [directAssignments, filterStudentId]);
+  }, [filterStudentId, studentOptionsState.data]);
   const filterStudent: WritingAssignmentRecipient | null = filterStudentId
     ? studentOptions.find((option) => option.student_id === filterStudentId) ?? {
         student_id: filterStudentId,
@@ -145,13 +158,42 @@ export function TeacherWritingAssignmentsPageClient({
       }
     : null;
 
-  const visibleAssignments = useMemo(
-    () =>
-      view === "class"
-        ? filterWritingAssignmentsByClass(classAssignments, filterClassId)
-        : filterWritingAssignmentsByStudent(directAssignments, filterStudentId),
-    [classAssignments, directAssignments, filterClassId, filterStudentId, view]
-  );
+  /**
+   * Keep a rolling group-title index for the create form's automatic-title
+   * preview. It only accumulates titles from pages the teacher actually
+   * loaded; the create RPC still computes the final title authoritatively.
+   */
+  useEffect(() => {
+    const items = list.data?.items ?? [];
+    const groups = items.flatMap((assignment) =>
+      assignment.group_id && assignment.group_title?.trim()
+        ? [{ group_id: assignment.group_id, title: assignment.group_title.trim() }]
+        : []
+    );
+    if (groups.length === 0) return;
+    const entry = cache.getEntry(TEACHER_WRITING_ASSIGNMENT_TITLES_CACHE_KEY);
+    const existing =
+      entry?.status === "success" || entry?.status === "refreshing"
+        ? ((entry.data as { groups?: unknown }).groups ?? [])
+        : [];
+    const known = Array.isArray(existing)
+      ? existing.filter(
+          (value): value is { group_id: string; title: string } =>
+            typeof value === "object" &&
+            value !== null &&
+            typeof (value as { group_id?: unknown }).group_id === "string" &&
+            typeof (value as { title?: unknown }).title === "string"
+        )
+      : [];
+    const byGroupId = new Map(known.map((group) => [group.group_id, group]));
+    const knownSize = byGroupId.size;
+    for (const group of groups) byGroupId.set(group.group_id, group);
+    if (byGroupId.size === knownSize) return;
+    cache.set(TEACHER_WRITING_ASSIGNMENT_TITLES_CACHE_KEY, {
+      groups: Array.from(byGroupId.values()).slice(-300)
+    });
+  }, [cache, list.data]);
+
   const newAssignmentHref = view === "class"
     ? filterClassId
       ? `/teacher/writing/assignments/new?classId=${encodeURIComponent(filterClassId)}`
@@ -205,17 +247,55 @@ export function TeacherWritingAssignmentsPageClient({
           </button>
         </nav>
         <TeacherWritingAssignmentList
-          assignments={visibleAssignments}
-          error={error}
+          assignments={list.items}
+          error={list.error}
           filterClass={view === "class" ? selectedClass : null}
           filterStudent={view === "students" ? filterStudent : null}
+          hasMore={list.hasMore}
           listReturnTo={listReturnTo}
-          loading={loading}
+          loading={list.loading}
+          loadingMore={list.loadingMore}
+          loadMoreError={list.loadMoreError}
           mode={view}
           onClearClassFilter={() => selectClassFilter("")}
           onClearFilter={() => selectStudentFilter("")}
+          onLoadMore={() => void list.loadMore()}
+          onRetryInitial={list.reload}
+          onRetryLoadMore={() => void list.loadMore()}
         />
       </div>
     </TeacherAppShell>
   );
+}
+
+function getAssignmentId(assignment: WritingAssignmentSummary) {
+  return assignment.assignment_id;
+}
+
+async function loadAssignmentPage({
+  classId,
+  cursor,
+  studentId,
+  view
+}: {
+  classId: string;
+  cursor: string | null;
+  studentId: string;
+  view: "students" | "class";
+}): Promise<TeacherIncrementalPage<WritingAssignmentSummary>> {
+  const search = new URLSearchParams({ view, limit: "20" });
+  if (view === "students" && studentId) search.set("studentId", studentId);
+  if (view === "class" && classId) search.set("classId", classId);
+  if (cursor) search.set("cursor", cursor);
+  const payload = await teacherApiFetch<AssignmentsPagePayload>(
+    `/api/teacher/writing/assignments?${search.toString()}`
+  );
+  if (!Array.isArray(payload.assignments)) {
+    throw new Error("作业列表数据格式无效，请稍后重试。");
+  }
+  return {
+    items: payload.assignments,
+    hasMore: payload.hasMore === true,
+    nextCursor: typeof payload.nextCursor === "string" ? payload.nextCursor : null
+  };
 }

@@ -244,7 +244,7 @@ test("a zero-success batch reports the concrete server reason as an error", () =
 test("zero-success moderation reloads the list and surfaces the server reason", () => {
   const list = read("components/teacher/TeacherWritingReviewList.tsx");
   assert.match(list, /writingReviewModerationSucceededIds\(parsed\.results\)\.size === 0/);
-  assert.match(list, /cache\.invalidate\(cacheKey\)/);
+  assert.match(list, /cache\.invalidate\(cachePrefix\)/);
   assert.match(list, /throw new Error\(writingReviewModerationFailureMessage\(action, parsed\.results\)\)/);
 });
 
@@ -512,17 +512,13 @@ test("批量取消 clears every selected id without API, refresh or filter chang
 
 test("the list keeps every 全部 consumer consistent with the ignored exclusion", () => {
   const list = read("components/teacher/TeacherWritingReviewList.tsx");
-  // Both tabs derive the visible rows (and any count shown for them) from the
-  // same shared predicate, so no client-side count can include ignored rows in
-  // the 全部 view.
-  assert.match(
-    list,
-    /filterWritingReviewListEntries\(attempts, \{\s*studentId: activeStudentId,\s*status: statusFilter,\s*taskType: taskFilter\s*\}\)/
-  );
-  assert.match(
-    list,
-    /filterWritingReviewListEntries\(attempts, \{\s*status: statusFilter,\s*taskType: taskFilter\s*\}\)/
-  );
+  // 全部 excludes 已忽略 on the server before the page is cut; the client never
+  // derives its own filtered view from partially loaded pages, so no client-side
+  // count can include ignored rows in the 全部 view.
+  const route = read("app/api/teacher/writing/reviews/route.ts");
+  assert.match(route, /matchesWritingReviewStatusFilter/);
+  assert.match(list, /hasActiveFilter/);
+  assert.doesNotMatch(list, /showIgnored|includeIgnored/);
   // 全部 has no summary count badge that could drift from the filtered rows:
   // the shared filter bar renders labels only, and the bar's only count is
   // 已选 for the current selection.

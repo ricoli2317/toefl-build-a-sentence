@@ -14,6 +14,10 @@ import {
   TeacherLoadingRegion,
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
+import {
+  TeacherInfiniteListFooter,
+  useInfiniteListTrigger
+} from "@/components/teacher/TeacherIncrementalList";
 import { TeacherPopover } from "@/components/teacher/TeacherPopover";
 import { teacherApiFetch } from "@/lib/teacherClientApi";
 import {
@@ -42,35 +46,53 @@ const WITHDRAW_CONFIRM = "确认撤回这项作业？\n\n撤回后，学生将�
 const DELETE_CONFIRM = "确认删除这项作业？\n\n删除后，该作业将不再显示在正常作业列表中。\n学生已有提交和批改记录不会被删除。";
 
 /**
- * Purely presentational list: the page loads the full assignment set once and
- * performs the student/class filtering locally, so switching the filter never
- * asks the server for anything. Class cards only add the class name and the
- * student count; the card structure and actions stay identical.
+ * Presentational list over the accumulated pages. The page owner requests the
+ * next server page when the sentinel at the bottom enters the viewport; the
+ * grouping below still sees whole Assignment Groups because the server never
+ * splits a group across pages.
  */
 export function TeacherWritingAssignmentList({
   assignments,
   error,
   filterClass = null,
   filterStudent,
+  hasMore = false,
   listReturnTo,
   loading,
+  loadingMore = false,
+  loadMoreError = "",
   mode = "students",
   onClearClassFilter,
-  onClearFilter
+  onClearFilter,
+  onLoadMore,
+  onRetryInitial,
+  onRetryLoadMore
 }: {
   assignments: WritingAssignmentSummary[];
   error: string;
   filterClass?: { class_id: string; name: string } | null;
   filterStudent: WritingAssignmentRecipient | null;
+  hasMore?: boolean;
   listReturnTo?: string;
   loading: boolean;
+  loadingMore?: boolean;
+  loadMoreError?: string;
   mode?: "students" | "class";
   onClearClassFilter?: () => void;
   onClearFilter: () => void;
+  onLoadMore?: () => void;
+  onRetryInitial?: () => void;
+  onRetryLoadMore?: () => void;
 }) {
   const cache = useTeacherDataCache();
   const [pendingId, setPendingId] = useState("");
   const [mutationError, setMutationError] = useState("");
+  const sentinelRef = useInfiniteListTrigger({
+    hasMore,
+    loading,
+    loadingMore,
+    onLoadMore: () => onLoadMore?.()
+  });
 
   async function mutate(assignmentId: string, action: "withdraw" | "reactivate" | "soft_delete") {
     if (action === "withdraw" && !window.confirm(WITHDRAW_CONFIRM)) return;
@@ -118,7 +140,22 @@ export function TeacherWritingAssignmentList({
   if (loading) {
     return <div className="grid gap-3" aria-busy="true">{classFilterBanner}{studentFilterBanner}<TeacherLoadingRegion label="正在加载作业列表" />{[1, 2, 3].map((item) => <TeacherSkeleton className="h-32 w-full rounded-2xl" key={item} />)}</div>;
   }
-  if (error) return <div className="grid gap-3">{classFilterBanner}{studentFilterBanner}<TeacherDataError text={error} /></div>;
+  if (error) {
+    return (
+      <div className="grid gap-3">
+        {classFilterBanner}
+        {studentFilterBanner}
+        <TeacherDataError text={error} />
+        {onRetryInitial ? (
+          <div>
+            <button className="teacher-button-secondary" onClick={onRetryInitial} type="button">
+              重新加载
+            </button>
+          </div>
+        ) : null}
+      </div>
+    );
+  }
   if (!assignments.length) {
     return (
       <div className="grid gap-3">
@@ -137,6 +174,14 @@ export function TeacherWritingAssignmentList({
             }
           />
         </TeacherCard>
+        <TeacherInfiniteListFooter
+          hasMore={hasMore}
+          itemsCount={assignments.length}
+          loadingMore={loadingMore}
+          loadMoreError={loadMoreError}
+          onRetry={() => onRetryLoadMore?.()}
+          sentinelRef={sentinelRef}
+        />
       </div>
     );
   }
@@ -245,6 +290,14 @@ export function TeacherWritingAssignmentList({
           />
         );
       })}
+      <TeacherInfiniteListFooter
+        hasMore={hasMore}
+        itemsCount={assignments.length}
+        loadingMore={loadingMore}
+        loadMoreError={loadMoreError}
+        onRetry={() => onRetryLoadMore?.()}
+        sentinelRef={sentinelRef}
+      />
     </div>
   );
 }

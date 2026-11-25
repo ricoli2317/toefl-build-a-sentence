@@ -142,7 +142,7 @@ export async function listTeacherClasses(
  * degrades to the legacy rows with subjects=null so owner flows keep working
  * until the SQL runs.
  */
-async function readLinkRows(
+export async function readLinkRows(
   db: SupabaseClient,
   options: { classIds?: readonly string[]; teacherId?: string }
 ): Promise<TeacherClassLinkRow[]> {

@@ -9,6 +9,7 @@ import {
   TEACHER_CLASSES_CACHE_KEY,
   TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY,
   TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX,
+  TEACHER_WRITING_ASSIGNMENT_TITLES_CACHE_KEY,
   teacherAssignmentStudentsCacheKey,
   useTeacherCachedData,
   useTeacherDataCache
@@ -648,21 +649,33 @@ function TeacherAssignmentWizard({
     if (assignmentTitleManuallyEdited) return;
     setAssignmentTitle(generatedAssignmentTitle);
   }, [assignmentTitleManuallyEdited, generatedAssignmentTitle]);
-  // Live candidate only: the cached teacher list (already loaded for the
-  // 作业管理 page) tells us which base titles exist, without any new request.
-  // The RPC still resolves the final number authoritatively at creation time.
-  // The group being edited never counts against itself, so an unchanged
-  // automatic title stays exactly its own base instead of gaining a new (n).
+  // Live candidate only: the titles index fed by the loaded assignment pages
+  // tells us which base titles exist, without any new request. The RPC still
+  // resolves the final number authoritatively at creation time. The group
+  // being edited never counts against itself, so an unchanged automatic title
+  // stays exactly its own base instead of gaining a new (n).
+  const cachedTitlesEntry = cache.getEntry(TEACHER_WRITING_ASSIGNMENT_TITLES_CACHE_KEY);
   const cachedListEntry = cache.getEntry(TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY);
-  const existingGroupTitles = cachedListEntry?.status === "success"
-    || cachedListEntry?.status === "refreshing"
-    ? ((cachedListEntry.data as { assignments?: WritingAssignmentSummary[] }).assignments ?? [])
-      .flatMap((assignment) => {
-        if (!assignment.group_id || !assignment.group_title?.trim()) return [];
-        if (initialGroupId && assignment.group_id === initialGroupId) return [];
-        return [assignment.group_title];
+  const cachedGroups =
+    cachedTitlesEntry?.status === "success" || cachedTitlesEntry?.status === "refreshing"
+      ? (cachedTitlesEntry.data as { groups?: unknown }).groups
+      : null;
+  const existingGroupTitles = Array.isArray(cachedGroups)
+    ? cachedGroups.flatMap((value) => {
+        if (typeof value !== "object" || value === null) return [];
+        const group = value as { group_id?: unknown; title?: unknown };
+        if (typeof group.group_id !== "string" || typeof group.title !== "string") return [];
+        if (initialGroupId && group.group_id === initialGroupId) return [];
+        return [group.title];
       })
-    : [];
+    : cachedListEntry?.status === "success" || cachedListEntry?.status === "refreshing"
+      ? ((cachedListEntry.data as { assignments?: WritingAssignmentSummary[] }).assignments ?? [])
+        .flatMap((assignment) => {
+          if (!assignment.group_id || !assignment.group_title?.trim()) return [];
+          if (initialGroupId && assignment.group_id === initialGroupId) return [];
+          return [assignment.group_title];
+        })
+      : [];
   const candidateAssignmentTitle = assignmentTitleManuallyEdited
     ? assignmentTitle
     : nextWritingAssignmentAutoTitle(generatedAssignmentTitle, existingGroupTitles);

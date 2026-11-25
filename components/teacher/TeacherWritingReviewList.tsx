@@ -16,9 +16,11 @@ import { ArrowLeft } from "lucide-react";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { TeacherClassIcon } from "@/components/icons/TeacherClassIcon";
 import {
+  TEACHER_CLASSES_CACHE_KEY,
   TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY,
   TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX,
-  TEACHER_WRITING_REVIEWS_CACHE_KEY,
+  TEACHER_WRITING_REVIEW_FILTER_OPTIONS_CACHE_KEY,
+  TEACHER_WRITING_REVIEWS_CACHE_PREFIX,
   useTeacherCachedData,
   useTeacherDataCache
 } from "@/components/TeacherDataCache";
@@ -34,6 +36,12 @@ import {
   TeacherLoadingRegion,
   TeacherSkeleton
 } from "@/components/teacher/TeacherUI";
+import {
+  TeacherInfiniteListFooter,
+  useInfiniteListTrigger,
+  useTeacherIncrementalList,
+  type TeacherIncrementalPage
+} from "@/components/teacher/TeacherIncrementalList";
 import { createBrowserSupabase } from "@/lib/supabase/client";
 import {
   TEACHER_WRITING_REVIEWS_HREF,
@@ -41,15 +49,12 @@ import {
   teacherWritingCorrectionHref,
   teacherWritingReviewsListHref
 } from "@/lib/teacherWritingReviewNavigation";
-import {
-  collectWritingReviewStudentOptions,
-  filterWritingReviewListEntries,
-  type WritingReviewListStatus,
-  type WritingReviewStatusFilter,
-  type WritingReviewTaskTypeFilter
+import type {
+  WritingReviewListStatus,
+  WritingReviewStatusFilter,
+  WritingReviewTaskTypeFilter
 } from "@/lib/teacherWritingReviewList";
 import {
-  applyWritingReviewModerationToEntries,
   parseWritingReviewModerationResponse,
   publishWritingReviewModerationInvalidation,
   writingReviewModerationFailureMessage,
@@ -57,7 +62,12 @@ import {
   writingReviewModerationSucceededIds,
   type WritingReviewModerationAction
 } from "@/lib/writingReviewModeration";
-import { classSubjectsLabel, type TeacherClassReviewSummary } from "@/lib/teacherClasses";
+import {
+  classSubjectsLabel,
+  writingClassesOnly,
+  type TeacherClassReviewSummary,
+  type TeacherClassSummary
+} from "@/lib/teacherClasses";
 import type { WritingAssignmentRecipient } from "@/lib/writingAssignments";
 import type { WritingTaskType } from "@/lib/writing";
 
@@ -85,7 +95,16 @@ export type WritingReviewListItem = {
   reviewStatus: WritingReviewListStatus;
 };
 
-type WritingReviewListPayload = { attempts: WritingReviewListItem[] };
+type WritingReviewListPayload = {
+  attempts: WritingReviewListItem[];
+  hasMore?: boolean;
+  nextCursor?: string | null;
+};
+type WritingClassReviewPagePayload = {
+  classes: TeacherClassReviewSummary[];
+  hasMore?: boolean;
+  nextCursor?: string | null;
+};
 type ErrorPayload = { code?: string; message?: string; error?: string };
 
 /** Desktop drag-select threshold: a plain click must never become a marquee. */
@@ -168,37 +187,80 @@ export function TeacherWritingReviewList({
     setTaskFilter(initialTaskType);
   }, [initialTaskType]);
 
-  // 学生 tab: one cached full-list request backs both the table and the
-  // student filter options, so the picker costs no extra request.
-  const reviewsState = useTeacherCachedData<WritingReviewListPayload>(
-    TEACHER_WRITING_REVIEWS_CACHE_KEY,
-    () => loadWritingReviews(),
+  // 学生 tab: the student picker comes from its own lightweight source (the
+  // teacher's writing-scope students), never from the partially loaded pages.
+  const studentOptionsState = useTeacherCachedData<{ students: WritingAssignmentRecipient[] }>(
+    TEACHER_WRITING_REVIEW_FILTER_OPTIONS_CACHE_KEY,
+    () => teacherApiJson<{ students: WritingAssignmentRecipient[] }>(
+      "/api/teacher/writing/reviews/filter-options",
+      "无法加载学生筛选列表。"
+    ),
     { enabled: tab === "students" }
   );
-  const attempts = useMemo(() => reviewsState.data?.attempts ?? [], [reviewsState.data]);
-  const studentOptions = useMemo(() => collectWritingReviewStudentOptions(attempts), [attempts]);
+  const rawStudentOptions = useMemo(
+    () => studentOptionsState.data?.students ?? [],
+    [studentOptionsState.data]
+  );
 
-  // 班级 tab: the same cached class summaries that back the overview cards.
-  // Only the teacher's own Writing / Reading+Writing classes can appear.
-  const classReviewsState = useTeacherCachedData<{ classes: TeacherClassReviewSummary[] }>(
-    TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY,
-    () => loadClassReviewSummaries(),
+  // 班级 tab: the lightweight class list backs the picker and the deep-link
+  // validation; the overview cards are a separate paginated request.
+  const classOptionsState = useTeacherCachedData<{ classes: TeacherClassSummary[] }>(
+    TEACHER_CLASSES_CACHE_KEY,
+    () => teacherApiJson<{ classes: TeacherClassSummary[] }>(
+      "/api/teacher/classes",
+      "无法加载班级列表。"
+    ),
     { enabled: tab === "class" }
   );
   const classOptions = useMemo(
-    () => classReviewsState.data?.classes ?? [],
-    [classReviewsState.data]
+    () => writingClassesOnly(classOptionsState.data?.classes ?? []),
+    [classOptionsState.data]
   );
 
   // A deep-linked student/class that is no longer visible falls back to
   // 全部学生 / 全部班级 without an error; the URL follows the fallback.
-  const studentsReady = reviewsState.data !== null;
-  const studentIdIsVisible = studentOptions.some((option) => option.student_id === studentId);
+  const studentsReady = studentOptionsState.data !== null;
+  const studentIdIsVisible = rawStudentOptions.some((option) => option.student_id === studentId);
   const activeStudentId =
     studentsReady && studentId !== "" && !studentIdIsVisible ? "" : studentId;
-  const classesReady = classReviewsState.data !== null;
+  const classesReady =
+    classOptionsState.data !== null || Boolean(classOptionsState.error);
   const classIdIsVisible = classOptions.some((entry) => entry.class_id === classId);
   const activeClassId = classesReady && classId !== "" && !classIdIsVisible ? "" : classId;
+
+  const studentOptions = useMemo(() => {
+    if (
+      activeStudentId &&
+      !rawStudentOptions.some((option) => option.student_id === activeStudentId)
+    ) {
+      return [{ student_id: activeStudentId, student_name: "" }, ...rawStudentOptions];
+    }
+    return rawStudentOptions;
+  }, [activeStudentId, rawStudentOptions]);
+
+  // 学生 tab list: one cached, cursor-paginated page sequence per filter set.
+  const studentList = useTeacherIncrementalList<WritingReviewListItem>({
+    cacheKey:
+      `${TEACHER_WRITING_REVIEWS_CACHE_PREFIX}:students`
+      + `:${activeStudentId || "all"}:${statusFilter}:${taskFilter}`,
+    enabled: tab === "students",
+    getId: getReviewItemId,
+    loadPage: (cursor) =>
+      loadWritingReviewPage({
+        cursor,
+        status: statusFilter,
+        studentId: activeStudentId,
+        taskFilter
+      })
+  });
+
+  // 班级 tab overview: the same cached class pages, 20 classes per request.
+  const classList = useTeacherIncrementalList<TeacherClassReviewSummary>({
+    cacheKey: TEACHER_WRITING_CLASS_REVIEWS_CACHE_KEY,
+    enabled: tab === "class" && !activeClassId,
+    getId: getClassId,
+    loadPage: (cursor) => loadClassReviewSummaries(cursor)
+  });
 
   useEffect(() => {
     if (!studentsReady || studentId === "" || studentIdIsVisible) return;
@@ -309,15 +371,6 @@ export function TeacherWritingReviewList({
     status: statusFilter,
     taskType: taskFilter
   });
-  const filtered = useMemo(
-    () =>
-      filterWritingReviewListEntries(attempts, {
-        studentId: activeStudentId,
-        status: statusFilter,
-        taskType: taskFilter
-      }),
-    [activeStudentId, attempts, statusFilter, taskFilter]
-  );
   const selectedClassName = classOptions.find((entry) => entry.class_id === activeClassId)?.name ?? "";
 
   return (
@@ -340,10 +393,14 @@ export function TeacherWritingReviewList({
       </nav>
       {tab === "students" ? (
         <StudentReviewSection
-          attempts={attempts}
-          error={reviewsState.error}
-          filtered={filtered}
-          loading={reviewsState.loading}
+          error={studentList.error}
+          hasMore={studentList.hasMore}
+          items={studentList.items}
+          loading={studentList.loading}
+          loadingMore={studentList.loadingMore}
+          loadMoreError={studentList.loadMoreError}
+          onLoadMore={studentList.loadMore}
+          onRetryInitial={studentList.reload}
           onStatusFilter={selectStatusFilter}
           onStudentFilter={selectStudentFilter}
           onTaskFilter={selectTaskFilter}
@@ -358,8 +415,15 @@ export function TeacherWritingReviewList({
           classId={activeClassId}
           classOptions={classOptions}
           className={selectedClassName}
-          classesError={classReviewsState.error}
-          classesLoading={!classesReady && !classReviewsState.error}
+          classes={classList.items}
+          classesError={classList.error}
+          classesHasMore={classList.hasMore}
+          classesLoading={classList.loading}
+          classesLoadingMore={classList.loadingMore}
+          classesLoadMoreError={classList.loadMoreError}
+          classesOnLoadMore={classList.loadMore}
+          classesOnRetryInitial={classList.reload}
+          classesReady={classesReady}
           onBack={() => selectClassFilter("")}
           onOpenClass={selectClassFilter}
           onStatusFilter={selectStatusFilter}
@@ -447,11 +511,12 @@ type WritingReviewModerationControls = {
 /**
  * One batch request (never N single requests) followed by the same cache
  * pipeline the rest of Writing Review uses: publish the invalidation events
- * first, then store the optimistic list payload for this tab. The server owns
- * the final word: skipped attempts stay in the list and are reported.
+ * first, then drop every cached page of the acting list so the visible filter
+ * view reloads from the server. The server owns the final word: skipped
+ * attempts stay in the list and are reported.
  */
 function useWritingReviewModeration(options: {
-  cacheKey: string;
+  cachePrefix: string;
   clearSelection: () => void;
   items: readonly WritingReviewListItem[];
 }): WritingReviewModerationControls {
@@ -463,7 +528,7 @@ function useWritingReviewModeration(options: {
   const [confirmIds, setConfirmIds] = useState<string[] | null>(null);
   const itemsRef = useRef(options.items);
   itemsRef.current = options.items;
-  const { cacheKey, clearSelection } = options;
+  const { cachePrefix, clearSelection } = options;
 
   const run = useCallback(
     async (action: WritingReviewModerationAction, attemptIds: string[]) => {
@@ -496,27 +561,14 @@ function useWritingReviewModeration(options: {
         // tab's row is stale, so invalidate it and reload the authoritative
         // state instead of leaving the impossible row on screen.
         if (writingReviewModerationSucceededIds(parsed.results).size === 0) {
-          cache.invalidate(cacheKey);
+          cache.invalidate(cachePrefix);
           throw new Error(writingReviewModerationFailureMessage(action, parsed.results));
         }
-        // Capture this list's payload BEFORE the invalidation below clears it,
-        // then store the merged result after: the acting tab updates
-        // immediately (no loading skeleton) while every other cache consumer
-        // still receives the invalidation event.
-        const listPayload = readCachedReviewListPayload(cache.getEntry(cacheKey));
+        // The row may leave the current 批改状态 filter entirely, so an
+        // in-place optimistic patch cannot be trusted; the cached pages of
+        // this list are dropped and rebuilt from the server.
         publishWritingReviewModerationInvalidation(action, itemsRef.current, parsed.results);
-        if (listPayload) {
-          cache.set(cacheKey, {
-            ...listPayload,
-            attempts: applyWritingReviewModerationToEntries(
-              listPayload.attempts,
-              action,
-              parsed.results
-            )
-          });
-        } else {
-          cache.invalidate(cacheKey);
-        }
+        cache.invalidate(cachePrefix);
         clearSelection();
         setNotice(writingReviewModerationNotice(action, parsed.results));
       } catch (moderationError) {
@@ -531,7 +583,7 @@ function useWritingReviewModeration(options: {
         setConfirmIds(null);
       }
     },
-    [cache, cacheKey, clearSelection]
+    [cache, cachePrefix, clearSelection]
   );
 
   const requestReturn = useCallback((attemptIds: string[]) => {
@@ -647,10 +699,14 @@ function WritingReviewReturnDialog({
 }
 
 function StudentReviewSection({
-  attempts,
   error,
-  filtered,
+  hasMore,
+  items,
   loading,
+  loadingMore,
+  loadMoreError,
+  onLoadMore,
+  onRetryInitial,
   onStatusFilter,
   onStudentFilter,
   onTaskFilter,
@@ -660,10 +716,14 @@ function StudentReviewSection({
   studentOptions,
   taskFilter
 }: {
-  attempts: WritingReviewListItem[];
   error: string;
-  filtered: WritingReviewListItem[];
+  hasMore: boolean;
+  items: WritingReviewListItem[];
   loading: boolean;
+  loadingMore: boolean;
+  loadMoreError: string;
+  onLoadMore: () => void;
+  onRetryInitial: () => void;
   onStatusFilter: (value: WritingReviewStatusFilter) => void;
   onStudentFilter: (studentId: string) => void;
   onTaskFilter: (value: WritingReviewTaskTypeFilter) => void;
@@ -674,13 +734,19 @@ function StudentReviewSection({
   taskFilter: WritingReviewTaskTypeFilter;
 }) {
   const selection = useReviewListSelection(
-    filtered,
+    items,
     `${statusFilter}|${selectedStudentId}|${taskFilter}`
   );
   const moderation = useWritingReviewModeration({
-    cacheKey: TEACHER_WRITING_REVIEWS_CACHE_KEY,
+    cachePrefix: TEACHER_WRITING_REVIEWS_CACHE_PREFIX,
     clearSelection: selection.clear,
-    items: filtered
+    items
+  });
+  const sentinelRef = useInfiniteListTrigger({
+    hasMore,
+    loading,
+    loadingMore,
+    onLoadMore
   });
   const selectedStudent = selectedStudentId
     ? studentOptions.find((option) => option.student_id === selectedStudentId) ?? {
@@ -689,6 +755,8 @@ function StudentReviewSection({
       }
     : null;
   const selectedCount = selection.selectedIds.size;
+  const hasActiveFilter =
+    selectedStudentId !== "" || statusFilter !== "all" || taskFilter !== "all";
 
   return (
     <div className="grid gap-5">
@@ -718,26 +786,45 @@ function StudentReviewSection({
         statusFilter={statusFilter}
         taskFilter={taskFilter}
       />
-      <ReviewTable
-        actions={{
-          busy: moderation.busy,
-          onModerate: (action, attemptIds) =>
-            action === "return"
-              ? moderation.requestReturn(attemptIds)
-              : moderation.requestIgnore(attemptIds)
-        }}
-        attempts={attempts}
-        error={error || moderation.error}
-        filtered={filtered}
-        loading={loading}
-        notice={moderation.notice}
-        returnTo={returnTo}
-        emptyTexts={{
-          noAttempts: "暂无已提交的写作练习。",
-          noMatch: "当前筛选条件下暂无提交。"
-        }}
-        selection={selection}
-      />
+      {error && !loading ? (
+        <div className="flex flex-wrap items-center gap-3">
+          <TeacherDataError text={toChineseLoadError(error)} />
+          <button className="teacher-button-secondary" onClick={onRetryInitial} type="button">
+            重新加载
+          </button>
+        </div>
+      ) : (
+        <>
+          <ReviewTable
+            actions={{
+              busy: moderation.busy,
+              onModerate: (action, attemptIds) =>
+                action === "return"
+                  ? moderation.requestReturn(attemptIds)
+                  : moderation.requestIgnore(attemptIds)
+            }}
+            error={moderation.error}
+            filtered={items}
+            hasActiveFilter={hasActiveFilter}
+            loading={loading}
+            notice={moderation.notice}
+            returnTo={returnTo}
+            emptyTexts={{
+              noAttempts: "暂无已提交的写作练习。",
+              noMatch: "当前筛选条件下暂无提交。"
+            }}
+            selection={selection}
+          />
+          <TeacherInfiniteListFooter
+            hasMore={hasMore}
+            itemsCount={items.length}
+            loadingMore={loadingMore}
+            loadMoreError={loadMoreError}
+            onRetry={onLoadMore}
+            sentinelRef={sentinelRef}
+          />
+        </>
+      )}
       <WritingReviewReturnDialog
         busy={moderation.busy}
         ids={moderation.confirmIds}
@@ -752,8 +839,15 @@ function ClassReviewSection({
   classId,
   classOptions,
   className,
+  classes,
   classesError,
+  classesHasMore,
   classesLoading,
+  classesLoadingMore,
+  classesLoadMoreError,
+  classesOnLoadMore,
+  classesOnRetryInitial,
+  classesReady,
   onBack,
   onOpenClass,
   onStatusFilter,
@@ -763,10 +857,17 @@ function ClassReviewSection({
   taskFilter
 }: {
   classId: string;
-  classOptions: TeacherClassReviewSummary[];
+  classOptions: TeacherClassSummary[];
   className: string;
+  classes: TeacherClassReviewSummary[];
   classesError: string;
+  classesHasMore: boolean;
   classesLoading: boolean;
+  classesLoadingMore: boolean;
+  classesLoadMoreError: string;
+  classesOnLoadMore: () => void;
+  classesOnRetryInitial: () => void;
+  classesReady: boolean;
   onBack: () => void;
   onOpenClass: (classId: string) => void;
   onStatusFilter: (value: WritingReviewStatusFilter) => void;
@@ -775,6 +876,12 @@ function ClassReviewSection({
   statusFilter: WritingReviewStatusFilter;
   taskFilter: WritingReviewTaskTypeFilter;
 }) {
+  const sentinelRef = useInfiniteListTrigger({
+    hasMore: classesHasMore,
+    loading: classesLoading,
+    loadingMore: classesLoadingMore,
+    onLoadMore: classesOnLoadMore
+  });
   const classFilter = (
     <TeacherClassFilterPopover
       onSelect={(entry) => onOpenClass(entry?.class_id ?? "")}
@@ -797,7 +904,7 @@ function ClassReviewSection({
     // The class id is confirmed against the teacher's own Writing classes
     // before the per-class request is made, so a stale id never fires a
     // doomed request and the empty/loading handling stays identical.
-    if (classesLoading) {
+    if (!classesReady) {
       return (
         <div className="grid gap-5">
           {filterBar}
@@ -831,15 +938,38 @@ function ClassReviewSection({
           {[1, 2, 3].map((item) => <TeacherSkeleton className="h-28 w-full rounded-2xl" key={item} />)}
         </div>
       ) : classesError ? (
-        <TeacherCard className="p-5">
-          <TeacherDataError text={toChineseLoadError(classesError)} />
-        </TeacherCard>
-      ) : classOptions.length === 0 ? (
-        <TeacherCard className="p-5">
-          <TeacherEmptyState text="还没有包含写作的班级。请先在首页“班级列表”中创建班级。" />
-        </TeacherCard>
+        <div className="grid gap-3">
+          <TeacherCard className="p-5">
+            <TeacherDataError text={toChineseLoadError(classesError)} />
+          </TeacherCard>
+          <div>
+            <button className="teacher-button-secondary" onClick={classesOnRetryInitial} type="button">
+              重新加载
+            </button>
+          </div>
+        </div>
+      ) : classes.length === 0 && !classesHasMore ? (
+        classOptions.length === 0 ? (
+          <TeacherCard className="p-5">
+            <TeacherEmptyState text="还没有包含写作的班级。请先在首页“班级列表”中创建班级。" />
+          </TeacherCard>
+        ) : (
+          <TeacherCard className="p-5">
+            <TeacherEmptyState text="暂无可批改的班级提交。" />
+          </TeacherCard>
+        )
       ) : (
-        <ClassReviewOverview classes={classOptions} onOpen={onOpenClass} />
+        <>
+          <ClassReviewOverview classes={classes} onOpen={onOpenClass} />
+          <TeacherInfiniteListFooter
+            hasMore={classesHasMore}
+            itemsCount={classes.length}
+            loadingMore={classesLoadingMore}
+            loadMoreError={classesLoadMoreError}
+            onRetry={classesOnLoadMore}
+            sentinelRef={sentinelRef}
+          />
+        </>
       )}
     </div>
   );
@@ -913,31 +1043,41 @@ function ClassReviewList({
   statusFilter: WritingReviewStatusFilter;
   taskFilter: WritingReviewTaskTypeFilter;
 }) {
-  const cacheKey = `${TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX}:${classId}`;
-  const { data, error, loading } = useTeacherCachedData<WritingReviewListPayload>(
-    cacheKey,
-    () => loadWritingReviews(`?classId=${encodeURIComponent(classId)}`)
-  );
-  const attempts = useMemo(() => data?.attempts ?? [], [data]);
-  const filtered = useMemo(
-    () =>
-      filterWritingReviewListEntries(attempts, {
+  // One cached page sequence per class + filter combination; the server
+  // applies the status/task type filter before cutting each page.
+  const list = useTeacherIncrementalList<WritingReviewListItem>({
+    cacheKey:
+      `${TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX}:${classId}`
+      + `:${statusFilter}:${taskFilter}`,
+    getId: getReviewItemId,
+    loadPage: (cursor) =>
+      loadWritingReviewPage({
+        classId,
+        cursor,
         status: statusFilter,
-        taskType: taskFilter
-      }),
-    [attempts, statusFilter, taskFilter]
-  );
-  const selection = useReviewListSelection(filtered, `${classId}|${statusFilter}|${taskFilter}`);
+        studentId: "",
+        taskFilter
+      })
+  });
+  const items = list.items;
+  const selection = useReviewListSelection(items, `${classId}|${statusFilter}|${taskFilter}`);
   const moderation = useWritingReviewModeration({
-    cacheKey,
+    cachePrefix: TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX,
     clearSelection: selection.clear,
-    items: filtered
+    items
+  });
+  const sentinelRef = useInfiniteListTrigger({
+    hasMore: list.hasMore,
+    loading: list.loading,
+    loadingMore: list.loadingMore,
+    onLoadMore: list.loadMore
   });
   const selectedCount = selection.selectedIds.size;
+  const hasActiveFilter = statusFilter !== "all" || taskFilter !== "all";
 
   return (
     <div className="grid gap-5">
-      {loading ? <TeacherLoadingRegion label="正在加载班级写作提交" /> : null}
+      {list.loading ? <TeacherLoadingRegion label="正在加载班级写作提交" /> : null}
       <TeacherReviewFilterBar
         bulkActions={
           selectedCount > 0 ? (
@@ -968,26 +1108,45 @@ function ClassReviewList({
           </p>
         </div>
       </TeacherCard>
-      <ReviewTable
-        actions={{
-          busy: moderation.busy,
-          onModerate: (action, attemptIds) =>
-            action === "return"
-              ? moderation.requestReturn(attemptIds)
-              : moderation.requestIgnore(attemptIds)
-        }}
-        attempts={attempts}
-        error={error || moderation.error}
-        filtered={filtered}
-        loading={loading}
-        notice={moderation.notice}
-        returnTo={returnTo}
-        emptyTexts={{
-          noAttempts: "该班级暂无已提交的写作练习。",
-          noMatch: "当前筛选条件下暂无提交。"
-        }}
-        selection={selection}
-      />
+      {list.error && !list.loading ? (
+        <div className="flex flex-wrap items-center gap-3">
+          <TeacherDataError text={toChineseLoadError(list.error)} />
+          <button className="teacher-button-secondary" onClick={list.reload} type="button">
+            重新加载
+          </button>
+        </div>
+      ) : (
+        <>
+          <ReviewTable
+            actions={{
+              busy: moderation.busy,
+              onModerate: (action, attemptIds) =>
+                action === "return"
+                  ? moderation.requestReturn(attemptIds)
+                  : moderation.requestIgnore(attemptIds)
+            }}
+            error={moderation.error}
+            filtered={items}
+            hasActiveFilter={hasActiveFilter}
+            loading={list.loading}
+            notice={moderation.notice}
+            returnTo={returnTo}
+            emptyTexts={{
+              noAttempts: "该班级暂无已提交的写作练习。",
+              noMatch: "当前筛选条件下暂无提交。"
+            }}
+            selection={selection}
+          />
+          <TeacherInfiniteListFooter
+            hasMore={list.hasMore}
+            itemsCount={items.length}
+            loadingMore={list.loadingMore}
+            loadMoreError={list.loadMoreError}
+            onRetry={list.loadMore}
+            sentinelRef={sentinelRef}
+          />
+        </>
+      )}
       <WritingReviewReturnDialog
         busy={moderation.busy}
         ids={moderation.confirmIds}
@@ -1000,20 +1159,20 @@ function ClassReviewList({
 
 export function ReviewTable({
   actions,
-  attempts,
   emptyTexts,
   error,
   filtered,
+  hasActiveFilter = false,
   loading,
   notice,
   returnTo,
   selection
 }: {
   actions: ReviewTableActions;
-  attempts: WritingReviewListItem[];
   emptyTexts: { noAttempts: string; noMatch: string };
   error: string;
   filtered: WritingReviewListItem[];
+  hasActiveFilter?: boolean;
   loading: boolean;
   notice?: string;
   returnTo: string;
@@ -1265,7 +1424,7 @@ export function ReviewTable({
         {!loading && !error && filtered.length === 0 ? (
           <div className="mt-4">
             <TeacherEmptyState
-              text={attempts.length === 0 ? emptyTexts.noAttempts : emptyTexts.noMatch}
+              text={hasActiveFilter ? emptyTexts.noMatch : emptyTexts.noAttempts}
             />
           </div>
         ) : null}
@@ -1350,30 +1509,75 @@ function isInteractiveRowTarget(target: EventTarget | null) {
   );
 }
 
-function readCachedReviewListPayload(
-  entry: ReturnType<ReturnType<typeof useTeacherDataCache>["getEntry"]>
-): WritingReviewListPayload | null {
-  if (!entry || (entry.status !== "success" && entry.status !== "refreshing")) return null;
-  const payload = entry.data as WritingReviewListPayload;
-  return Array.isArray(payload?.attempts) ? payload : null;
+async function loadWritingReviewPage({
+  classId,
+  cursor,
+  status,
+  studentId,
+  taskFilter
+}: {
+  classId?: string;
+  cursor: string | null;
+  status: WritingReviewStatusFilter;
+  studentId: string;
+  taskFilter: WritingReviewTaskTypeFilter;
+}): Promise<TeacherIncrementalPage<WritingReviewListItem>> {
+  const search = new URLSearchParams({
+    limit: "20",
+    status,
+    taskType: taskFilter
+  });
+  if (classId) search.set("classId", classId);
+  if (studentId) search.set("studentId", studentId);
+  if (cursor) search.set("cursor", cursor);
+  const payload = await teacherApiJson<WritingReviewListPayload>(
+    `/api/teacher/writing/reviews?${search.toString()}`,
+    "无法加载写作批改列表。"
+  );
+  if (!Array.isArray(payload.attempts)) {
+    throw new Error("写作批改列表数据格式无效，请稍后重试。");
+  }
+  return {
+    items: payload.attempts,
+    hasMore: payload.hasMore === true,
+    nextCursor: typeof payload.nextCursor === "string" ? payload.nextCursor : null
+  };
 }
 
-async function loadWritingReviews(query = ""): Promise<WritingReviewListPayload> {
-  const response = await teacherFetch(`/api/teacher/writing/reviews${query}`);
-  const payload = await readJson<WritingReviewListPayload | ErrorPayload>(response);
-  if (!response.ok || !("attempts" in payload)) {
-    throw new Error(errorMessage(payload, "无法加载写作批改列表。"));
+async function loadClassReviewSummaries(
+  cursor: string | null
+): Promise<TeacherIncrementalPage<TeacherClassReviewSummary>> {
+  const search = new URLSearchParams({ limit: "20" });
+  if (cursor) search.set("cursor", cursor);
+  const payload = await teacherApiJson<WritingClassReviewPagePayload>(
+    `/api/teacher/writing/review-classes?${search.toString()}`,
+    "无法加载班级批改列表。"
+  );
+  if (!Array.isArray(payload.classes)) {
+    throw new Error("班级批改列表数据格式无效，请稍后重试。");
   }
-  return payload;
+  return {
+    items: payload.classes,
+    hasMore: payload.hasMore === true,
+    nextCursor: typeof payload.nextCursor === "string" ? payload.nextCursor : null
+  };
 }
 
-async function loadClassReviewSummaries(): Promise<{ classes: TeacherClassReviewSummary[] }> {
-  const response = await teacherFetch("/api/teacher/writing/review-classes");
-  const payload = await readJson<{ classes: TeacherClassReviewSummary[] } | ErrorPayload>(response);
-  if (!response.ok || !("classes" in payload)) {
-    throw new Error(errorMessage(payload, "无法加载班级批改列表。"));
+async function teacherApiJson<T>(input: string, fallback: string): Promise<T> {
+  const response = await teacherFetch(input);
+  const payload = await readJson<T | ErrorPayload>(response);
+  if (!response.ok) {
+    throw new Error(errorMessage(payload, fallback));
   }
-  return payload;
+  return payload as T;
+}
+
+function getReviewItemId(item: WritingReviewListItem) {
+  return item.attemptId;
+}
+
+function getClassId(item: TeacherClassReviewSummary) {
+  return item.class_id;
 }
 
 async function teacherFetch(input: string, init?: RequestInit) {

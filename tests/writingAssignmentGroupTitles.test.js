@@ -203,26 +203,40 @@ test("teacher grouping exposes the group title and the union of recipients", () 
   );
 });
 
-test("teacher list page loads once and filters students locally without a new API request", () => {
+test("teacher list page loads one server-filtered page per tab and filter", () => {
   const pageClient = source("components/teacher/TeacherWritingAssignmentsPageClient.tsx");
   const list = source("components/teacher/TeacherWritingAssignmentList.tsx");
-  assert.match(pageClient, /TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY/);
-  assert.match(pageClient, /filterWritingAssignmentsByStudent/);
-  assert.match(pageClient, /teacherApiFetch\("\/api\/teacher\/writing\/assignments"\)/);
-  assert.doesNotMatch(pageClient, /studentId=\$\{encodeURIComponent\(filterStudentId\)\}`\)/);
-  assert.doesNotMatch(pageClient, /useState\(true\)/);
+  assert.match(pageClient, /TEACHER_WRITING_ASSIGNMENTS_PAGE_CACHE_PREFIX/);
+  assert.match(pageClient, /useTeacherIncrementalList/);
+  assert.match(pageClient, /TEACHER_WRITING_ASSIGNMENTS_FILTER_OPTIONS_CACHE_KEY/);
+  assert.match(pageClient, /teacherApiFetch<AssignmentsPagePayload>/);
+  assert.match(pageClient, /studentId: view === "students" \? filterStudentId : ""/);
+  assert.match(pageClient, /classId: view === "class" \? filterClassId : ""/);
+  // The client never filters a partial history.
+  assert.doesNotMatch(pageClient, /filterWritingAssignmentsByStudent/);
+  assert.doesNotMatch(pageClient, /filterDirectWritingAssignments/);
+  assert.doesNotMatch(pageClient, /isClassWritingAssignment/);
+  assert.match(list, /useInfiniteListTrigger/);
+  assert.match(list, /TeacherInfiniteListFooter/);
   assert.match(list, /AssignmentRecipientNames/);
   assert.match(list, /TeacherPopover/);
   assert.match(list, /更多/);
   assert.match(list, /group_title/);
 });
 
-test("teacher list API returns recipients and group titles and never filters by studentId", () => {
+test("teacher list API applies the tab and both filters before the cursor page", () => {
   const route = source("app/api/teacher/writing/assignments/route.ts");
+  assert.match(route, /params\.get\("view"\)/);
+  assert.match(route, /params\.get\("studentId"\)/);
+  assert.match(route, /params\.get\("classId"\)/);
+  assert.match(route, /parseTeacherListCursor/);
+  assert.match(route, /loadAssignmentGroupUnitPage/);
+  assert.match(route, /loadStandaloneAssignmentUnitPage/);
+  assert.match(route, /mergeTeacherListUnitsDesc/);
+  assert.match(route, /writing_assignment_students\.student_id/);
   assert.match(route, /loadWritingAssignmentGroupTitles/);
   assert.match(route, /recipients: recipientRows\.get/);
   assert.match(route, /getPreferredUserDisplayName/);
-  assert.doesNotMatch(route, /searchParams\.get\("studentId"\)/);
   assert.match(route, /normalizeAssignmentGroupTitle\(body\.title\)/);
 });
 

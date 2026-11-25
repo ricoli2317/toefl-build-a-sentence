@@ -40,8 +40,8 @@ function review(attemptId, overrides = {}) {
 async function loadSummary(taskType, attempts, reviews) {
   const tables = {
     writing_assignments: [{
-      assignment_id: "assignment-1", teacher_id: "teacher-1", group_id: "group-1",
-      group_position: 0, task_type: taskType, question_source: "custom", question_id: null,
+      assignment_id: "assignment-1", teacher_id: "teacher-1", group_id: null,
+      group_position: null, task_type: taskType, question_source: "custom", question_id: null,
       set_title: "Fixture", source_set_id: null, due_at: null, status: "active",
       created_at: "2026-10-13T00:00:00Z", deleted_at: null
     }],

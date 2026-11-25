@@ -31,8 +31,28 @@ export const TEACHER_CURRENT_USER_CACHE_KEY = "teacher:current-user";
 export const TEACHER_ACCESS_CACHE_KEY = "teacher:access";
 export const TEACHER_WRITING_REVIEWS_CACHE_KEY =
   "teacher:writing-reviews:historical-display-v2";
+/**
+ * Paginated review-list pages. One entry per tab + filter combination, holding
+ * the accumulated pages; the old single-payload key above stays reserved for
+ * the workspace compatibility cache.
+ */
+export const TEACHER_WRITING_REVIEWS_CACHE_PREFIX = "teacher:writing-reviews:page:v1";
+export const TEACHER_WRITING_REVIEW_FILTER_OPTIONS_CACHE_KEY =
+  `${TEACHER_WRITING_REVIEWS_CACHE_PREFIX}:filter-options`;
 export const TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX = "teacher:writing-assignments";
 export const TEACHER_WRITING_ASSIGNMENTS_CACHE_KEY = "teacher:writing-assignments:list";
+/** Paginated assignment list pages (one entry per tab + filter combination). */
+export const TEACHER_WRITING_ASSIGNMENTS_PAGE_CACHE_PREFIX =
+  `${TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX}:page:v2`;
+export const TEACHER_WRITING_ASSIGNMENTS_FILTER_OPTIONS_CACHE_KEY =
+  `${TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX}:filter-options:v1`;
+/**
+ * Rolling group-title index fed by the list pages. The create form only uses it
+ * to preview the next automatic title number; the RPC still decides the final
+ * title authoritatively.
+ */
+export const TEACHER_WRITING_ASSIGNMENT_TITLES_CACHE_KEY =
+  `${TEACHER_WRITING_ASSIGNMENTS_CACHE_PREFIX}:group-titles:v1`;
 export const TEACHER_ASSIGNMENT_CATALOG_CACHE_PREFIX = "teacher:assignment-catalog";
 export const TEACHER_WRITING_ASSIGNMENT_STUDENTS_CACHE_KEY =
   "teacher:writing-assignments:students";
@@ -265,6 +285,7 @@ export function TeacherDataCacheProvider({ children }: { children: ReactNode }) 
               break;
             case "teacherWritingReviews":
               invalidate(TEACHER_WRITING_REVIEWS_CACHE_KEY);
+              invalidate(TEACHER_WRITING_REVIEWS_CACHE_PREFIX);
               // Correction submissions also appear in the existing class list,
               // but never change its ordinary-assignment summary counts.
               if (correction) invalidate(TEACHER_WRITING_CLASS_REVIEW_LIST_CACHE_PREFIX);
